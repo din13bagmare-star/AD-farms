@@ -84,7 +84,7 @@
   .btn-submit { width: 100%; background: #0284c7; color: #ffffff; border: none; padding: 11px; border-radius: 6px; font-weight: bold; font-size: 0.9rem; cursor: pointer; margin-top: 4px; }
   .btn-cancel { width: 100%; background: #64748b; color: #ffffff; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; margin-top: 6px; display: none; }
 
-  /* CLEAN STREAMLINED BATCH CARDS (NO REPETITIVE ALARM ROWS) */
+  /* CLEAN BATCH CARDS */
   .batch-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
   .batch-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 8px; }
   .batch-title { font-size: 0.98rem; font-weight: 800; color: #0f172a; }
@@ -99,11 +99,22 @@
   .pill-val { font-size: 0.8rem; font-weight: 800; margin-top: 2px; display: block; }
 
   .batch-results-bar { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 7px 10px; border-radius: 6px; font-size: 0.8rem; margin-bottom: 8px; border: 1px solid #f1f5f9; }
+  
+  /* NEUTRAL BUTTONS */
   .batch-actions { display: flex; gap: 6px; }
-  .btn-act { flex: 1; padding: 7px 2px; border-radius: 5px; font-size: 0.74rem; font-weight: bold; border: 1px solid transparent; cursor: pointer; text-align: center; }
-  .act-hatch { background: #dcfce7; color: #15803d; border-color: #86efac; }
-  .act-edit { background: #fef08a; color: #854d0e; border-color: #fde047; flex: 0.6; }
-  .act-del { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; flex: 0.6; }
+  .btn-neutral {
+    flex: 1;
+    padding: 8px 4px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #334155;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    cursor: pointer;
+    text-align: center;
+  }
+  .btn-neutral:active { background: #f1f5f9; }
 
   /* TABLE */
   .table-wrap { overflow-x: auto; }
@@ -111,7 +122,7 @@
   th, td { border: 1px solid #e2e8f0; padding: 8px 6px; text-align: center; }
   th { background: #f1f5f9; color: #475569; font-weight: 700; }
 
-  /* CALENDAR WITH TAP TARGETS */
+  /* CALENDAR */
   .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
   .cal-header button { padding: 4px 12px; background: #e2e8f0; border: none; border-radius: 4px; font-weight: bold; }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
@@ -612,13 +623,16 @@
     if (db) db.collection("batches").doc(docId).update({ chicksHatched: b.chicksHatched, hatchRate: b.hatchRate }).catch(e => console.warn(e));
   }
 
-  // RENDER COMPACT BATCHES WITHOUT ALARM ROW
+  // AUTOMATIC CHRONOLOGICAL SORTING & NEUTRAL ACTION BUTTONS
   function renderBatches() {
     const container = document.getElementById('batchContainer');
     container.innerHTML = "";
     document.getElementById('noBatches').style.display = batches.length === 0 ? "block" : "none";
 
-    batches.forEach(b => {
+    // Auto-sort batches strictly by setting date (earliest setting date first)
+    const sortedBatches = [...batches].sort((a, b) => new Date(a.rawDate) - new Date(b.rawDate));
+
+    sortedBatches.forEach(b => {
       const rateText = b.hatchRate !== null ? `<b style="color:#16a34a;">${b.hatchRate}%</b>` : `<span style="color:#94a3b8;">Pending</span>`;
       const chickCount = b.chicksHatched !== null ? `<b>${b.chicksHatched}</b> chicks` : `<span style="color:#94a3b8;">Not entered</span>`;
 
@@ -651,9 +665,9 @@
         </div>
 
         <div class="batch-actions">
-          <button class="btn-act act-hatch" onclick="recordHatchResult('${b.id}')">🐥 Chicks</button>
-          <button class="btn-act act-edit" onclick="startEditBatch('${b.id}')">✎ Edit</button>
-          <button class="btn-act act-del" onclick="deleteBatch('${b.id}')">✕ Delete</button>
+          <button class="btn-neutral" onclick="recordHatchResult('${b.id}')">🐥 Chicks</button>
+          <button class="btn-neutral" onclick="startEditBatch('${b.id}')">✎ Edit</button>
+          <button class="btn-neutral" onclick="deleteBatch('${b.id}')">✕ Delete</button>
         </div>
       `;
       container.appendChild(card);
@@ -668,8 +682,6 @@
     document.getElementById('editDocId').value = docId;
 
     document.getElementById('submitBtn').innerText = "Update Batch";
-    document.getElementById('submitBtn').style.background = "#facc15";
-    document.getElementById('submitBtn').style.color = "#000";
     document.getElementById('cancelBtn').style.display = "block";
     switchTab('batchesTab', document.querySelectorAll('.tab-btn')[0]);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -690,8 +702,6 @@
     document.getElementById('eggsSet').value = "102";
     document.getElementById('editDocId').value = "";
     document.getElementById('submitBtn').innerText = "Start / Save Batch";
-    document.getElementById('submitBtn').style.background = "#0284c7";
-    document.getElementById('submitBtn').style.color = "#fff";
     document.getElementById('cancelBtn').style.display = "none";
   }
 
@@ -759,7 +769,6 @@
 
     let html = "";
 
-    // Check Batches for this date
     batches.forEach(b => {
       if (b.keyD1 === dateKey) {
         html += `
@@ -787,7 +796,6 @@
       }
     });
 
-    // Check Egg Collections for this date
     const col = collections.find(c => c.date === dateKey);
     if (col && col.total > 0) {
       html += `
