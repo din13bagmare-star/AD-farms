@@ -40,7 +40,7 @@
   .brand-text .sub-title { margin: 0; font-size: 0.68rem; color: #0284c7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
   .status-badge { font-size: 0.68rem; padding: 2px 8px; border-radius: 12px; font-weight: bold; background: #e2e8f0; color: #475569; }
 
-  /* SETTINGS */
+  /* GLOBAL REMINDER CONTROL */
   .settings-box {
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -74,7 +74,7 @@
   .tab-btn { flex: 1; border: none; background: transparent; padding: 8px 4px; font-size: 0.82rem; font-weight: 700; color: #475569; border-radius: 6px; cursor: pointer; }
   .tab-btn.active { background: #ffffff; color: #0284c7; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-  /* CARDS & FORMS */
+  /* CARDS */
   .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
   .card h2 { margin: 0 0 10px 0; font-size: 0.95rem; color: #0284c7; font-weight: 800; }
   .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
@@ -82,10 +82,9 @@
   label { font-size: 0.74rem; font-weight: 700; color: #475569; display: block; margin-bottom: 3px; }
   input, select { width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.88rem; background: #ffffff; color: #0f172a; }
   .btn-submit { width: 100%; background: #0284c7; color: #ffffff; border: none; padding: 11px; border-radius: 6px; font-weight: bold; font-size: 0.9rem; cursor: pointer; margin-top: 4px; }
-  .btn-submit:active { background: #0369a1; }
   .btn-cancel { width: 100%; background: #64748b; color: #ffffff; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; margin-top: 6px; display: none; }
 
-  /* BATCH CARDS */
+  /* CLEAN STREAMLINED BATCH CARDS (NO REPETITIVE ALARM ROWS) */
   .batch-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
   .batch-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 8px; }
   .batch-title { font-size: 0.98rem; font-weight: 800; color: #0f172a; }
@@ -98,13 +97,6 @@
   .date-pill.d21 { background: #bbf7d0; color: #166534; }
   .pill-lbl { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; display: block; }
   .pill-val { font-size: 0.8rem; font-weight: 800; margin-top: 2px; display: block; }
-
-  .alarm-container { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; margin-bottom: 8px; }
-  .alarm-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; color: #475569; margin-bottom: 6px; }
-  .alarm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  .btn-alarm-action { padding: 8px 4px; border-radius: 6px; font-size: 0.74rem; font-weight: 800; border: 1px solid #cbd5e1; background: #ffffff; cursor: pointer; text-align: center; }
-  .btn-alarm-action.active-alarm { border-color: #f87171; color: #b91c1c; background: #fef2f2; }
-  .btn-alarm-action.muted { opacity: 0.5; background: #f1f5f9; color: #94a3b8; border-color: #e2e8f0; }
 
   .batch-results-bar { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 7px 10px; border-radius: 6px; font-size: 0.8rem; margin-bottom: 8px; border: 1px solid #f1f5f9; }
   .batch-actions { display: flex; gap: 6px; }
@@ -119,21 +111,63 @@
   th, td { border: 1px solid #e2e8f0; padding: 8px 6px; text-align: center; }
   th { background: #f1f5f9; color: #475569; font-weight: 700; }
 
-  /* CALENDAR */
+  /* CALENDAR WITH TAP TARGETS */
   .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
   .cal-header button { padding: 4px 12px; background: #e2e8f0; border: none; border-radius: 4px; font-weight: bold; }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
   .cal-day-name { font-size: 0.7rem; font-weight: bold; color: #64748b; padding-bottom: 4px; }
-  .cal-cell { min-height: 48px; border-radius: 6px; border: 1px solid #e2e8f0; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 2px; font-size: 0.82rem; font-weight: 700; }
-  .cal-cell.empty { border-color: transparent; background: transparent; }
+  .cal-cell {
+    min-height: 50px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .cal-cell:active { background: #f1f5f9; }
+  .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; }
   .egg-badge { background: #e0f2fe; color: #0369a1; border-radius: 8px; font-size: 0.58rem; padding: 1px 4px; margin-top: 1px; font-weight: 800; }
   .stage-set { background: #bae6fd !important; color: #0369a1 !important; border: 1.5px solid #38bdf8 !important; }
   .stage-hatch { background: #fed7aa !important; color: #9a3412 !important; border: 1.5px solid #f97316 !important; }
   .stage-remove { background: #bbf7d0 !important; color: #166534 !important; border: 1.5px solid #22c55e !important; }
   .stage-tag { font-size: 0.52rem; font-weight: 900; line-height: 1; text-transform: uppercase; margin-top: 2px; }
-  .legend { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; font-size: 0.7rem; }
-  .legend-item { display: flex; align-items: center; gap: 4px; }
-  .legend-box { width: 10px; height: 10px; border-radius: 2px; }
+
+  /* DETAILS MODAL POPUP */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .modal-box {
+    background: #ffffff;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  }
+  .modal-box h3 { margin: 0 0 10px 0; color: #0284c7; font-size: 1.05rem; display: flex; justify-content: space-between; align-items: center; }
+  .modal-close { background: #e2e8f0; border: none; border-radius: 50%; width: 26px; height: 26px; font-weight: bold; cursor: pointer; }
+  .event-item {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+  }
 
   .view-panel { display: none; }
   .view-panel.active { display: block; }
@@ -161,18 +195,18 @@
         <div class="sub-title">Herd &amp; Harvest</div>
       </div>
     </div>
-    <div id="cloudStatus" class="status-badge">⚡ Ready (Local + Cloud)</div>
+    <div id="cloudStatus" class="status-badge">🟢 Cloud Active</div>
   </div>
 
-  <!-- REMINDER CONTROLS -->
+  <!-- SINGLE TOP REMINDER STATUS -->
   <div class="settings-box">
     <div class="settings-title">
-      <span>🔔 Reminder Mode &amp; Schedule</span>
-      <span id="modeStatusText" style="color:#047857;">ACTIVE</span>
+      <span>🔔 18th &amp; 21st Day Alarms</span>
+      <span id="modeStatusText" style="color:#047857;">RINGING (08:00)</span>
     </div>
     <div class="settings-row">
-      <button class="mode-toggle-btn active-ring" id="btnModeRing" onclick="setGlobalReminderMode('ring')">🔔 Ringing</button>
-      <button class="mode-toggle-btn" id="btnModeSilent" onclick="setGlobalReminderMode('silent')">🔕 Silence / Off</button>
+      <button class="mode-toggle-btn active-ring" id="btnModeRing" onclick="setGlobalReminderMode('ring')">🔔 All Alarms ON</button>
+      <button class="mode-toggle-btn" id="btnModeSilent" onclick="setGlobalReminderMode('silent')">🔕 Silence / OFF</button>
       <div class="time-input-group">
         <label>Time:</label>
         <input type="time" id="alertTime" value="08:00" onchange="updateAlertTime(this.value)">
@@ -287,20 +321,24 @@
       </div>
 
       <div class="cal-grid" id="calGrid"></div>
-
-      <div class="legend">
-        <div class="legend-item"><div class="legend-box" style="background:#bae6fd; border:1px solid #38bdf8;"></div><span><b>Blue</b>: Set</span></div>
-        <div class="legend-item"><div class="legend-box" style="background:#fed7aa; border:1px solid #f97316;"></div><span><b>Orange</b>: Hatcher D18</span></div>
-        <div class="legend-item"><div class="legend-box" style="background:#bbf7d0; border:1px solid #22c55e;"></div><span><b>Green</b>: Pull D21</span></div>
-        <div class="legend-item"><span style="color:#0284c7; font-weight:800;">[+##]</span><span>= Eggs Picked</span></div>
-      </div>
+      <div style="font-size:0.75rem; text-align:center; color:#64748b; margin-top:8px;">💡 Tap any date on the calendar to view batch details.</div>
     </div>
   </div>
 
 </div>
 
+<!-- CALENDAR DATE DETAILS MODAL -->
+<div class="modal-overlay" id="dateModal" onclick="closeDateDetails(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3>
+      <span id="modalDateTitle">Date Details</span>
+      <button class="modal-close" onclick="closeDateDetails()">✕</button>
+    </h3>
+    <div id="modalDetailsBody"></div>
+  </div>
+</div>
+
 <script>
-  // --- DUAL-ENGINE STORAGE ARCHITECTURE ---
   let collections = JSON.parse(localStorage.getItem("ad_farms_local_collections") || "[]");
   let batches = JSON.parse(localStorage.getItem("ad_farms_local_batches") || "[]");
   let reminderMode = localStorage.getItem("ad_farms_reminder_mode") || "ring";
@@ -320,7 +358,7 @@
     localStorage.setItem("ad_farms_local_batches", JSON.stringify(batches));
   }
 
-  // --- FIREBASE CLOUD LINK ---
+  // Firebase Setup
   const firebaseConfig = {
     apiKey: "AIzaSyC0fvccTExFtjDF5jijNVExvdXvyAq54DY",
     authDomain: "poultry-a6902.firebaseapp.com",
@@ -335,8 +373,7 @@
   try {
     firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
-    
-    // Listen to collections
+
     db.collection("collections").onSnapshot(snapshot => {
       let cloudCols = [];
       snapshot.forEach(doc => cloudCols.push({ id: doc.id, ...doc.data() }));
@@ -347,14 +384,9 @@
         renderCalendar();
       }
       document.getElementById('cloudStatus').textContent = "🟢 Synced (Cloud)";
-      document.getElementById('cloudStatus').style.background = "#dcfce7";
       document.getElementById('cloudStatus').style.color = "#15803d";
-    }, err => {
-      console.warn("Cloud read-only/offline mode:", err);
-      document.getElementById('cloudStatus').textContent = "🟡 Phone Storage";
-    });
+    }, err => console.warn(err));
 
-    // Listen to batches
     db.collection("batches").onSnapshot(snapshot => {
       let cloudBatches = [];
       snapshot.forEach(doc => cloudBatches.push({ id: doc.id, ...doc.data() }));
@@ -364,16 +396,11 @@
         renderBatches();
         renderCalendar();
       }
-    }, err => {
-      console.warn("Batches cloud listener offline:", err);
-    });
-
+    }, err => console.warn(err));
   } catch(e) {
-    console.warn("Firebase offline. Running locally.", e);
-    document.getElementById('cloudStatus').textContent = "🟡 Phone Storage";
+    console.warn("Offline local mode active", e);
   }
 
-  // --- TAB NAVIGATION ---
   function switchTab(tabId, btn) {
     document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -382,23 +409,20 @@
     if (tabId === 'calendarTab') renderCalendar();
   }
 
-  // --- LOGO ENGINE ---
+  // Logo Engine
   function checkAndLockLogo() {
     const saved = localStorage.getItem("ad_farms_logo");
     const img = document.getElementById('logoDisplay');
     const placeholder = document.getElementById('placeholderText');
     const container = document.getElementById('logoContainer');
-
     if (saved) {
       img.src = saved;
       img.style.display = "block";
       placeholder.style.display = "none";
       container.style.cursor = "default";
       return true;
-    } else {
-      container.style.cursor = "pointer";
-      return false;
     }
+    return false;
   }
 
   function triggerUploadOnce() {
@@ -419,7 +443,7 @@
   }
   checkAndLockLogo();
 
-  // --- REMINDERS & SCHEDULE ---
+  // Settings UI
   function applyReminderUI() {
     const btnRing = document.getElementById('btnModeRing');
     const btnSilent = document.getElementById('btnModeSilent');
@@ -441,7 +465,6 @@
       statusText.style.color = "#b91c1c";
       timeInput.disabled = true;
     }
-    renderBatches();
   }
 
   function setGlobalReminderMode(mode) {
@@ -458,7 +481,7 @@
   }
   applyReminderUI();
 
-  // --- ACTIONS: EGG LOGGING ---
+  // Collections
   function saveCollection() {
     const date = document.getElementById('colDate').value;
     const slot = document.getElementById('colSlot').value;
@@ -478,21 +501,15 @@
 
     const entry = { id: date, date: date, morning: m, afternoon: a, evening: e, total: (m + a + e) };
 
-    if (existing) {
-      Object.assign(existing, entry);
-    } else {
-      collections.push(entry);
-    }
+    if (existing) Object.assign(existing, entry);
+    else collections.push(entry);
 
     syncToLocalStorage();
     renderCollections();
     renderCalendar();
     document.getElementById('colCount').value = "";
 
-    // Sync cloud in background
-    if (db) {
-      db.collection("collections").doc(date).set(entry).catch(err => console.warn(err));
-    }
+    if (db) db.collection("collections").doc(date).set(entry).catch(e => console.warn(e));
   }
 
   function deleteCollection(docId) {
@@ -501,10 +518,7 @@
       syncToLocalStorage();
       renderCollections();
       renderCalendar();
-
-      if (db) {
-        db.collection("collections").doc(docId).delete().catch(err => console.warn(err));
-      }
+      if (db) db.collection("collections").doc(docId).delete().catch(e => console.warn(e));
     }
   }
 
@@ -528,7 +542,7 @@
     });
   }
 
-  // --- ACTIONS: BATCH SETUP ---
+  // Batches
   function computeMilestones(dateStr) {
     const [y, m, d] = dateStr.split('-').map(Number);
     const d1 = new Date(y, m - 1, d);
@@ -577,13 +591,9 @@
     renderCalendar();
     resetBatchForm();
 
-    // Sync cloud in background
     if (db) {
-      if (editDocId) {
-        db.collection("batches").doc(editDocId).set(data, { merge: true }).catch(e => console.warn(e));
-      } else {
-        db.collection("batches").doc(id).set(data).catch(e => console.warn(e));
-      }
+      if (editDocId) db.collection("batches").doc(editDocId).set(data, { merge: true }).catch(e => console.warn(e));
+      else db.collection("batches").doc(id).set(data).catch(e => console.warn(e));
     }
   }
 
@@ -599,42 +609,10 @@
 
     syncToLocalStorage();
     renderBatches();
-
-    if (db) {
-      db.collection("batches").doc(docId).update({ chicksHatched: b.chicksHatched, hatchRate: b.hatchRate }).catch(e => console.warn(e));
-    }
+    if (db) db.collection("batches").doc(docId).update({ chicksHatched: b.chicksHatched, hatchRate: b.hatchRate }).catch(e => console.warn(e));
   }
 
-  function handleAlarmClick(docId, dayNum) {
-    if (reminderMode === "silent") {
-      alert("Reminders are currently set to 'Silence / Off' mode in the settings bar.");
-      return;
-    }
-
-    const b = batches.find(item => item.id === docId);
-    const [hh, mm] = reminderTime.split(':');
-    const dateStr = dayNum === 18 ? b.d18Raw : b.d21Raw;
-    const label = dayNum === 18 ? `AD Farms D18 Lockdown: ${b.name}` : `AD Farms D21 Chicks: ${b.name}`;
-
-    const [yr, mo, dy] = dateStr.split('-');
-    const hourNum = parseInt(hh, 10);
-    const minuteNum = parseInt(mm, 10);
-
-    const alarmIntent = `intent:#Intent;action=android.intent.action.SET_ALARM;i.android.intent.extra.HOUR=${hourNum};i.android.intent.extra.MINUTES=${minuteNum};s.android.intent.extra.MESSAGE=${encodeURIComponent(label)};B.android.intent.extra.SKIP_UI=false;end`;
-    const startTime = `${yr}${mo}${dy}T${hh}${mm}00`;
-    const endHour = String((hourNum + 1) % 24).padStart(2, '0');
-    const endTime = `${yr}${mo}${dy}T${endHour}${mm}00`;
-    const desc = dayNum === 18 ? `Move ${b.eggs} eggs to Hatching Basket. Stop turning and raise humidity.` : `Pull chicks to brooder.`;
-    const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(label)}&dates=${startTime}/${endTime}&details=${encodeURIComponent(desc)}&sf=true&output=xml`;
-
-    try {
-      window.location.href = alarmIntent;
-      setTimeout(() => { if (!document.hidden) window.open(calUrl, '_blank'); }, 1000);
-    } catch(e) {
-      window.open(calUrl, '_blank');
-    }
-  }
-
+  // RENDER COMPACT BATCHES WITHOUT ALARM ROW
   function renderBatches() {
     const container = document.getElementById('batchContainer');
     container.innerHTML = "";
@@ -643,10 +621,6 @@
     batches.forEach(b => {
       const rateText = b.hatchRate !== null ? `<b style="color:#16a34a;">${b.hatchRate}%</b>` : `<span style="color:#94a3b8;">Pending</span>`;
       const chickCount = b.chicksHatched !== null ? `<b>${b.chicksHatched}</b> chicks` : `<span style="color:#94a3b8;">Not entered</span>`;
-
-      const isMuted = reminderMode === "silent";
-      const btnClass = isMuted ? "btn-alarm-action muted" : "btn-alarm-action active-alarm";
-      const timeTag = isMuted ? "MUTED" : `@ ${reminderTime}`;
 
       const card = document.createElement('div');
       card.className = 'batch-card';
@@ -668,21 +642,6 @@
           <div class="date-pill d21">
             <span class="pill-lbl">Day 21 (Pull)</span>
             <span class="pill-val">${b.labelD21}</span>
-          </div>
-        </div>
-
-        <div class="alarm-container">
-          <div class="alarm-header">
-            <span>ALARM STATUS:</span>
-            <span>${isMuted ? '🔕 SILENCED' : '🔔 SCHEDULED (' + reminderTime + ')'}</span>
-          </div>
-          <div class="alarm-grid">
-            <button class="${btnClass}" onclick="handleAlarmClick('${b.id}', 18)">
-              ${isMuted ? '🔕 D18 Off' : '⏰ D18 Alarm ' + timeTag}
-            </button>
-            <button class="${btnClass}" onclick="handleAlarmClick('${b.id}', 21)">
-              ${isMuted ? '🔕 D21 Off' : '⏰ D21 Alarm ' + timeTag}
-            </button>
           </div>
         </div>
 
@@ -722,10 +681,7 @@
       syncToLocalStorage();
       renderBatches();
       renderCalendar();
-
-      if (db) {
-        db.collection("batches").doc(docId).delete().catch(e => console.warn(e));
-      }
+      if (db) db.collection("batches").doc(docId).delete().catch(e => console.warn(e));
     }
   }
 
@@ -739,7 +695,7 @@
     document.getElementById('cancelBtn').style.display = "none";
   }
 
-  // --- CALENDAR RENDERER ---
+  // CALENDAR WITH INTERACTIVE POPUPS
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calMonthYear').innerText = `${monthNames[curMonth]} ${curYear}`;
@@ -759,6 +715,7 @@
       const dateKey = formatDateKey(curYear, curMonth, d);
       const cell = document.createElement('div');
       cell.className = 'cal-cell';
+      cell.onclick = () => showDateDetails(dateKey);
 
       let isSet = false, isD18 = false, isD21 = false;
       batches.forEach(b => {
@@ -790,7 +747,72 @@
     renderCalendar();
   }
 
-  // Initial draw
+  // DATE DETAILS MODAL POPUP LOGIC
+  function showDateDetails(dateKey) {
+    const modal = document.getElementById('dateModal');
+    const title = document.getElementById('modalDateTitle');
+    const body = document.getElementById('modalDetailsBody');
+
+    const [y, m, d] = dateKey.split('-');
+    const dateObj = new Date(y, m - 1, d);
+    title.innerText = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+    let html = "";
+
+    // Check Batches for this date
+    batches.forEach(b => {
+      if (b.keyD1 === dateKey) {
+        html += `
+          <div class="event-item" style="border-left: 4px solid #0284c7;">
+            <b style="color:#0284c7;">🥚 Day 1: SET EGGS</b><br>
+            <b>Batch:</b> ${b.name} (${b.eggs} eggs)<br>
+            <span style="font-size:0.75rem; color:#64748b;">Incubation cycle begins.</span>
+          </div>`;
+      }
+      if (b.keyD18 === dateKey) {
+        html += `
+          <div class="event-item" style="border-left: 4px solid #ea580c;">
+            <b style="color:#ea580c;">🐣 Day 18: HATCHER LOCKDOWN</b><br>
+            <b>Batch:</b> ${b.name} (${b.eggs} eggs)<br>
+            <span style="font-size:0.78rem; color:#475569;">Action: Move to hatching basket, stop egg turning, increase humidity.</span>
+          </div>`;
+      }
+      if (b.keyD21 === dateKey) {
+        html += `
+          <div class="event-item" style="border-left: 4px solid #16a34a;">
+            <b style="color:#16a34a;">🐥 Day 21: PULL CHICKS</b><br>
+            <b>Batch:</b> ${b.name} (${b.eggs} eggs)<br>
+            <span style="font-size:0.78rem; color:#475569;">Action: Transfer chicks to brooder & tally hatch rate.</span>
+          </div>`;
+      }
+    });
+
+    // Check Egg Collections for this date
+    const col = collections.find(c => c.date === dateKey);
+    if (col && col.total > 0) {
+      html += `
+        <div class="event-item" style="border-left: 4px solid #0284c7;">
+          <b>🥚 Daily Egg Pickings</b><br>
+          Morning: <b>${col.morning || 0}</b> | Afternoon: <b>${col.afternoon || 0}</b> | Evening: <b>${col.evening || 0}</b><br>
+          <b>Total Eggs: ${col.total}</b>
+        </div>`;
+    }
+
+    if (!html) {
+      html = `<div style="text-align:center; padding:15px; color:#94a3b8; font-size:0.85rem;">No scheduled actions or collections for this date.</div>`;
+    }
+
+    body.innerHTML = html;
+    modal.style.display = "flex";
+  }
+
+  function closeDateDetails(e) {
+    if (!e || e.target.id === "dateModal" || e.target.classList.contains("modal-close")) {
+      document.getElementById('dateModal').style.display = "none";
+    }
+  }
+
+  // Initial render
   renderCollections();
   renderBatches();
   renderCalendar();
