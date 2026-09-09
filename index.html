@@ -9,7 +9,7 @@
   body { background: #f8fafc; color: #0f172a; margin: 0; padding: 10px; padding-bottom: 30px; }
   .container { max-width: 600px; margin: auto; }
 
-  /* TOP BAR */
+  /* TOP HEADER */
   .top-bar {
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -40,7 +40,7 @@
   .brand-text .sub-title { margin: 0; font-size: 0.68rem; color: #0284c7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
   .brand-text .sync-dot { font-size: 0.65rem; color: #16a34a; font-weight: 600; }
 
-  /* SETTINGS CARD */
+  /* REMINDER SETTINGS */
   .settings-box {
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -82,7 +82,7 @@
   .tab-btn { flex: 1; border: none; background: transparent; padding: 8px 4px; font-size: 0.8rem; font-weight: 700; color: #475569; border-radius: 6px; cursor: pointer; }
   .tab-btn.active { background: #ffffff; color: #0284c7; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-  /* CARDS */
+  /* CARDS & FORMS */
   .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
   .card h2 { margin: 0 0 10px 0; font-size: 0.95rem; color: #0284c7; }
   .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
@@ -106,7 +106,6 @@
   .pill-lbl { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; display: block; }
   .pill-val { font-size: 0.78rem; font-weight: 700; margin-top: 2px; display: block; }
 
-  /* ALARM CONTROLS IN BATCH */
   .alarm-container {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
@@ -126,17 +125,8 @@
     cursor: pointer;
     text-align: center;
   }
-  .btn-alarm-action.active-alarm {
-    border-color: #f87171;
-    color: #b91c1c;
-    background: #fef2f2;
-  }
-  .btn-alarm-action.muted {
-    opacity: 0.5;
-    background: #f1f5f9;
-    color: #94a3b8;
-    border-color: #e2e8f0;
-  }
+  .btn-alarm-action.active-alarm { border-color: #f87171; color: #b91c1c; background: #fef2f2; }
+  .btn-alarm-action.muted { opacity: 0.5; background: #f1f5f9; color: #94a3b8; border-color: #e2e8f0; }
 
   .batch-results-bar {
     display: flex;
@@ -216,12 +206,12 @@
       <div class="brand-text">
         <h1>AD Farms</h1>
         <div class="sub-title">Herd &amp; Harvest</div>
-        <div class="sync-dot">🟢 Cloud Active</div>
+        <div class="sync-dot" id="cloudStatus">🟢 Cloud Active</div>
       </div>
     </div>
   </div>
 
-  <!-- DEDICATED REMINDER & RESCHEDULE BAR -->
+  <!-- REMINDER CONTROLS -->
   <div class="settings-box">
     <div class="settings-title">
       <span>🔔 Reminder Mode &amp; Schedule</span>
@@ -367,8 +357,13 @@
     measurementId: "G-X6YB06QW7S"
   };
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+  let db;
+  try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+  } catch (err) {
+    alert("Firebase Init Error: " + err.message);
+  }
 
   function switchTab(tabId, btn) {
     document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
@@ -471,25 +466,37 @@
   document.getElementById('colDate').value = todayStr;
   document.getElementById('sdate').value = todayStr;
 
-  db.collection("collections").onSnapshot(snapshot => {
-    collections = [];
-    snapshot.forEach(doc => collections.push({ id: doc.id, ...doc.data() }));
-    renderCollections();
-    renderCalendar();
-  });
+  if (db) {
+    db.collection("collections").onSnapshot(snapshot => {
+      collections = [];
+      snapshot.forEach(doc => collections.push({ id: doc.id, ...doc.data() }));
+      renderCollections();
+      renderCalendar();
+    }, err => {
+      console.error(err);
+      document.getElementById('cloudStatus').textContent = "🔴 Error: " + err.code;
+      document.getElementById('cloudStatus').style.color = "#ef4444";
+    });
 
-  db.collection("batches").onSnapshot(snapshot => {
-    batches = [];
-    snapshot.forEach(doc => batches.push({ id: doc.id, ...doc.data() }));
-    renderBatches();
-    renderCalendar();
-  });
+    db.collection("batches").onSnapshot(snapshot => {
+      batches = [];
+      snapshot.forEach(doc => batches.push({ id: doc.id, ...doc.data() }));
+      renderBatches();
+      renderCalendar();
+    }, err => {
+      console.error(err);
+    });
+  }
 
+  // EGG LOG WITH POPUP ALERTS
   function saveCollection() {
     const date = document.getElementById('colDate').value;
     const slot = document.getElementById('colSlot').value;
-    const count = parseInt(document.getElementById('colCount').value, 10);
-    if (!date || isNaN(count) || count <= 0) return alert("Enter valid count and date");
+    const countVal = document.getElementById('colCount').value;
+    const count = parseInt(countVal, 10);
+
+    if (!date) return alert("Please select a date.");
+    if (isNaN(count) || count <= 0) return alert("Please enter a valid egg count.");
 
     const existing = collections.find(c => c.date === date);
     let m = existing ? (existing.morning || 0) : 0;
@@ -502,13 +509,21 @@
 
     db.collection("collections").doc(date).set({
       date, morning: m, afternoon: a, evening: e, total: (m + a + e)
+    })
+    .then(() => {
+      alert("Egg collection saved to cloud!");
+      document.getElementById('colCount').value = "";
+    })
+    .catch(err => {
+      alert("Firestore Error: " + err.message);
     });
-    document.getElementById('colCount').value = "";
   }
 
   function deleteCollection(docId) {
     if (confirm("Delete this day's egg collection?")) {
-      db.collection("collections").doc(docId).delete();
+      db.collection("collections").doc(docId).delete()
+        .then(() => alert("Deleted."))
+        .catch(err => alert("Error: " + err.message));
     }
   }
 
@@ -551,24 +566,38 @@
     };
   }
 
+  // BATCH SAVE WITH POPUP ALERTS
   function saveBatch() {
     const name = document.getElementById('bname').value.trim() || "Batch";
     const eggs = parseInt(document.getElementById('eggsSet').value, 10) || 102;
     const sdate = document.getElementById('sdate').value;
     const editDocId = document.getElementById('editDocId').value;
-    if (!sdate) return alert("Select setting date");
+    if (!sdate) return alert("Please select a setting date.");
 
     const milestones = computeMilestones(sdate);
     const data = { name, eggs, rawDate: sdate, ...milestones };
 
     if (editDocId) {
-      db.collection("batches").doc(editDocId).update(data);
+      db.collection("batches").doc(editDocId).update(data)
+        .then(() => {
+          alert("Batch updated successfully!");
+          resetBatchForm();
+        })
+        .catch(err => {
+          alert("Firestore Error: " + err.message);
+        });
     } else {
       data.chicksHatched = null;
       data.hatchRate = null;
-      db.collection("batches").add(data);
+      db.collection("batches").add(data)
+        .then(() => {
+          alert("Batch saved to cloud successfully!");
+          resetBatchForm();
+        })
+        .catch(err => {
+          alert("Firestore Error: " + err.message);
+        });
     }
-    resetBatchForm();
   }
 
   function recordHatchResult(docId) {
@@ -581,10 +610,11 @@
     db.collection("batches").doc(docId).update({
       chicksHatched: chicks,
       hatchRate: ((chicks / b.eggs) * 100).toFixed(1)
-    });
+    })
+    .then(() => alert("Hatch recorded!"))
+    .catch(err => alert("Error: " + err.message));
   }
 
-  // --- DISPATCH ALARM / SILENCE HANDLER ---
   function handleAlarmClick(docId, dayNum) {
     if (reminderMode === "silent") {
       alert("Reminders are currently set to 'Silence / Off' mode in the top settings bar. Switch to 'Ringing' mode to enable phone alarms.");
@@ -602,10 +632,8 @@
     const hourNum = parseInt(hh, 10);
     const minuteNum = parseInt(mm, 10);
 
-    // 1. Trigger Native Android Clock Alarm
     const alarmIntent = `intent:#Intent;action=android.intent.action.SET_ALARM;i.android.intent.extra.HOUR=${hourNum};i.android.intent.extra.MINUTES=${minuteNum};s.android.intent.extra.MESSAGE=${encodeURIComponent(label)};B.android.intent.extra.SKIP_UI=false;end`;
 
-    // 2. Calendar Event fallback with sound reminder
     const startTime = `${yr}${mo}${dy}T${hh}${mm}00`;
     const endHour = String((hourNum + 1) % 24).padStart(2, '0');
     const endTime = `${yr}${mo}${dy}T${endHour}${mm}00`;
@@ -660,7 +688,6 @@
           </div>
         </div>
 
-        <!-- REMINDER CONTROLS (RESCHEDULE / SILENCE READY) -->
         <div class="alarm-container">
           <div class="alarm-header">
             <span>ALARM STATUS:</span>
@@ -708,7 +735,9 @@
 
   function deleteBatch(docId) {
     if (confirm("Delete this batch from shared cloud?")) {
-      db.collection("batches").doc(docId).delete();
+      db.collection("batches").doc(docId).delete()
+        .then(() => alert("Batch deleted."))
+        .catch(err => alert("Error: " + err.message));
     }
   }
 
