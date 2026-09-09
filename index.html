@@ -12,14 +12,14 @@
   /* TOP HEADER */
   .top-bar {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #cbd5e1;
     border-radius: 12px;
     padding: 10px 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
   .brand-group { display: flex; align-items: center; gap: 10px; }
   .logo-box {
@@ -36,11 +36,11 @@
     flex-shrink: 0;
   }
   .logo-box img { width: 100%; height: 100%; object-fit: contain; }
-  .brand-text h1 { margin: 0; font-size: 1rem; color: #0f172a; line-height: 1.1; }
+  .brand-text h1 { margin: 0; font-size: 1.05rem; color: #0f172a; line-height: 1.1; font-weight: 800; }
   .brand-text .sub-title { margin: 0; font-size: 0.68rem; color: #0284c7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-  .brand-text .sync-dot { font-size: 0.65rem; color: #16a34a; font-weight: 600; }
+  .status-badge { font-size: 0.68rem; padding: 2px 8px; border-radius: 12px; font-weight: bold; background: #e2e8f0; color: #475569; }
 
-  /* REMINDER SETTINGS */
+  /* SETTINGS */
   .settings-box {
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -50,12 +50,12 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.03);
   }
   .settings-title { font-size: 0.76rem; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; }
-  .settings-row { display: flex; gap: 10px; align-items: center; }
+  .settings-row { display: flex; gap: 8px; align-items: center; }
   .mode-toggle-btn {
     flex: 1;
-    padding: 7px 6px;
+    padding: 7px 4px;
     border-radius: 6px;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     font-weight: 800;
     border: 1px solid #cbd5e1;
     background: #f8fafc;
@@ -63,40 +63,33 @@
     cursor: pointer;
     text-align: center;
   }
-  .mode-toggle-btn.active-ring {
-    background: #ecfdf5;
-    color: #047857;
-    border-color: #10b981;
-  }
-  .mode-toggle-btn.active-silent {
-    background: #fef2f2;
-    color: #b91c1c;
-    border-color: #f87171;
-  }
-  .time-input-group { display: flex; align-items: center; gap: 6px; }
+  .mode-toggle-btn.active-ring { background: #ecfdf5; color: #047857; border-color: #10b981; }
+  .mode-toggle-btn.active-silent { background: #fef2f2; color: #b91c1c; border-color: #f87171; }
+  .time-input-group { display: flex; align-items: center; gap: 4px; }
   .time-input-group label { font-size: 0.72rem; font-weight: 700; color: #64748b; margin: 0; }
-  .time-input-group input { width: 95px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: bold; font-size: 0.8rem; background: #fff; }
+  .time-input-group input { width: 90px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: bold; font-size: 0.8rem; background: #fff; }
 
   /* TABS */
   .tab-bar { display: flex; background: #e2e8f0; border-radius: 8px; padding: 3px; gap: 3px; margin-bottom: 12px; }
-  .tab-btn { flex: 1; border: none; background: transparent; padding: 8px 4px; font-size: 0.8rem; font-weight: 700; color: #475569; border-radius: 6px; cursor: pointer; }
+  .tab-btn { flex: 1; border: none; background: transparent; padding: 8px 4px; font-size: 0.82rem; font-weight: 700; color: #475569; border-radius: 6px; cursor: pointer; }
   .tab-btn.active { background: #ffffff; color: #0284c7; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-  /* CARDS */
-  .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
-  .card h2 { margin: 0 0 10px 0; font-size: 0.95rem; color: #0284c7; }
+  /* CARDS & FORMS */
+  .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .card h2 { margin: 0 0 10px 0; font-size: 0.95rem; color: #0284c7; font-weight: 800; }
   .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
   .form-row > div { flex: 1; }
-  label { font-size: 0.72rem; font-weight: 700; color: #475569; display: block; margin-bottom: 3px; }
-  input, select { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.88rem; background: #ffffff; color: #0f172a; }
-  .btn-submit { width: 100%; background: #0284c7; color: #ffffff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 0.88rem; cursor: pointer; margin-top: 4px; }
+  label { font-size: 0.74rem; font-weight: 700; color: #475569; display: block; margin-bottom: 3px; }
+  input, select { width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.88rem; background: #ffffff; color: #0f172a; }
+  .btn-submit { width: 100%; background: #0284c7; color: #ffffff; border: none; padding: 11px; border-radius: 6px; font-weight: bold; font-size: 0.9rem; cursor: pointer; margin-top: 4px; }
+  .btn-submit:active { background: #0369a1; }
   .btn-cancel { width: 100%; background: #64748b; color: #ffffff; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; margin-top: 6px; display: none; }
 
   /* BATCH CARDS */
-  .batch-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .batch-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
   .batch-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 8px; }
-  .batch-title { font-size: 0.95rem; font-weight: 800; color: #0f172a; }
-  .batch-eggs { font-size: 0.78rem; background: #e0f2fe; color: #0284c7; font-weight: 800; padding: 2px 7px; border-radius: 12px; }
+  .batch-title { font-size: 0.98rem; font-weight: 800; color: #0f172a; }
+  .batch-eggs { font-size: 0.78rem; background: #e0f2fe; color: #0284c7; font-weight: 800; padding: 2px 8px; border-radius: 12px; }
 
   .batch-dates-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; text-align: center; margin-bottom: 8px; }
   .date-pill { padding: 6px 4px; border-radius: 6px; }
@@ -104,52 +97,26 @@
   .date-pill.d18 { background: #fed7aa; color: #9a3412; }
   .date-pill.d21 { background: #bbf7d0; color: #166534; }
   .pill-lbl { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; display: block; }
-  .pill-val { font-size: 0.78rem; font-weight: 700; margin-top: 2px; display: block; }
+  .pill-val { font-size: 0.8rem; font-weight: 800; margin-top: 2px; display: block; }
 
-  .alarm-container {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 8px;
-    margin-bottom: 8px;
-  }
+  .alarm-container { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; margin-bottom: 8px; }
   .alarm-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; font-weight: 800; color: #475569; margin-bottom: 6px; }
   .alarm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  .btn-alarm-action {
-    padding: 7px 4px;
-    border-radius: 6px;
-    font-size: 0.74rem;
-    font-weight: 800;
-    border: 1px solid #cbd5e1;
-    background: #ffffff;
-    cursor: pointer;
-    text-align: center;
-  }
+  .btn-alarm-action { padding: 8px 4px; border-radius: 6px; font-size: 0.74rem; font-weight: 800; border: 1px solid #cbd5e1; background: #ffffff; cursor: pointer; text-align: center; }
   .btn-alarm-action.active-alarm { border-color: #f87171; color: #b91c1c; background: #fef2f2; }
   .btn-alarm-action.muted { opacity: 0.5; background: #f1f5f9; color: #94a3b8; border-color: #e2e8f0; }
 
-  .batch-results-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #f8fafc;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 0.78rem;
-    margin-bottom: 8px;
-    border: 1px solid #f1f5f9;
-  }
-
-  .batch-actions { display: flex; gap: 5px; }
-  .btn-act { flex: 1; padding: 6px 2px; border-radius: 5px; font-size: 0.72rem; font-weight: bold; border: 1px solid transparent; cursor: pointer; text-align: center; }
+  .batch-results-bar { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 7px 10px; border-radius: 6px; font-size: 0.8rem; margin-bottom: 8px; border: 1px solid #f1f5f9; }
+  .batch-actions { display: flex; gap: 6px; }
+  .btn-act { flex: 1; padding: 7px 2px; border-radius: 5px; font-size: 0.74rem; font-weight: bold; border: 1px solid transparent; cursor: pointer; text-align: center; }
   .act-hatch { background: #dcfce7; color: #15803d; border-color: #86efac; }
   .act-edit { background: #fef08a; color: #854d0e; border-color: #fde047; flex: 0.6; }
   .act-del { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; flex: 0.6; }
 
   /* TABLE */
   .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-  th, td { border: 1px solid #e2e8f0; padding: 7px 4px; text-align: center; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th, td { border: 1px solid #e2e8f0; padding: 8px 6px; text-align: center; }
   th { background: #f1f5f9; color: #475569; font-weight: 700; }
 
   /* CALENDAR */
@@ -157,27 +124,13 @@
   .cal-header button { padding: 4px 12px; background: #e2e8f0; border: none; border-radius: 4px; font-weight: bold; }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
   .cal-day-name { font-size: 0.7rem; font-weight: bold; color: #64748b; padding-bottom: 4px; }
-  .cal-cell {
-    min-height: 48px;
-    border-radius: 6px;
-    border: 1px solid #e2e8f0;
-    background: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 2px;
-    font-size: 0.82rem;
-    font-weight: 700;
-  }
+  .cal-cell { min-height: 48px; border-radius: 6px; border: 1px solid #e2e8f0; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 2px; font-size: 0.82rem; font-weight: 700; }
   .cal-cell.empty { border-color: transparent; background: transparent; }
   .egg-badge { background: #e0f2fe; color: #0369a1; border-radius: 8px; font-size: 0.58rem; padding: 1px 4px; margin-top: 1px; font-weight: 800; }
-
   .stage-set { background: #bae6fd !important; color: #0369a1 !important; border: 1.5px solid #38bdf8 !important; }
   .stage-hatch { background: #fed7aa !important; color: #9a3412 !important; border: 1.5px solid #f97316 !important; }
   .stage-remove { background: #bbf7d0 !important; color: #166534 !important; border: 1.5px solid #22c55e !important; }
   .stage-tag { font-size: 0.52rem; font-weight: 900; line-height: 1; text-transform: uppercase; margin-top: 2px; }
-
   .legend { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; font-size: 0.7rem; }
   .legend-item { display: flex; align-items: center; gap: 4px; }
   .legend-box { width: 10px; height: 10px; border-radius: 2px; }
@@ -206,9 +159,9 @@
       <div class="brand-text">
         <h1>AD Farms</h1>
         <div class="sub-title">Herd &amp; Harvest</div>
-        <div class="sync-dot" id="cloudStatus">🟢 Cloud Active</div>
       </div>
     </div>
+    <div id="cloudStatus" class="status-badge">⚡ Ready (Local + Cloud)</div>
   </div>
 
   <!-- REMINDER CONTROLS -->
@@ -218,7 +171,7 @@
       <span id="modeStatusText" style="color:#047857;">ACTIVE</span>
     </div>
     <div class="settings-row">
-      <button class="mode-toggle-btn active-ring" id="btnModeRing" onclick="setGlobalReminderMode('ring')">🔔 Ringing (Active)</button>
+      <button class="mode-toggle-btn active-ring" id="btnModeRing" onclick="setGlobalReminderMode('ring')">🔔 Ringing</button>
       <button class="mode-toggle-btn" id="btnModeSilent" onclick="setGlobalReminderMode('silent')">🔕 Silence / Off</button>
       <div class="time-input-group">
         <label>Time:</label>
@@ -347,6 +300,27 @@
 </div>
 
 <script>
+  // --- DUAL-ENGINE STORAGE ARCHITECTURE ---
+  let collections = JSON.parse(localStorage.getItem("ad_farms_local_collections") || "[]");
+  let batches = JSON.parse(localStorage.getItem("ad_farms_local_batches") || "[]");
+  let reminderMode = localStorage.getItem("ad_farms_reminder_mode") || "ring";
+  let reminderTime = localStorage.getItem("ad_farms_alert_time") || "08:00";
+  let curYear = new Date().getFullYear();
+  let curMonth = new Date().getMonth();
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function formatDateKey(y, m, d) { return `${y}-${pad(m + 1)}-${pad(d)}`; }
+
+  const todayStr = formatDateKey(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+  document.getElementById('colDate').value = todayStr;
+  document.getElementById('sdate').value = todayStr;
+
+  function syncToLocalStorage() {
+    localStorage.setItem("ad_farms_local_collections", JSON.stringify(collections));
+    localStorage.setItem("ad_farms_local_batches", JSON.stringify(batches));
+  }
+
+  // --- FIREBASE CLOUD LINK ---
   const firebaseConfig = {
     apiKey: "AIzaSyC0fvccTExFtjDF5jijNVExvdXvyAq54DY",
     authDomain: "poultry-a6902.firebaseapp.com",
@@ -357,9 +331,49 @@
     measurementId: "G-X6YB06QW7S"
   };
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+  let db = null;
+  try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    
+    // Listen to collections
+    db.collection("collections").onSnapshot(snapshot => {
+      let cloudCols = [];
+      snapshot.forEach(doc => cloudCols.push({ id: doc.id, ...doc.data() }));
+      if (cloudCols.length > 0) {
+        collections = cloudCols;
+        syncToLocalStorage();
+        renderCollections();
+        renderCalendar();
+      }
+      document.getElementById('cloudStatus').textContent = "🟢 Synced (Cloud)";
+      document.getElementById('cloudStatus').style.background = "#dcfce7";
+      document.getElementById('cloudStatus').style.color = "#15803d";
+    }, err => {
+      console.warn("Cloud read-only/offline mode:", err);
+      document.getElementById('cloudStatus').textContent = "🟡 Phone Storage";
+    });
 
+    // Listen to batches
+    db.collection("batches").onSnapshot(snapshot => {
+      let cloudBatches = [];
+      snapshot.forEach(doc => cloudBatches.push({ id: doc.id, ...doc.data() }));
+      if (cloudBatches.length > 0) {
+        batches = cloudBatches;
+        syncToLocalStorage();
+        renderBatches();
+        renderCalendar();
+      }
+    }, err => {
+      console.warn("Batches cloud listener offline:", err);
+    });
+
+  } catch(e) {
+    console.warn("Firebase offline. Running locally.", e);
+    document.getElementById('cloudStatus').textContent = "🟡 Phone Storage";
+  }
+
+  // --- TAB NAVIGATION ---
   function switchTab(tabId, btn) {
     document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -368,6 +382,7 @@
     if (tabId === 'calendarTab') renderCalendar();
   }
 
+  // --- LOGO ENGINE ---
   function checkAndLockLogo() {
     const saved = localStorage.getItem("ad_farms_logo");
     const img = document.getElementById('logoDisplay');
@@ -404,9 +419,7 @@
   }
   checkAndLockLogo();
 
-  let reminderMode = localStorage.getItem("ad_farms_reminder_mode") || "ring";
-  let reminderTime = localStorage.getItem("ad_farms_alert_time") || "08:00";
-
+  // --- REMINDERS & SCHEDULE ---
   function applyReminderUI() {
     const btnRing = document.getElementById('btnModeRing');
     const btnSilent = document.getElementById('btnModeSilent');
@@ -443,51 +456,18 @@
     localStorage.setItem("ad_farms_alert_time", newTime);
     applyReminderUI();
   }
-
   applyReminderUI();
 
-  let collections = [];
-  let batches = [];
-  let curYear = new Date().getFullYear();
-  let curMonth = new Date().getMonth();
-
-  function pad(n) { return String(n).padStart(2, '0'); }
-  function formatDateKey(y, m, d) { return `${y}-${pad(m + 1)}-${pad(d)}`; }
-
-  const todayStr = formatDateKey(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-  document.getElementById('colDate').value = todayStr;
-  document.getElementById('sdate').value = todayStr;
-
-  // Realtime Cloud Synchronization
-  db.collection("collections").onSnapshot({ includeMetadataChanges: true }, snapshot => {
-    collections = [];
-    snapshot.forEach(doc => collections.push({ id: doc.id, ...doc.data() }));
-    renderCollections();
-    renderCalendar();
-  }, err => {
-    document.getElementById('cloudStatus').textContent = "🔴 Sync Issue: " + err.code;
-    document.getElementById('cloudStatus').style.color = "#ef4444";
-  });
-
-  db.collection("batches").onSnapshot({ includeMetadataChanges: true }, snapshot => {
-    batches = [];
-    snapshot.forEach(doc => batches.push({ id: doc.id, ...doc.data() }));
-    renderBatches();
-    renderCalendar();
-  }, err => {
-    console.error(err);
-  });
-
+  // --- ACTIONS: EGG LOGGING ---
   function saveCollection() {
     const date = document.getElementById('colDate').value;
     const slot = document.getElementById('colSlot').value;
-    const countVal = document.getElementById('colCount').value;
-    const count = parseInt(countVal, 10);
+    const count = parseInt(document.getElementById('colCount').value, 10);
 
-    if (!date) return alert("Please select a date.");
-    if (isNaN(count) || count <= 0) return alert("Please enter a valid egg count.");
+    if (!date) return alert("Select date");
+    if (isNaN(count) || count <= 0) return alert("Enter valid egg count");
 
-    const existing = collections.find(c => c.date === date);
+    let existing = collections.find(c => c.date === date);
     let m = existing ? (existing.morning || 0) : 0;
     let a = existing ? (existing.afternoon || 0) : 0;
     let e = existing ? (existing.evening || 0) : 0;
@@ -496,21 +476,35 @@
     if (slot === "Afternoon") a += count;
     if (slot === "Evening") e += count;
 
-    db.collection("collections").doc(date).set({
-      date, morning: m, afternoon: a, evening: e, total: (m + a + e)
-    })
-    .then(() => {
-      document.getElementById('colCount').value = "";
-    })
-    .catch(err => {
-      alert("Firestore Error: " + err.message);
-    });
+    const entry = { id: date, date: date, morning: m, afternoon: a, evening: e, total: (m + a + e) };
+
+    if (existing) {
+      Object.assign(existing, entry);
+    } else {
+      collections.push(entry);
+    }
+
+    syncToLocalStorage();
+    renderCollections();
+    renderCalendar();
+    document.getElementById('colCount').value = "";
+
+    // Sync cloud in background
+    if (db) {
+      db.collection("collections").doc(date).set(entry).catch(err => console.warn(err));
+    }
   }
 
   function deleteCollection(docId) {
-    if (confirm("Delete this day's egg collection?")) {
-      db.collection("collections").doc(docId).delete()
-        .catch(err => alert("Error: " + err.message));
+    if (confirm("Delete this egg entry?")) {
+      collections = collections.filter(c => c.id !== docId && c.date !== docId);
+      syncToLocalStorage();
+      renderCollections();
+      renderCalendar();
+
+      if (db) {
+        db.collection("collections").doc(docId).delete().catch(err => console.warn(err));
+      }
     }
   }
 
@@ -528,12 +522,13 @@
         <td>${c.afternoon || '-'}</td>
         <td>${c.evening || '-'}</td>
         <td style="color:#0284c7; font-weight:bold;">${c.total}</td>
-        <td><button style="border:none; background:#fee2e2; color:#b91c1c; border-radius:4px; font-weight:bold;" onclick="deleteCollection('${c.id}')">✕</button></td>
+        <td><button style="border:none; background:#fee2e2; color:#b91c1c; border-radius:4px; font-weight:bold; padding:4px 8px;" onclick="deleteCollection('${c.id}')">✕</button></td>
       `;
       tbody.appendChild(tr);
     });
   }
 
+  // --- ACTIONS: BATCH SETUP ---
   function computeMilestones(dateStr) {
     const [y, m, d] = dateStr.split('-').map(Number);
     const d1 = new Date(y, m - 1, d);
@@ -558,78 +553,83 @@
     const eggs = parseInt(document.getElementById('eggsSet').value, 10) || 102;
     const sdate = document.getElementById('sdate').value;
     const editDocId = document.getElementById('editDocId').value;
-    if (!sdate) return alert("Please select a setting date.");
+    if (!sdate) return alert("Select setting date");
 
     const milestones = computeMilestones(sdate);
-    const data = { name, eggs, rawDate: sdate, ...milestones };
+    const id = editDocId || ("batch_" + Date.now());
+    const data = { id, name, eggs, rawDate: sdate, ...milestones };
 
     if (editDocId) {
-      db.collection("batches").doc(editDocId).update(data)
-        .then(() => {
-          resetBatchForm();
-        })
-        .catch(err => {
-          alert("Firestore Error: " + err.message);
-        });
+      const idx = batches.findIndex(b => b.id === editDocId);
+      if (idx !== -1) {
+        data.chicksHatched = batches[idx].chicksHatched || null;
+        data.hatchRate = batches[idx].hatchRate || null;
+        batches[idx] = data;
+      }
     } else {
       data.chicksHatched = null;
       data.hatchRate = null;
-      db.collection("batches").add(data)
-        .then(() => {
-          resetBatchForm();
-        })
-        .catch(err => {
-          alert("Firestore Error: " + err.message);
-        });
+      batches.unshift(data);
+    }
+
+    syncToLocalStorage();
+    renderBatches();
+    renderCalendar();
+    resetBatchForm();
+
+    // Sync cloud in background
+    if (db) {
+      if (editDocId) {
+        db.collection("batches").doc(editDocId).set(data, { merge: true }).catch(e => console.warn(e));
+      } else {
+        db.collection("batches").doc(id).set(data).catch(e => console.warn(e));
+      }
     }
   }
 
   function recordHatchResult(docId) {
     const b = batches.find(item => item.id === docId);
-    const chicksStr = prompt(`AD Farms: "${b.name}"\nEnter live chicks pulled:`, b.chicksHatched !== null ? b.chicksHatched : "");
-    if (chicksStr === null) return;
-    const chicks = parseInt(chicksStr, 10);
-    if (isNaN(chicks) || chicks < 0) return alert("Enter valid chick count");
+    const val = prompt(`AD Farms: "${b.name}"\nEnter live chicks pulled:`, b.chicksHatched !== null ? b.chicksHatched : "");
+    if (val === null) return;
+    const count = parseInt(val, 10);
+    if (isNaN(count) || count < 0) return alert("Enter valid chick count");
 
-    db.collection("batches").doc(docId).update({
-      chicksHatched: chicks,
-      hatchRate: ((chicks / b.eggs) * 100).toFixed(1)
-    })
-    .catch(err => alert("Error: " + err.message));
+    b.chicksHatched = count;
+    b.hatchRate = ((count / b.eggs) * 100).toFixed(1);
+
+    syncToLocalStorage();
+    renderBatches();
+
+    if (db) {
+      db.collection("batches").doc(docId).update({ chicksHatched: b.chicksHatched, hatchRate: b.hatchRate }).catch(e => console.warn(e));
+    }
   }
 
   function handleAlarmClick(docId, dayNum) {
     if (reminderMode === "silent") {
-      alert("Reminders are currently set to 'Silence / Off' mode in the top settings bar. Switch to 'Ringing' mode to enable phone alarms.");
+      alert("Reminders are currently set to 'Silence / Off' mode in the settings bar.");
       return;
     }
 
     const b = batches.find(item => item.id === docId);
     const [hh, mm] = reminderTime.split(':');
     const dateStr = dayNum === 18 ? b.d18Raw : b.d21Raw;
-    const label = dayNum === 18 
-      ? `AD Farms D18 Lockdown: ${b.name}` 
-      : `AD Farms D21 Chicks: ${b.name}`;
+    const label = dayNum === 18 ? `AD Farms D18 Lockdown: ${b.name}` : `AD Farms D21 Chicks: ${b.name}`;
 
     const [yr, mo, dy] = dateStr.split('-');
     const hourNum = parseInt(hh, 10);
     const minuteNum = parseInt(mm, 10);
 
     const alarmIntent = `intent:#Intent;action=android.intent.action.SET_ALARM;i.android.intent.extra.HOUR=${hourNum};i.android.intent.extra.MINUTES=${minuteNum};s.android.intent.extra.MESSAGE=${encodeURIComponent(label)};B.android.intent.extra.SKIP_UI=false;end`;
-
     const startTime = `${yr}${mo}${dy}T${hh}${mm}00`;
     const endHour = String((hourNum + 1) % 24).padStart(2, '0');
     const endTime = `${yr}${mo}${dy}T${endHour}${mm}00`;
-    const desc = dayNum === 18 
-      ? `Transfer ${b.eggs} eggs to Hatching Basket. Stop turning and raise humidity.` 
-      : `Remove live chicks from incubator to the brooder.`;
+    const desc = dayNum === 18 ? `Move ${b.eggs} eggs to Hatching Basket. Stop turning and raise humidity.` : `Pull chicks to brooder.`;
     const calUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(label)}&dates=${startTime}/${endTime}&details=${encodeURIComponent(desc)}&sf=true&output=xml`;
 
     try {
       window.location.href = alarmIntent;
-      setTimeout(() => {
-        if (!document.hidden) window.open(calUrl, '_blank');
-      }, 1000);
+      setTimeout(() => { if (!document.hidden) window.open(calUrl, '_blank'); }, 1000);
     } catch(e) {
       window.open(calUrl, '_blank');
     }
@@ -692,7 +692,7 @@
         </div>
 
         <div class="batch-actions">
-          <button class="btn-act act-hatch" onclick="recordHatchResult('${b.id}')">🐥 Record Chicks</button>
+          <button class="btn-act act-hatch" onclick="recordHatchResult('${b.id}')">🐥 Chicks</button>
           <button class="btn-act act-edit" onclick="startEditBatch('${b.id}')">✎ Edit</button>
           <button class="btn-act act-del" onclick="deleteBatch('${b.id}')">✕ Delete</button>
         </div>
@@ -717,9 +717,15 @@
   }
 
   function deleteBatch(docId) {
-    if (confirm("Delete this batch from shared cloud?")) {
-      db.collection("batches").doc(docId).delete()
-        .catch(err => alert("Error: " + err.message));
+    if (confirm("Delete this batch?")) {
+      batches = batches.filter(b => b.id !== docId);
+      syncToLocalStorage();
+      renderBatches();
+      renderCalendar();
+
+      if (db) {
+        db.collection("batches").doc(docId).delete().catch(e => console.warn(e));
+      }
     }
   }
 
@@ -733,6 +739,7 @@
     document.getElementById('cancelBtn').style.display = "none";
   }
 
+  // --- CALENDAR RENDERER ---
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calMonthYear').innerText = `${monthNames[curMonth]} ${curYear}`;
@@ -782,6 +789,11 @@
     else if (curMonth > 11) { curMonth = 0; curYear += 1; }
     renderCalendar();
   }
+
+  // Initial draw
+  renderCollections();
+  renderBatches();
+  renderCalendar();
 </script>
 
 </body>
