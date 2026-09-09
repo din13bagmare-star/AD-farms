@@ -82,7 +82,7 @@
   .tab-btn { flex: 1; border: none; background: transparent; padding: 8px 4px; font-size: 0.8rem; font-weight: 700; color: #475569; border-radius: 6px; cursor: pointer; }
   .tab-btn.active { background: #ffffff; color: #0284c7; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-  /* CARDS & FORMS */
+  /* CARDS */
   .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
   .card h2 { margin: 0 0 10px 0; font-size: 0.95rem; color: #0284c7; }
   .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
@@ -357,13 +357,8 @@
     measurementId: "G-X6YB06QW7S"
   };
 
-  let db;
-  try {
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore();
-  } catch (err) {
-    alert("Firebase Init Error: " + err.message);
-  }
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
   function switchTab(tabId, btn) {
     document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
@@ -373,7 +368,6 @@
     if (tabId === 'calendarTab') renderCalendar();
   }
 
-  // --- LOGO PERMANENT LOCK ---
   function checkAndLockLogo() {
     const saved = localStorage.getItem("ad_farms_logo");
     const img = document.getElementById('logoDisplay');
@@ -410,7 +404,6 @@
   }
   checkAndLockLogo();
 
-  // --- REMINDER & SILENCE PREFERENCES ---
   let reminderMode = localStorage.getItem("ad_farms_reminder_mode") || "ring";
   let reminderTime = localStorage.getItem("ad_farms_alert_time") || "08:00";
 
@@ -453,7 +446,6 @@
 
   applyReminderUI();
 
-  // --- DATA & CLOUD SYNC ---
   let collections = [];
   let batches = [];
   let curYear = new Date().getFullYear();
@@ -466,29 +458,26 @@
   document.getElementById('colDate').value = todayStr;
   document.getElementById('sdate').value = todayStr;
 
-  if (db) {
-    db.collection("collections").onSnapshot(snapshot => {
-      collections = [];
-      snapshot.forEach(doc => collections.push({ id: doc.id, ...doc.data() }));
-      renderCollections();
-      renderCalendar();
-    }, err => {
-      console.error(err);
-      document.getElementById('cloudStatus').textContent = "🔴 Error: " + err.code;
-      document.getElementById('cloudStatus').style.color = "#ef4444";
-    });
+  // Realtime Cloud Synchronization
+  db.collection("collections").onSnapshot({ includeMetadataChanges: true }, snapshot => {
+    collections = [];
+    snapshot.forEach(doc => collections.push({ id: doc.id, ...doc.data() }));
+    renderCollections();
+    renderCalendar();
+  }, err => {
+    document.getElementById('cloudStatus').textContent = "🔴 Sync Issue: " + err.code;
+    document.getElementById('cloudStatus').style.color = "#ef4444";
+  });
 
-    db.collection("batches").onSnapshot(snapshot => {
-      batches = [];
-      snapshot.forEach(doc => batches.push({ id: doc.id, ...doc.data() }));
-      renderBatches();
-      renderCalendar();
-    }, err => {
-      console.error(err);
-    });
-  }
+  db.collection("batches").onSnapshot({ includeMetadataChanges: true }, snapshot => {
+    batches = [];
+    snapshot.forEach(doc => batches.push({ id: doc.id, ...doc.data() }));
+    renderBatches();
+    renderCalendar();
+  }, err => {
+    console.error(err);
+  });
 
-  // EGG LOG WITH POPUP ALERTS
   function saveCollection() {
     const date = document.getElementById('colDate').value;
     const slot = document.getElementById('colSlot').value;
@@ -511,7 +500,6 @@
       date, morning: m, afternoon: a, evening: e, total: (m + a + e)
     })
     .then(() => {
-      alert("Egg collection saved to cloud!");
       document.getElementById('colCount').value = "";
     })
     .catch(err => {
@@ -522,7 +510,6 @@
   function deleteCollection(docId) {
     if (confirm("Delete this day's egg collection?")) {
       db.collection("collections").doc(docId).delete()
-        .then(() => alert("Deleted."))
         .catch(err => alert("Error: " + err.message));
     }
   }
@@ -566,7 +553,6 @@
     };
   }
 
-  // BATCH SAVE WITH POPUP ALERTS
   function saveBatch() {
     const name = document.getElementById('bname').value.trim() || "Batch";
     const eggs = parseInt(document.getElementById('eggsSet').value, 10) || 102;
@@ -580,7 +566,6 @@
     if (editDocId) {
       db.collection("batches").doc(editDocId).update(data)
         .then(() => {
-          alert("Batch updated successfully!");
           resetBatchForm();
         })
         .catch(err => {
@@ -591,7 +576,6 @@
       data.hatchRate = null;
       db.collection("batches").add(data)
         .then(() => {
-          alert("Batch saved to cloud successfully!");
           resetBatchForm();
         })
         .catch(err => {
@@ -611,7 +595,6 @@
       chicksHatched: chicks,
       hatchRate: ((chicks / b.eggs) * 100).toFixed(1)
     })
-    .then(() => alert("Hatch recorded!"))
     .catch(err => alert("Error: " + err.message));
   }
 
@@ -736,7 +719,6 @@
   function deleteBatch(docId) {
     if (confirm("Delete this batch from shared cloud?")) {
       db.collection("batches").doc(docId).delete()
-        .then(() => alert("Batch deleted."))
         .catch(err => alert("Error: " + err.message));
     }
   }
