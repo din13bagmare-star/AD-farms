@@ -113,7 +113,7 @@
   .date-pill.d18 { background: #fed7aa; color: #9a3412; }
   .date-pill.d21 { background: #bbf7d0; color: #166534; }
   .pill-lbl { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; display: block; }
-  .pill-val { font-size: 0.8rem; font-weight: 800; margin-top: 2px; display: block; }
+  .pill-val { font-size: 0.76rem; font-weight: 800; margin-top: 2px; display: block; }
 
   .batch-results-bar { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 7px 10px; border-radius: 6px; font-size: 0.8rem; margin-bottom: 8px; border: 1px solid #f1f5f9; }
   
@@ -276,8 +276,8 @@
 
       <div class="form-row">
         <div>
-          <label>Setting Date (Day 1)</label>
-          <input type="date" id="sdate">
+          <label>Setting Date (DD/MM/YYYY)</label>
+          <input type="text" id="sdate" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
         </div>
       </div>
 
@@ -295,8 +295,8 @@
       <h2>🥚 Record Egg Collection</h2>
       <div class="form-row">
         <div>
-          <label>Date</label>
-          <input type="date" id="colDate">
+          <label>Date (DD/MM/YYYY)</label>
+          <input type="text" id="colDate" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
         </div>
         <div>
           <label>Time Slot</label>
@@ -381,12 +381,12 @@
       <h4>🥚 1. Egg Collection Report</h4>
       <div class="form-row">
         <div>
-          <label>From Date</label>
-          <input type="date" id="printColFrom">
+          <label>From Date (DD/MM/YYYY)</label>
+          <input type="text" id="printColFrom" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
         </div>
         <div>
-          <label>To Date</label>
-          <input type="date" id="printColTo">
+          <label>To Date (DD/MM/YYYY)</label>
+          <input type="text" id="printColTo" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
         </div>
       </div>
       <button class="btn-submit" style="background:#059669; padding:10px; font-size:0.85rem;" onclick="exportEggData()">Save / Share Egg Data (Excel)</button>
@@ -435,6 +435,55 @@
 </div>
 
 <script>
+  // --- STRICT DD/MM/YYYY FORMATTING & PARSING ENGINE ---
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  // Auto-mask typed dates to DD/MM/YYYY
+  function formatDateInput(el) {
+    let v = el.value.replace(/\D/g, '').slice(0, 8);
+    if (v.length >= 5) {
+      el.value = v.slice(0, 2) + '/' + v.slice(2, 4) + '/' + v.slice(4);
+    } else if (v.length >= 3) {
+      el.value = v.slice(0, 2) + '/' + v.slice(2);
+    } else {
+      el.value = v;
+    }
+  }
+
+  function getTodayDDMMYYYY() {
+    const d = new Date();
+    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+  }
+
+  function dateToDDMMYYYY(dateObj) {
+    return `${pad(dateObj.getDate())}/${pad(dateObj.getMonth() + 1)}/${dateObj.getFullYear()}`;
+  }
+
+  function parseDDMMYYYY(str) {
+    if (!str || typeof str !== 'string') return null;
+    const parts = str.trim().split('/');
+    if (parts.length !== 3) return null;
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10);
+    const year = parseInt(parts[2], 10);
+    if (isNaN(day) || isNaN(month) || isNaN(year) || day < 1 || day > 31 || month < 1 || month > 12 || year < 2000 || year > 2100) {
+      return null;
+    }
+    const d = new Date(year, month - 1, day);
+    if (d.getFullYear() !== year || d.getMonth() !== month - 1 || d.getDate() !== day) return null;
+    return d;
+  }
+
+  function toIsoKey(dateObj) {
+    return `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}`;
+  }
+
+  function ddmmyyyyToIsoKey(str) {
+    const d = parseDDMMYYYY(str);
+    return d ? toIsoKey(d) : null;
+  }
+
+  // --- LOCAL & CLOUD STORAGE ARCHITECTURE ---
   let collections = JSON.parse(localStorage.getItem("ad_farms_local_collections") || "[]");
   let batches = JSON.parse(localStorage.getItem("ad_farms_local_batches") || "[]");
   let reminderMode = localStorage.getItem("ad_farms_reminder_mode") || "ring";
@@ -442,10 +491,7 @@
   let curYear = new Date().getFullYear();
   let curMonth = new Date().getMonth();
 
-  function pad(n) { return String(n).padStart(2, '0'); }
-  function formatDateKey(y, m, d) { return `${y}-${pad(m + 1)}-${pad(d)}`; }
-
-  const todayStr = formatDateKey(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+  const todayStr = getTodayDDMMYYYY();
   document.getElementById('colDate').value = todayStr;
   document.getElementById('sdate').value = todayStr;
 
@@ -454,7 +500,7 @@
     localStorage.setItem("ad_farms_local_batches", JSON.stringify(batches));
   }
 
-  // Firebase Setup
+  // Firebase Cloud Link
   const firebaseConfig = {
     apiKey: "AIzaSyC0fvccTExFtjDF5jijNVExvdXvyAq54DY",
     authDomain: "poultry-a6902.firebaseapp.com",
@@ -576,20 +622,22 @@
   }
   applyReminderUI();
 
-  // Collections (BROKEN EGGS EXCLUDED FROM TOTAL TALLY)
+  // --- EGG COLLECTIONS ---
   function saveCollection() {
-    const date = document.getElementById('colDate').value;
+    const rawDate = document.getElementById('colDate').value.trim();
+    const dateObj = parseDDMMYYYY(rawDate);
+    if (!dateObj) return alert("Please enter a valid date in DD/MM/YYYY format (e.g. 10/09/2026).");
+
     const slot = document.getElementById('colSlot').value;
-    const countVal = document.getElementById('colCount').value;
-    const brokenVal = document.getElementById('colBroken').value;
+    const count = parseInt(document.getElementById('colCount').value, 10) || 0;
+    const broken = parseInt(document.getElementById('colBroken').value, 10) || 0;
 
-    const count = parseInt(countVal, 10) || 0;
-    const broken = parseInt(brokenVal, 10) || 0;
-
-    if (!date) return alert("Select date");
     if (count === 0 && broken === 0) return alert("Please enter either intact eggs or broken eggs.");
 
-    let existing = collections.find(c => c.date === date);
+    const formattedDate = dateToDDMMYYYY(dateObj);
+    const docKey = toIsoKey(dateObj);
+
+    let existing = collections.find(c => c.docKey === docKey || c.date === formattedDate);
     let m = existing ? (existing.morning || 0) : 0;
     let a = existing ? (existing.afternoon || 0) : 0;
     let e = existing ? (existing.evening || 0) : 0;
@@ -600,10 +648,18 @@
     if (slot === "Evening") e += count;
     b += broken;
 
-    // Total strictly sums Morn + Aftn + Eve; broken eggs are tracked but not added to total
-    const grandTotal = m + a + e;
+    const grandTotal = m + a + e; // Broken eggs strictly excluded from daily total tally
 
-    const entry = { id: date, date: date, morning: m, afternoon: a, evening: e, broken: b, total: grandTotal };
+    const entry = {
+      id: docKey,
+      docKey: docKey,
+      date: formattedDate,
+      morning: m,
+      afternoon: a,
+      evening: e,
+      broken: b,
+      total: grandTotal
+    };
 
     if (existing) Object.assign(existing, entry);
     else collections.push(entry);
@@ -615,16 +671,16 @@
     document.getElementById('colCount').value = "";
     document.getElementById('colBroken').value = "0";
 
-    if (db) db.collection("collections").doc(date).set(entry).catch(e => console.warn(e));
+    if (db) db.collection("collections").doc(docKey).set(entry).catch(err => console.warn(err));
   }
 
   function deleteCollection(docId) {
     if (confirm("Delete this egg entry?")) {
-      collections = collections.filter(c => c.id !== docId && c.date !== docId);
+      collections = collections.filter(c => c.id !== docId && c.docKey !== docId);
       syncToLocalStorage();
       renderCollections();
       renderCalendar();
-      if (db) db.collection("collections").doc(docId).delete().catch(e => console.warn(e));
+      if (db) db.collection("collections").doc(docId).delete().catch(err => console.warn(err));
     }
   }
 
@@ -633,7 +689,13 @@
     tbody.innerHTML = "";
     document.getElementById('noCollections').style.display = collections.length === 0 ? "block" : "none";
 
-    const sorted = [...collections].sort((a, b) => new Date(b.date) - new Date(a.date));
+    // Sort chronologically descending
+    const sorted = [...collections].sort((a, b) => {
+      const da = parseDDMMYYYY(a.date) || new Date(0);
+      const db = parseDDMMYYYY(b.date) || new Date(0);
+      return db - da;
+    });
+
     sorted.forEach(c => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -649,36 +711,40 @@
     });
   }
 
-  // Batches
-  function computeMilestones(dateStr) {
-    const [y, m, d] = dateStr.split('-').map(Number);
-    const d1 = new Date(y, m - 1, d);
-    const d18 = new Date(y, m - 1, d + 17);
-    const d21 = new Date(y, m - 1, d + 20);
-    const fmt = dt => dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+  // --- BATCHES ENGINE ---
+  function computeMilestonesStrict(d1Date) {
+    const d18 = new Date(d1Date.getFullYear(), d1Date.getMonth(), d1Date.getDate() + 17);
+    const d21 = new Date(d1Date.getFullYear(), d1Date.getMonth(), d1Date.getDate() + 20);
 
     return {
-      d18Raw: `${d18.getFullYear()}-${pad(d18.getMonth()+1)}-${pad(d18.getDate())}`,
-      d21Raw: `${d21.getFullYear()}-${pad(d21.getMonth()+1)}-${pad(d21.getDate())}`,
-      keyD1: formatDateKey(d1.getFullYear(), d1.getMonth(), d1.getDate()),
-      keyD18: formatDateKey(d18.getFullYear(), d18.getMonth(), d18.getDate()),
-      keyD21: formatDateKey(d21.getFullYear(), d21.getMonth(), d21.getDate()),
-      labelD1: fmt(d1),
-      labelD18: fmt(d18),
-      labelD21: fmt(d21)
+      isoD1: toIsoKey(d1Date),
+      isoD18: toIsoKey(d18),
+      isoD21: toIsoKey(d21),
+      labelD1: dateToDDMMYYYY(d1Date),
+      labelD18: dateToDDMMYYYY(d18),
+      labelD21: dateToDDMMYYYY(d21)
     };
   }
 
   function saveBatch() {
     const name = document.getElementById('bname').value.trim() || "Batch";
     const eggs = parseInt(document.getElementById('eggsSet').value, 10) || 102;
-    const sdate = document.getElementById('sdate').value;
+    const rawDate = document.getElementById('sdate').value.trim();
     const editDocId = document.getElementById('editDocId').value;
-    if (!sdate) return alert("Select setting date");
 
-    const milestones = computeMilestones(sdate);
+    const d1Date = parseDDMMYYYY(rawDate);
+    if (!d1Date) return alert("Please enter setting date strictly in DD/MM/YYYY format (e.g. 10/09/2026).");
+
+    const milestones = computeMilestonesStrict(d1Date);
     const id = editDocId || ("batch_" + Date.now());
-    const data = { id, name, eggs, rawDate: sdate, ...milestones };
+    const data = {
+      id,
+      name,
+      eggs,
+      rawDate: milestones.labelD1,
+      isoDate: milestones.isoD1,
+      ...milestones
+    };
 
     if (editDocId) {
       const idx = batches.findIndex(b => b.id === editDocId);
@@ -719,13 +785,17 @@
     if (db) db.collection("batches").doc(docId).update({ chicksHatched: b.chicksHatched, hatchRate: b.hatchRate }).catch(e => console.warn(e));
   }
 
-  // AUTOMATIC CHRONOLOGICAL SORTING & NEUTRAL BUTTONS
   function renderBatches() {
     const container = document.getElementById('batchContainer');
     container.innerHTML = "";
     document.getElementById('noBatches').style.display = batches.length === 0 ? "block" : "none";
 
-    const sortedBatches = [...batches].sort((a, b) => new Date(a.rawDate) - new Date(b.rawDate));
+    // Chronological auto-sort earliest first
+    const sortedBatches = [...batches].sort((a, b) => {
+      const da = parseDDMMYYYY(a.rawDate) || new Date(a.isoDate || 0);
+      const db = parseDDMMYYYY(b.rawDate) || new Date(b.isoDate || 0);
+      return da - db;
+    });
 
     sortedBatches.forEach(b => {
       const rateText = b.hatchRate !== null ? `<b style="color:#16a34a;">${b.hatchRate}%</b>` : `<span style="color:#94a3b8;">Pending</span>`;
@@ -773,7 +843,7 @@
     const b = batches.find(item => item.id === docId);
     document.getElementById('bname').value = b.name;
     document.getElementById('eggsSet').value = b.eggs;
-    document.getElementById('sdate').value = b.rawDate;
+    document.getElementById('sdate').value = b.labelD1 || b.rawDate;
     document.getElementById('editDocId').value = docId;
 
     document.getElementById('submitBtn').innerText = "Update Batch";
@@ -795,12 +865,13 @@
   function resetBatchForm() {
     document.getElementById('bname').value = "";
     document.getElementById('eggsSet').value = "102";
+    document.getElementById('sdate').value = getTodayDDMMYYYY();
     document.getElementById('editDocId').value = "";
     document.getElementById('submitBtn').innerText = "Start / Save Batch";
     document.getElementById('cancelBtn').style.display = "none";
   }
 
-  // CALENDAR
+  // --- CALENDAR ENGINE ---
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calMonthYear').innerText = `${monthNames[curMonth]} ${curYear}`;
@@ -817,19 +888,22 @@
     }
 
     for (let d = 1; d <= lastDateOfMonth; d++) {
-      const dateKey = formatDateKey(curYear, curMonth, d);
+      const cellDateObj = new Date(curYear, curMonth, d);
+      const isoKey = toIsoKey(cellDateObj);
+      const ddmmyyyy = dateToDDMMYYYY(cellDateObj);
+
       const cell = document.createElement('div');
       cell.className = 'cal-cell';
-      cell.onclick = () => showDateDetails(dateKey);
+      cell.onclick = () => showDateDetailsStrict(cellDateObj);
 
       let isSet = false, isD18 = false, isD21 = false;
       batches.forEach(b => {
-        if (b.keyD1 === dateKey) isSet = true;
-        if (b.keyD18 === dateKey) isD18 = true;
-        if (b.keyD21 === dateKey) isD21 = true;
+        if (b.isoD1 === isoKey || b.labelD1 === ddmmyyyy) isSet = true;
+        if (b.isoD18 === isoKey || b.labelD18 === ddmmyyyy) isD18 = true;
+        if (b.isoD21 === isoKey || b.labelD21 === ddmmyyyy) isD21 = true;
       });
 
-      const colRecord = collections.find(c => c.date === dateKey);
+      const colRecord = collections.find(c => c.docKey === isoKey || c.date === ddmmyyyy);
 
       let subtext = "";
       if (isSet) { cell.classList.add('stage-set'); subtext = "SET"; }
@@ -852,20 +926,19 @@
     renderCalendar();
   }
 
-  // MODAL DETAILS
-  function showDateDetails(dateKey) {
+  function showDateDetailsStrict(dateObj) {
     const modal = document.getElementById('dateModal');
     const title = document.getElementById('modalDateTitle');
     const body = document.getElementById('modalDetailsBody');
 
-    const [y, m, d] = dateKey.split('-');
-    const dateObj = new Date(y, m - 1, d);
-    title.innerText = dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const isoKey = toIsoKey(dateObj);
+    const ddmmyyyy = dateToDDMMYYYY(dateObj);
+    title.innerText = ddmmyyyy;
 
     let html = "";
 
     batches.forEach(b => {
-      if (b.keyD1 === dateKey) {
+      if (b.isoD1 === isoKey || b.labelD1 === ddmmyyyy) {
         html += `
           <div class="event-item" style="border-left: 4px solid #0284c7;">
             <b style="color:#0284c7;">🥚 Day 1: SET EGGS</b><br>
@@ -873,7 +946,7 @@
             <span style="font-size:0.75rem; color:#64748b;">Incubation cycle begins.</span>
           </div>`;
       }
-      if (b.keyD18 === dateKey) {
+      if (b.isoD18 === isoKey || b.labelD18 === ddmmyyyy) {
         html += `
           <div class="event-item" style="border-left: 4px solid #ea580c;">
             <b style="color:#ea580c;">🐣 Day 18: HATCHER LOCKDOWN</b><br>
@@ -881,7 +954,7 @@
             <span style="font-size:0.78rem; color:#475569;">Action: Move to hatching basket, stop egg turning, increase humidity.</span>
           </div>`;
       }
-      if (b.keyD21 === dateKey) {
+      if (b.isoD21 === isoKey || b.labelD21 === ddmmyyyy) {
         html += `
           <div class="event-item" style="border-left: 4px solid #16a34a;">
             <b style="color:#16a34a;">🐥 Day 21: PULL CHICKS</b><br>
@@ -891,7 +964,7 @@
       }
     });
 
-    const col = collections.find(c => c.date === dateKey);
+    const col = collections.find(c => c.docKey === isoKey || c.date === ddmmyyyy);
     if (col && (col.total > 0 || (col.broken || 0) > 0)) {
       html += `
         <div class="event-item" style="border-left: 4px solid #0284c7;">
@@ -916,12 +989,16 @@
     }
   }
 
-  // --- EXPORT & SHARE ENGINE ---
+  // --- STRICT "Data" HEADER EXPORT & SHARE ENGINE ---
   function openPrintModal() {
-    const sortedBatches = [...batches].sort((a, b) => new Date(a.rawDate) - new Date(b.rawDate));
+    const sortedBatches = [...batches].sort((a, b) => {
+      const da = parseDDMMYYYY(a.rawDate) || new Date(a.isoDate || 0);
+      const db = parseDDMMYYYY(b.rawDate) || new Date(b.isoDate || 0);
+      return da - db;
+    });
+
     const bFrom = document.getElementById('printBatchFrom');
     const bTo = document.getElementById('printBatchTo');
-
     bFrom.innerHTML = "";
     bTo.innerHTML = "";
 
@@ -937,11 +1014,12 @@
       bTo.selectedIndex = sortedBatches.length - 1;
     }
 
+    // Default dates for egg collection in strict DD/MM/YYYY
     const dTo = new Date();
     const dFrom = new Date();
     dFrom.setDate(dTo.getDate() - 30);
-    document.getElementById('printColTo').value = formatDateKey(dTo.getFullYear(), dTo.getMonth(), dTo.getDate());
-    document.getElementById('printColFrom').value = formatDateKey(dFrom.getFullYear(), dFrom.getMonth(), dFrom.getDate());
+    document.getElementById('printColTo').value = dateToDDMMYYYY(dTo);
+    document.getElementById('printColFrom').value = dateToDDMMYYYY(dFrom);
 
     document.getElementById('printModal').style.display = "flex";
   }
@@ -955,7 +1033,6 @@
   async function handleFileDelivery(filename, csvData, title) {
     closePrintModal();
 
-    // Strategy 1: Modern Android Web Share File API
     try {
       const blob = new Blob(["\ufeff" + csvData], { type: 'text/csv;charset=utf-8;' });
       const file = new File([blob], filename, { type: 'text/csv' });
@@ -968,10 +1045,9 @@
         return;
       }
     } catch(err) {
-      console.warn("Native file sharing unavailable:", err);
+      console.warn("Native share skipped:", err);
     }
 
-    // Strategy 2: Direct Anchor Download
     try {
       const blob = new Blob(["\ufeff" + csvData], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
@@ -984,10 +1060,9 @@
       setTimeout(() => URL.revokeObjectURL(url), 1000);
       return;
     } catch(err) {
-      console.warn("Direct download failed:", err);
+      console.warn("Blob anchor skipped:", err);
     }
 
-    // Strategy 3: Direct Clipboard Fallback
     document.getElementById('csvTextArea').value = csvData;
     document.getElementById('clipboardModal').style.display = "flex";
   }
@@ -1014,36 +1089,47 @@
     }
   }
 
+  // EXPORT EGG DATA WITH STRICT "Data" FIRST HEADER & STRICT DD/MM/YYYY
   function exportEggData() {
-    const fromDate = document.getElementById('printColFrom').value;
-    const toDate = document.getElementById('printColTo').value;
+    const rawFrom = document.getElementById('printColFrom').value.trim();
+    const rawTo = document.getElementById('printColTo').value.trim();
 
-    if (!fromDate || !toDate) return alert("Select both From and To dates.");
-    if (fromDate > toDate) return alert("'From Date' cannot be later than 'To Date'.");
+    const dFrom = parseDDMMYYYY(rawFrom);
+    const dTo = parseDDMMYYYY(rawTo);
 
-    const filtered = collections.filter(c => c.date >= fromDate && c.date <= toDate)
-                                .sort((a, b) => new Date(a.date) - new Date(b.date));
+    if (!dFrom || !dTo) return alert("Please enter both From and To dates strictly in DD/MM/YYYY format.");
+    if (dFrom > dTo) return alert("'From Date' cannot be after 'To Date'.");
 
-    if (filtered.length === 0) return alert("No egg collections found in this date range.");
+    const filtered = collections.filter(c => {
+      const cd = parseDDMMYYYY(c.date);
+      return cd && cd >= dFrom && cd <= dTo;
+    }).sort((a, b) => (parseDDMMYYYY(a.date) || 0) - (parseDDMMYYYY(b.date) || 0));
 
-    let csv = "Date,Morning,Afternoon,Evening,Broken Eggs,Daily Intact Total\n";
+    if (filtered.length === 0) return alert("No egg collections recorded in this date range.");
+
+    // Header strictly starts with 'Data'
+    let csv = "Data,Morning,Afternoon,Evening,Broken Eggs,Daily Intact Total\n";
     let totalMorn = 0, totalAftn = 0, totalEve = 0, totalBroken = 0, grandTotal = 0;
 
     filtered.forEach(c => {
-      const m = c.morning || 0, a = c.afternoon || 0, e = c.evening || 0;
-      const b = c.broken || 0;
-      const t = c.total || 0;
-
+      const m = c.morning || 0, a = c.afternoon || 0, e = c.evening || 0, b = c.broken || 0, t = c.total || 0;
       totalMorn += m; totalAftn += a; totalEve += e; totalBroken += b; grandTotal += t;
       csv += `${c.date},${m},${a},${e},${b},${t}\n`;
     });
     csv += `TOTALS,${totalMorn},${totalAftn},${totalEve},${totalBroken},${grandTotal}\n`;
 
-    handleFileDelivery(`AD_Farms_EggLog_${fromDate}_to_${toDate}.csv`, csv, "Egg Collection Log");
+    const fname = `AD_Farms_EggLog_${rawFrom.replace(/\//g, '-')}_to_${rawTo.replace(/\//g, '-')}.csv`;
+    handleFileDelivery(fname, csv, "Egg Collection Log");
   }
 
+  // EXPORT INCUBATION DATA WITH STRICT "Data" FIRST HEADER & STRICT DD/MM/YYYY
   function exportIncubationData() {
-    const sortedBatches = [...batches].sort((a, b) => new Date(a.rawDate) - new Date(b.rawDate));
+    const sortedBatches = [...batches].sort((a, b) => {
+      const da = parseDDMMYYYY(a.rawDate) || new Date(a.isoDate || 0);
+      const db = parseDDMMYYYY(b.rawDate) || new Date(b.isoDate || 0);
+      return da - db;
+    });
+
     if (sortedBatches.length === 0) return alert("No batches recorded yet.");
 
     let idxFrom = parseInt(document.getElementById('printBatchFrom').value, 10);
@@ -1054,7 +1140,8 @@
 
     const selected = sortedBatches.slice(idxFrom, idxTo + 1);
 
-    let csv = "Batch Name,Eggs Set,Set Date (D1),Hatcher Date (D18),Pull Date (D21),Chicks Hatched,Hatch Rate (%)\n";
+    // Header strictly starts with 'Data'
+    let csv = "Data,Eggs Set,Set Date (D1),Hatcher Date (D18),Pull Date (D21),Chicks Hatched,Hatch Rate (%)\n";
     let totalEggs = 0, totalChicks = 0;
 
     selected.forEach(b => {
@@ -1068,7 +1155,8 @@
     const overallRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + "%" : "Pending";
     csv += `TOTALS,${totalEggs},-,-,-,${totalChicks > 0 ? totalChicks : 0},${overallRate}\n`;
 
-    handleFileDelivery(`AD_Farms_Batches_${selected[0].name}_to_${selected[selected.length - 1].name}.csv`, csv, "Incubation Batches Report");
+    const fname = `AD_Farms_Batches_${selected[0].name}_to_${selected[selected.length - 1].name}.csv`;
+    handleFileDelivery(fname, csv, "Incubation Batches Report");
   }
 
   // Initial render
