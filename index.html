@@ -88,7 +88,6 @@
 
   .batch-results-bar { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 7px 10px; border-radius: 6px; font-size: 0.8rem; margin-bottom: 8px; border: 1px solid #f1f5f9; }
   
-  /* NEUTRAL BUTTONS */
   .batch-actions { display: flex; gap: 6px; }
   .btn-neutral { flex: 1; padding: 8px 4px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; color: #334155; background: #ffffff; border: 1px solid #cbd5e1; cursor: pointer; text-align: center; }
   .btn-neutral:active { background: #f1f5f9; }
@@ -99,24 +98,34 @@
   th, td { border: 1px solid #e2e8f0; padding: 8px 5px; text-align: center; }
   th { background: #f1f5f9; color: #475569; font-weight: 700; }
 
-  /* CALENDAR */
+  /* CALENDAR WITH INLINE DATE COLOR CODES */
   .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
   .cal-header button { padding: 4px 12px; background: #e2e8f0; border: none; border-radius: 4px; font-weight: bold; }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
   .cal-day-name { font-size: 0.7rem; font-weight: bold; color: #64748b; padding-bottom: 4px; }
-  .cal-cell { min-height: 50px; border-radius: 6px; border: 1px solid #e2e8f0; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 2px; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
+  .cal-cell {
+    min-height: 52px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 2px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
   .cal-cell:active { background: #f1f5f9; }
   .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; }
   .egg-badge { background: #e0f2fe; color: #0369a1; border-radius: 8px; font-size: 0.58rem; padding: 1px 4px; margin-top: 1px; font-weight: 800; }
-  .stage-set { background: #bae6fd !important; color: #0369a1 !important; border: 1.5px solid #38bdf8 !important; }
+  
+  /* PURE COLOR ENGINES DIRECTLY ON THE DATE CELLS */
+  .stage-set { background: #bae6fd !important; color: #0369a1 !important; border: 1.5px solid #0284c7 !important; }
   .stage-hatch { background: #fed7aa !important; color: #9a3412 !important; border: 1.5px solid #f97316 !important; }
   .stage-remove { background: #bbf7d0 !important; color: #166534 !important; border: 1.5px solid #22c55e !important; }
   .stage-tag { font-size: 0.52rem; font-weight: 900; line-height: 1; text-transform: uppercase; margin-top: 2px; }
-
-  /* CALENDAR LEGEND - RESTORED */
-  .legend { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; font-size: 0.75rem; justify-content: center; }
-  .legend-item { display: flex; align-items: center; gap: 4px; }
-  .legend-box { width: 12px; height: 12px; border-radius: 3px; }
 
   /* FULL SCREEN DATA DISPLAY CONTAINER */
   #dataDisplayView { display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
@@ -160,7 +169,7 @@
     </div>
   </div>
 
-  <!-- TABS (ADDED MORTALITY TAB) -->
+  <!-- TABS -->
   <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('batchesTab', this)">📋 Batches</button>
     <button class="tab-btn" onclick="switchTab('collectionsTab', this)">🥚 Egg Log</button>
@@ -248,24 +257,17 @@
     </div>
   </div>
 
-  <!-- TAB 3: MORTALITY (NEW) -->
+  <!-- TAB 3: MORTALITY (CALCULATED DIRECTLY FROM BATCHES) -->
   <div id="mortalityTab" class="view-panel">
     <div class="card" style="background: #f8fafc; border-color: #cbd5e1;">
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <div>
-          <h2 style="margin:0; color:#0f172a;">Total Bird Stock</h2>
-          <div style="font-size:0.75rem; color:#64748b;">Live count of remaining flock.</div>
+          <h2 style="margin:0; color:#0f172a;">Live Birds in Stock</h2>
+          <div style="font-size:0.75rem; color:#64748b;">Chicks Hatched from Batches − Dead Birds</div>
         </div>
         <div style="text-align:right;">
-          <div id="remainingBirdsDisplay" style="font-size:1.6rem; font-weight:900; color:#059669;">3000</div>
-          <div style="font-size:0.65rem; font-weight:bold; color:#475569; text-transform:uppercase;">Birds Alive</div>
-        </div>
-      </div>
-      <div style="margin-top:12px; border-top:1px solid #e2e8f0; padding-top:10px;">
-        <label>Update Initial Flock Size</label>
-        <div style="display:flex; gap:8px;">
-          <input type="number" id="initialFlockInput" value="3000" style="width:100px;">
-          <button class="btn-neutral" onclick="saveInitialFlock()">Update Base Count</button>
+          <div id="remainingBirdsDisplay" style="font-size:1.6rem; font-weight:900; color:#059669;">0</div>
+          <div style="font-size:0.65rem; font-weight:bold; color:#475569; text-transform:uppercase;">Birds Present</div>
         </div>
       </div>
     </div>
@@ -303,7 +305,7 @@
     </div>
   </div>
 
-  <!-- TAB 4: CALENDAR (WITH RESTORED COLOR LEGEND) -->
+  <!-- TAB 4: CALENDAR (COLORS ON DATE BOXES) -->
   <div id="calendarTab" class="view-panel">
     <div class="card">
       <div class="cal-header">
@@ -321,14 +323,6 @@
         <div class="cal-day-name">Sat</div>
       </div>
       <div class="cal-grid" id="calGrid"></div>
-      
-      <!-- CALENDAR LEGEND RESTORED EXACTLY AS ORIGINAL -->
-      <div class="legend">
-        <div class="legend-item"><div class="legend-box" style="background:#bae6fd; border:1px solid #38bdf8;"></div><span><b>Blue</b>: Set</span></div>
-        <div class="legend-item"><div class="legend-box" style="background:#fed7aa; border:1px solid #f97316;"></div><span><b>Orange</b>: Hatcher D18</span></div>
-        <div class="legend-item"><div class="legend-box" style="background:#bbf7d0; border:1px solid #22c55e;"></div><span><b>Green</b>: Pull D21</span></div>
-      </div>
-      <div style="font-size:0.75rem; text-align:center; color:#64748b; margin-top:8px;">💡 Tap any date on the calendar to view batch details.</div>
     </div>
   </div>
 
@@ -445,7 +439,6 @@
   let collections = JSON.parse(localStorage.getItem("ad_farms_local_collections") || "[]");
   let batches = JSON.parse(localStorage.getItem("ad_farms_local_batches") || "[]");
   let mortality = JSON.parse(localStorage.getItem("ad_farms_local_mortality") || "[]");
-  let initialFlockSize = parseInt(localStorage.getItem("ad_farms_local_flock_base") || "3000", 10);
   let curYear = new Date().getFullYear();
   let curMonth = new Date().getMonth();
 
@@ -453,13 +446,11 @@
   document.getElementById('colDate').value = todayStr;
   document.getElementById('sdate').value = todayStr;
   document.getElementById('mortDate').value = todayStr;
-  document.getElementById('initialFlockInput').value = initialFlockSize;
 
   function syncToLocalStorage() {
     localStorage.setItem("ad_farms_local_collections", JSON.stringify(collections));
     localStorage.setItem("ad_farms_local_batches", JSON.stringify(batches));
     localStorage.setItem("ad_farms_local_mortality", JSON.stringify(mortality));
-    localStorage.setItem("ad_farms_local_flock_base", initialFlockSize.toString());
   }
 
   // Firebase Setup
@@ -488,7 +479,7 @@
     db.collection("batches").onSnapshot(snapshot => {
       let cloudBatches = [];
       snapshot.forEach(doc => cloudBatches.push({ id: doc.id, ...doc.data() }));
-      if (cloudBatches.length > 0) { batches = cloudBatches; syncToLocalStorage(); renderBatches(); renderCalendar(); }
+      if (cloudBatches.length > 0) { batches = cloudBatches; syncToLocalStorage(); renderBatches(); renderMortality(); renderCalendar(); }
     }, err => console.warn(err));
 
     db.collection("mortality").onSnapshot(snapshot => {
@@ -497,11 +488,7 @@
       if (cloudMort.length > 0) { mortality = cloudMort; syncToLocalStorage(); renderMortality(); }
     }, err => console.warn(err));
 
-    db.collection("config").doc("flock").onSnapshot(doc => {
-      if (doc.exists) { initialFlockSize = doc.data().initialSize || 3000; document.getElementById('initialFlockInput').value = initialFlockSize; syncToLocalStorage(); renderMortality(); }
-    }, err => console.warn(err));
-
-  } catch(e) { console.warn("Offline local mode active", e); }
+  } catch(e) { console.warn("Offline mode active", e); }
 
   function switchTab(tabId, btn) {
     document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
@@ -534,17 +521,7 @@
   }
   checkAndLockLogo();
 
-  // --- MORTALITY ENGINE ---
-  function saveInitialFlock() {
-    const val = parseInt(document.getElementById('initialFlockInput').value, 10);
-    if (isNaN(val) || val < 0) return alert("Enter valid flock size.");
-    initialFlockSize = val;
-    syncToLocalStorage();
-    renderMortality();
-    if (db) db.collection("config").doc("flock").set({ initialSize: val }).catch(e => console.warn(e));
-    alert("Base flock size updated.");
-  }
-
+  // --- MORTALITY (CALCULATED FROM CHICKS HATCHED IN BATCHES) ---
   function saveMortality() {
     const rawDate = document.getElementById('mortDate').value.trim();
     const dateObj = parseAnyDate(rawDate);
@@ -596,10 +573,14 @@
       tbody.appendChild(tr);
     });
 
-    const currentFlock = initialFlockSize - totalDead;
-    document.getElementById('remainingBirdsDisplay').innerText = currentFlock;
-    if(currentFlock < (initialFlockSize * 0.5)) document.getElementById('remainingBirdsDisplay').style.color = "#ea580c";
-    else document.getElementById('remainingBirdsDisplay').style.color = "#059669";
+    // Stock = Sum of all chicks hatched in batches minus total dead
+    let totalChicksHatched = 0;
+    batches.forEach(b => {
+      if (b.chicksHatched !== null) totalChicksHatched += b.chicksHatched;
+    });
+
+    const liveBirds = totalChicksHatched - totalDead;
+    document.getElementById('remainingBirdsDisplay').innerText = liveBirds >= 0 ? liveBirds : 0;
   }
 
   // --- EGG COLLECTIONS ---
@@ -681,7 +662,7 @@
       if (idx !== -1) { data.chicksHatched = batches[idx].chicksHatched || null; data.hatchRate = batches[idx].hatchRate || null; batches[idx] = data; }
     } else { data.chicksHatched = null; data.hatchRate = null; batches.unshift(data); }
 
-    syncToLocalStorage(); renderBatches(); renderCalendar(); resetBatchForm();
+    syncToLocalStorage(); renderBatches(); renderMortality(); renderCalendar(); resetBatchForm();
     if (db) {
       if (editDocId) db.collection("batches").doc(editDocId).set(data, { merge: true }).catch(e => console.warn(e));
       else db.collection("batches").doc(id).set(data).catch(e => console.warn(e));
@@ -695,7 +676,7 @@
     const count = parseInt(val, 10);
     if (isNaN(count) || count < 0) return alert("Enter valid chick count");
     b.chicksHatched = count; b.hatchRate = ((count / b.eggs) * 100).toFixed(1);
-    syncToLocalStorage(); renderBatches();
+    syncToLocalStorage(); renderBatches(); renderMortality();
     if (db) db.collection("batches").doc(docId).update({ chicksHatched: b.chicksHatched, hatchRate: b.hatchRate }).catch(e => console.warn(e));
   }
 
@@ -738,7 +719,7 @@
 
   function deleteBatch(docId) {
     if (confirm("Delete this batch?")) {
-      batches = batches.filter(b => b.id !== docId); syncToLocalStorage(); renderBatches(); renderCalendar();
+      batches = batches.filter(b => b.id !== docId); syncToLocalStorage(); renderBatches(); renderMortality(); renderCalendar();
       if (db) db.collection("batches").doc(docId).delete().catch(e => console.warn(e));
     }
   }
@@ -749,7 +730,7 @@
     document.getElementById('submitBtn').innerText = "Start / Save Batch"; document.getElementById('cancelBtn').style.display = "none";
   }
 
-  // --- CALENDAR ---
+  // --- CALENDAR WITH INLINE DIRECT COLOR CODES ---
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calMonthYear').innerText = `${monthNames[curMonth]} ${curYear}`;
@@ -770,6 +751,8 @@
 
       const colRecord = collections.find(c => c.docKey === isoKey || c.date === ddmmyyyy);
       let subtext = "";
+      
+      // Color coded directly onto the date box
       if (isSet) { cell.classList.add('stage-set'); subtext = "SET"; }
       else if (isD18) { cell.classList.add('stage-hatch'); subtext = "D18"; }
       else if (isD21) { cell.classList.add('stage-remove'); subtext = "PULL"; }
