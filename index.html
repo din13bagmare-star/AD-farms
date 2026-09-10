@@ -203,16 +203,6 @@
 
   .view-panel { display: none; }
   .view-panel.active { display: block; }
-
-  /* PRINT SPECIFIC STYLES FOR CLEAN PDF / PRINTING */
-  @media print {
-    body * { visibility: hidden; }
-    #printableReport, #printableReport * { visibility: visible; }
-    #printableReport { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; font-family: sans-serif; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { border: 1px solid #333; padding: 8px; font-size: 12px; text-align: center; }
-    th { background: #eee !important; -webkit-print-color-adjust: exact; }
-  }
 </style>
 
 <!-- Firebase SDKs -->
@@ -239,7 +229,7 @@
     </div>
     
     <div class="header-actions">
-      <button class="btn-print-top" onclick="openPrintModal()">🖨️ Print Data</button>
+      <button class="btn-print-top" onclick="openPrintModal()">📥 Download Data</button>
       <div id="cloudStatus" class="status-badge">🟢 Cloud</div>
     </div>
   </div>
@@ -373,17 +363,17 @@
 
 </div>
 
-<!-- PRINT DATA CONFIGURATION MODAL -->
+<!-- EXPORT / DOWNLOAD CONFIGURATION MODAL -->
 <div class="modal-overlay" id="printModal" onclick="closePrintModal(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <h3>
-      <span>🖨️ Print &amp; Export Data</span>
+      <span>📥 Download Excel / CSV File</span>
       <button class="modal-close" onclick="closePrintModal()">✕</button>
     </h3>
 
     <!-- 1. EGG COLLECTION SECTION -->
     <div class="print-opt-box">
-      <h4>🥚 1. Print Egg Collection Report</h4>
+      <h4>🥚 1. Egg Collection Report</h4>
       <div class="form-row">
         <div>
           <label>From Date</label>
@@ -394,12 +384,12 @@
           <input type="date" id="printColTo">
         </div>
       </div>
-      <button class="btn-submit" style="background:#059669; padding:9px; font-size:0.85rem;" onclick="generateEggPrintReport()">Print Egg Collection Data</button>
+      <button class="btn-submit" style="background:#059669; padding:10px; font-size:0.85rem;" onclick="downloadEggCSV()">⬇️ Download Egg Collection Data</button>
     </div>
 
     <!-- 2. INCUBATION BATCHES SECTION -->
     <div class="print-opt-box">
-      <h4>🐥 2. Print Incubation Batches Report</h4>
+      <h4>🐥 2. Incubation Batches Report</h4>
       <div class="form-row">
         <div>
           <label>From Batch</label>
@@ -410,13 +400,10 @@
           <select id="printBatchTo"></select>
         </div>
       </div>
-      <button class="btn-submit" style="background:#0284c7; padding:9px; font-size:0.85rem;" onclick="generateIncubationPrintReport()">Print Incubation Data</button>
+      <button class="btn-submit" style="background:#0284c7; padding:10px; font-size:0.85rem;" onclick="downloadIncubationCSV()">⬇️ Download Incubation Data</button>
     </div>
   </div>
 </div>
-
-<!-- HIDDEN REPORT HOLDER FOR DIRECT PRINTING -->
-<div id="printableReport" style="display:none;"></div>
 
 <!-- CALENDAR DATE DETAILS MODAL -->
 <div class="modal-overlay" id="dateModal" onclick="closeDateDetails(event)">
@@ -898,7 +885,21 @@
     }
   }
 
-  // --- PRINT & EXPORT ENGINE ---
+  // --- DIRECT FILE DOWNLOAD ENGINE (SAVES STRAIGHT TO PHONE'S DOWNLOAD FOLDER) ---
+  function triggerDirectDownload(filename, csvContent) {
+    // Add UTF-8 Byte Order Mark (BOM) so Excel opens Hindi/English symbols cleanly
+    const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const downloadLink = document.createElement("a");
+    downloadLink.setAttribute("href", url);
+    downloadLink.setAttribute("download", filename);
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    URL.revokeObjectURL(url);
+    closePrintModal();
+  }
+
   function openPrintModal() {
     const sortedBatches = [...batches].sort((a, b) => new Date(a.rawDate) - new Date(b.rawDate));
     const bFrom = document.getElementById('printBatchFrom');
@@ -935,8 +936,8 @@
     }
   }
 
-  // PRINT: EGG COLLECTION REPORT
-  function generateEggPrintReport() {
+  // DOWNLOAD DIRECT EGG LOG CSV TO MY FILES
+  function downloadEggCSV() {
     const fromDate = document.getElementById('printColFrom').value;
     const toDate = document.getElementById('printColTo').value;
 
@@ -948,60 +949,34 @@
 
     if (filtered.length === 0) return alert("No egg collections found in this date range.");
 
+    let csv = "AD FARMS - DAILY EGG COLLECTION REPORT\n";
+    csv += `Period: ${fromDate} to ${toDate}\n\n`;
+    csv += "Date,Morning,Afternoon,Evening,Daily Total\n";
+
     let totalMorn = 0, totalAftn = 0, totalEve = 0, grandTotal = 0;
 
-    let rowsHtml = "";
     filtered.forEach(c => {
-      totalMorn += (c.morning || 0);
-      totalAftn += (c.afternoon || 0);
-      totalEve += (c.evening || 0);
-      grandTotal += (c.total || 0);
+      const m = c.morning || 0;
+      const a = c.afternoon || 0;
+      const e = c.evening || 0;
+      const t = c.total || 0;
 
-      rowsHtml += `
-        <tr>
-          <td><b>${c.date}</b></td>
-          <td>${c.morning || 0}</td>
-          <td>${c.afternoon || 0}</td>
-          <td>${c.evening || 0}</td>
-          <td><b>${c.total}</b></td>
-        </tr>`;
+      totalMorn += m;
+      totalAftn += a;
+      totalEve += e;
+      grandTotal += t;
+
+      csv += `"${c.date}",${m},${a},${e},${t}\n`;
     });
 
-    const reportHtml = `
-      <div style="text-align:center; margin-bottom:15px; border-bottom:2px solid #0f172a; padding-bottom:10px;">
-        <h2 style="margin:0;">AD FARMS ; HERD & HARVEST</h2>
-        <h3 style="margin:4px 0 0 0; color:#334155;">Daily Egg Collection Report</h3>
-        <div style="font-size:12px; color:#64748b; margin-top:4px;">Period: <b>${fromDate}</b> to <b>${toDate}</b></div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Morning</th>
-            <th>Afternoon</th>
-            <th>Evening</th>
-            <th>Daily Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rowsHtml}
-          <tr style="font-weight:bold; background:#f1f5f9;">
-            <td>TOTALS</td>
-            <td>${totalMorn}</td>
-            <td>${totalAftn}</td>
-            <td>${totalEve}</td>
-            <td>${grandTotal}</td>
-          </tr>
-        </tbody>
-      </table>
-      <div style="margin-top:20px; font-size:11px; text-align:right; color:#64748b;">Report Generated: ${new Date().toLocaleString('en-GB')}</div>
-    `;
+    csv += `TOTALS,${totalMorn},${totalAftn},${totalEve},${grandTotal}\n`;
 
-    executePrint(reportHtml);
+    const fileName = `AD_Farms_EggLog_${fromDate}_to_${toDate}.csv`;
+    triggerDirectDownload(fileName, csv);
   }
 
-  // PRINT: INCUBATION BATCHES REPORT
-  function generateIncubationPrintReport() {
+  // DOWNLOAD DIRECT INCUBATION CSV TO MY FILES
+  function downloadIncubationCSV() {
     const sortedBatches = [...batches].sort((a, b) => new Date(a.rawDate) - new Date(b.rawDate));
     if (sortedBatches.length === 0) return alert("No batches recorded yet.");
 
@@ -1013,76 +988,30 @@
 
     const selected = sortedBatches.slice(idxFrom, idxTo + 1);
 
+    let csv = "AD FARMS - INCUBATION & HATCH REPORT\n";
+    csv += `Batches: ${selected[0].name} to ${selected[selected.length - 1].name}\n\n`;
+    csv += "Batch Name,Eggs Set,Set Date (D1),Hatcher Date (D18),Pull Date (D21),Chicks Hatched,Hatch Rate (%)\n";
+
     let totalEggs = 0, totalChicks = 0;
 
-    let rowsHtml = "";
     selected.forEach(b => {
       totalEggs += b.eggs;
       if (b.chicksHatched !== null) totalChicks += b.chicksHatched;
 
-      rowsHtml += `
-        <tr>
-          <td><b>${b.name}</b></td>
-          <td>${b.eggs}</td>
-          <td>${b.labelD1}</td>
-          <td>${b.labelD18}</td>
-          <td>${b.labelD21}</td>
-          <td>${b.chicksHatched !== null ? b.chicksHatched : 'Pending'}</td>
-          <td>${b.hatchRate !== null ? b.hatchRate + '%' : 'Pending'}</td>
-        </tr>`;
+      const chicks = b.chicksHatched !== null ? b.chicksHatched : "Pending";
+      const rate = b.hatchRate !== null ? `${b.hatchRate}%` : "Pending";
+
+      csv += `"${b.name}",${b.eggs},"${b.labelD1}","${b.labelD18}","${b.labelD21}",${chicks},${rate}\n`;
     });
 
-    const overallRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + '%' : 'Pending';
+    const overallRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + "%" : "Pending";
+    csv += `TOTALS,${totalEggs},-,-,-,${totalChicks > 0 ? totalChicks : 0},${overallRate}\n`;
 
-    const reportHtml = `
-      <div style="text-align:center; margin-bottom:15px; border-bottom:2px solid #0f172a; padding-bottom:10px;">
-        <h2 style="margin:0;">AD FARMS ; HERD & HARVEST</h2>
-        <h3 style="margin:4px 0 0 0; color:#334155;">Incubation &amp; Hatch Performance Report</h3>
-        <div style="font-size:12px; color:#64748b; margin-top:4px;">Batches: <b>${selected[0].name}</b> to <b>${selected[selected.length - 1].name}</b></div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Batch Name</th>
-            <th>Eggs Set</th>
-            <th>Set Date (D1)</th>
-            <th>Hatcher (D18)</th>
-            <th>Pull Date (D21)</th>
-            <th>Chicks Hatched</th>
-            <th>Hatch Rate</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rowsHtml}
-          <tr style="font-weight:bold; background:#f1f5f9;">
-            <td>SUMMARY</td>
-            <td>${totalEggs}</td>
-            <td colspan="3">-</td>
-            <td>${totalChicks > 0 ? totalChicks : '-'}</td>
-            <td>${overallRate}</td>
-          </tr>
-        </tbody>
-      </table>
-      <div style="margin-top:20px; font-size:11px; text-align:right; color:#64748b;">Report Generated: ${new Date().toLocaleString('en-GB')}</div>
-    `;
-
-    executePrint(reportHtml);
+    const fileName = `AD_Farms_Batches_${selected[0].name}_to_${selected[selected.length - 1].name}.csv`;
+    triggerDirectDownload(fileName, csv);
   }
 
-  // PRINT EXECUTOR
-  function executePrint(htmlContent) {
-    const printHolder = document.getElementById('printableReport');
-    printHolder.innerHTML = htmlContent;
-    printHolder.style.display = "block";
-    document.getElementById('printModal').style.display = "none";
-
-    setTimeout(() => {
-      window.print();
-      printHolder.style.display = "none";
-    }, 250);
-  }
-
-  // Initial draw
+  // Initial render
   renderCollections();
   renderBatches();
   renderCalendar();
