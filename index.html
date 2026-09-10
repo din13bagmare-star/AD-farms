@@ -119,7 +119,7 @@
   .cal-cell:active { filter: brightness(0.95); }
   .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; }
 
-  /* CALENDAR STYLES */
+  /* STRICT COLOR CODING */
   .stage-set {
     background: #bae6fd !important;
     border: 1.5px solid #0284c7 !important;
@@ -227,8 +227,8 @@
       </div>
       <div class="form-row">
         <div>
-          <label>Setting Date (DD/MM/YYYY)</label>
-          <input type="text" id="sdate" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
+          <label>Setting Date (Today Auto-Filled)</label>
+          <input type="date" id="sdate">
         </div>
       </div>
       <button class="btn-submit" id="submitBtn" onclick="saveBatch()">Start / Save Batch</button>
@@ -244,8 +244,8 @@
       <h2>🥚 Record Egg Collection</h2>
       <div class="form-row">
         <div>
-          <label>Date (DD/MM/YYYY)</label>
-          <input type="text" id="colDate" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
+          <label>Date (Today Auto-Filled)</label>
+          <input type="date" id="colDate">
         </div>
         <div>
           <label>Time Slot</label>
@@ -309,8 +309,8 @@
       <h2>☠️ Log Daily Mortality</h2>
       <div class="form-row">
         <div>
-          <label>Date (DD/MM/YYYY)</label>
-          <input type="text" id="mortDate" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
+          <label>Date (Today Auto-Filled)</label>
+          <input type="date" id="mortDate">
         </div>
         <div>
           <label>Birds Dead</label>
@@ -383,11 +383,11 @@
       <div class="form-row">
         <div>
           <label>From Date</label>
-          <input type="text" id="reportColFrom" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
+          <input type="date" id="reportColFrom">
         </div>
         <div>
           <label>To Date</label>
-          <input type="text" id="reportColTo" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
+          <input type="date" id="reportColTo">
         </div>
       </div>
       <button class="btn-submit" style="background:#059669; padding:10px; font-size:0.85rem;" onclick="displayEggDataReport()">Show Egg Data</button>
@@ -421,73 +421,65 @@
 </div>
 
 <script>
-  // --- BULLETPROOF DATE ENGINES ---
+  // --- STANDARD YYYY-MM-DD DATE UTILITIES ---
   function pad(n) { return String(n).padStart(2, '0'); }
 
-  function formatDateInput(el) {
-    let v = el.value.replace(/\D/g, '').slice(0, 8);
-    if (v.length >= 5) el.value = v.slice(0, 2) + '/' + v.slice(2, 4) + '/' + v.slice(4);
-    else if (v.length >= 3) el.value = v.slice(0, 2) + '/' + v.slice(2);
-    else el.value = v;
+  function dateToISO(dateObj) {
+    if (!dateObj || isNaN(dateObj.getTime())) return "";
+    return `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}`;
   }
 
-  function getTodayDDMMYYYY() {
-    const d = new Date();
-    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+  function getTodayISO() {
+    return dateToISO(new Date());
   }
 
-  function dateToDDMMYYYY(dateObj) {
-    return `${pad(dateObj.getDate())}/${pad(dateObj.getMonth() + 1)}/${dateObj.getFullYear()}`;
-  }
-
-  function parseAnyDate(str) {
-    if (!str || typeof str !== 'string') return null;
-    str = str.trim();
-
-    if (str.includes('/')) {
-      const parts = str.split('/');
-      if (parts.length === 3) {
-        const d = parseInt(parts[0], 10), m = parseInt(parts[1], 10), y = parseInt(parts[2], 10);
-        if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 2000) {
-          return new Date(y, m - 1, d, 0, 0, 0, 0);
-        }
+  // Parses ANY stored format (YYYY-MM-DD, DD/MM/YYYY, or Firestore Timestamp) cleanly to YYYY-MM-DD
+  function toNormalizedISO(input) {
+    if (!input) return "";
+    if (typeof input === 'object' && input.seconds) {
+      return dateToISO(new Date(input.seconds * 1000));
+    }
+    let s = String(input).trim();
+    if (s.includes('-')) {
+      const parts = s.split('-');
+      if (parts.length === 3 && parts[0].length === 4) {
+        return `${parts[0]}-${pad(parts[1])}-${pad(parts[2])}`;
       }
     }
-
-    if (str.includes('-')) {
-      const parts = str.split('-');
+    if (s.includes('/')) {
+      const parts = s.split('/');
       if (parts.length === 3) {
-        const y = parseInt(parts[0], 10), m = parseInt(parts[1], 10), d = parseInt(parts[2], 10);
-        if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 2000) {
-          return new Date(y, m - 1, d, 0, 0, 0, 0);
-        }
+        const y = parts[2].length === 4 ? parts[2] : ('20' + parts[2]);
+        return `${y}-${pad(parts[1])}-${pad(parts[0])}`;
       }
     }
-
-    return null;
+    const parsed = new Date(s);
+    return isNaN(parsed.getTime()) ? "" : dateToISO(parsed);
   }
 
-  function formatStrictDDMMYYYY(dateString) {
-    const dt = parseAnyDate(dateString);
-    return dt ? dateToDDMMYYYY(dt) : dateString;
+  function formatDisplayDate(isoStr) {
+    const norm = toNormalizedISO(isoStr);
+    if (!norm) return isoStr || "-";
+    const parts = norm.split('-');
+    return `${parts[2]}/${parts[1]}/${parts[0]}`; // Displays as DD/MM/YYYY
   }
 
-  function normalizeDateStr(str) {
-    const dt = parseAnyDate(str);
-    return dt ? dateToDDMMYYYY(dt) : "";
-  }
-
-  // --- STORAGE ---
+  // --- STORAGE & AUTO-FILL TODAY ---
   let collections = JSON.parse(localStorage.getItem("ad_farms_local_collections") || "[]");
   let batches = JSON.parse(localStorage.getItem("ad_farms_local_batches") || "[]");
   let mortality = JSON.parse(localStorage.getItem("ad_farms_local_mortality") || "[]");
-  let curYear = new Date().getFullYear();
-  let curMonth = new Date().getMonth();
 
-  const todayStr = getTodayDDMMYYYY();
-  document.getElementById('colDate').value = todayStr;
-  document.getElementById('sdate').value = todayStr;
-  document.getElementById('mortDate').value = todayStr;
+  const todayDateObj = new Date();
+  let curYear = todayDateObj.getFullYear();
+  let curMonth = todayDateObj.getMonth();
+
+  function initTodayInputs() {
+    const todayISO = getTodayISO();
+    document.getElementById('colDate').value = todayISO;
+    document.getElementById('sdate').value = todayISO;
+    document.getElementById('mortDate').value = todayISO;
+  }
+  initTodayInputs();
 
   function syncToLocalStorage() {
     localStorage.setItem("ad_farms_local_collections", JSON.stringify(collections));
@@ -580,23 +572,22 @@
 
   // --- MORTALITY ---
   function saveMortality() {
-    const rawDate = document.getElementById('mortDate').value.trim();
-    const dateObj = parseAnyDate(rawDate);
-    if (!dateObj) return alert("Please enter valid date (DD/MM/YYYY).");
+    const dateVal = document.getElementById('mortDate').value || getTodayISO();
     const count = parseInt(document.getElementById('mortCount').value, 10);
     if (isNaN(count) || count <= 0) return alert("Enter valid dead count.");
 
-    const formattedDate = dateToDDMMYYYY(dateObj);
-    let existing = mortality.find(m => normalizeDateStr(m.date) === formattedDate);
+    const isoDate = toNormalizedISO(dateVal);
+    let existing = mortality.find(m => toNormalizedISO(m.date) === isoDate);
     let deadCount = existing ? (existing.dead + count) : count;
 
-    const entry = { id: "mort_" + formattedDate.replace(/\//g, ''), date: formattedDate, dead: deadCount };
+    const entry = { id: "mort_" + isoDate.replace(/-/g, ''), date: isoDate, dead: deadCount };
     if (existing) Object.assign(existing, entry);
     else mortality.push(entry);
 
     syncToLocalStorage();
     renderMortality();
     document.getElementById('mortCount').value = "";
+    document.getElementById('mortDate').value = getTodayISO();
     if (db) db.collection("mortality").doc(entry.id).set(entry).catch(e => console.warn(e));
   }
 
@@ -615,13 +606,13 @@
     document.getElementById('noMortality').style.display = mortality.length === 0 ? "block" : "none";
 
     let totalDead = 0;
-    const sorted = [...mortality].sort((a, b) => (parseAnyDate(b.date) || 0) - (parseAnyDate(a.date) || 0));
+    const sorted = [...mortality].sort((a, b) => toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date)));
 
     sorted.forEach(m => {
       totalDead += m.dead;
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><b>${formatStrictDDMMYYYY(m.date)}</b></td>
+        <td><b>${formatDisplayDate(m.date)}</b></td>
         <td style="color:#b91c1c; font-weight:bold;">${m.dead}</td>
         <td><button style="border:none; background:#fee2e2; color:#b91c1c; border-radius:4px; font-weight:bold; padding:4px 8px;" onclick="deleteMortality('${m.id}')">✕</button></td>
       `;
@@ -630,7 +621,7 @@
 
     let totalChicksHatched = 0;
     batches.forEach(b => {
-      if (b.chicksHatched !== null) totalChicksHatched += b.chicksHatched;
+      if (b.chicksHatched !== null && b.chicksHatched !== undefined) totalChicksHatched += b.chicksHatched;
     });
 
     const liveBirds = totalChicksHatched - totalDead;
@@ -639,16 +630,14 @@
 
   // --- EGG COLLECTIONS ---
   function saveCollection() {
-    const rawDate = document.getElementById('colDate').value.trim();
-    const dateObj = parseAnyDate(rawDate);
-    if (!dateObj) return alert("Please enter valid date (DD/MM/YYYY).");
+    const dateVal = document.getElementById('colDate').value || getTodayISO();
     const slot = document.getElementById('colSlot').value;
     const count = parseInt(document.getElementById('colCount').value, 10) || 0;
     const broken = parseInt(document.getElementById('colBroken').value, 10) || 0;
     if (count === 0 && broken === 0) return alert("Enter intact or broken eggs.");
 
-    const formattedDate = dateToDDMMYYYY(dateObj);
-    let existing = collections.find(c => normalizeDateStr(c.date) === formattedDate);
+    const isoDate = toNormalizedISO(dateVal);
+    let existing = collections.find(c => toNormalizedISO(c.date) === isoDate);
     let m = existing ? (existing.morning || 0) : 0, a = existing ? (existing.afternoon || 0) : 0;
     let e = existing ? (existing.evening || 0) : 0, b = existing ? (existing.broken || 0) : 0;
 
@@ -657,7 +646,7 @@
     if (slot === "Evening") e += count;
     b += broken;
 
-    const entry = { id: "col_" + formattedDate.replace(/\//g, ''), date: formattedDate, morning: m, afternoon: a, evening: e, broken: b, total: (m + a + e) };
+    const entry = { id: "col_" + isoDate.replace(/-/g, ''), date: isoDate, morning: m, afternoon: a, evening: e, broken: b, total: (m + a + e) };
     if (existing) Object.assign(existing, entry); else collections.push(entry);
 
     syncToLocalStorage();
@@ -666,6 +655,7 @@
     
     document.getElementById('colCount').value = "";
     document.getElementById('colBroken').value = "0";
+    document.getElementById('colDate').value = getTodayISO();
     if (db) db.collection("collections").doc(entry.id).set(entry).catch(err => console.warn(err));
   }
 
@@ -683,11 +673,11 @@
     const tbody = document.getElementById('collectionBody');
     tbody.innerHTML = "";
     document.getElementById('noCollections').style.display = collections.length === 0 ? "block" : "none";
-    const sorted = [...collections].sort((a, b) => (parseAnyDate(b.date) || 0) - (parseAnyDate(a.date) || 0));
+    const sorted = [...collections].sort((a, b) => toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date)));
     sorted.forEach(c => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><b>${formatStrictDDMMYYYY(c.date)}</b></td>
+        <td><b>${formatDisplayDate(c.date)}</b></td>
         <td>${c.morning || '-'}</td><td>${c.afternoon || '-'}</td><td>${c.evening || '-'}</td>
         <td style="color:#b91c1c; font-weight:bold;">${c.broken || '-'}</td>
         <td style="color:#0284c7; font-weight:bold;">${c.total}</td>
@@ -698,33 +688,42 @@
   }
 
   // --- BATCHES ---
-  function computeMilestonesStrict(d1Date) {
-    const d18 = new Date(d1Date.getFullYear(), d1Date.getMonth(), d1Date.getDate() + 17);
-    const d21 = new Date(d1Date.getFullYear(), d1Date.getMonth(), d1Date.getDate() + 20);
+  function computeBatchDates(startDateISO) {
+    const parts = startDateISO.split('-');
+    const base = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    const d18 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 17);
+    const d21 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 20);
     return {
-      labelD1: dateToDDMMYYYY(d1Date),
-      labelD18: dateToDDMMYYYY(d18),
-      labelD21: dateToDDMMYYYY(d21)
+      d1ISO: startDateISO,
+      d18ISO: dateToISO(d18),
+      d21ISO: dateToISO(d21)
     };
   }
 
   function saveBatch() {
     const name = document.getElementById('bname').value.trim() || "Batch";
     const eggs = parseInt(document.getElementById('eggsSet').value, 10) || 102;
-    const rawDate = document.getElementById('sdate').value.trim();
+    const dateInput = document.getElementById('sdate').value || getTodayISO();
     const editDocId = document.getElementById('editDocId').value;
-    const d1Date = parseAnyDate(rawDate);
-    if (!d1Date) return alert("Please enter setting date (DD/MM/YYYY).");
+    const startDateISO = toNormalizedISO(dateInput);
 
-    const milestones = computeMilestonesStrict(d1Date);
+    const calc = computeBatchDates(startDateISO);
     const id = editDocId || ("batch_" + Date.now());
-    const data = { id, name, eggs, rawDate: milestones.labelD1, ...milestones };
+    const data = { 
+      id, 
+      name, 
+      eggs, 
+      startDate: calc.d1ISO,
+      d18Date: calc.d18ISO,
+      d21Date: calc.d21ISO,
+      rawDate: calc.d1ISO
+    };
 
     if (editDocId) {
       const idx = batches.findIndex(b => b.id === editDocId);
       if (idx !== -1) {
-        data.chicksHatched = batches[idx].chicksHatched || null;
-        data.hatchRate = batches[idx].hatchRate || null;
+        data.chicksHatched = batches[idx].chicksHatched !== undefined ? batches[idx].chicksHatched : null;
+        data.hatchRate = batches[idx].hatchRate !== undefined ? batches[idx].hatchRate : null;
         batches[idx] = data;
       }
     } else {
@@ -763,19 +762,26 @@
     const container = document.getElementById('batchContainer');
     container.innerHTML = "";
     document.getElementById('noBatches').style.display = batches.length === 0 ? "block" : "none";
-    const sortedBatches = [...batches].sort((a, b) => (parseAnyDate(a.rawDate) || 0) - (parseAnyDate(b.rawDate) || 0));
+    const sortedBatches = [...batches].sort((a, b) => {
+      const dateA = toNormalizedISO(a.startDate || a.rawDate || a.labelD1);
+      const dateB = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
+      return dateA.localeCompare(dateB);
+    });
 
     sortedBatches.forEach(b => {
-      const rateText = b.hatchRate !== null ? `<b style="color:#16a34a;">${b.hatchRate}%</b>` : `<span style="color:#94a3b8;">Pending</span>`;
-      const chickCount = b.chicksHatched !== null ? `<b>${b.chicksHatched}</b> chicks` : `<span style="color:#94a3b8;">Not entered</span>`;
+      const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
+      const calc = sISO ? computeBatchDates(sISO) : null;
+      const rateText = b.hatchRate !== null && b.hatchRate !== undefined ? `<b style="color:#16a34a;">${b.hatchRate}%</b>` : `<span style="color:#94a3b8;">Pending</span>`;
+      const chickCount = b.chicksHatched !== null && b.chicksHatched !== undefined ? `<b>${b.chicksHatched}</b> chicks` : `<span style="color:#94a3b8;">Not entered</span>`;
+      
       const card = document.createElement('div');
       card.className = 'batch-card';
       card.innerHTML = `
         <div class="batch-card-header"><span class="batch-title">${b.name}</span><span class="batch-eggs">${b.eggs} eggs</span></div>
         <div class="batch-dates-grid">
-          <div class="date-pill d1"><span class="pill-lbl">Day 1 (Set)</span><span class="pill-val">${formatStrictDDMMYYYY(b.labelD1 || b.rawDate)}</span></div>
-          <div class="date-pill d18"><span class="pill-lbl">Day 18 (Hatch)</span><span class="pill-val">${formatStrictDDMMYYYY(b.labelD18)}</span></div>
-          <div class="date-pill d21"><span class="pill-lbl">Day 21 (Pull)</span><span class="pill-val">${formatStrictDDMMYYYY(b.labelD21)}</span></div>
+          <div class="date-pill d1"><span class="pill-lbl">Day 1 (Set)</span><span class="pill-val">${formatDisplayDate(calc ? calc.d1ISO : sISO)}</span></div>
+          <div class="date-pill d18"><span class="pill-lbl">Day 18 (Hatch)</span><span class="pill-val">${formatDisplayDate(calc ? calc.d18ISO : '')}</span></div>
+          <div class="date-pill d21"><span class="pill-lbl">Day 21 (Pull)</span><span class="pill-val">${formatDisplayDate(calc ? calc.d21ISO : '')}</span></div>
         </div>
         <div class="batch-results-bar"><div>Harvest: ${chickCount}</div><div>Hatch Rate: ${rateText}</div></div>
         <div class="batch-actions">
@@ -792,7 +798,7 @@
     const b = batches.find(item => item.id === docId);
     document.getElementById('bname').value = b.name;
     document.getElementById('eggsSet').value = b.eggs;
-    document.getElementById('sdate').value = formatStrictDDMMYYYY(b.labelD1 || b.rawDate);
+    document.getElementById('sdate').value = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
     document.getElementById('editDocId').value = docId;
     document.getElementById('submitBtn').innerText = "Update Batch";
     document.getElementById('cancelBtn').style.display = "block";
@@ -814,13 +820,13 @@
   function resetBatchForm() {
     document.getElementById('bname').value = "";
     document.getElementById('eggsSet').value = "102";
-    document.getElementById('sdate').value = getTodayDDMMYYYY();
+    document.getElementById('sdate').value = getTodayISO();
     document.getElementById('editDocId').value = "";
     document.getElementById('submitBtn').innerText = "Start / Save Batch";
     document.getElementById('cancelBtn').style.display = "none";
   }
 
-  // --- CALENDAR WITH BULLETPROOF STRING COMPARISON & EVENT TAGS ---
+  // --- CALENDAR WITH BULLETPROOF ISO COMPARISONS ---
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calMonthYear').innerText = `${monthNames[curMonth]} ${curYear}`;
@@ -837,38 +843,31 @@
 
     for (let d = 1; d <= lastDateOfMonth; d++) {
       const cellDateObj = new Date(curYear, curMonth, d);
-      const ddmmyyyy = dateToDDMMYYYY(cellDateObj);
+      const cellISO = dateToISO(cellDateObj);
 
       const cell = document.createElement('div');
       cell.className = 'cal-cell';
-      cell.onclick = () => showDateDetailsStrict(cellDateObj);
+      cell.onclick = () => showDateDetailsStrict(cellISO);
 
       let dayEvents = [];
 
       batches.forEach(b => {
-        const raw = b.labelD1 || b.rawDate || b.sdate;
-        const setDate = parseAnyDate(raw);
-        if (!setDate) return;
+        const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
+        if (!sISO) return;
+        const calc = computeBatchDates(sISO);
 
-        const d1DateStr = dateToDDMMYYYY(setDate);
-        const d18Date = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 17);
-        const d21Date = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 20);
-
-        const d18DateStr = dateToDDMMYYYY(d18Date);
-        const d21DateStr = dateToDDMMYYYY(d21Date);
-
-        if (ddmmyyyy === d1DateStr) {
+        if (cellISO === calc.d1ISO) {
           dayEvents.push({ type: 'set', name: b.name });
         }
-        if (ddmmyyyy === d18DateStr) {
+        if (cellISO === calc.d18ISO) {
           dayEvents.push({ type: 'hatch', name: b.name });
         }
-        if (ddmmyyyy === d21DateStr) {
+        if (cellISO === calc.d21ISO) {
           dayEvents.push({ type: 'remove', name: b.name });
         }
       });
 
-      const colRecord = collections.find(c => normalizeDateStr(c.date) === ddmmyyyy);
+      const colRecord = collections.find(c => toNormalizedISO(c.date) === cellISO);
 
       if (dayEvents.some(e => e.type === 'set')) {
         cell.classList.add('stage-set');
@@ -906,70 +905,62 @@
     renderCalendar();
   }
 
-  function showDateDetailsStrict(dateObj) {
+  function showDateDetailsStrict(dateISO) {
     const modal = document.getElementById('dateModal');
     const title = document.getElementById('modalDateTitle');
     const body = document.getElementById('modalDetailsBody');
-    const ddmmyyyy = dateToDDMMYYYY(dateObj);
 
-    title.innerText = ddmmyyyy;
+    title.innerText = formatDisplayDate(dateISO);
     let html = "";
 
     batches.forEach(b => {
-      const raw = b.labelD1 || b.rawDate || b.sdate;
-      const setDate = parseAnyDate(raw);
-      if (!setDate) return;
+      const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
+      if (!sISO) return;
+      const calc = computeBatchDates(sISO);
 
-      const d1DateStr = dateToDDMMYYYY(setDate);
-      const d18Date = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 17);
-      const d21Date = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 20);
-
-      const d18DateStr = dateToDDMMYYYY(d18Date);
-      const d21DateStr = dateToDDMMYYYY(d21Date);
-
-      if (ddmmyyyy === d1DateStr) {
+      if (dateISO === calc.d1ISO) {
         html += `<div class="event-item" style="border-left: 5px solid #0284c7; background: #f0f9ff; margin-bottom: 8px;">
           <b style="color: #0284c7; font-size: 0.95rem;">🥚 DAY 1: EGGS SET</b><br>
-          <b>Batch:</b> ${b.name}<br>
-          <b>Quantity:</b> ${b.eggs} eggs<br>
-          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Confirm setter temp (99.5°F–100°F) and check automatic turning.</div>
+          <b>Batch / Tray:</b> ${b.name}<br>
+          <b>Eggs Set:</b> ${b.eggs} eggs<br>
+          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Action: Confirm setter temp (99.5°F–100°F) and check automatic turning.</div>
         </div>`;
       }
 
-      if (ddmmyyyy === d18DateStr) {
+      if (dateISO === calc.d18ISO) {
         html += `<div class="event-item" style="border-left: 5px solid #ea580c; background: #fff7ed; margin-bottom: 8px;">
-          <b style="color: #ea580c; font-size: 0.95rem;">🐣 DAY 18: LOCKDOWN</b><br>
-          <b>Batch:</b> ${b.name}<br>
-          <b>Quantity:</b> ${b.eggs} eggs<br>
-          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Stop turning, shift to hatching baskets, and increase wet-bulb / humidity.</div>
+          <b style="color: #ea580c; font-size: 0.95rem;">🐣 DAY 18: LOCKDOWN / HATCHER</b><br>
+          <b>Batch / Tray:</b> ${b.name}<br>
+          <b>Eggs:</b> ${b.eggs} eggs<br>
+          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Action: Shift eggs to hatcher baskets, turn off turning mechanism, and increase humidity.</div>
         </div>`;
       }
 
-      if (ddmmyyyy === d21DateStr) {
+      if (dateISO === calc.d21ISO) {
         html += `<div class="event-item" style="border-left: 5px solid #16a34a; background: #f0fdf4; margin-bottom: 8px;">
           <b style="color: #16a34a; font-size: 0.95rem;">🐥 DAY 21: PULL CHICKS</b><br>
-          <b>Batch:</b> ${b.name}<br>
-          <b>Eggs Set:</b> ${b.eggs} eggs<br>
-          <b>Hatch Log:</b> ${b.chicksHatched !== null ? b.chicksHatched + ' chicks (' + b.hatchRate + '%)' : 'Awaiting count'}<br>
-          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Transfer dry chicks to the brooder and record live harvest in Batches tab.</div>
+          <b>Batch / Tray:</b> ${b.name}<br>
+          <b>Initial Eggs:</b> ${b.eggs} eggs<br>
+          <b>Hatch Status:</b> ${b.chicksHatched !== null && b.chicksHatched !== undefined ? b.chicksHatched + ' chicks (' + b.hatchRate + '%)' : 'Pending results entry'}<br>
+          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Action: Move dry chicks to brooder and log hatch count in the Batches tab.</div>
         </div>`;
       }
     });
 
-    const col = collections.find(c => normalizeDateStr(c.date) === ddmmyyyy);
+    const col = collections.find(c => toNormalizedISO(c.date) === dateISO);
     if (col && (col.total > 0 || (col.broken || 0) > 0)) {
       html += `<div class="event-item" style="border-left: 5px solid #64748b; background: #f8fafc; margin-bottom: 8px;">
-        <b>🥚 Egg Collections</b><br>
+        <b>🥚 Daily Egg Pickings</b><br>
         Morn: ${col.morning || 0} | Aftn: ${col.afternoon || 0} | Eve: ${col.evening || 0}<br>
-        Broken: <b style="color: #b91c1c;">${col.broken || 0}</b> | <b>Intact: ${col.total}</b>
+        Broken: <b style="color: #b91c1c;">${col.broken || 0}</b> | <b>Total Intact: ${col.total}</b>
       </div>`;
     }
 
-    const mort = mortality.find(m => normalizeDateStr(m.date) === ddmmyyyy);
+    const mort = mortality.find(m => toNormalizedISO(m.date) === dateISO);
     if (mort && mort.dead > 0) {
       html += `<div class="event-item" style="border-left: 5px solid #b91c1c; background: #fef2f2; margin-bottom: 8px;">
-        <b style="color: #b91c1c;">☠️ Mortality</b><br>
-        Dead: <b>${mort.dead} birds</b>
+        <b style="color: #b91c1c;">☠️ Mortality Logged</b><br>
+        Birds Dead: <b>${mort.dead}</b>
       </div>`;
     }
 
@@ -989,19 +980,23 @@
 
   // --- DATA REPORTS ---
   function openDataModal() {
-    const sortedBatches = [...batches].sort((a, b) => (parseAnyDate(a.rawDate) || 0) - (parseAnyDate(b.rawDate) || 0));
+    const sortedBatches = [...batches].sort((a, b) => {
+      const dateA = toNormalizedISO(a.startDate || a.rawDate || a.labelD1);
+      const dateB = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
+      return dateA.localeCompare(dateB);
+    });
     const bFrom = document.getElementById('reportBatchFrom'), bTo = document.getElementById('reportBatchTo');
     bFrom.innerHTML = ""; bTo.innerHTML = "";
     sortedBatches.forEach((b, idx) => {
-      const d1Str = formatStrictDDMMYYYY(b.labelD1 || b.rawDate);
-      bFrom.add(new Option(`${b.name} (${d1Str})`, idx));
-      bTo.add(new Option(`${b.name} (${d1Str})`, idx));
+      const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
+      bFrom.add(new Option(`${b.name} (${formatDisplayDate(sISO)})`, idx));
+      bTo.add(new Option(`${b.name} (${formatDisplayDate(sISO)})`, idx));
     });
     if (sortedBatches.length > 0) { bFrom.selectedIndex = 0; bTo.selectedIndex = sortedBatches.length - 1; }
 
     const dTo = new Date(), dFrom = new Date(); dFrom.setDate(dTo.getDate() - 30);
-    document.getElementById('reportColTo').value = dateToDDMMYYYY(dTo);
-    document.getElementById('reportColFrom').value = dateToDDMMYYYY(dFrom);
+    document.getElementById('reportColTo').value = dateToISO(dTo);
+    document.getElementById('reportColFrom').value = dateToISO(dFrom);
     document.getElementById('dataModal').style.display = "flex";
   }
 
@@ -1018,15 +1013,15 @@
   }
 
   function displayEggDataReport() {
-    const rawFrom = document.getElementById('reportColFrom').value.trim(), rawTo = document.getElementById('reportColTo').value.trim();
-    const dFrom = parseAnyDate(rawFrom), dTo = parseAnyDate(rawTo);
-    if (!dFrom || !dTo) return alert("Enter valid dates.");
-    if (dFrom > dTo) return alert("From Date cannot be after To Date.");
+    const rawFrom = document.getElementById('reportColFrom').value;
+    const rawTo = document.getElementById('reportColTo').value;
+    if (!rawFrom || !rawTo) return alert("Enter valid dates.");
+    if (rawFrom > rawTo) return alert("From Date cannot be after To Date.");
 
     const filtered = collections.filter(c => {
-      const cd = parseAnyDate(c.date);
-      return cd && cd >= dFrom && cd <= dTo;
-    }).sort((a, b) => (parseAnyDate(a.date)||0) - (parseAnyDate(b.date)||0));
+      const cd = toNormalizedISO(c.date);
+      return cd && cd >= rawFrom && cd <= rawTo;
+    }).sort((a, b) => toNormalizedISO(a.date).localeCompare(toNormalizedISO(b.date)));
 
     if (filtered.length === 0) return alert("No egg collections found.");
 
@@ -1034,12 +1029,12 @@
     let rowsHtml = "";
 
     filtered.forEach(c => {
-      const d = formatStrictDDMMYYYY(c.date), m = c.morning||0, a = c.afternoon||0, e = c.evening||0, b = c.broken||0, t = c.total||0;
+      const d = formatDisplayDate(c.date), m = c.morning||0, a = c.afternoon||0, e = c.evening||0, b = c.broken||0, t = c.total||0;
       totalMorn += m; totalAftn += a; totalEve += e; totalBroken += b; grandTotal += t;
       rowsHtml += `<tr><td><b>${d}</b></td><td>${m}</td><td>${a}</td><td>${e}</td><td style="color:#b91c1c; font-weight:bold;">${b}</td><td style="color:#0284c7; font-weight:bold;">${t}</td></tr>`;
     });
 
-    const html = `<div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:8px; margin-bottom:12px;"><h2 style="margin:0; font-size:1.1rem;">AD FARMS ; HERD & HARVEST</h2><div style="font-size:0.85rem; font-weight:bold; margin-top:2px;">Egg Collection Report</div><div style="font-size:0.75rem; color:#64748b;">Period: <b>${rawFrom}</b> to <b>${rawTo}</b></div></div>
+    const html = `<div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:8px; margin-bottom:12px;"><h2 style="margin:0; font-size:1.1rem;">AD FARMS ; HERD & HARVEST</h2><div style="font-size:0.85rem; font-weight:bold; margin-top:2px;">Egg Collection Report</div><div style="font-size:0.75rem; color:#64748b;">Period: <b>${formatDisplayDate(rawFrom)}</b> to <b>${formatDisplayDate(rawTo)}</b></div></div>
       <div class="table-wrap"><table><thead><tr><th style="background:#0284c7; color:#fff;">Data</th><th>Morn</th><th>Aftn</th><th>Eve</th><th>Broken</th><th>Total Intact</th></tr></thead><tbody>${rowsHtml}<tr style="font-weight:bold; background:#f1f5f9;"><td>TOTALS</td><td>${totalMorn}</td><td>${totalAftn}</td><td>${totalEve}</td><td style="color:#b91c1c;">${totalBroken}</td><td style="color:#0284c7;">${grandTotal}</td></tr></tbody></table></div>`;
     
     document.getElementById('dataReportContent').innerHTML = html;
@@ -1050,7 +1045,11 @@
   }
 
   function displayIncubationDataReport() {
-    const sorted = [...batches].sort((a, b) => (parseAnyDate(a.rawDate)||0) - (parseAnyDate(b.rawDate)||0));
+    const sorted = [...batches].sort((a, b) => {
+      const dateA = toNormalizedISO(a.startDate || a.rawDate || a.labelD1);
+      const dateB = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
+      return dateA.localeCompare(dateB);
+    });
     if (sorted.length === 0) return alert("No batches recorded.");
     let idxFrom = parseInt(document.getElementById('reportBatchFrom').value, 10), idxTo = parseInt(document.getElementById('reportBatchTo').value, 10);
     if (idxFrom > idxTo) { const temp = idxFrom; idxFrom = idxTo; idxTo = temp; }
@@ -1058,10 +1057,12 @@
 
     let totalEggs = 0, totalChicks = 0, rowsHtml = "";
     selected.forEach(b => {
+      const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
+      const calc = sISO ? computeBatchDates(sISO) : { d1ISO: '', d18ISO: '', d21ISO: '' };
       totalEggs += b.eggs;
-      if (b.chicksHatched !== null) totalChicks += b.chicksHatched;
-      const c = b.chicksHatched !== null ? b.chicksHatched : "-", r = b.hatchRate !== null ? `${b.hatchRate}%` : "-";
-      rowsHtml += `<tr><td><b>${b.name}</b></td><td>${b.eggs}</td><td>${formatStrictDDMMYYYY(b.labelD1 || b.rawDate)}</td><td>${formatStrictDDMMYYYY(b.labelD18)}</td><td>${formatStrictDDMMYYYY(b.labelD21)}</td><td>${c}</td><td style="color:#16a34a; font-weight:bold;">${r}</td></tr>`;
+      if (b.chicksHatched !== null && b.chicksHatched !== undefined) totalChicks += b.chicksHatched;
+      const c = b.chicksHatched !== null && b.chicksHatched !== undefined ? b.chicksHatched : "-", r = b.hatchRate !== null && b.hatchRate !== undefined ? `${b.hatchRate}%` : "-";
+      rowsHtml += `<tr><td><b>${b.name}</b></td><td>${b.eggs}</td><td>${formatDisplayDate(calc.d1ISO)}</td><td>${formatDisplayDate(calc.d18ISO)}</td><td>${formatDisplayDate(calc.d21ISO)}</td><td>${c}</td><td style="color:#16a34a; font-weight:bold;">${r}</td></tr>`;
     });
     const overallRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + "%" : "-";
 
