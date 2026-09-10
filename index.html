@@ -95,14 +95,14 @@
   th, td { border: 1px solid #e2e8f0; padding: 8px 5px; text-align: center; }
   th { background: #f1f5f9; color: #475569; font-weight: 700; }
 
-  /* CALENDAR DISPLAY WITH COLOR ENGINES */
+  /* CALENDAR DISPLAY */
   .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-  .cal-header button { padding: 4px 12px; background: #e2e8f0; border: none; border-radius: 4px; font-weight: bold; }
+  .cal-header button { padding: 4px 12px; background: #e2e8f0; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
   .cal-day-name { font-size: 0.7rem; font-weight: bold; color: #64748b; padding-bottom: 4px; }
   
   .cal-cell {
-    min-height: 62px;
+    min-height: 64px;
     border-radius: 6px;
     border: 1px solid #e2e8f0;
     background: #ffffff;
@@ -119,7 +119,7 @@
   .cal-cell:active { filter: brightness(0.95); }
   .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; }
 
-  /* STRICT COLOR CODING ON CALENDAR DATES */
+  /* CALENDAR STYLES */
   .stage-set {
     background: #bae6fd !important;
     border: 1.5px solid #0284c7 !important;
@@ -136,7 +136,7 @@
     color: #166534 !important;
   }
   .stage-tag {
-    font-size: 0.54rem;
+    font-size: 0.52rem;
     font-weight: 900;
     line-height: 1.1;
     text-transform: uppercase;
@@ -578,7 +578,7 @@
   }
   checkAndLockLogo();
 
-  // --- MORTALITY (CHICKS HATCHED − DEAD BIRDS) ---
+  // --- MORTALITY ---
   function saveMortality() {
     const rawDate = document.getElementById('mortDate').value.trim();
     const dateObj = parseAnyDate(rawDate);
@@ -820,7 +820,7 @@
     document.getElementById('cancelBtn').style.display = "none";
   }
 
-  // --- CALENDAR WITH BULLETPROOF MILESTONES & COLOR ENGINES ---
+  // --- CALENDAR WITH BULLETPROOF STRING COMPARISON & EVENT TAGS ---
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calMonthYear').innerText = `${monthNames[curMonth]} ${curYear}`;
@@ -836,8 +836,7 @@
     }
 
     for (let d = 1; d <= lastDateOfMonth; d++) {
-      const cellDateObj = new Date(curYear, curMonth, d, 0, 0, 0, 0);
-      const cellTimestamp = cellDateObj.getTime();
+      const cellDateObj = new Date(curYear, curMonth, d);
       const ddmmyyyy = dateToDDMMYYYY(cellDateObj);
 
       const cell = document.createElement('div');
@@ -847,22 +846,25 @@
       let dayEvents = [];
 
       batches.forEach(b => {
-        const setDateStr = b.labelD1 || b.rawDate || b.sdate;
-        const setDate = parseAnyDate(setDateStr);
+        const raw = b.labelD1 || b.rawDate || b.sdate;
+        const setDate = parseAnyDate(raw);
         if (!setDate) return;
 
-        const d1Ts = setDate.getTime();
-        const d18Ts = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 17).getTime();
-        const d21Ts = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 20).getTime();
+        const d1DateStr = dateToDDMMYYYY(setDate);
+        const d18Date = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 17);
+        const d21Date = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 20);
 
-        if (cellTimestamp === d1Ts) {
-          dayEvents.push({ type: 'set', name: b.name, eggs: b.eggs });
+        const d18DateStr = dateToDDMMYYYY(d18Date);
+        const d21DateStr = dateToDDMMYYYY(d21Date);
+
+        if (ddmmyyyy === d1DateStr) {
+          dayEvents.push({ type: 'set', name: b.name });
         }
-        if (cellTimestamp === d18Ts) {
-          dayEvents.push({ type: 'hatch', name: b.name, eggs: b.eggs });
+        if (ddmmyyyy === d18DateStr) {
+          dayEvents.push({ type: 'hatch', name: b.name });
         }
-        if (cellTimestamp === d21Ts) {
-          dayEvents.push({ type: 'remove', name: b.name, eggs: b.eggs });
+        if (ddmmyyyy === d21DateStr) {
+          dayEvents.push({ type: 'remove', name: b.name });
         }
       });
 
@@ -909,45 +911,47 @@
     const title = document.getElementById('modalDateTitle');
     const body = document.getElementById('modalDetailsBody');
     const ddmmyyyy = dateToDDMMYYYY(dateObj);
-    const targetTimestamp = dateObj.getTime();
 
     title.innerText = ddmmyyyy;
     let html = "";
 
     batches.forEach(b => {
-      const setDateStr = b.labelD1 || b.rawDate || b.sdate;
-      const setDate = parseAnyDate(setDateStr);
+      const raw = b.labelD1 || b.rawDate || b.sdate;
+      const setDate = parseAnyDate(raw);
       if (!setDate) return;
 
-      const d1Ts = setDate.getTime();
-      const d18Ts = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 17).getTime();
-      const d21Ts = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 20).getTime();
+      const d1DateStr = dateToDDMMYYYY(setDate);
+      const d18Date = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 17);
+      const d21Date = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 20);
 
-      if (targetTimestamp === d1Ts) {
+      const d18DateStr = dateToDDMMYYYY(d18Date);
+      const d21DateStr = dateToDDMMYYYY(d21Date);
+
+      if (ddmmyyyy === d1DateStr) {
         html += `<div class="event-item" style="border-left: 5px solid #0284c7; background: #f0f9ff; margin-bottom: 8px;">
           <b style="color: #0284c7; font-size: 0.95rem;">🥚 DAY 1: EGGS SET</b><br>
-          <b>Batch / Tray:</b> ${b.name}<br>
-          <b>Eggs Set:</b> ${b.eggs} eggs<br>
-          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Action: Check setter temp (99.5°F–100°F) and confirm egg turning is operating.</div>
+          <b>Batch:</b> ${b.name}<br>
+          <b>Quantity:</b> ${b.eggs} eggs<br>
+          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Confirm setter temp (99.5°F–100°F) and check automatic turning.</div>
         </div>`;
       }
 
-      if (targetTimestamp === d18Ts) {
+      if (ddmmyyyy === d18DateStr) {
         html += `<div class="event-item" style="border-left: 5px solid #ea580c; background: #fff7ed; margin-bottom: 8px;">
-          <b style="color: #ea580c; font-size: 0.95rem;">🐣 DAY 18: LOCKDOWN / HATCHER</b><br>
-          <b>Batch / Tray:</b> ${b.name}<br>
-          <b>Eggs:</b> ${b.eggs} eggs<br>
-          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Action: Move to hatcher baskets, stop egg turning, and increase humidity.</div>
+          <b style="color: #ea580c; font-size: 0.95rem;">🐣 DAY 18: LOCKDOWN</b><br>
+          <b>Batch:</b> ${b.name}<br>
+          <b>Quantity:</b> ${b.eggs} eggs<br>
+          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Stop turning, shift to hatching baskets, and increase wet-bulb / humidity.</div>
         </div>`;
       }
 
-      if (targetTimestamp === d21Ts) {
+      if (ddmmyyyy === d21DateStr) {
         html += `<div class="event-item" style="border-left: 5px solid #16a34a; background: #f0fdf4; margin-bottom: 8px;">
           <b style="color: #16a34a; font-size: 0.95rem;">🐥 DAY 21: PULL CHICKS</b><br>
-          <b>Batch / Tray:</b> ${b.name}<br>
-          <b>Initial Eggs:</b> ${b.eggs} eggs<br>
-          <b>Hatch Status:</b> ${b.chicksHatched !== null ? b.chicksHatched + ' chicks (' + b.hatchRate + '%)' : 'Pending results entry'}<br>
-          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Action: Transfer dried chicks to brooder and log hatch count in Batches.</div>
+          <b>Batch:</b> ${b.name}<br>
+          <b>Eggs Set:</b> ${b.eggs} eggs<br>
+          <b>Hatch Log:</b> ${b.chicksHatched !== null ? b.chicksHatched + ' chicks (' + b.hatchRate + '%)' : 'Awaiting count'}<br>
+          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Transfer dry chicks to the brooder and record live harvest in Batches tab.</div>
         </div>`;
       }
     });
@@ -955,17 +959,17 @@
     const col = collections.find(c => normalizeDateStr(c.date) === ddmmyyyy);
     if (col && (col.total > 0 || (col.broken || 0) > 0)) {
       html += `<div class="event-item" style="border-left: 5px solid #64748b; background: #f8fafc; margin-bottom: 8px;">
-        <b>🥚 Daily Egg Pickings</b><br>
+        <b>🥚 Egg Collections</b><br>
         Morn: ${col.morning || 0} | Aftn: ${col.afternoon || 0} | Eve: ${col.evening || 0}<br>
-        Broken: <b style="color: #b91c1c;">${col.broken || 0}</b> | <b>Total Intact: ${col.total}</b>
+        Broken: <b style="color: #b91c1c;">${col.broken || 0}</b> | <b>Intact: ${col.total}</b>
       </div>`;
     }
 
     const mort = mortality.find(m => normalizeDateStr(m.date) === ddmmyyyy);
     if (mort && mort.dead > 0) {
       html += `<div class="event-item" style="border-left: 5px solid #b91c1c; background: #fef2f2; margin-bottom: 8px;">
-        <b style="color: #b91c1c;">☠️ Mortality Logged</b><br>
-        Birds Dead: <b>${mort.dead}</b>
+        <b style="color: #b91c1c;">☠️ Mortality</b><br>
+        Dead: <b>${mort.dead} birds</b>
       </div>`;
     }
 
