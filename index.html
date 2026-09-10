@@ -241,7 +241,7 @@
   <!-- TAB 2: COLLECTIONS -->
   <div id="collectionsTab" class="view-panel">
     <div class="card">
-      <h2>🥚 Record Egg Collection</h2>
+      <h2 id="eggFormTitle">🥚 Record Egg Collection</h2>
       <div class="form-row">
         <div>
           <label>Date (Today Auto-Filled)</label>
@@ -266,7 +266,8 @@
           <input type="number" id="colBroken" placeholder="e.g. 2" min="0" value="0">
         </div>
       </div>
-      <button class="btn-submit" onclick="saveCollection()">Add Collection</button>
+      <button class="btn-submit" id="colSubmitBtn" onclick="saveCollection()">Add Collection</button>
+      <button class="btn-cancel" id="colCancelBtn" onclick="resetEggForm()">Cancel Edit</button>
     </div>
     <div class="card">
       <h2>📅 Daily Pickings Log</h2>
@@ -280,7 +281,7 @@
               <th>Eve</th>
               <th>Broken</th>
               <th>Total</th>
-              <th>Del</th>
+              <th>Edit</th>
             </tr>
           </thead>
           <tbody id="collectionBody"></tbody>
@@ -306,7 +307,7 @@
     </div>
 
     <div class="card">
-      <h2>☠️ Log Daily Mortality</h2>
+      <h2 id="mortFormTitle">☠️ Log Daily Mortality</h2>
       <div class="form-row">
         <div>
           <label>Date (Today Auto-Filled)</label>
@@ -317,7 +318,8 @@
           <input type="number" id="mortCount" placeholder="e.g. 2" min="1">
         </div>
       </div>
-      <button class="btn-submit" style="background:#b91c1c;" onclick="saveMortality()">Log Mortality</button>
+      <button class="btn-submit" id="mortSubmitBtn" style="background:#b91c1c;" onclick="saveMortality()">Log Mortality</button>
+      <button class="btn-cancel" id="mortCancelBtn" onclick="resetMortForm()">Cancel Edit</button>
     </div>
 
     <div class="card">
@@ -328,7 +330,7 @@
             <tr>
               <th>Date</th>
               <th>Dead</th>
-              <th>Del</th>
+              <th>Edit</th>
             </tr>
           </thead>
           <tbody id="mortalityBody"></tbody>
@@ -433,7 +435,6 @@
     return dateToISO(new Date());
   }
 
-  // Parses ANY stored format (YYYY-MM-DD, DD/MM/YYYY, or Firestore Timestamp) cleanly to YYYY-MM-DD
   function toNormalizedISO(input) {
     if (!input) return "";
     if (typeof input === 'object' && input.seconds) {
@@ -461,7 +462,7 @@
     const norm = toNormalizedISO(isoStr);
     if (!norm) return isoStr || "-";
     const parts = norm.split('-');
-    return `${parts[2]}/${parts[1]}/${parts[0]}`; // Displays as DD/MM/YYYY
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
   }
 
   // --- STORAGE & AUTO-FILL TODAY ---
@@ -571,14 +572,18 @@
   checkAndLockLogo();
 
   // --- MORTALITY ---
+  let isEditingMortality = false;
+
   function saveMortality() {
     const dateVal = document.getElementById('mortDate').value || getTodayISO();
     const count = parseInt(document.getElementById('mortCount').value, 10);
-    if (isNaN(count) || count <= 0) return alert("Enter valid dead count.");
+    if (isNaN(count) || count < 0) return alert("Enter valid dead count.");
 
     const isoDate = toNormalizedISO(dateVal);
     let existing = mortality.find(m => toNormalizedISO(m.date) === isoDate);
-    let deadCount = existing ? (existing.dead + count) : count;
+
+    // If editing directly, replace count; otherwise add to today's count
+    let deadCount = isEditingMortality ? count : (existing ? (existing.dead + count) : count);
 
     const entry = { id: "mort_" + isoDate.replace(/-/g, ''), date: isoDate, dead: deadCount };
     if (existing) Object.assign(existing, entry);
@@ -586,18 +591,29 @@
 
     syncToLocalStorage();
     renderMortality();
-    document.getElementById('mortCount').value = "";
-    document.getElementById('mortDate').value = getTodayISO();
+    resetMortForm();
     if (db) db.collection("mortality").doc(entry.id).set(entry).catch(e => console.warn(e));
   }
 
-  function deleteMortality(docId) {
-    if (confirm("Delete this mortality record?")) {
-      mortality = mortality.filter(m => m.id !== docId);
-      syncToLocalStorage();
-      renderMortality();
-      if (db) db.collection("mortality").doc(docId).delete().catch(e => console.warn(e));
-    }
+  function startEditMortality(docId) {
+    const m = mortality.find(item => item.id === docId);
+    if (!m) return;
+    document.getElementById('mortDate').value = toNormalizedISO(m.date);
+    document.getElementById('mortCount').value = m.dead;
+    isEditingMortality = true;
+    document.getElementById('mortFormTitle').innerText = "✏️ Edit Mortality Record";
+    document.getElementById('mortSubmitBtn').innerText = "Update Mortality";
+    document.getElementById('mortCancelBtn').style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function resetMortForm() {
+    document.getElementById('mortCount').value = "";
+    document.getElementById('mortDate').value = getTodayISO();
+    isEditingMortality = false;
+    document.getElementById('mortFormTitle').innerText = "☠️ Log Daily Mortality";
+    document.getElementById('mortSubmitBtn').innerText = "Log Mortality";
+    document.getElementById('mortCancelBtn').style.display = "none";
   }
 
   function renderMortality() {
@@ -614,7 +630,7 @@
       tr.innerHTML = `
         <td><b>${formatDisplayDate(m.date)}</b></td>
         <td style="color:#b91c1c; font-weight:bold;">${m.dead}</td>
-        <td><button style="border:none; background:#fee2e2; color:#b91c1c; border-radius:4px; font-weight:bold; padding:4px 8px;" onclick="deleteMortality('${m.id}')">✕</button></td>
+        <td><button style="border:1px solid #cbd5e1; background:#ffffff; color:#0284c7; border-radius:4px; font-weight:bold; padding:4px 10px; cursor:pointer;" onclick="startEditMortality('${m.id}')">✎ Edit</button></td>
       `;
       tbody.appendChild(tr);
     });
@@ -629,22 +645,24 @@
   }
 
   // --- EGG COLLECTIONS ---
+  let isEditingCollection = false;
+
   function saveCollection() {
     const dateVal = document.getElementById('colDate').value || getTodayISO();
     const slot = document.getElementById('colSlot').value;
     const count = parseInt(document.getElementById('colCount').value, 10) || 0;
     const broken = parseInt(document.getElementById('colBroken').value, 10) || 0;
-    if (count === 0 && broken === 0) return alert("Enter intact or broken eggs.");
+    if (count === 0 && broken === 0 && !isEditingCollection) return alert("Enter intact or broken eggs.");
 
     const isoDate = toNormalizedISO(dateVal);
     let existing = collections.find(c => toNormalizedISO(c.date) === isoDate);
     let m = existing ? (existing.morning || 0) : 0, a = existing ? (existing.afternoon || 0) : 0;
     let e = existing ? (existing.evening || 0) : 0, b = existing ? (existing.broken || 0) : 0;
 
-    if (slot === "Morning") m += count;
-    if (slot === "Afternoon") a += count;
-    if (slot === "Evening") e += count;
-    b += broken;
+    if (slot === "Morning") m = count;
+    if (slot === "Afternoon") a = count;
+    if (slot === "Evening") e = count;
+    b = broken;
 
     const entry = { id: "col_" + isoDate.replace(/-/g, ''), date: isoDate, morning: m, afternoon: a, evening: e, broken: b, total: (m + a + e) };
     if (existing) Object.assign(existing, entry); else collections.push(entry);
@@ -652,21 +670,33 @@
     syncToLocalStorage();
     renderCollections();
     renderCalendar();
-    
-    document.getElementById('colCount').value = "";
-    document.getElementById('colBroken').value = "0";
-    document.getElementById('colDate').value = getTodayISO();
+    resetEggForm();
+
     if (db) db.collection("collections").doc(entry.id).set(entry).catch(err => console.warn(err));
   }
 
-  function deleteCollection(docId) {
-    if (confirm("Delete egg entry?")) {
-      collections = collections.filter(c => c.id !== docId);
-      syncToLocalStorage();
-      renderCollections();
-      renderCalendar();
-      if (db) db.collection("collections").doc(docId).delete().catch(err => console.warn(err));
-    }
+  function startEditCollection(docId) {
+    const c = collections.find(item => item.id === docId);
+    if (!c) return;
+    document.getElementById('colDate').value = toNormalizedISO(c.date);
+    document.getElementById('colSlot').value = "Morning";
+    document.getElementById('colCount').value = c.morning || 0;
+    document.getElementById('colBroken').value = c.broken || 0;
+    isEditingCollection = true;
+    document.getElementById('eggFormTitle').innerText = "✏️ Edit Egg Pickings";
+    document.getElementById('colSubmitBtn').innerText = "Update Slot & Save";
+    document.getElementById('colCancelBtn').style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function resetEggForm() {
+    document.getElementById('colCount').value = "";
+    document.getElementById('colBroken').value = "0";
+    document.getElementById('colDate').value = getTodayISO();
+    isEditingCollection = false;
+    document.getElementById('eggFormTitle').innerText = "🥚 Record Egg Collection";
+    document.getElementById('colSubmitBtn').innerText = "Add Collection";
+    document.getElementById('colCancelBtn').style.display = "none";
   }
 
   function renderCollections() {
@@ -681,7 +711,7 @@
         <td>${c.morning || '-'}</td><td>${c.afternoon || '-'}</td><td>${c.evening || '-'}</td>
         <td style="color:#b91c1c; font-weight:bold;">${c.broken || '-'}</td>
         <td style="color:#0284c7; font-weight:bold;">${c.total}</td>
-        <td><button style="border:none; background:#fee2e2; color:#b91c1c; border-radius:4px; font-weight:bold; padding:4px 8px;" onclick="deleteCollection('${c.id}')">✕</button></td>
+        <td><button style="border:1px solid #cbd5e1; background:#ffffff; color:#0284c7; border-radius:4px; font-weight:bold; padding:4px 10px; cursor:pointer;" onclick="startEditCollection('${c.id}')">✎ Edit</button></td>
       `;
       tbody.appendChild(tr);
     });
@@ -787,7 +817,6 @@
         <div class="batch-actions">
           <button class="btn-neutral" onclick="recordHatchResult('${b.id}')">🐥 Chicks</button>
           <button class="btn-neutral" onclick="startEditBatch('${b.id}')">✎ Edit</button>
-          <button class="btn-neutral" onclick="deleteBatch('${b.id}')">✕ Delete</button>
         </div>
       `;
       container.appendChild(card);
@@ -804,17 +833,6 @@
     document.getElementById('cancelBtn').style.display = "block";
     switchTab('batchesTab', document.querySelectorAll('.tab-btn')[0]);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function deleteBatch(docId) {
-    if (confirm("Delete this batch?")) {
-      batches = batches.filter(b => b.id !== docId);
-      syncToLocalStorage();
-      renderBatches();
-      renderMortality();
-      renderCalendar();
-      if (db) db.collection("batches").doc(docId).delete().catch(e => console.warn(e));
-    }
   }
 
   function resetBatchForm() {
