@@ -58,7 +58,7 @@
 
   /* TABS */
   .tab-bar { display: flex; background: #e2e8f0; border-radius: 8px; padding: 3px; gap: 3px; margin-bottom: 12px; }
-  .tab-btn { flex: 1; border: none; background: transparent; padding: 9px 4px; font-size: 0.82rem; font-weight: 700; color: #475569; border-radius: 6px; cursor: pointer; }
+  .tab-btn { flex: 1; border: none; background: transparent; padding: 9px 2px; font-size: 0.78rem; font-weight: 700; color: #475569; border-radius: 6px; cursor: pointer; text-align: center; }
   .tab-btn.active { background: #ffffff; color: #0284c7; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
   /* CARDS */
@@ -90,18 +90,7 @@
   
   /* NEUTRAL BUTTONS */
   .batch-actions { display: flex; gap: 6px; }
-  .btn-neutral {
-    flex: 1;
-    padding: 8px 4px;
-    border-radius: 6px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: #334155;
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    cursor: pointer;
-    text-align: center;
-  }
+  .btn-neutral { flex: 1; padding: 8px 4px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; color: #334155; background: #ffffff; border: 1px solid #cbd5e1; cursor: pointer; text-align: center; }
   .btn-neutral:active { background: #f1f5f9; }
 
   /* TABLE */
@@ -115,20 +104,7 @@
   .cal-header button { padding: 4px 12px; background: #e2e8f0; border: none; border-radius: 4px; font-weight: bold; }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
   .cal-day-name { font-size: 0.7rem; font-weight: bold; color: #64748b; padding-bottom: 4px; }
-  .cal-cell {
-    min-height: 50px;
-    border-radius: 6px;
-    border: 1px solid #e2e8f0;
-    background: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 2px;
-    font-size: 0.82rem;
-    font-weight: 700;
-    cursor: pointer;
-  }
+  .cal-cell { min-height: 50px; border-radius: 6px; border: 1px solid #e2e8f0; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 2px; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
   .cal-cell:active { background: #f1f5f9; }
   .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; }
   .egg-badge { background: #e0f2fe; color: #0369a1; border-radius: 8px; font-size: 0.58rem; padding: 1px 4px; margin-top: 1px; font-weight: 800; }
@@ -137,70 +113,32 @@
   .stage-remove { background: #bbf7d0 !important; color: #166534 !important; border: 1.5px solid #22c55e !important; }
   .stage-tag { font-size: 0.52rem; font-weight: 900; line-height: 1; text-transform: uppercase; margin-top: 2px; }
 
+  /* CALENDAR LEGEND - RESTORED */
+  .legend { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; font-size: 0.75rem; justify-content: center; }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-box { width: 12px; height: 12px; border-radius: 3px; }
+
   /* FULL SCREEN DATA DISPLAY CONTAINER */
-  #dataDisplayView {
-    display: none;
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 12px;
-    padding: 14px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  }
-  .data-display-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid #0f172a;
-    padding-bottom: 8px;
-    margin-bottom: 12px;
-  }
+  #dataDisplayView { display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .data-display-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 12px; }
 
   /* MODALS */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(2px);
-    z-index: 999;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-  }
-  .modal-box {
-    background: #ffffff;
-    width: 100%;
-    max-width: 440px;
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    max-height: 90vh;
-    overflow-y: auto;
-  }
+  .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 999; align-items: center; justify-content: center; padding: 16px; }
+  .modal-box { background: #ffffff; width: 100%; max-width: 440px; border-radius: 12px; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
   .modal-box h3 { margin: 0 0 12px 0; color: #0284c7; font-size: 1.05rem; display: flex; justify-content: space-between; align-items: center; }
   .modal-close { background: #e2e8f0; border: none; border-radius: 50%; width: 28px; height: 28px; font-weight: bold; cursor: pointer; }
   .event-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-bottom: 8px; font-size: 0.85rem; }
   
-  .data-opt-box {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 12px;
-  }
+  .data-opt-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
   .data-opt-box h4 { margin: 0 0 8px 0; font-size: 0.88rem; color: #334155; }
-
   .view-panel { display: none; }
   .view-panel.active { display: block; }
 </style>
-
-<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-<!-- APP DASHBOARD CONTAINER -->
 <div class="container" id="mainDashboard">
 
   <!-- TOP HEADER -->
@@ -211,23 +149,22 @@
         <span id="placeholderText" style="font-size:0.6rem; font-weight:bold;">AD<br>FARMS</span>
       </div>
       <input type="file" id="logoInput" accept="image/*" style="display: none;" onchange="handleLogoUpload(this)">
-
       <div class="brand-text">
         <h1>AD Farms</h1>
         <div class="sub-title">Herd &amp; Harvest</div>
       </div>
     </div>
-    
     <div class="header-actions">
       <button class="btn-data-top" onclick="openDataModal()">📊 Data</button>
       <div id="cloudStatus" class="status-badge">🟢 Cloud</div>
     </div>
   </div>
 
-  <!-- TABS -->
+  <!-- TABS (ADDED MORTALITY TAB) -->
   <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('batchesTab', this)">📋 Batches</button>
     <button class="tab-btn" onclick="switchTab('collectionsTab', this)">🥚 Egg Log</button>
+    <button class="tab-btn" onclick="switchTab('mortalityTab', this)">☠️ Mortality</button>
     <button class="tab-btn" onclick="switchTab('calendarTab', this)">📅 Calendar</button>
   </div>
 
@@ -236,7 +173,6 @@
     <div class="card">
       <h2>🐥 Set New Incubator Batch</h2>
       <input type="hidden" id="editDocId" value="">
-      
       <div class="form-row">
         <div>
           <label>Batch Name / Tray</label>
@@ -247,18 +183,15 @@
           <input type="number" id="eggsSet" value="102" min="1">
         </div>
       </div>
-
       <div class="form-row">
         <div>
           <label>Setting Date (DD/MM/YYYY)</label>
           <input type="text" id="sdate" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
         </div>
       </div>
-
       <button class="btn-submit" id="submitBtn" onclick="saveBatch()">Start / Save Batch</button>
       <button class="btn-cancel" id="cancelBtn" onclick="resetBatchForm()">Cancel Edit</button>
     </div>
-
     <div id="batchContainer"></div>
     <div id="noBatches" style="text-align:center; color:#94a3b8; padding:20px; font-size:0.85rem;">No active batches recorded.</div>
   </div>
@@ -293,7 +226,6 @@
       </div>
       <button class="btn-submit" onclick="saveCollection()">Add Collection</button>
     </div>
-
     <div class="card">
       <h2>📅 Daily Pickings Log</h2>
       <div class="table-wrap">
@@ -316,7 +248,62 @@
     </div>
   </div>
 
-  <!-- TAB 3: CALENDAR -->
+  <!-- TAB 3: MORTALITY (NEW) -->
+  <div id="mortalityTab" class="view-panel">
+    <div class="card" style="background: #f8fafc; border-color: #cbd5e1;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h2 style="margin:0; color:#0f172a;">Total Bird Stock</h2>
+          <div style="font-size:0.75rem; color:#64748b;">Live count of remaining flock.</div>
+        </div>
+        <div style="text-align:right;">
+          <div id="remainingBirdsDisplay" style="font-size:1.6rem; font-weight:900; color:#059669;">3000</div>
+          <div style="font-size:0.65rem; font-weight:bold; color:#475569; text-transform:uppercase;">Birds Alive</div>
+        </div>
+      </div>
+      <div style="margin-top:12px; border-top:1px solid #e2e8f0; padding-top:10px;">
+        <label>Update Initial Flock Size</label>
+        <div style="display:flex; gap:8px;">
+          <input type="number" id="initialFlockInput" value="3000" style="width:100px;">
+          <button class="btn-neutral" onclick="saveInitialFlock()">Update Base Count</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>☠️ Log Daily Mortality</h2>
+      <div class="form-row">
+        <div>
+          <label>Date (DD/MM/YYYY)</label>
+          <input type="text" id="mortDate" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
+        </div>
+        <div>
+          <label>Birds Dead</label>
+          <input type="number" id="mortCount" placeholder="e.g. 2" min="1">
+        </div>
+      </div>
+      <button class="btn-submit" style="background:#b91c1c;" onclick="saveMortality()">Log Mortality</button>
+    </div>
+
+    <div class="card">
+      <h2>📋 Mortality Log</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Dead</th>
+              <th>Del</th>
+            </tr>
+          </thead>
+          <tbody id="mortalityBody"></tbody>
+        </table>
+        <div id="noMortality" style="text-align:center; color:#94a3b8; padding:15px; font-size:0.8rem;">No mortality recorded.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: CALENDAR (WITH RESTORED COLOR LEGEND) -->
   <div id="calendarTab" class="view-panel">
     <div class="card">
       <div class="cal-header">
@@ -324,7 +311,6 @@
         <h3 id="calMonthYear" style="margin:0; font-size:0.95rem; color:#0f172a;">Month</h3>
         <button onclick="changeMonth(1)">▶</button>
       </div>
-
       <div class="cal-grid">
         <div class="cal-day-name">Sun</div>
         <div class="cal-day-name">Mon</div>
@@ -334,8 +320,14 @@
         <div class="cal-day-name">Fri</div>
         <div class="cal-day-name">Sat</div>
       </div>
-
       <div class="cal-grid" id="calGrid"></div>
+      
+      <!-- CALENDAR LEGEND RESTORED EXACTLY AS ORIGINAL -->
+      <div class="legend">
+        <div class="legend-item"><div class="legend-box" style="background:#bae6fd; border:1px solid #38bdf8;"></div><span><b>Blue</b>: Set</span></div>
+        <div class="legend-item"><div class="legend-box" style="background:#fed7aa; border:1px solid #f97316;"></div><span><b>Orange</b>: Hatcher D18</span></div>
+        <div class="legend-item"><div class="legend-box" style="background:#bbf7d0; border:1px solid #22c55e;"></div><span><b>Green</b>: Pull D21</span></div>
+      </div>
       <div style="font-size:0.75rem; text-align:center; color:#64748b; margin-top:8px;">💡 Tap any date on the calendar to view batch details.</div>
     </div>
   </div>
@@ -358,24 +350,20 @@
       <span>📊 View Data Reports</span>
       <button class="modal-close" onclick="closeDataModal()">✕</button>
     </h3>
-
-    <!-- 1. EGG REPORT OPTION -->
     <div class="data-opt-box">
       <h4>🥚 1. Egg Collection Report</h4>
       <div class="form-row">
         <div>
-          <label>From Date (DD/MM/YYYY)</label>
+          <label>From Date</label>
           <input type="text" id="reportColFrom" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
         </div>
         <div>
-          <label>To Date (DD/MM/YYYY)</label>
+          <label>To Date</label>
           <input type="text" id="reportColTo" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
         </div>
       </div>
       <button class="btn-submit" style="background:#059669; padding:10px; font-size:0.85rem;" onclick="displayEggDataReport()">Show Egg Data</button>
     </div>
-
-    <!-- 2. INCUBATION REPORT OPTION -->
     <div class="data-opt-box">
       <h4>🐥 2. Incubation Batches Report</h4>
       <div class="form-row">
@@ -393,7 +381,7 @@
   </div>
 </div>
 
-<!-- CALENDAR DATE DETAILS MODAL -->
+<!-- DATE DETAILS MODAL -->
 <div class="modal-overlay" id="dateModal" onclick="closeDateDetails(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <h3>
@@ -405,84 +393,73 @@
 </div>
 
 <script>
-  // --- STRICT DD/MM/YYYY FORMATTING & PARSING ENGINE ---
+  // --- FORMATTING ENGINE ---
   function pad(n) { return String(n).padStart(2, '0'); }
-
   function formatDateInput(el) {
     let v = el.value.replace(/\D/g, '').slice(0, 8);
-    if (v.length >= 5) {
-      el.value = v.slice(0, 2) + '/' + v.slice(2, 4) + '/' + v.slice(4);
-    } else if (v.length >= 3) {
-      el.value = v.slice(0, 2) + '/' + v.slice(2);
-    } else {
-      el.value = v;
-    }
+    if (v.length >= 5) el.value = v.slice(0, 2) + '/' + v.slice(2, 4) + '/' + v.slice(4);
+    else if (v.length >= 3) el.value = v.slice(0, 2) + '/' + v.slice(2);
+    else el.value = v;
   }
-
   function getTodayDDMMYYYY() {
     const d = new Date();
     return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
   }
-
   function dateToDDMMYYYY(dateObj) {
     return `${pad(dateObj.getDate())}/${pad(dateObj.getMonth() + 1)}/${dateObj.getFullYear()}`;
   }
-
   function parseAnyDate(str) {
     if (!str || typeof str !== 'string') return null;
     str = str.trim();
-
     if (str.includes('/')) {
       const parts = str.split('/');
       if (parts.length === 3) {
-        const d = parseInt(parts[0], 10);
-        const m = parseInt(parts[1], 10);
-        const y = parseInt(parts[2], 10);
+        const d = parseInt(parts[0], 10), m = parseInt(parts[1], 10), y = parseInt(parts[2], 10);
         if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 2000) {
           const dt = new Date(y, m - 1, d);
           if (dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d) return dt;
         }
       }
     }
-
     if (str.includes('-')) {
       const parts = str.split('-');
       if (parts.length === 3) {
-        const y = parseInt(parts[0], 10);
-        const m = parseInt(parts[1], 10);
-        const d = parseInt(parts[2], 10);
+        const y = parseInt(parts[0], 10), m = parseInt(parts[1], 10), d = parseInt(parts[2], 10);
         if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 2000) {
           const dt = new Date(y, m - 1, d);
           if (dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d) return dt;
         }
       }
     }
-
     return null;
   }
-
   function formatStrictDDMMYYYY(dateString) {
     const dt = parseAnyDate(dateString);
     return dt ? dateToDDMMYYYY(dt) : dateString;
   }
-
   function toIsoKey(dateObj) {
     return `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}`;
   }
 
-  // --- LOCAL & CLOUD STORAGE ---
+  // --- STORAGE ---
   let collections = JSON.parse(localStorage.getItem("ad_farms_local_collections") || "[]");
   let batches = JSON.parse(localStorage.getItem("ad_farms_local_batches") || "[]");
+  let mortality = JSON.parse(localStorage.getItem("ad_farms_local_mortality") || "[]");
+  let initialFlockSize = parseInt(localStorage.getItem("ad_farms_local_flock_base") || "3000", 10);
   let curYear = new Date().getFullYear();
   let curMonth = new Date().getMonth();
 
   const todayStr = getTodayDDMMYYYY();
   document.getElementById('colDate').value = todayStr;
   document.getElementById('sdate').value = todayStr;
+  document.getElementById('mortDate').value = todayStr;
+  document.getElementById('initialFlockInput').value = initialFlockSize;
 
   function syncToLocalStorage() {
     localStorage.setItem("ad_farms_local_collections", JSON.stringify(collections));
     localStorage.setItem("ad_farms_local_batches", JSON.stringify(batches));
+    localStorage.setItem("ad_farms_local_mortality", JSON.stringify(mortality));
+    localStorage.setItem("ad_farms_local_flock_base", initialFlockSize.toString());
   }
 
   // Firebase Setup
@@ -504,28 +481,27 @@
     db.collection("collections").onSnapshot(snapshot => {
       let cloudCols = [];
       snapshot.forEach(doc => cloudCols.push({ id: doc.id, ...doc.data() }));
-      if (cloudCols.length > 0) {
-        collections = cloudCols;
-        syncToLocalStorage();
-        renderCollections();
-        renderCalendar();
-      }
+      if (cloudCols.length > 0) { collections = cloudCols; syncToLocalStorage(); renderCollections(); renderCalendar(); }
       document.getElementById('cloudStatus').textContent = "🟢 Cloud";
     }, err => console.warn(err));
 
     db.collection("batches").onSnapshot(snapshot => {
       let cloudBatches = [];
       snapshot.forEach(doc => cloudBatches.push({ id: doc.id, ...doc.data() }));
-      if (cloudBatches.length > 0) {
-        batches = cloudBatches;
-        syncToLocalStorage();
-        renderBatches();
-        renderCalendar();
-      }
+      if (cloudBatches.length > 0) { batches = cloudBatches; syncToLocalStorage(); renderBatches(); renderCalendar(); }
     }, err => console.warn(err));
-  } catch(e) {
-    console.warn("Offline mode active", e);
-  }
+
+    db.collection("mortality").onSnapshot(snapshot => {
+      let cloudMort = [];
+      snapshot.forEach(doc => cloudMort.push({ id: doc.id, ...doc.data() }));
+      if (cloudMort.length > 0) { mortality = cloudMort; syncToLocalStorage(); renderMortality(); }
+    }, err => console.warn(err));
+
+    db.collection("config").doc("flock").onSnapshot(doc => {
+      if (doc.exists) { initialFlockSize = doc.data().initialSize || 3000; document.getElementById('initialFlockInput').value = initialFlockSize; syncToLocalStorage(); renderMortality(); }
+    }, err => console.warn(err));
+
+  } catch(e) { console.warn("Offline local mode active", e); }
 
   function switchTab(tabId, btn) {
     document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
@@ -533,100 +509,132 @@
     document.getElementById(tabId).classList.add('active');
     btn.classList.add('active');
     if (tabId === 'calendarTab') renderCalendar();
+    if (tabId === 'mortalityTab') renderMortality();
   }
 
-  // Logo Engine
+  // --- LOGO ENGINE ---
   function checkAndLockLogo() {
     const saved = localStorage.getItem("ad_farms_logo");
-    const img = document.getElementById('logoDisplay');
-    const placeholder = document.getElementById('placeholderText');
-    const container = document.getElementById('logoContainer');
     if (saved) {
-      img.src = saved;
-      img.style.display = "block";
-      placeholder.style.display = "none";
-      container.style.cursor = "default";
+      document.getElementById('logoDisplay').src = saved;
+      document.getElementById('logoDisplay').style.display = "block";
+      document.getElementById('placeholderText').style.display = "none";
+      document.getElementById('logoContainer').style.cursor = "default";
       return true;
     }
     return false;
   }
-
-  function triggerUploadOnce() {
-    if (!checkAndLockLogo()) document.getElementById('logoInput').click();
-  }
-
+  function triggerUploadOnce() { if (!checkAndLockLogo()) document.getElementById('logoInput').click(); }
   function handleLogoUpload(input) {
     if (input.files && input.files[0]) {
       const reader = new FileReader();
-      reader.onload = function(e) {
-        localStorage.setItem("ad_farms_logo", e.target.result);
-        checkAndLockLogo();
-        input.value = "";
-        input.disabled = true;
-      };
+      reader.onload = function(e) { localStorage.setItem("ad_farms_logo", e.target.result); checkAndLockLogo(); input.value = ""; };
       reader.readAsDataURL(input.files[0]);
     }
   }
   checkAndLockLogo();
 
-  // --- EGG COLLECTIONS ---
-  function saveCollection() {
-    const rawDate = document.getElementById('colDate').value.trim();
+  // --- MORTALITY ENGINE ---
+  function saveInitialFlock() {
+    const val = parseInt(document.getElementById('initialFlockInput').value, 10);
+    if (isNaN(val) || val < 0) return alert("Enter valid flock size.");
+    initialFlockSize = val;
+    syncToLocalStorage();
+    renderMortality();
+    if (db) db.collection("config").doc("flock").set({ initialSize: val }).catch(e => console.warn(e));
+    alert("Base flock size updated.");
+  }
+
+  function saveMortality() {
+    const rawDate = document.getElementById('mortDate').value.trim();
     const dateObj = parseAnyDate(rawDate);
-    if (!dateObj) return alert("Please enter a valid date in DD/MM/YYYY format (e.g. 10/09/2026).");
-
-    const slot = document.getElementById('colSlot').value;
-    const count = parseInt(document.getElementById('colCount').value, 10) || 0;
-    const broken = parseInt(document.getElementById('colBroken').value, 10) || 0;
-
-    if (count === 0 && broken === 0) return alert("Please enter either intact eggs or broken eggs.");
+    if (!dateObj) return alert("Please enter valid date (DD/MM/YYYY).");
+    const count = parseInt(document.getElementById('mortCount').value, 10);
+    if (isNaN(count) || count <= 0) return alert("Enter valid dead count.");
 
     const formattedDate = dateToDDMMYYYY(dateObj);
     const docKey = toIsoKey(dateObj);
 
-    let existing = collections.find(c => c.docKey === docKey || c.date === formattedDate || c.date === docKey);
-    let m = existing ? (existing.morning || 0) : 0;
-    let a = existing ? (existing.afternoon || 0) : 0;
-    let e = existing ? (existing.evening || 0) : 0;
-    let b = existing ? (existing.broken || 0) : 0;
+    let existing = mortality.find(m => m.docKey === docKey || m.date === formattedDate);
+    let deadCount = existing ? (existing.dead + count) : count;
+
+    const entry = { id: docKey, docKey: docKey, date: formattedDate, dead: deadCount };
+    if (existing) Object.assign(existing, entry);
+    else mortality.push(entry);
+
+    syncToLocalStorage();
+    renderMortality();
+    document.getElementById('mortCount').value = "";
+    if (db) db.collection("mortality").doc(docKey).set(entry).catch(e => console.warn(e));
+  }
+
+  function deleteMortality(docId) {
+    if (confirm("Delete this mortality record?")) {
+      mortality = mortality.filter(m => m.id !== docId && m.docKey !== docId);
+      syncToLocalStorage();
+      renderMortality();
+      if (db) db.collection("mortality").doc(docId).delete().catch(e => console.warn(e));
+    }
+  }
+
+  function renderMortality() {
+    const tbody = document.getElementById('mortalityBody');
+    tbody.innerHTML = "";
+    document.getElementById('noMortality').style.display = mortality.length === 0 ? "block" : "none";
+
+    let totalDead = 0;
+    const sorted = [...mortality].sort((a, b) => (parseAnyDate(b.date) || new Date(0)) - (parseAnyDate(a.date) || new Date(0)));
+
+    sorted.forEach(m => {
+      totalDead += m.dead;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><b>${formatStrictDDMMYYYY(m.date)}</b></td>
+        <td style="color:#b91c1c; font-weight:bold;">${m.dead}</td>
+        <td><button style="border:none; background:#fee2e2; color:#b91c1c; border-radius:4px; font-weight:bold; padding:4px 8px;" onclick="deleteMortality('${m.id}')">✕</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    const currentFlock = initialFlockSize - totalDead;
+    document.getElementById('remainingBirdsDisplay').innerText = currentFlock;
+    if(currentFlock < (initialFlockSize * 0.5)) document.getElementById('remainingBirdsDisplay').style.color = "#ea580c";
+    else document.getElementById('remainingBirdsDisplay').style.color = "#059669";
+  }
+
+  // --- EGG COLLECTIONS ---
+  function saveCollection() {
+    const rawDate = document.getElementById('colDate').value.trim();
+    const dateObj = parseAnyDate(rawDate);
+    if (!dateObj) return alert("Please enter valid date (DD/MM/YYYY).");
+    const slot = document.getElementById('colSlot').value;
+    const count = parseInt(document.getElementById('colCount').value, 10) || 0;
+    const broken = parseInt(document.getElementById('colBroken').value, 10) || 0;
+    if (count === 0 && broken === 0) return alert("Enter intact or broken eggs.");
+
+    const formattedDate = dateToDDMMYYYY(dateObj);
+    const docKey = toIsoKey(dateObj);
+    let existing = collections.find(c => c.docKey === docKey || c.date === formattedDate);
+    let m = existing ? (existing.morning || 0) : 0, a = existing ? (existing.afternoon || 0) : 0;
+    let e = existing ? (existing.evening || 0) : 0, b = existing ? (existing.broken || 0) : 0;
 
     if (slot === "Morning") m += count;
     if (slot === "Afternoon") a += count;
     if (slot === "Evening") e += count;
     b += broken;
 
-    const grandTotal = m + a + e; // Broken eggs strictly excluded from daily total
+    const entry = { id: docKey, docKey: docKey, date: formattedDate, morning: m, afternoon: a, evening: e, broken: b, total: (m + a + e) };
+    if (existing) Object.assign(existing, entry); else collections.push(entry);
 
-    const entry = {
-      id: docKey,
-      docKey: docKey,
-      date: formattedDate,
-      morning: m,
-      afternoon: a,
-      evening: e,
-      broken: b,
-      total: grandTotal
-    };
-
-    if (existing) Object.assign(existing, entry);
-    else collections.push(entry);
-
-    syncToLocalStorage();
-    renderCollections();
-    renderCalendar();
-    
-    document.getElementById('colCount').value = "";
-    document.getElementById('colBroken').value = "0";
-
+    syncToLocalStorage(); renderCollections(); renderCalendar();
+    document.getElementById('colCount').value = ""; document.getElementById('colBroken').value = "0";
     if (db) db.collection("collections").doc(docKey).set(entry).catch(err => console.warn(err));
   }
 
   function deleteCollection(docId) {
-    if (confirm("Delete this egg entry?")) {
+    if (confirm("Delete egg entry?")) {
       collections = collections.filter(c => c.id !== docId && c.docKey !== docId);
-      syncToLocalStorage();
-      renderCollections();
-      renderCalendar();
+      syncToLocalStorage(); renderCollections(); renderCalendar();
       if (db) db.collection("collections").doc(docId).delete().catch(err => console.warn(err));
     }
   }
@@ -635,21 +643,12 @@
     const tbody = document.getElementById('collectionBody');
     tbody.innerHTML = "";
     document.getElementById('noCollections').style.display = collections.length === 0 ? "block" : "none";
-
-    const sorted = [...collections].sort((a, b) => {
-      const da = parseAnyDate(a.date) || new Date(0);
-      const db = parseAnyDate(b.date) || new Date(0);
-      return db - da;
-    });
-
+    const sorted = [...collections].sort((a, b) => (parseAnyDate(b.date) || new Date(0)) - (parseAnyDate(a.date) || new Date(0)));
     sorted.forEach(c => {
-      const displayDate = formatStrictDDMMYYYY(c.date);
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><b>${displayDate}</b></td>
-        <td>${c.morning || '-'}</td>
-        <td>${c.afternoon || '-'}</td>
-        <td>${c.evening || '-'}</td>
+        <td><b>${formatStrictDDMMYYYY(c.date)}</b></td>
+        <td>${c.morning || '-'}</td><td>${c.afternoon || '-'}</td><td>${c.evening || '-'}</td>
         <td style="color:#b91c1c; font-weight:bold;">${c.broken || '-'}</td>
         <td style="color:#0284c7; font-weight:bold;">${c.total}</td>
         <td><button style="border:none; background:#fee2e2; color:#b91c1c; border-radius:4px; font-weight:bold; padding:4px 8px;" onclick="deleteCollection('${c.id}')">✕</button></td>
@@ -658,19 +657,11 @@
     });
   }
 
-  // --- BATCHES ENGINE ---
+  // --- BATCHES ---
   function computeMilestonesStrict(d1Date) {
     const d18 = new Date(d1Date.getFullYear(), d1Date.getMonth(), d1Date.getDate() + 17);
     const d21 = new Date(d1Date.getFullYear(), d1Date.getMonth(), d1Date.getDate() + 20);
-
-    return {
-      isoD1: toIsoKey(d1Date),
-      isoD18: toIsoKey(d18),
-      isoD21: toIsoKey(d21),
-      labelD1: dateToDDMMYYYY(d1Date),
-      labelD18: dateToDDMMYYYY(d18),
-      labelD21: dateToDDMMYYYY(d21)
-    };
+    return { isoD1: toIsoKey(d1Date), isoD18: toIsoKey(d18), isoD21: toIsoKey(d21), labelD1: dateToDDMMYYYY(d1Date), labelD18: dateToDDMMYYYY(d18), labelD21: dateToDDMMYYYY(d21) };
   }
 
   function saveBatch() {
@@ -678,39 +669,19 @@
     const eggs = parseInt(document.getElementById('eggsSet').value, 10) || 102;
     const rawDate = document.getElementById('sdate').value.trim();
     const editDocId = document.getElementById('editDocId').value;
-
     const d1Date = parseAnyDate(rawDate);
-    if (!d1Date) return alert("Please enter setting date strictly in DD/MM/YYYY format (e.g. 10/09/2026).");
+    if (!d1Date) return alert("Please enter setting date (DD/MM/YYYY).");
 
     const milestones = computeMilestonesStrict(d1Date);
     const id = editDocId || ("batch_" + Date.now());
-    const data = {
-      id,
-      name,
-      eggs,
-      rawDate: milestones.labelD1,
-      isoDate: milestones.isoD1,
-      ...milestones
-    };
+    const data = { id, name, eggs, rawDate: milestones.labelD1, isoDate: milestones.isoD1, ...milestones };
 
     if (editDocId) {
       const idx = batches.findIndex(b => b.id === editDocId);
-      if (idx !== -1) {
-        data.chicksHatched = batches[idx].chicksHatched || null;
-        data.hatchRate = batches[idx].hatchRate || null;
-        batches[idx] = data;
-      }
-    } else {
-      data.chicksHatched = null;
-      data.hatchRate = null;
-      batches.unshift(data);
-    }
+      if (idx !== -1) { data.chicksHatched = batches[idx].chicksHatched || null; data.hatchRate = batches[idx].hatchRate || null; batches[idx] = data; }
+    } else { data.chicksHatched = null; data.hatchRate = null; batches.unshift(data); }
 
-    syncToLocalStorage();
-    renderBatches();
-    renderCalendar();
-    resetBatchForm();
-
+    syncToLocalStorage(); renderBatches(); renderCalendar(); resetBatchForm();
     if (db) {
       if (editDocId) db.collection("batches").doc(editDocId).set(data, { merge: true }).catch(e => console.warn(e));
       else db.collection("batches").doc(id).set(data).catch(e => console.warn(e));
@@ -723,62 +694,29 @@
     if (val === null) return;
     const count = parseInt(val, 10);
     if (isNaN(count) || count < 0) return alert("Enter valid chick count");
-
-    b.chicksHatched = count;
-    b.hatchRate = ((count / b.eggs) * 100).toFixed(1);
-
-    syncToLocalStorage();
-    renderBatches();
+    b.chicksHatched = count; b.hatchRate = ((count / b.eggs) * 100).toFixed(1);
+    syncToLocalStorage(); renderBatches();
     if (db) db.collection("batches").doc(docId).update({ chicksHatched: b.chicksHatched, hatchRate: b.hatchRate }).catch(e => console.warn(e));
   }
 
   function renderBatches() {
     const container = document.getElementById('batchContainer');
-    container.innerHTML = "";
-    document.getElementById('noBatches').style.display = batches.length === 0 ? "block" : "none";
-
-    const sortedBatches = [...batches].sort((a, b) => {
-      const da = parseAnyDate(a.rawDate) || new Date(a.isoDate || 0);
-      const db = parseAnyDate(b.rawDate) || new Date(b.isoDate || 0);
-      return da - db;
-    });
+    container.innerHTML = ""; document.getElementById('noBatches').style.display = batches.length === 0 ? "block" : "none";
+    const sortedBatches = [...batches].sort((a, b) => (parseAnyDate(a.rawDate) || new Date(a.isoDate || 0)) - (parseAnyDate(b.rawDate) || new Date(b.isoDate || 0)));
 
     sortedBatches.forEach(b => {
       const rateText = b.hatchRate !== null ? `<b style="color:#16a34a;">${b.hatchRate}%</b>` : `<span style="color:#94a3b8;">Pending</span>`;
       const chickCount = b.chicksHatched !== null ? `<b>${b.chicksHatched}</b> chicks` : `<span style="color:#94a3b8;">Not entered</span>`;
-
-      const d1Text = formatStrictDDMMYYYY(b.labelD1 || b.rawDate);
-      const d18Text = formatStrictDDMMYYYY(b.labelD18);
-      const d21Text = formatStrictDDMMYYYY(b.labelD21);
-
       const card = document.createElement('div');
       card.className = 'batch-card';
       card.innerHTML = `
-        <div class="batch-card-header">
-          <span class="batch-title">${b.name}</span>
-          <span class="batch-eggs">${b.eggs} eggs</span>
-        </div>
-
+        <div class="batch-card-header"><span class="batch-title">${b.name}</span><span class="batch-eggs">${b.eggs} eggs</span></div>
         <div class="batch-dates-grid">
-          <div class="date-pill d1">
-            <span class="pill-lbl">Day 1 (Set)</span>
-            <span class="pill-val">${d1Text}</span>
-          </div>
-          <div class="date-pill d18">
-            <span class="pill-lbl">Day 18 (Hatch)</span>
-            <span class="pill-val">${d18Text}</span>
-          </div>
-          <div class="date-pill d21">
-            <span class="pill-lbl">Day 21 (Pull)</span>
-            <span class="pill-val">${d21Text}</span>
-          </div>
+          <div class="date-pill d1"><span class="pill-lbl">Day 1 (Set)</span><span class="pill-val">${formatStrictDDMMYYYY(b.labelD1 || b.rawDate)}</span></div>
+          <div class="date-pill d18"><span class="pill-lbl">Day 18 (Hatch)</span><span class="pill-val">${formatStrictDDMMYYYY(b.labelD18)}</span></div>
+          <div class="date-pill d21"><span class="pill-lbl">Day 21 (Pull)</span><span class="pill-val">${formatStrictDDMMYYYY(b.labelD21)}</span></div>
         </div>
-
-        <div class="batch-results-bar">
-          <div>Harvest: ${chickCount}</div>
-          <div>Hatch Rate: ${rateText}</div>
-        </div>
-
+        <div class="batch-results-bar"><div>Harvest: ${chickCount}</div><div>Hatch Rate: ${rateText}</div></div>
         <div class="batch-actions">
           <button class="btn-neutral" onclick="recordHatchResult('${b.id}')">🐥 Chicks</button>
           <button class="btn-neutral" onclick="startEditBatch('${b.id}')">✎ Edit</button>
@@ -791,60 +729,37 @@
 
   function startEditBatch(docId) {
     const b = batches.find(item => item.id === docId);
-    document.getElementById('bname').value = b.name;
-    document.getElementById('eggsSet').value = b.eggs;
+    document.getElementById('bname').value = b.name; document.getElementById('eggsSet').value = b.eggs;
     document.getElementById('sdate').value = formatStrictDDMMYYYY(b.labelD1 || b.rawDate);
     document.getElementById('editDocId').value = docId;
-
-    document.getElementById('submitBtn').innerText = "Update Batch";
-    document.getElementById('cancelBtn').style.display = "block";
-    switchTab('batchesTab', document.querySelectorAll('.tab-btn')[0]);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('submitBtn').innerText = "Update Batch"; document.getElementById('cancelBtn').style.display = "block";
+    switchTab('batchesTab', document.querySelectorAll('.tab-btn')[0]); window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function deleteBatch(docId) {
     if (confirm("Delete this batch?")) {
-      batches = batches.filter(b => b.id !== docId);
-      syncToLocalStorage();
-      renderBatches();
-      renderCalendar();
+      batches = batches.filter(b => b.id !== docId); syncToLocalStorage(); renderBatches(); renderCalendar();
       if (db) db.collection("batches").doc(docId).delete().catch(e => console.warn(e));
     }
   }
 
   function resetBatchForm() {
-    document.getElementById('bname').value = "";
-    document.getElementById('eggsSet').value = "102";
-    document.getElementById('sdate').value = getTodayDDMMYYYY();
-    document.getElementById('editDocId').value = "";
-    document.getElementById('submitBtn').innerText = "Start / Save Batch";
-    document.getElementById('cancelBtn').style.display = "none";
+    document.getElementById('bname').value = ""; document.getElementById('eggsSet').value = "102";
+    document.getElementById('sdate').value = getTodayDDMMYYYY(); document.getElementById('editDocId').value = "";
+    document.getElementById('submitBtn').innerText = "Start / Save Batch"; document.getElementById('cancelBtn').style.display = "none";
   }
 
   // --- CALENDAR ---
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calMonthYear').innerText = `${monthNames[curMonth]} ${curYear}`;
+    const firstDayIndex = new Date(curYear, curMonth, 1).getDay(); const lastDateOfMonth = new Date(curYear, curMonth + 1, 0).getDate();
+    const grid = document.getElementById('calGrid'); grid.innerHTML = "";
 
-    const firstDayIndex = new Date(curYear, curMonth, 1).getDay();
-    const lastDateOfMonth = new Date(curYear, curMonth + 1, 0).getDate();
-    const grid = document.getElementById('calGrid');
-    grid.innerHTML = "";
-
-    for (let i = 0; i < firstDayIndex; i++) {
-      const emptyDiv = document.createElement('div');
-      emptyDiv.className = 'cal-cell empty';
-      grid.appendChild(emptyDiv);
-    }
-
+    for (let i = 0; i < firstDayIndex; i++) { const emptyDiv = document.createElement('div'); emptyDiv.className = 'cal-cell empty'; grid.appendChild(emptyDiv); }
     for (let d = 1; d <= lastDateOfMonth; d++) {
-      const cellDateObj = new Date(curYear, curMonth, d);
-      const isoKey = toIsoKey(cellDateObj);
-      const ddmmyyyy = dateToDDMMYYYY(cellDateObj);
-
-      const cell = document.createElement('div');
-      cell.className = 'cal-cell';
-      cell.onclick = () => showDateDetailsStrict(cellDateObj);
+      const cellDateObj = new Date(curYear, curMonth, d); const isoKey = toIsoKey(cellDateObj); const ddmmyyyy = dateToDDMMYYYY(cellDateObj);
+      const cell = document.createElement('div'); cell.className = 'cal-cell'; cell.onclick = () => showDateDetailsStrict(cellDateObj);
 
       let isSet = false, isD18 = false, isD21 = false;
       batches.forEach(b => {
@@ -853,8 +768,7 @@
         if (b.isoD21 === isoKey || b.labelD21 === ddmmyyyy) isD21 = true;
       });
 
-      const colRecord = collections.find(c => c.docKey === isoKey || c.date === ddmmyyyy || c.date === isoKey);
-
+      const colRecord = collections.find(c => c.docKey === isoKey || c.date === ddmmyyyy);
       let subtext = "";
       if (isSet) { cell.classList.add('stage-set'); subtext = "SET"; }
       else if (isD18) { cell.classList.add('stage-hatch'); subtext = "D18"; }
@@ -863,293 +777,106 @@
       let content = `<span>${d}</span>`;
       if (subtext) content += `<span class="stage-tag">${subtext}</span>`;
       if (colRecord && colRecord.total > 0) content += `<span class="egg-badge">+${colRecord.total}🥚</span>`;
-
-      cell.innerHTML = content;
-      grid.appendChild(cell);
+      cell.innerHTML = content; grid.appendChild(cell);
     }
   }
 
   function changeMonth(delta) {
     curMonth += delta;
-    if (curMonth < 0) { curMonth = 11; curYear -= 1; }
-    else if (curMonth > 11) { curMonth = 0; curYear += 1; }
+    if (curMonth < 0) { curMonth = 11; curYear -= 1; } else if (curMonth > 11) { curMonth = 0; curYear += 1; }
     renderCalendar();
   }
 
   function showDateDetailsStrict(dateObj) {
-    const modal = document.getElementById('dateModal');
-    const title = document.getElementById('modalDateTitle');
-    const body = document.getElementById('modalDetailsBody');
-
-    const isoKey = toIsoKey(dateObj);
-    const ddmmyyyy = dateToDDMMYYYY(dateObj);
-    title.innerText = ddmmyyyy;
-
-    let html = "";
+    const modal = document.getElementById('dateModal'); const title = document.getElementById('modalDateTitle'); const body = document.getElementById('modalDetailsBody');
+    const isoKey = toIsoKey(dateObj); const ddmmyyyy = dateToDDMMYYYY(dateObj);
+    title.innerText = ddmmyyyy; let html = "";
 
     batches.forEach(b => {
-      if (b.isoD1 === isoKey || b.labelD1 === ddmmyyyy) {
-        html += `
-          <div class="event-item" style="border-left: 4px solid #0284c7;">
-            <b style="color:#0284c7;">🥚 Day 1: SET EGGS</b><br>
-            <b>Batch:</b> ${b.name} (${b.eggs} eggs)<br>
-            <span style="font-size:0.75rem; color:#64748b;">Incubation cycle begins.</span>
-          </div>`;
-      }
-      if (b.isoD18 === isoKey || b.labelD18 === ddmmyyyy) {
-        html += `
-          <div class="event-item" style="border-left: 4px solid #ea580c;">
-            <b style="color:#ea580c;">🐣 Day 18: HATCHER LOCKDOWN</b><br>
-            <b>Batch:</b> ${b.name} (${b.eggs} eggs)<br>
-            <span style="font-size:0.78rem; color:#475569;">Action: Move to hatching basket, stop turning, increase humidity.</span>
-          </div>`;
-      }
-      if (b.isoD21 === isoKey || b.labelD21 === ddmmyyyy) {
-        html += `
-          <div class="event-item" style="border-left: 4px solid #16a34a;">
-            <b style="color:#16a34a;">🐥 Day 21: PULL CHICKS</b><br>
-            <b>Batch:</b> ${b.name} (${b.eggs} eggs)<br>
-            <span style="font-size:0.78rem; color:#475569;">Action: Transfer chicks to brooder & tally hatch rate.</span>
-          </div>`;
-      }
+      if (b.isoD1 === isoKey || b.labelD1 === ddmmyyyy) html += `<div class="event-item" style="border-left:4px solid #0284c7;"><b style="color:#0284c7;">🥚 Day 1: SET EGGS</b><br><b>Batch:</b> ${b.name} (${b.eggs} eggs)</div>`;
+      if (b.isoD18 === isoKey || b.labelD18 === ddmmyyyy) html += `<div class="event-item" style="border-left:4px solid #ea580c;"><b style="color:#ea580c;">🐣 Day 18: HATCHER LOCKDOWN</b><br><b>Batch:</b> ${b.name} (${b.eggs} eggs)</div>`;
+      if (b.isoD21 === isoKey || b.labelD21 === ddmmyyyy) html += `<div class="event-item" style="border-left:4px solid #16a34a;"><b style="color:#16a34a;">🐥 Day 21: PULL CHICKS</b><br><b>Batch:</b> ${b.name} (${b.eggs} eggs)</div>`;
     });
 
-    const col = collections.find(c => c.docKey === isoKey || c.date === ddmmyyyy || c.date === isoKey);
+    const col = collections.find(c => c.docKey === isoKey || c.date === ddmmyyyy);
     if (col && (col.total > 0 || (col.broken || 0) > 0)) {
-      html += `
-        <div class="event-item" style="border-left: 4px solid #0284c7;">
-          <b>🥚 Daily Egg Pickings</b><br>
-          Morning: <b>${col.morning || 0}</b> | Afternoon: <b>${col.afternoon || 0}</b> | Evening: <b>${col.evening || 0}</b><br>
-          Broken Eggs: <b style="color:#b91c1c;">${col.broken || 0}</b><br>
-          <b>Intact Eggs Total: ${col.total}</b>
-        </div>`;
+      html += `<div class="event-item" style="border-left:4px solid #0284c7;"><b>🥚 Daily Egg Pickings</b><br>Morn: ${col.morning||0} | Aftn: ${col.afternoon||0} | Eve: ${col.evening||0}<br>Broken: <b style="color:#b91c1c;">${col.broken||0}</b><br><b>Total Intact: ${col.total}</b></div>`;
+    }
+    const mort = mortality.find(m => m.docKey === isoKey || m.date === ddmmyyyy);
+    if (mort && mort.dead > 0) {
+      html += `<div class="event-item" style="border-left:4px solid #b91c1c;"><b>☠️ Mortality Recorded</b><br>Birds Dead: <b style="color:#b91c1c;">${mort.dead}</b></div>`;
     }
 
-    if (!html) {
-      html = `<div style="text-align:center; padding:15px; color:#94a3b8; font-size:0.85rem;">No scheduled actions or collections for this date.</div>`;
-    }
-
-    body.innerHTML = html;
-    modal.style.display = "flex";
+    if (!html) html = `<div style="text-align:center; padding:15px; color:#94a3b8; font-size:0.85rem;">No scheduled actions for this date.</div>`;
+    body.innerHTML = html; modal.style.display = "flex";
   }
 
-  function closeDateDetails(e) {
-    if (!e || e.target.id === "dateModal" || e.target.classList.contains("modal-close")) {
-      document.getElementById('dateModal').style.display = "none";
-    }
-  }
+  function closeDateDetails(e) { if (!e || e.target.id === "dateModal" || e.target.classList.contains("modal-close")) document.getElementById('dateModal').style.display = "none"; }
 
-  // --- DATA MODAL & DIRECT ON-SCREEN REPORT DISPLAY ---
+  // --- DATA REPORTS ---
   function openDataModal() {
-    const sortedBatches = [...batches].sort((a, b) => {
-      const da = parseAnyDate(a.rawDate) || new Date(a.isoDate || 0);
-      const db = parseAnyDate(b.rawDate) || new Date(b.isoDate || 0);
-      return da - db;
-    });
-
-    const bFrom = document.getElementById('reportBatchFrom');
-    const bTo = document.getElementById('reportBatchTo');
-    bFrom.innerHTML = "";
-    bTo.innerHTML = "";
-
+    const sortedBatches = [...batches].sort((a, b) => (parseAnyDate(a.rawDate) || new Date(0)) - (parseAnyDate(b.rawDate) || new Date(0)));
+    const bFrom = document.getElementById('reportBatchFrom'), bTo = document.getElementById('reportBatchTo');
+    bFrom.innerHTML = ""; bTo.innerHTML = "";
     sortedBatches.forEach((b, idx) => {
       const d1Str = formatStrictDDMMYYYY(b.labelD1 || b.rawDate);
-      const opt1 = new Option(`${b.name} (${d1Str})`, idx);
-      const opt2 = new Option(`${b.name} (${d1Str})`, idx);
-      bFrom.add(opt1);
-      bTo.add(opt2);
+      bFrom.add(new Option(`${b.name} (${d1Str})`, idx)); bTo.add(new Option(`${b.name} (${d1Str})`, idx));
     });
+    if (sortedBatches.length > 0) { bFrom.selectedIndex = 0; bTo.selectedIndex = sortedBatches.length - 1; }
 
-    if (sortedBatches.length > 0) {
-      bFrom.selectedIndex = 0;
-      bTo.selectedIndex = sortedBatches.length - 1;
-    }
-
-    const dTo = new Date();
-    const dFrom = new Date();
-    dFrom.setDate(dTo.getDate() - 30);
-    document.getElementById('reportColTo').value = dateToDDMMYYYY(dTo);
-    document.getElementById('reportColFrom').value = dateToDDMMYYYY(dFrom);
-
+    const dTo = new Date(), dFrom = new Date(); dFrom.setDate(dTo.getDate() - 30);
+    document.getElementById('reportColTo').value = dateToDDMMYYYY(dTo); document.getElementById('reportColFrom').value = dateToDDMMYYYY(dFrom);
     document.getElementById('dataModal').style.display = "flex";
   }
 
-  function closeDataModal(e) {
-    if (!e || e.target.id === "dataModal" || e.target.classList.contains("modal-close")) {
-      document.getElementById('dataModal').style.display = "none";
-    }
-  }
+  function closeDataModal(e) { if (!e || e.target.id === "dataModal" || e.target.classList.contains("modal-close")) document.getElementById('dataModal').style.display = "none"; }
+  function closeDataDisplay() { document.getElementById('dataDisplayView').style.display = "none"; document.getElementById('mainDashboard').style.display = "block"; window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-  function closeDataDisplay() {
-    document.getElementById('dataDisplayView').style.display = "none";
-    document.getElementById('mainDashboard').style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // DISPLAY 1: EGG DATA WITH STRICT "Data" FIRST HEADER
   function displayEggDataReport() {
-    const rawFrom = document.getElementById('reportColFrom').value.trim();
-    const rawTo = document.getElementById('reportColTo').value.trim();
+    const rawFrom = document.getElementById('reportColFrom').value.trim(), rawTo = document.getElementById('reportColTo').value.trim();
+    const dFrom = parseAnyDate(rawFrom), dTo = parseAnyDate(rawTo);
+    if (!dFrom || !dTo) return alert("Enter valid dates.");
+    if (dFrom > dTo) return alert("From Date cannot be after To Date.");
 
-    const dFrom = parseAnyDate(rawFrom);
-    const dTo = parseAnyDate(rawTo);
+    const filtered = collections.filter(c => { const cd = parseAnyDate(c.date); return cd && cd >= dFrom && cd <= dTo; }).sort((a, b) => (parseAnyDate(a.date)||0) - (parseAnyDate(b.date)||0));
+    if (filtered.length === 0) return alert("No egg collections found.");
 
-    if (!dFrom || !dTo) return alert("Please enter both From and To dates strictly in DD/MM/YYYY format.");
-    if (dFrom > dTo) return alert("'From Date' cannot be after 'To Date'.");
-
-    const filtered = collections.filter(c => {
-      const cd = parseAnyDate(c.date);
-      return cd && cd >= dFrom && cd <= dTo;
-    }).sort((a, b) => (parseAnyDate(a.date) || 0) - (parseAnyDate(b.date) || 0));
-
-    if (filtered.length === 0) return alert("No egg collections recorded in this date range.");
-
-    let totalMorn = 0, totalAftn = 0, totalEve = 0, totalBroken = 0, grandTotal = 0;
-    let rowsHtml = "";
-
+    let totalMorn = 0, totalAftn = 0, totalEve = 0, totalBroken = 0, grandTotal = 0; let rowsHtml = "";
     filtered.forEach(c => {
-      const dateFormatted = formatStrictDDMMYYYY(c.date);
-      const m = c.morning || 0, a = c.afternoon || 0, e = c.evening || 0, b = c.broken || 0, t = c.total || 0;
+      const d = formatStrictDDMMYYYY(c.date), m = c.morning||0, a = c.afternoon||0, e = c.evening||0, b = c.broken||0, t = c.total||0;
       totalMorn += m; totalAftn += a; totalEve += e; totalBroken += b; grandTotal += t;
-
-      rowsHtml += `
-        <tr>
-          <td><b>${dateFormatted}</b></td>
-          <td>${m}</td>
-          <td>${a}</td>
-          <td>${e}</td>
-          <td style="color:#b91c1c; font-weight:bold;">${b}</td>
-          <td style="color:#0284c7; font-weight:bold;">${t}</td>
-        </tr>`;
+      rowsHtml += `<tr><td><b>${d}</b></td><td>${m}</td><td>${a}</td><td>${e}</td><td style="color:#b91c1c; font-weight:bold;">${b}</td><td style="color:#0284c7; font-weight:bold;">${t}</td></tr>`;
     });
 
-    const reportHtml = `
-      <div style="margin-bottom:12px; text-align:center;">
-        <h3 style="margin:0; font-size:1.05rem; color:#0f172a;">Daily Egg Collection Report</h3>
-        <div style="font-size:0.76rem; color:#64748b; margin-top:2px;">Period: <b>${rawFrom}</b> to <b>${rawTo}</b></div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th style="background:#0284c7; color:#ffffff;">Data</th>
-              <th>Morning</th>
-              <th>Afternoon</th>
-              <th>Evening</th>
-              <th>Broken</th>
-              <th>Total Intact</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rowsHtml}
-            <tr style="font-weight:bold; background:#f1f5f9;">
-              <td style="font-weight:800;">TOTALS</td>
-              <td>${totalMorn}</td>
-              <td>${totalAftn}</td>
-              <td>${totalEve}</td>
-              <td style="color:#b91c1c;">${totalBroken}</td>
-              <td style="color:#0284c7;">${grandTotal}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div style="margin-top:14px; font-size:0.7rem; color:#94a3b8; text-align:right;">AD Farms ; Herd &amp; Harvest</div>
-    `;
-
-    document.getElementById('dataReportContent').innerHTML = reportHtml;
-    document.getElementById('dataModal').style.display = "none";
-    document.getElementById('mainDashboard').style.display = "none";
-    document.getElementById('dataDisplayView').style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const html = `<div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:8px; margin-bottom:12px;"><h2 style="margin:0; font-size:1.1rem;">AD FARMS ; HERD & HARVEST</h2><div style="font-size:0.85rem; font-weight:bold; margin-top:2px;">Egg Collection Report</div><div style="font-size:0.75rem; color:#64748b;">Period: <b>${rawFrom}</b> to <b>${rawTo}</b></div></div>
+      <div class="table-wrap"><table><thead><tr><th style="background:#0284c7; color:#fff;">Data</th><th>Morn</th><th>Aftn</th><th>Eve</th><th>Broken</th><th>Total Intact</th></tr></thead><tbody>${rowsHtml}<tr style="font-weight:bold; background:#f1f5f9;"><td>TOTALS</td><td>${totalMorn}</td><td>${totalAftn}</td><td>${totalEve}</td><td style="color:#b91c1c;">${totalBroken}</td><td style="color:#0284c7;">${grandTotal}</td></tr></tbody></table></div>`;
+    
+    document.getElementById('dataReportContent').innerHTML = html; document.getElementById('dataModal').style.display = "none"; document.getElementById('mainDashboard').style.display = "none"; document.getElementById('dataDisplayView').style.display = "block"; window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // DISPLAY 2: INCUBATION DATA WITH STRICT "Data" FIRST HEADER
   function displayIncubationDataReport() {
-    const sortedBatches = [...batches].sort((a, b) => {
-      const da = parseAnyDate(a.rawDate) || new Date(a.isoDate || 0);
-      const db = parseAnyDate(b.rawDate) || new Date(b.isoDate || 0);
-      return da - db;
-    });
-
-    if (sortedBatches.length === 0) return alert("No batches recorded yet.");
-
-    let idxFrom = parseInt(document.getElementById('reportBatchFrom').value, 10);
-    let idxTo = parseInt(document.getElementById('reportBatchTo').value, 10);
-
-    if (isNaN(idxFrom) || isNaN(idxTo)) return alert("Select valid batches.");
+    const sorted = [...batches].sort((a, b) => (parseAnyDate(a.rawDate)||0) - (parseAnyDate(b.rawDate)||0));
+    if (sorted.length === 0) return alert("No batches recorded.");
+    let idxFrom = parseInt(document.getElementById('reportBatchFrom').value, 10), idxTo = parseInt(document.getElementById('reportBatchTo').value, 10);
     if (idxFrom > idxTo) { const temp = idxFrom; idxFrom = idxTo; idxTo = temp; }
+    const selected = sorted.slice(idxFrom, idxTo + 1);
 
-    const selected = sortedBatches.slice(idxFrom, idxTo + 1);
-    let totalEggs = 0, totalChicks = 0;
-    let rowsHtml = "";
-
+    let totalEggs = 0, totalChicks = 0, rowsHtml = "";
     selected.forEach(b => {
-      totalEggs += b.eggs;
-      if (b.chicksHatched !== null) totalChicks += b.chicksHatched;
-      const chicks = b.chicksHatched !== null ? b.chicksHatched : "-";
-      const rate = b.hatchRate !== null ? `${b.hatchRate}%` : "-";
-      const d1 = formatStrictDDMMYYYY(b.labelD1 || b.rawDate);
-      const d18 = formatStrictDDMMYYYY(b.labelD18);
-      const d21 = formatStrictDDMMYYYY(b.labelD21);
-
-      rowsHtml += `
-        <tr>
-          <td><b>${b.name}</b></td>
-          <td>${b.eggs}</td>
-          <td>${d1}</td>
-          <td>${d18}</td>
-          <td>${d21}</td>
-          <td>${chicks}</td>
-          <td style="color:#16a34a; font-weight:bold;">${rate}</td>
-        </tr>`;
+      totalEggs += b.eggs; if (b.chicksHatched !== null) totalChicks += b.chicksHatched;
+      const c = b.chicksHatched !== null ? b.chicksHatched : "-", r = b.hatchRate !== null ? `${b.hatchRate}%` : "-";
+      rowsHtml += `<tr><td><b>${b.name}</b></td><td>${b.eggs}</td><td>${formatStrictDDMMYYYY(b.labelD1 || b.rawDate)}</td><td>${formatStrictDDMMYYYY(b.labelD18)}</td><td>${formatStrictDDMMYYYY(b.labelD21)}</td><td>${c}</td><td style="color:#16a34a; font-weight:bold;">${r}</td></tr>`;
     });
-
     const overallRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + "%" : "-";
 
-    const reportHtml = `
-      <div style="margin-bottom:12px; text-align:center;">
-        <h3 style="margin:0; font-size:1.05rem; color:#0f172a;">Incubation &amp; Hatch Performance Report</h3>
-        <div style="font-size:0.76rem; color:#64748b; margin-top:2px;">Batches: <b>${selected[0].name}</b> to <b>${selected[selected.length - 1].name}</b></div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th style="background:#0284c7; color:#ffffff;">Data</th>
-              <th>Eggs Set</th>
-              <th>Set (D1)</th>
-              <th>Hatch (D18)</th>
-              <th>Pull (D21)</th>
-              <th>Chicks</th>
-              <th>Hatch Rate</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rowsHtml}
-            <tr style="font-weight:bold; background:#f1f5f9;">
-              <td style="font-weight:800;">SUMMARY</td>
-              <td>${totalEggs}</td>
-              <td colspan="3">-</td>
-              <td>${totalChicks > 0 ? totalChicks : '-'}</td>
-              <td style="color:#16a34a;">${overallRate}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div style="margin-top:14px; font-size:0.7rem; color:#94a3b8; text-align:right;">AD Farms ; Herd &amp; Harvest</div>
-    `;
-
-    document.getElementById('dataReportContent').innerHTML = reportHtml;
-    document.getElementById('dataModal').style.display = "none";
-    document.getElementById('mainDashboard').style.display = "none";
-    document.getElementById('dataDisplayView').style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const html = `<div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:8px; margin-bottom:12px;"><h2 style="margin:0; font-size:1.1rem;">AD FARMS ; HERD & HARVEST</h2><div style="font-size:0.85rem; font-weight:bold; margin-top:2px;">Incubation Performance</div><div style="font-size:0.75rem; color:#64748b;">Batches: <b>${selected[0].name}</b> to <b>${selected[selected.length - 1].name}</b></div></div>
+      <div class="table-wrap"><table><thead><tr><th style="background:#0284c7; color:#fff;">Data</th><th>Eggs</th><th>Set (D1)</th><th>Hatch (D18)</th><th>Pull (D21)</th><th>Chicks</th><th>Rate</th></tr></thead><tbody>${rowsHtml}<tr style="font-weight:bold; background:#f1f5f9;"><td>SUMMARY</td><td>${totalEggs}</td><td colspan="3">-</td><td>${totalChicks>0?totalChicks:'-'}</td><td style="color:#16a34a;">${overallRate}</td></tr></tbody></table></div>`;
+    
+    document.getElementById('dataReportContent').innerHTML = html; document.getElementById('dataModal').style.display = "none"; document.getElementById('mainDashboard').style.display = "none"; document.getElementById('dataDisplayView').style.display = "block"; window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   // Initial draw
-  renderCollections();
-  renderBatches();
-  renderCalendar();
+  renderCollections(); renderBatches(); renderMortality(); renderCalendar();
 </script>
 
 </body>
