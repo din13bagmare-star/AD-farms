@@ -102,7 +102,7 @@
   .cal-day-name { font-size: 0.7rem; font-weight: bold; color: #64748b; padding-bottom: 4px; }
   
   .cal-cell {
-    min-height: 56px;
+    min-height: 62px;
     border-radius: 6px;
     border: 1px solid #e2e8f0;
     background: #ffffff;
@@ -114,6 +114,7 @@
     font-size: 0.82rem;
     font-weight: 700;
     cursor: pointer;
+    overflow: hidden;
   }
   .cal-cell:active { filter: brightness(0.95); }
   .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; }
@@ -135,13 +136,18 @@
     color: #166534 !important;
   }
   .stage-tag {
-    font-size: 0.55rem;
+    font-size: 0.54rem;
     font-weight: 900;
-    line-height: 1;
+    line-height: 1.1;
     text-transform: uppercase;
     margin-top: 2px;
-    padding: 1px 3px;
+    padding: 2px 3px;
     border-radius: 3px;
+    white-space: nowrap;
+    max-width: 96%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
   }
   .egg-badge {
     background: #0284c7;
@@ -434,12 +440,10 @@
     return `${pad(dateObj.getDate())}/${pad(dateObj.getMonth() + 1)}/${dateObj.getFullYear()}`;
   }
 
-  // Parses ANY date string format (DD/MM/YYYY or YYYY-MM-DD) into a reliable Date object at midnight
   function parseAnyDate(str) {
     if (!str || typeof str !== 'string') return null;
     str = str.trim();
 
-    // Check DD/MM/YYYY
     if (str.includes('/')) {
       const parts = str.split('/');
       if (parts.length === 3) {
@@ -450,7 +454,6 @@
       }
     }
 
-    // Check YYYY-MM-DD
     if (str.includes('-')) {
       const parts = str.split('-');
       if (parts.length === 3) {
@@ -469,7 +472,6 @@
     return dt ? dateToDDMMYYYY(dt) : dateString;
   }
 
-  // Normalize any date to standard DD/MM/YYYY for strict comparison
   function normalizeDateStr(str) {
     const dt = parseAnyDate(str);
     return dt ? dateToDDMMYYYY(dt) : "";
@@ -818,7 +820,7 @@
     document.getElementById('cancelBtn').style.display = "none";
   }
 
-  // --- CALENDAR WITH PROVEN COLOR CODES & EGG LOG INTEGRATION ---
+  // --- CALENDAR WITH BULLETPROOF MILESTONES & COLOR ENGINES ---
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calMonthYear').innerText = `${monthNames[curMonth]} ${curYear}`;
@@ -835,41 +837,57 @@
 
     for (let d = 1; d <= lastDateOfMonth; d++) {
       const cellDateObj = new Date(curYear, curMonth, d, 0, 0, 0, 0);
+      const cellTimestamp = cellDateObj.getTime();
       const ddmmyyyy = dateToDDMMYYYY(cellDateObj);
+
       const cell = document.createElement('div');
       cell.className = 'cal-cell';
       cell.onclick = () => showDateDetailsStrict(cellDateObj);
 
-      let isSet = false, isD18 = false, isD21 = false;
+      let dayEvents = [];
 
-      // Robust check across all batches
       batches.forEach(b => {
-        const d1Norm = normalizeDateStr(b.labelD1 || b.rawDate);
-        const d18Norm = normalizeDateStr(b.labelD18);
-        const d21Norm = normalizeDateStr(b.labelD21);
+        const setDateStr = b.labelD1 || b.rawDate || b.sdate;
+        const setDate = parseAnyDate(setDateStr);
+        if (!setDate) return;
 
-        if (d1Norm === ddmmyyyy) isSet = true;
-        if (d18Norm === ddmmyyyy) isD18 = true;
-        if (d21Norm === ddmmyyyy) isD21 = true;
+        const d1Ts = setDate.getTime();
+        const d18Ts = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 17).getTime();
+        const d21Ts = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 20).getTime();
+
+        if (cellTimestamp === d1Ts) {
+          dayEvents.push({ type: 'set', name: b.name, eggs: b.eggs });
+        }
+        if (cellTimestamp === d18Ts) {
+          dayEvents.push({ type: 'hatch', name: b.name, eggs: b.eggs });
+        }
+        if (cellTimestamp === d21Ts) {
+          dayEvents.push({ type: 'remove', name: b.name, eggs: b.eggs });
+        }
       });
 
-      // Robust check across egg collections
       const colRecord = collections.find(c => normalizeDateStr(c.date) === ddmmyyyy);
 
-      let subtext = "";
-      if (isSet) {
+      if (dayEvents.some(e => e.type === 'set')) {
         cell.classList.add('stage-set');
-        subtext = "SET";
-      } else if (isD18) {
+      } else if (dayEvents.some(e => e.type === 'hatch')) {
         cell.classList.add('stage-hatch');
-        subtext = "D18";
-      } else if (isD21) {
+      } else if (dayEvents.some(e => e.type === 'remove')) {
         cell.classList.add('stage-remove');
-        subtext = "PULL";
       }
 
       let content = `<span>${d}</span>`;
-      if (subtext) content += `<span class="stage-tag">${subtext}</span>`;
+
+      dayEvents.forEach(ev => {
+        if (ev.type === 'set') {
+          content += `<span class="stage-tag" style="background:#0284c7; color:#ffffff;">SET: ${ev.name}</span>`;
+        } else if (ev.type === 'hatch') {
+          content += `<span class="stage-tag" style="background:#ea580c; color:#ffffff;">D18: ${ev.name}</span>`;
+        } else if (ev.type === 'remove') {
+          content += `<span class="stage-tag" style="background:#16a34a; color:#ffffff;">PULL: ${ev.name}</span>`;
+        }
+      });
+
       if (colRecord && colRecord.total > 0) {
         content += `<span class="egg-badge">+${colRecord.total}🥚</span>`;
       }
@@ -891,30 +909,70 @@
     const title = document.getElementById('modalDateTitle');
     const body = document.getElementById('modalDetailsBody');
     const ddmmyyyy = dateToDDMMYYYY(dateObj);
+    const targetTimestamp = dateObj.getTime();
+
     title.innerText = ddmmyyyy;
     let html = "";
 
     batches.forEach(b => {
-      const d1Norm = normalizeDateStr(b.labelD1 || b.rawDate);
-      const d18Norm = normalizeDateStr(b.labelD18);
-      const d21Norm = normalizeDateStr(b.labelD21);
+      const setDateStr = b.labelD1 || b.rawDate || b.sdate;
+      const setDate = parseAnyDate(setDateStr);
+      if (!setDate) return;
 
-      if (d1Norm === ddmmyyyy) html += `<div class="event-item" style="border-left:4px solid #0284c7;"><b style="color:#0284c7;">🥚 Day 1: SET EGGS</b><br><b>Batch:</b> ${b.name} (${b.eggs} eggs)</div>`;
-      if (d18Norm === ddmmyyyy) html += `<div class="event-item" style="border-left:4px solid #ea580c;"><b style="color:#ea580c;">🐣 Day 18: HATCHER LOCKDOWN</b><br><b>Batch:</b> ${b.name} (${b.eggs} eggs)</div>`;
-      if (d21Norm === ddmmyyyy) html += `<div class="event-item" style="border-left:4px solid #16a34a;"><b style="color:#16a34a;">🐥 Day 21: PULL CHICKS</b><br><b>Batch:</b> ${b.name} (${b.eggs} eggs)</div>`;
+      const d1Ts = setDate.getTime();
+      const d18Ts = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 17).getTime();
+      const d21Ts = new Date(setDate.getFullYear(), setDate.getMonth(), setDate.getDate() + 20).getTime();
+
+      if (targetTimestamp === d1Ts) {
+        html += `<div class="event-item" style="border-left: 5px solid #0284c7; background: #f0f9ff; margin-bottom: 8px;">
+          <b style="color: #0284c7; font-size: 0.95rem;">🥚 DAY 1: EGGS SET</b><br>
+          <b>Batch / Tray:</b> ${b.name}<br>
+          <b>Eggs Set:</b> ${b.eggs} eggs<br>
+          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Action: Check setter temp (99.5°F–100°F) and confirm egg turning is operating.</div>
+        </div>`;
+      }
+
+      if (targetTimestamp === d18Ts) {
+        html += `<div class="event-item" style="border-left: 5px solid #ea580c; background: #fff7ed; margin-bottom: 8px;">
+          <b style="color: #ea580c; font-size: 0.95rem;">🐣 DAY 18: LOCKDOWN / HATCHER</b><br>
+          <b>Batch / Tray:</b> ${b.name}<br>
+          <b>Eggs:</b> ${b.eggs} eggs<br>
+          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Action: Move to hatcher baskets, stop egg turning, and increase humidity.</div>
+        </div>`;
+      }
+
+      if (targetTimestamp === d21Ts) {
+        html += `<div class="event-item" style="border-left: 5px solid #16a34a; background: #f0fdf4; margin-bottom: 8px;">
+          <b style="color: #16a34a; font-size: 0.95rem;">🐥 DAY 21: PULL CHICKS</b><br>
+          <b>Batch / Tray:</b> ${b.name}<br>
+          <b>Initial Eggs:</b> ${b.eggs} eggs<br>
+          <b>Hatch Status:</b> ${b.chicksHatched !== null ? b.chicksHatched + ' chicks (' + b.hatchRate + '%)' : 'Pending results entry'}<br>
+          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Action: Transfer dried chicks to brooder and log hatch count in Batches.</div>
+        </div>`;
+      }
     });
 
     const col = collections.find(c => normalizeDateStr(c.date) === ddmmyyyy);
     if (col && (col.total > 0 || (col.broken || 0) > 0)) {
-      html += `<div class="event-item" style="border-left:4px solid #0284c7;"><b>🥚 Daily Egg Pickings</b><br>Morn: ${col.morning||0} | Aftn: ${col.afternoon||0} | Eve: ${col.evening||0}<br>Broken: <b style="color:#b91c1c;">${col.broken||0}</b><br><b>Total Intact: ${col.total}</b></div>`;
+      html += `<div class="event-item" style="border-left: 5px solid #64748b; background: #f8fafc; margin-bottom: 8px;">
+        <b>🥚 Daily Egg Pickings</b><br>
+        Morn: ${col.morning || 0} | Aftn: ${col.afternoon || 0} | Eve: ${col.evening || 0}<br>
+        Broken: <b style="color: #b91c1c;">${col.broken || 0}</b> | <b>Total Intact: ${col.total}</b>
+      </div>`;
     }
 
     const mort = mortality.find(m => normalizeDateStr(m.date) === ddmmyyyy);
     if (mort && mort.dead > 0) {
-      html += `<div class="event-item" style="border-left:4px solid #b91c1c;"><b>☠️ Mortality Recorded</b><br>Birds Dead: <b style="color:#b91c1c;">${mort.dead}</b></div>`;
+      html += `<div class="event-item" style="border-left: 5px solid #b91c1c; background: #fef2f2; margin-bottom: 8px;">
+        <b style="color: #b91c1c;">☠️ Mortality Logged</b><br>
+        Birds Dead: <b>${mort.dead}</b>
+      </div>`;
     }
 
-    if (!html) html = `<div style="text-align:center; padding:15px; color:#94a3b8; font-size:0.85rem;">No actions recorded for this date.</div>`;
+    if (!html) {
+      html = `<div style="text-align:center; padding:15px; color:#94a3b8; font-size:0.85rem;">No actions or batches recorded for this date.</div>`;
+    }
+
     body.innerHTML = html;
     modal.style.display = "flex";
   }
