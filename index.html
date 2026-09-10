@@ -50,9 +50,6 @@
     font-weight: 700;
     padding: 7px 12px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 4px;
   }
   .btn-data-top:active { background: #0369a1; }
 
@@ -98,13 +95,14 @@
   th, td { border: 1px solid #e2e8f0; padding: 8px 5px; text-align: center; }
   th { background: #f1f5f9; color: #475569; font-weight: 700; }
 
-  /* CALENDAR WITH INLINE DATE COLOR CODES */
+  /* CALENDAR DISPLAY WITH COLOR ENGINES */
   .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
   .cal-header button { padding: 4px 12px; background: #e2e8f0; border: none; border-radius: 4px; font-weight: bold; }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
   .cal-day-name { font-size: 0.7rem; font-weight: bold; color: #64748b; padding-bottom: 4px; }
+  
   .cal-cell {
-    min-height: 52px;
+    min-height: 56px;
     border-radius: 6px;
     border: 1px solid #e2e8f0;
     background: #ffffff;
@@ -112,22 +110,51 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 2px;
+    padding: 3px 2px;
     font-size: 0.82rem;
     font-weight: 700;
     cursor: pointer;
   }
-  .cal-cell:active { background: #f1f5f9; }
+  .cal-cell:active { filter: brightness(0.95); }
   .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; }
-  .egg-badge { background: #e0f2fe; color: #0369a1; border-radius: 8px; font-size: 0.58rem; padding: 1px 4px; margin-top: 1px; font-weight: 800; }
-  
-  /* PURE COLOR ENGINES DIRECTLY ON THE DATE CELLS */
-  .stage-set { background: #bae6fd !important; color: #0369a1 !important; border: 1.5px solid #0284c7 !important; }
-  .stage-hatch { background: #fed7aa !important; color: #9a3412 !important; border: 1.5px solid #f97316 !important; }
-  .stage-remove { background: #bbf7d0 !important; color: #166534 !important; border: 1.5px solid #22c55e !important; }
-  .stage-tag { font-size: 0.52rem; font-weight: 900; line-height: 1; text-transform: uppercase; margin-top: 2px; }
 
-  /* FULL SCREEN DATA DISPLAY CONTAINER */
+  /* STRICT COLOR CODING ON CALENDAR DATES */
+  .stage-set {
+    background: #bae6fd !important;
+    border: 1.5px solid #0284c7 !important;
+    color: #0369a1 !important;
+  }
+  .stage-hatch {
+    background: #fed7aa !important;
+    border: 1.5px solid #ea580c !important;
+    color: #9a3412 !important;
+  }
+  .stage-remove {
+    background: #bbf7d0 !important;
+    border: 1.5px solid #16a34a !important;
+    color: #166534 !important;
+  }
+  .stage-tag {
+    font-size: 0.55rem;
+    font-weight: 900;
+    line-height: 1;
+    text-transform: uppercase;
+    margin-top: 2px;
+    padding: 1px 3px;
+    border-radius: 3px;
+  }
+  .egg-badge {
+    background: #0284c7;
+    color: #ffffff;
+    border-radius: 8px;
+    font-size: 0.58rem;
+    padding: 1px 4px;
+    margin-top: 2px;
+    font-weight: 800;
+    display: inline-block;
+  }
+
+  /* REPORT SCREEN */
   #dataDisplayView { display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
   .data-display-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 12px; }
 
@@ -257,13 +284,13 @@
     </div>
   </div>
 
-  <!-- TAB 3: MORTALITY (CALCULATED DIRECTLY FROM BATCHES) -->
+  <!-- TAB 3: MORTALITY -->
   <div id="mortalityTab" class="view-panel">
     <div class="card" style="background: #f8fafc; border-color: #cbd5e1;">
       <div style="display:flex; justify-content:space-between; align-items:center;">
         <div>
           <h2 style="margin:0; color:#0f172a;">Live Birds in Stock</h2>
-          <div style="font-size:0.75rem; color:#64748b;">Chicks Hatched from Batches − Dead Birds</div>
+          <div style="font-size:0.75rem; color:#64748b;">Chicks Hatched − Dead Birds</div>
         </div>
         <div style="text-align:right;">
           <div id="remainingBirdsDisplay" style="font-size:1.6rem; font-weight:900; color:#059669;">0</div>
@@ -305,7 +332,7 @@
     </div>
   </div>
 
-  <!-- TAB 4: CALENDAR (COLORS ON DATE BOXES) -->
+  <!-- TAB 4: CALENDAR -->
   <div id="calendarTab" class="view-panel">
     <div class="card">
       <div class="cal-header">
@@ -323,6 +350,7 @@
         <div class="cal-day-name">Sat</div>
       </div>
       <div class="cal-grid" id="calGrid"></div>
+      <div style="font-size:0.75rem; text-align:center; color:#64748b; margin-top:8px;">💡 Tap any date on the calendar to view batch details.</div>
     </div>
   </div>
 
@@ -387,52 +415,64 @@
 </div>
 
 <script>
-  // --- FORMATTING ENGINE ---
+  // --- BULLETPROOF DATE ENGINES ---
   function pad(n) { return String(n).padStart(2, '0'); }
+
   function formatDateInput(el) {
     let v = el.value.replace(/\D/g, '').slice(0, 8);
     if (v.length >= 5) el.value = v.slice(0, 2) + '/' + v.slice(2, 4) + '/' + v.slice(4);
     else if (v.length >= 3) el.value = v.slice(0, 2) + '/' + v.slice(2);
     else el.value = v;
   }
+
   function getTodayDDMMYYYY() {
     const d = new Date();
     return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
   }
+
   function dateToDDMMYYYY(dateObj) {
     return `${pad(dateObj.getDate())}/${pad(dateObj.getMonth() + 1)}/${dateObj.getFullYear()}`;
   }
+
+  // Parses ANY date string format (DD/MM/YYYY or YYYY-MM-DD) into a reliable Date object at midnight
   function parseAnyDate(str) {
     if (!str || typeof str !== 'string') return null;
     str = str.trim();
+
+    // Check DD/MM/YYYY
     if (str.includes('/')) {
       const parts = str.split('/');
       if (parts.length === 3) {
         const d = parseInt(parts[0], 10), m = parseInt(parts[1], 10), y = parseInt(parts[2], 10);
         if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 2000) {
-          const dt = new Date(y, m - 1, d);
-          if (dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d) return dt;
+          return new Date(y, m - 1, d, 0, 0, 0, 0);
         }
       }
     }
+
+    // Check YYYY-MM-DD
     if (str.includes('-')) {
       const parts = str.split('-');
       if (parts.length === 3) {
         const y = parseInt(parts[0], 10), m = parseInt(parts[1], 10), d = parseInt(parts[2], 10);
         if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 2000) {
-          const dt = new Date(y, m - 1, d);
-          if (dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d) return dt;
+          return new Date(y, m - 1, d, 0, 0, 0, 0);
         }
       }
     }
+
     return null;
   }
+
   function formatStrictDDMMYYYY(dateString) {
     const dt = parseAnyDate(dateString);
     return dt ? dateToDDMMYYYY(dt) : dateString;
   }
-  function toIsoKey(dateObj) {
-    return `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}`;
+
+  // Normalize any date to standard DD/MM/YYYY for strict comparison
+  function normalizeDateStr(str) {
+    const dt = parseAnyDate(str);
+    return dt ? dateToDDMMYYYY(dt) : "";
   }
 
   // --- STORAGE ---
@@ -453,7 +493,7 @@
     localStorage.setItem("ad_farms_local_mortality", JSON.stringify(mortality));
   }
 
-  // Firebase Setup
+  // Firebase Cloud Link
   const firebaseConfig = {
     apiKey: "AIzaSyC0fvccTExFtjDF5jijNVExvdXvyAq54DY",
     authDomain: "poultry-a6902.firebaseapp.com",
@@ -472,20 +512,35 @@
     db.collection("collections").onSnapshot(snapshot => {
       let cloudCols = [];
       snapshot.forEach(doc => cloudCols.push({ id: doc.id, ...doc.data() }));
-      if (cloudCols.length > 0) { collections = cloudCols; syncToLocalStorage(); renderCollections(); renderCalendar(); }
+      if (cloudCols.length > 0) {
+        collections = cloudCols;
+        syncToLocalStorage();
+        renderCollections();
+        renderCalendar();
+      }
       document.getElementById('cloudStatus').textContent = "🟢 Cloud";
     }, err => console.warn(err));
 
     db.collection("batches").onSnapshot(snapshot => {
       let cloudBatches = [];
       snapshot.forEach(doc => cloudBatches.push({ id: doc.id, ...doc.data() }));
-      if (cloudBatches.length > 0) { batches = cloudBatches; syncToLocalStorage(); renderBatches(); renderMortality(); renderCalendar(); }
+      if (cloudBatches.length > 0) {
+        batches = cloudBatches;
+        syncToLocalStorage();
+        renderBatches();
+        renderMortality();
+        renderCalendar();
+      }
     }, err => console.warn(err));
 
     db.collection("mortality").onSnapshot(snapshot => {
       let cloudMort = [];
       snapshot.forEach(doc => cloudMort.push({ id: doc.id, ...doc.data() }));
-      if (cloudMort.length > 0) { mortality = cloudMort; syncToLocalStorage(); renderMortality(); }
+      if (cloudMort.length > 0) {
+        mortality = cloudMort;
+        syncToLocalStorage();
+        renderMortality();
+      }
     }, err => console.warn(err));
 
   } catch(e) { console.warn("Offline mode active", e); }
@@ -499,7 +554,7 @@
     if (tabId === 'mortalityTab') renderMortality();
   }
 
-  // --- LOGO ENGINE ---
+  // --- LOGO LOCK ---
   function checkAndLockLogo() {
     const saved = localStorage.getItem("ad_farms_logo");
     if (saved) {
@@ -521,7 +576,7 @@
   }
   checkAndLockLogo();
 
-  // --- MORTALITY (CALCULATED FROM CHICKS HATCHED IN BATCHES) ---
+  // --- MORTALITY (CHICKS HATCHED − DEAD BIRDS) ---
   function saveMortality() {
     const rawDate = document.getElementById('mortDate').value.trim();
     const dateObj = parseAnyDate(rawDate);
@@ -530,24 +585,22 @@
     if (isNaN(count) || count <= 0) return alert("Enter valid dead count.");
 
     const formattedDate = dateToDDMMYYYY(dateObj);
-    const docKey = toIsoKey(dateObj);
-
-    let existing = mortality.find(m => m.docKey === docKey || m.date === formattedDate);
+    let existing = mortality.find(m => normalizeDateStr(m.date) === formattedDate);
     let deadCount = existing ? (existing.dead + count) : count;
 
-    const entry = { id: docKey, docKey: docKey, date: formattedDate, dead: deadCount };
+    const entry = { id: "mort_" + formattedDate.replace(/\//g, ''), date: formattedDate, dead: deadCount };
     if (existing) Object.assign(existing, entry);
     else mortality.push(entry);
 
     syncToLocalStorage();
     renderMortality();
     document.getElementById('mortCount').value = "";
-    if (db) db.collection("mortality").doc(docKey).set(entry).catch(e => console.warn(e));
+    if (db) db.collection("mortality").doc(entry.id).set(entry).catch(e => console.warn(e));
   }
 
   function deleteMortality(docId) {
     if (confirm("Delete this mortality record?")) {
-      mortality = mortality.filter(m => m.id !== docId && m.docKey !== docId);
+      mortality = mortality.filter(m => m.id !== docId);
       syncToLocalStorage();
       renderMortality();
       if (db) db.collection("mortality").doc(docId).delete().catch(e => console.warn(e));
@@ -560,7 +613,7 @@
     document.getElementById('noMortality').style.display = mortality.length === 0 ? "block" : "none";
 
     let totalDead = 0;
-    const sorted = [...mortality].sort((a, b) => (parseAnyDate(b.date) || new Date(0)) - (parseAnyDate(a.date) || new Date(0)));
+    const sorted = [...mortality].sort((a, b) => (parseAnyDate(b.date) || 0) - (parseAnyDate(a.date) || 0));
 
     sorted.forEach(m => {
       totalDead += m.dead;
@@ -573,7 +626,6 @@
       tbody.appendChild(tr);
     });
 
-    // Stock = Sum of all chicks hatched in batches minus total dead
     let totalChicksHatched = 0;
     batches.forEach(b => {
       if (b.chicksHatched !== null) totalChicksHatched += b.chicksHatched;
@@ -594,8 +646,7 @@
     if (count === 0 && broken === 0) return alert("Enter intact or broken eggs.");
 
     const formattedDate = dateToDDMMYYYY(dateObj);
-    const docKey = toIsoKey(dateObj);
-    let existing = collections.find(c => c.docKey === docKey || c.date === formattedDate);
+    let existing = collections.find(c => normalizeDateStr(c.date) === formattedDate);
     let m = existing ? (existing.morning || 0) : 0, a = existing ? (existing.afternoon || 0) : 0;
     let e = existing ? (existing.evening || 0) : 0, b = existing ? (existing.broken || 0) : 0;
 
@@ -604,18 +655,24 @@
     if (slot === "Evening") e += count;
     b += broken;
 
-    const entry = { id: docKey, docKey: docKey, date: formattedDate, morning: m, afternoon: a, evening: e, broken: b, total: (m + a + e) };
+    const entry = { id: "col_" + formattedDate.replace(/\//g, ''), date: formattedDate, morning: m, afternoon: a, evening: e, broken: b, total: (m + a + e) };
     if (existing) Object.assign(existing, entry); else collections.push(entry);
 
-    syncToLocalStorage(); renderCollections(); renderCalendar();
-    document.getElementById('colCount').value = ""; document.getElementById('colBroken').value = "0";
-    if (db) db.collection("collections").doc(docKey).set(entry).catch(err => console.warn(err));
+    syncToLocalStorage();
+    renderCollections();
+    renderCalendar();
+    
+    document.getElementById('colCount').value = "";
+    document.getElementById('colBroken').value = "0";
+    if (db) db.collection("collections").doc(entry.id).set(entry).catch(err => console.warn(err));
   }
 
   function deleteCollection(docId) {
     if (confirm("Delete egg entry?")) {
-      collections = collections.filter(c => c.id !== docId && c.docKey !== docId);
-      syncToLocalStorage(); renderCollections(); renderCalendar();
+      collections = collections.filter(c => c.id !== docId);
+      syncToLocalStorage();
+      renderCollections();
+      renderCalendar();
       if (db) db.collection("collections").doc(docId).delete().catch(err => console.warn(err));
     }
   }
@@ -624,7 +681,7 @@
     const tbody = document.getElementById('collectionBody');
     tbody.innerHTML = "";
     document.getElementById('noCollections').style.display = collections.length === 0 ? "block" : "none";
-    const sorted = [...collections].sort((a, b) => (parseAnyDate(b.date) || new Date(0)) - (parseAnyDate(a.date) || new Date(0)));
+    const sorted = [...collections].sort((a, b) => (parseAnyDate(b.date) || 0) - (parseAnyDate(a.date) || 0));
     sorted.forEach(c => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -642,7 +699,11 @@
   function computeMilestonesStrict(d1Date) {
     const d18 = new Date(d1Date.getFullYear(), d1Date.getMonth(), d1Date.getDate() + 17);
     const d21 = new Date(d1Date.getFullYear(), d1Date.getMonth(), d1Date.getDate() + 20);
-    return { isoD1: toIsoKey(d1Date), isoD18: toIsoKey(d18), isoD21: toIsoKey(d21), labelD1: dateToDDMMYYYY(d1Date), labelD18: dateToDDMMYYYY(d18), labelD21: dateToDDMMYYYY(d21) };
+    return {
+      labelD1: dateToDDMMYYYY(d1Date),
+      labelD18: dateToDDMMYYYY(d18),
+      labelD21: dateToDDMMYYYY(d21)
+    };
   }
 
   function saveBatch() {
@@ -655,14 +716,27 @@
 
     const milestones = computeMilestonesStrict(d1Date);
     const id = editDocId || ("batch_" + Date.now());
-    const data = { id, name, eggs, rawDate: milestones.labelD1, isoDate: milestones.isoD1, ...milestones };
+    const data = { id, name, eggs, rawDate: milestones.labelD1, ...milestones };
 
     if (editDocId) {
       const idx = batches.findIndex(b => b.id === editDocId);
-      if (idx !== -1) { data.chicksHatched = batches[idx].chicksHatched || null; data.hatchRate = batches[idx].hatchRate || null; batches[idx] = data; }
-    } else { data.chicksHatched = null; data.hatchRate = null; batches.unshift(data); }
+      if (idx !== -1) {
+        data.chicksHatched = batches[idx].chicksHatched || null;
+        data.hatchRate = batches[idx].hatchRate || null;
+        batches[idx] = data;
+      }
+    } else {
+      data.chicksHatched = null;
+      data.hatchRate = null;
+      batches.unshift(data);
+    }
 
-    syncToLocalStorage(); renderBatches(); renderMortality(); renderCalendar(); resetBatchForm();
+    syncToLocalStorage();
+    renderBatches();
+    renderMortality();
+    renderCalendar();
+    resetBatchForm();
+
     if (db) {
       if (editDocId) db.collection("batches").doc(editDocId).set(data, { merge: true }).catch(e => console.warn(e));
       else db.collection("batches").doc(id).set(data).catch(e => console.warn(e));
@@ -675,15 +749,19 @@
     if (val === null) return;
     const count = parseInt(val, 10);
     if (isNaN(count) || count < 0) return alert("Enter valid chick count");
-    b.chicksHatched = count; b.hatchRate = ((count / b.eggs) * 100).toFixed(1);
-    syncToLocalStorage(); renderBatches(); renderMortality();
+    b.chicksHatched = count;
+    b.hatchRate = ((count / b.eggs) * 100).toFixed(1);
+    syncToLocalStorage();
+    renderBatches();
+    renderMortality();
     if (db) db.collection("batches").doc(docId).update({ chicksHatched: b.chicksHatched, hatchRate: b.hatchRate }).catch(e => console.warn(e));
   }
 
   function renderBatches() {
     const container = document.getElementById('batchContainer');
-    container.innerHTML = ""; document.getElementById('noBatches').style.display = batches.length === 0 ? "block" : "none";
-    const sortedBatches = [...batches].sort((a, b) => (parseAnyDate(a.rawDate) || new Date(a.isoDate || 0)) - (parseAnyDate(b.rawDate) || new Date(b.isoDate || 0)));
+    container.innerHTML = "";
+    document.getElementById('noBatches').style.display = batches.length === 0 ? "block" : "none";
+    const sortedBatches = [...batches].sort((a, b) => (parseAnyDate(a.rawDate) || 0) - (parseAnyDate(b.rawDate) || 0));
 
     sortedBatches.forEach(b => {
       const rateText = b.hatchRate !== null ? `<b style="color:#16a34a;">${b.hatchRate}%</b>` : `<span style="color:#94a3b8;">Pending</span>`;
@@ -710,110 +788,172 @@
 
   function startEditBatch(docId) {
     const b = batches.find(item => item.id === docId);
-    document.getElementById('bname').value = b.name; document.getElementById('eggsSet').value = b.eggs;
+    document.getElementById('bname').value = b.name;
+    document.getElementById('eggsSet').value = b.eggs;
     document.getElementById('sdate').value = formatStrictDDMMYYYY(b.labelD1 || b.rawDate);
     document.getElementById('editDocId').value = docId;
-    document.getElementById('submitBtn').innerText = "Update Batch"; document.getElementById('cancelBtn').style.display = "block";
-    switchTab('batchesTab', document.querySelectorAll('.tab-btn')[0]); window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('submitBtn').innerText = "Update Batch";
+    document.getElementById('cancelBtn').style.display = "block";
+    switchTab('batchesTab', document.querySelectorAll('.tab-btn')[0]);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function deleteBatch(docId) {
     if (confirm("Delete this batch?")) {
-      batches = batches.filter(b => b.id !== docId); syncToLocalStorage(); renderBatches(); renderMortality(); renderCalendar();
+      batches = batches.filter(b => b.id !== docId);
+      syncToLocalStorage();
+      renderBatches();
+      renderMortality();
+      renderCalendar();
       if (db) db.collection("batches").doc(docId).delete().catch(e => console.warn(e));
     }
   }
 
   function resetBatchForm() {
-    document.getElementById('bname').value = ""; document.getElementById('eggsSet').value = "102";
-    document.getElementById('sdate').value = getTodayDDMMYYYY(); document.getElementById('editDocId').value = "";
-    document.getElementById('submitBtn').innerText = "Start / Save Batch"; document.getElementById('cancelBtn').style.display = "none";
+    document.getElementById('bname').value = "";
+    document.getElementById('eggsSet').value = "102";
+    document.getElementById('sdate').value = getTodayDDMMYYYY();
+    document.getElementById('editDocId').value = "";
+    document.getElementById('submitBtn').innerText = "Start / Save Batch";
+    document.getElementById('cancelBtn').style.display = "none";
   }
 
-  // --- CALENDAR WITH INLINE DIRECT COLOR CODES ---
+  // --- CALENDAR WITH PROVEN COLOR CODES & EGG LOG INTEGRATION ---
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calMonthYear').innerText = `${monthNames[curMonth]} ${curYear}`;
-    const firstDayIndex = new Date(curYear, curMonth, 1).getDay(); const lastDateOfMonth = new Date(curYear, curMonth + 1, 0).getDate();
-    const grid = document.getElementById('calGrid'); grid.innerHTML = "";
+    const firstDayIndex = new Date(curYear, curMonth, 1).getDay();
+    const lastDateOfMonth = new Date(curYear, curMonth + 1, 0).getDate();
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = "";
 
-    for (let i = 0; i < firstDayIndex; i++) { const emptyDiv = document.createElement('div'); emptyDiv.className = 'cal-cell empty'; grid.appendChild(emptyDiv); }
+    for (let i = 0; i < firstDayIndex; i++) {
+      const emptyDiv = document.createElement('div');
+      emptyDiv.className = 'cal-cell empty';
+      grid.appendChild(emptyDiv);
+    }
+
     for (let d = 1; d <= lastDateOfMonth; d++) {
-      const cellDateObj = new Date(curYear, curMonth, d); const isoKey = toIsoKey(cellDateObj); const ddmmyyyy = dateToDDMMYYYY(cellDateObj);
-      const cell = document.createElement('div'); cell.className = 'cal-cell'; cell.onclick = () => showDateDetailsStrict(cellDateObj);
+      const cellDateObj = new Date(curYear, curMonth, d, 0, 0, 0, 0);
+      const ddmmyyyy = dateToDDMMYYYY(cellDateObj);
+      const cell = document.createElement('div');
+      cell.className = 'cal-cell';
+      cell.onclick = () => showDateDetailsStrict(cellDateObj);
 
       let isSet = false, isD18 = false, isD21 = false;
+
+      // Robust check across all batches
       batches.forEach(b => {
-        if (b.isoD1 === isoKey || b.labelD1 === ddmmyyyy) isSet = true;
-        if (b.isoD18 === isoKey || b.labelD18 === ddmmyyyy) isD18 = true;
-        if (b.isoD21 === isoKey || b.labelD21 === ddmmyyyy) isD21 = true;
+        const d1Norm = normalizeDateStr(b.labelD1 || b.rawDate);
+        const d18Norm = normalizeDateStr(b.labelD18);
+        const d21Norm = normalizeDateStr(b.labelD21);
+
+        if (d1Norm === ddmmyyyy) isSet = true;
+        if (d18Norm === ddmmyyyy) isD18 = true;
+        if (d21Norm === ddmmyyyy) isD21 = true;
       });
 
-      const colRecord = collections.find(c => c.docKey === isoKey || c.date === ddmmyyyy);
+      // Robust check across egg collections
+      const colRecord = collections.find(c => normalizeDateStr(c.date) === ddmmyyyy);
+
       let subtext = "";
-      
-      // Color coded directly onto the date box
-      if (isSet) { cell.classList.add('stage-set'); subtext = "SET"; }
-      else if (isD18) { cell.classList.add('stage-hatch'); subtext = "D18"; }
-      else if (isD21) { cell.classList.add('stage-remove'); subtext = "PULL"; }
+      if (isSet) {
+        cell.classList.add('stage-set');
+        subtext = "SET";
+      } else if (isD18) {
+        cell.classList.add('stage-hatch');
+        subtext = "D18";
+      } else if (isD21) {
+        cell.classList.add('stage-remove');
+        subtext = "PULL";
+      }
 
       let content = `<span>${d}</span>`;
       if (subtext) content += `<span class="stage-tag">${subtext}</span>`;
-      if (colRecord && colRecord.total > 0) content += `<span class="egg-badge">+${colRecord.total}🥚</span>`;
-      cell.innerHTML = content; grid.appendChild(cell);
+      if (colRecord && colRecord.total > 0) {
+        content += `<span class="egg-badge">+${colRecord.total}🥚</span>`;
+      }
+
+      cell.innerHTML = content;
+      grid.appendChild(cell);
     }
   }
 
   function changeMonth(delta) {
     curMonth += delta;
-    if (curMonth < 0) { curMonth = 11; curYear -= 1; } else if (curMonth > 11) { curMonth = 0; curYear += 1; }
+    if (curMonth < 0) { curMonth = 11; curYear -= 1; }
+    else if (curMonth > 11) { curMonth = 0; curYear += 1; }
     renderCalendar();
   }
 
   function showDateDetailsStrict(dateObj) {
-    const modal = document.getElementById('dateModal'); const title = document.getElementById('modalDateTitle'); const body = document.getElementById('modalDetailsBody');
-    const isoKey = toIsoKey(dateObj); const ddmmyyyy = dateToDDMMYYYY(dateObj);
-    title.innerText = ddmmyyyy; let html = "";
+    const modal = document.getElementById('dateModal');
+    const title = document.getElementById('modalDateTitle');
+    const body = document.getElementById('modalDetailsBody');
+    const ddmmyyyy = dateToDDMMYYYY(dateObj);
+    title.innerText = ddmmyyyy;
+    let html = "";
 
     batches.forEach(b => {
-      if (b.isoD1 === isoKey || b.labelD1 === ddmmyyyy) html += `<div class="event-item" style="border-left:4px solid #0284c7;"><b style="color:#0284c7;">🥚 Day 1: SET EGGS</b><br><b>Batch:</b> ${b.name} (${b.eggs} eggs)</div>`;
-      if (b.isoD18 === isoKey || b.labelD18 === ddmmyyyy) html += `<div class="event-item" style="border-left:4px solid #ea580c;"><b style="color:#ea580c;">🐣 Day 18: HATCHER LOCKDOWN</b><br><b>Batch:</b> ${b.name} (${b.eggs} eggs)</div>`;
-      if (b.isoD21 === isoKey || b.labelD21 === ddmmyyyy) html += `<div class="event-item" style="border-left:4px solid #16a34a;"><b style="color:#16a34a;">🐥 Day 21: PULL CHICKS</b><br><b>Batch:</b> ${b.name} (${b.eggs} eggs)</div>`;
+      const d1Norm = normalizeDateStr(b.labelD1 || b.rawDate);
+      const d18Norm = normalizeDateStr(b.labelD18);
+      const d21Norm = normalizeDateStr(b.labelD21);
+
+      if (d1Norm === ddmmyyyy) html += `<div class="event-item" style="border-left:4px solid #0284c7;"><b style="color:#0284c7;">🥚 Day 1: SET EGGS</b><br><b>Batch:</b> ${b.name} (${b.eggs} eggs)</div>`;
+      if (d18Norm === ddmmyyyy) html += `<div class="event-item" style="border-left:4px solid #ea580c;"><b style="color:#ea580c;">🐣 Day 18: HATCHER LOCKDOWN</b><br><b>Batch:</b> ${b.name} (${b.eggs} eggs)</div>`;
+      if (d21Norm === ddmmyyyy) html += `<div class="event-item" style="border-left:4px solid #16a34a;"><b style="color:#16a34a;">🐥 Day 21: PULL CHICKS</b><br><b>Batch:</b> ${b.name} (${b.eggs} eggs)</div>`;
     });
 
-    const col = collections.find(c => c.docKey === isoKey || c.date === ddmmyyyy);
+    const col = collections.find(c => normalizeDateStr(c.date) === ddmmyyyy);
     if (col && (col.total > 0 || (col.broken || 0) > 0)) {
       html += `<div class="event-item" style="border-left:4px solid #0284c7;"><b>🥚 Daily Egg Pickings</b><br>Morn: ${col.morning||0} | Aftn: ${col.afternoon||0} | Eve: ${col.evening||0}<br>Broken: <b style="color:#b91c1c;">${col.broken||0}</b><br><b>Total Intact: ${col.total}</b></div>`;
     }
-    const mort = mortality.find(m => m.docKey === isoKey || m.date === ddmmyyyy);
+
+    const mort = mortality.find(m => normalizeDateStr(m.date) === ddmmyyyy);
     if (mort && mort.dead > 0) {
       html += `<div class="event-item" style="border-left:4px solid #b91c1c;"><b>☠️ Mortality Recorded</b><br>Birds Dead: <b style="color:#b91c1c;">${mort.dead}</b></div>`;
     }
 
-    if (!html) html = `<div style="text-align:center; padding:15px; color:#94a3b8; font-size:0.85rem;">No scheduled actions for this date.</div>`;
-    body.innerHTML = html; modal.style.display = "flex";
+    if (!html) html = `<div style="text-align:center; padding:15px; color:#94a3b8; font-size:0.85rem;">No actions recorded for this date.</div>`;
+    body.innerHTML = html;
+    modal.style.display = "flex";
   }
 
-  function closeDateDetails(e) { if (!e || e.target.id === "dateModal" || e.target.classList.contains("modal-close")) document.getElementById('dateModal').style.display = "none"; }
+  function closeDateDetails(e) {
+    if (!e || e.target.id === "dateModal" || e.target.classList.contains("modal-close")) {
+      document.getElementById('dateModal').style.display = "none";
+    }
+  }
 
   // --- DATA REPORTS ---
   function openDataModal() {
-    const sortedBatches = [...batches].sort((a, b) => (parseAnyDate(a.rawDate) || new Date(0)) - (parseAnyDate(b.rawDate) || new Date(0)));
+    const sortedBatches = [...batches].sort((a, b) => (parseAnyDate(a.rawDate) || 0) - (parseAnyDate(b.rawDate) || 0));
     const bFrom = document.getElementById('reportBatchFrom'), bTo = document.getElementById('reportBatchTo');
     bFrom.innerHTML = ""; bTo.innerHTML = "";
     sortedBatches.forEach((b, idx) => {
       const d1Str = formatStrictDDMMYYYY(b.labelD1 || b.rawDate);
-      bFrom.add(new Option(`${b.name} (${d1Str})`, idx)); bTo.add(new Option(`${b.name} (${d1Str})`, idx));
+      bFrom.add(new Option(`${b.name} (${d1Str})`, idx));
+      bTo.add(new Option(`${b.name} (${d1Str})`, idx));
     });
     if (sortedBatches.length > 0) { bFrom.selectedIndex = 0; bTo.selectedIndex = sortedBatches.length - 1; }
 
     const dTo = new Date(), dFrom = new Date(); dFrom.setDate(dTo.getDate() - 30);
-    document.getElementById('reportColTo').value = dateToDDMMYYYY(dTo); document.getElementById('reportColFrom').value = dateToDDMMYYYY(dFrom);
+    document.getElementById('reportColTo').value = dateToDDMMYYYY(dTo);
+    document.getElementById('reportColFrom').value = dateToDDMMYYYY(dFrom);
     document.getElementById('dataModal').style.display = "flex";
   }
 
-  function closeDataModal(e) { if (!e || e.target.id === "dataModal" || e.target.classList.contains("modal-close")) document.getElementById('dataModal').style.display = "none"; }
-  function closeDataDisplay() { document.getElementById('dataDisplayView').style.display = "none"; document.getElementById('mainDashboard').style.display = "block"; window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  function closeDataModal(e) {
+    if (!e || e.target.id === "dataModal" || e.target.classList.contains("modal-close")) {
+      document.getElementById('dataModal').style.display = "none";
+    }
+  }
+
+  function closeDataDisplay() {
+    document.getElementById('dataDisplayView').style.display = "none";
+    document.getElementById('mainDashboard').style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   function displayEggDataReport() {
     const rawFrom = document.getElementById('reportColFrom').value.trim(), rawTo = document.getElementById('reportColTo').value.trim();
@@ -821,10 +961,16 @@
     if (!dFrom || !dTo) return alert("Enter valid dates.");
     if (dFrom > dTo) return alert("From Date cannot be after To Date.");
 
-    const filtered = collections.filter(c => { const cd = parseAnyDate(c.date); return cd && cd >= dFrom && cd <= dTo; }).sort((a, b) => (parseAnyDate(a.date)||0) - (parseAnyDate(b.date)||0));
+    const filtered = collections.filter(c => {
+      const cd = parseAnyDate(c.date);
+      return cd && cd >= dFrom && cd <= dTo;
+    }).sort((a, b) => (parseAnyDate(a.date)||0) - (parseAnyDate(b.date)||0));
+
     if (filtered.length === 0) return alert("No egg collections found.");
 
-    let totalMorn = 0, totalAftn = 0, totalEve = 0, totalBroken = 0, grandTotal = 0; let rowsHtml = "";
+    let totalMorn = 0, totalAftn = 0, totalEve = 0, totalBroken = 0, grandTotal = 0;
+    let rowsHtml = "";
+
     filtered.forEach(c => {
       const d = formatStrictDDMMYYYY(c.date), m = c.morning||0, a = c.afternoon||0, e = c.evening||0, b = c.broken||0, t = c.total||0;
       totalMorn += m; totalAftn += a; totalEve += e; totalBroken += b; grandTotal += t;
@@ -834,7 +980,11 @@
     const html = `<div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:8px; margin-bottom:12px;"><h2 style="margin:0; font-size:1.1rem;">AD FARMS ; HERD & HARVEST</h2><div style="font-size:0.85rem; font-weight:bold; margin-top:2px;">Egg Collection Report</div><div style="font-size:0.75rem; color:#64748b;">Period: <b>${rawFrom}</b> to <b>${rawTo}</b></div></div>
       <div class="table-wrap"><table><thead><tr><th style="background:#0284c7; color:#fff;">Data</th><th>Morn</th><th>Aftn</th><th>Eve</th><th>Broken</th><th>Total Intact</th></tr></thead><tbody>${rowsHtml}<tr style="font-weight:bold; background:#f1f5f9;"><td>TOTALS</td><td>${totalMorn}</td><td>${totalAftn}</td><td>${totalEve}</td><td style="color:#b91c1c;">${totalBroken}</td><td style="color:#0284c7;">${grandTotal}</td></tr></tbody></table></div>`;
     
-    document.getElementById('dataReportContent').innerHTML = html; document.getElementById('dataModal').style.display = "none"; document.getElementById('mainDashboard').style.display = "none"; document.getElementById('dataDisplayView').style.display = "block"; window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('dataReportContent').innerHTML = html;
+    document.getElementById('dataModal').style.display = "none";
+    document.getElementById('mainDashboard').style.display = "none";
+    document.getElementById('dataDisplayView').style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function displayIncubationDataReport() {
@@ -846,7 +996,8 @@
 
     let totalEggs = 0, totalChicks = 0, rowsHtml = "";
     selected.forEach(b => {
-      totalEggs += b.eggs; if (b.chicksHatched !== null) totalChicks += b.chicksHatched;
+      totalEggs += b.eggs;
+      if (b.chicksHatched !== null) totalChicks += b.chicksHatched;
       const c = b.chicksHatched !== null ? b.chicksHatched : "-", r = b.hatchRate !== null ? `${b.hatchRate}%` : "-";
       rowsHtml += `<tr><td><b>${b.name}</b></td><td>${b.eggs}</td><td>${formatStrictDDMMYYYY(b.labelD1 || b.rawDate)}</td><td>${formatStrictDDMMYYYY(b.labelD18)}</td><td>${formatStrictDDMMYYYY(b.labelD21)}</td><td>${c}</td><td style="color:#16a34a; font-weight:bold;">${r}</td></tr>`;
     });
@@ -855,11 +1006,18 @@
     const html = `<div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:8px; margin-bottom:12px;"><h2 style="margin:0; font-size:1.1rem;">AD FARMS ; HERD & HARVEST</h2><div style="font-size:0.85rem; font-weight:bold; margin-top:2px;">Incubation Performance</div><div style="font-size:0.75rem; color:#64748b;">Batches: <b>${selected[0].name}</b> to <b>${selected[selected.length - 1].name}</b></div></div>
       <div class="table-wrap"><table><thead><tr><th style="background:#0284c7; color:#fff;">Data</th><th>Eggs</th><th>Set (D1)</th><th>Hatch (D18)</th><th>Pull (D21)</th><th>Chicks</th><th>Rate</th></tr></thead><tbody>${rowsHtml}<tr style="font-weight:bold; background:#f1f5f9;"><td>SUMMARY</td><td>${totalEggs}</td><td colspan="3">-</td><td>${totalChicks>0?totalChicks:'-'}</td><td style="color:#16a34a;">${overallRate}</td></tr></tbody></table></div>`;
     
-    document.getElementById('dataReportContent').innerHTML = html; document.getElementById('dataModal').style.display = "none"; document.getElementById('mainDashboard').style.display = "none"; document.getElementById('dataDisplayView').style.display = "block"; window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('dataReportContent').innerHTML = html;
+    document.getElementById('dataModal').style.display = "none";
+    document.getElementById('mainDashboard').style.display = "none";
+    document.getElementById('dataDisplayView').style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   // Initial draw
-  renderCollections(); renderBatches(); renderMortality(); renderCalendar();
+  renderCollections();
+  renderBatches();
+  renderMortality();
+  renderCalendar();
 </script>
 
 </body>
