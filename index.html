@@ -101,7 +101,7 @@
   .btn-submit:active { background: #0369a1; }
   .btn-cancel { width: 100%; background: #64748b; color: #ffffff; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; margin-top: 6px; display: none; }
 
-  /* CLEAN BATCH CARDS */
+  /* BATCH CARDS */
   .batch-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
   .batch-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 8px; }
   .batch-title { font-size: 0.98rem; font-weight: 800; color: #0f172a; }
@@ -203,16 +203,6 @@
 
   .view-panel { display: none; }
   .view-panel.active { display: block; }
-
-  /* PREVIEW & PRINT SHEET */
-  #reportView {
-    display: none;
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 12px;
-    padding: 14px;
-    margin-top: 10px;
-  }
 </style>
 
 <!-- Firebase SDKs -->
@@ -221,7 +211,7 @@
 </head>
 <body>
 
-<div class="container" id="mainContainer">
+<div class="container">
 
   <!-- TOP HEADER -->
   <div class="top-bar">
@@ -239,7 +229,7 @@
     </div>
     
     <div class="header-actions">
-      <button class="btn-print-top" onclick="openPrintModal()">🖨️ Print Data</button>
+      <button class="btn-print-top" onclick="openPrintModal()">📥 Export / Save</button>
       <div id="cloudStatus" class="status-badge">🟢 Cloud</div>
     </div>
   </div>
@@ -373,26 +363,17 @@
 
 </div>
 
-<!-- IN-APP PRINT & REPORT VIEWER -->
-<div class="container" id="reportView">
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-    <button class="btn-neutral" style="padding:6px 12px; font-weight:bold;" onclick="closeReportView()">◀ Back to App</button>
-    <button class="btn-submit" style="width:auto; margin:0; padding:6px 14px; background:#059669;" onclick="window.print()">🖨️ Save as PDF / Print</button>
-  </div>
-  <div id="reportContent"></div>
-</div>
-
-<!-- PRINT DATA MODAL -->
+<!-- EXPORT & SHARE MODAL -->
 <div class="modal-overlay" id="printModal" onclick="closePrintModal(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <h3>
-      <span>🖨️ Print &amp; Export Data</span>
+      <span>📤 Export / Save Data</span>
       <button class="modal-close" onclick="closePrintModal()">✕</button>
     </h3>
 
     <!-- 1. EGG COLLECTION SECTION -->
     <div class="print-opt-box">
-      <h4>🥚 1. Print Egg Collection Report</h4>
+      <h4>🥚 1. Egg Collection Report</h4>
       <div class="form-row">
         <div>
           <label>From Date</label>
@@ -403,12 +384,12 @@
           <input type="date" id="printColTo">
         </div>
       </div>
-      <button class="btn-submit" style="background:#059669; padding:10px; font-size:0.85rem;" onclick="renderEggReport()">View &amp; Print Egg Data</button>
+      <button class="btn-submit" style="background:#059669; padding:10px; font-size:0.85rem;" onclick="exportEggData()">Save / Share Egg Data (Excel)</button>
     </div>
 
     <!-- 2. INCUBATION BATCHES SECTION -->
     <div class="print-opt-box">
-      <h4>🐥 2. Print Incubation Batches Report</h4>
+      <h4>🐥 2. Incubation Batches Report</h4>
       <div class="form-row">
         <div>
           <label>From Batch</label>
@@ -419,8 +400,21 @@
           <select id="printBatchTo"></select>
         </div>
       </div>
-      <button class="btn-submit" style="background:#0284c7; padding:10px; font-size:0.85rem;" onclick="renderIncubationReport()">View &amp; Print Incubation Data</button>
+      <button class="btn-submit" style="background:#0284c7; padding:10px; font-size:0.85rem;" onclick="exportIncubationData()">Save / Share Incubation Data (Excel)</button>
     </div>
+  </div>
+</div>
+
+<!-- FALLBACK DATA DISPLAY (USED IF THE WRAPPER BLOCKS EVERYTHING) -->
+<div class="modal-overlay" id="clipboardModal" onclick="closeClipboardModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3>
+      <span>📋 Copy Spreadsheet Data</span>
+      <button class="modal-close" onclick="closeClipboardModal()">✕</button>
+    </h3>
+    <p style="font-size:0.75rem; color:#64748b; margin:4px 0 8px 0;">Tap Copy below to copy all rows, then paste directly into Microsoft Excel or Google Sheets.</p>
+    <textarea id="csvTextArea" style="width:100%; height:160px; font-size:0.75rem; font-family:monospace; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></textarea>
+    <button class="btn-submit" style="margin-top:8px;" onclick="copyCsvToClipboard()">📋 Copy All to Clipboard</button>
   </div>
 </div>
 
@@ -904,7 +898,7 @@
     }
   }
 
-  // --- REPORT GENERATOR & DIRECT PRINT ENGINE ---
+  // --- ROOT CAUSE FIX: BULLETPROOF EXPORT ENGINE ---
   function openPrintModal() {
     const sortedBatches = [...batches].sort((a, b) => new Date(a.rawDate) - new Date(b.rawDate));
     const bFrom = document.getElementById('printBatchFrom');
@@ -940,12 +934,69 @@
     }
   }
 
-  function closeReportView() {
-    document.getElementById('reportView').style.display = "none";
-    document.getElementById('mainContainer').style.display = "block";
+  async function handleFileDelivery(filename, csvData, title) {
+    closePrintModal();
+
+    // Strategy 1: Modern Android Web Share File API (Direct to Files / Drive / WhatsApp)
+    try {
+      const blob = new Blob(["\ufeff" + csvData], { type: 'text/csv;charset=utf-8;' });
+      const file = new File([blob], filename, { type: 'text/csv' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: title,
+          text: `AD Farms ${title}`
+        });
+        return;
+      }
+    } catch(err) {
+      console.warn("Native file sharing unavailable or dismissed:", err);
+    }
+
+    // Strategy 2: Direct Anchor Download
+    try {
+      const blob = new Blob(["\ufeff" + csvData], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      return;
+    } catch(err) {
+      console.warn("Direct blob anchor failed:", err);
+    }
+
+    // Strategy 3: Guaranteed Fallback Clipboard Modal
+    document.getElementById('csvTextArea').value = csvData;
+    document.getElementById('clipboardModal').style.display = "flex";
   }
 
-  function renderEggReport() {
+  function copyCsvToClipboard() {
+    const ta = document.getElementById('csvTextArea');
+    ta.select();
+    ta.setSelectionRange(0, 99999);
+    try {
+      navigator.clipboard.writeText(ta.value).then(() => {
+        alert("Copied to clipboard! Open Excel or Google Sheets and tap Paste.");
+        document.getElementById('clipboardModal').style.display = "none";
+      });
+    } catch(err) {
+      document.execCommand("copy");
+      alert("Copied! Open Excel or Google Sheets and tap Paste.");
+      document.getElementById('clipboardModal').style.display = "none";
+    }
+  }
+
+  function closeClipboardModal(e) {
+    if (!e || e.target.id === "clipboardModal" || e.target.classList.contains("modal-close")) {
+      document.getElementById('clipboardModal').style.display = "none";
+    }
+  }
+
+  function exportEggData() {
     const fromDate = document.getElementById('printColFrom').value;
     const toDate = document.getElementById('printColTo').value;
 
@@ -957,63 +1008,20 @@
 
     if (filtered.length === 0) return alert("No egg collections found in this date range.");
 
+    let csv = "Date,Morning,Afternoon,Evening,Daily Total\n";
     let totalMorn = 0, totalAftn = 0, totalEve = 0, grandTotal = 0;
-    let rowsHtml = "";
 
     filtered.forEach(c => {
-      totalMorn += (c.morning || 0);
-      totalAftn += (c.afternoon || 0);
-      totalEve += (c.evening || 0);
-      grandTotal += (c.total || 0);
-
-      rowsHtml += `
-        <tr>
-          <td><b>${c.date}</b></td>
-          <td>${c.morning || 0}</td>
-          <td>${c.afternoon || 0}</td>
-          <td>${c.evening || 0}</td>
-          <td style="font-weight:bold; color:#0284c7;">${c.total}</td>
-        </tr>`;
+      const m = c.morning || 0, a = c.afternoon || 0, e = c.evening || 0, t = c.total || 0;
+      totalMorn += m; totalAftn += a; totalEve += e; grandTotal += t;
+      csv += `${c.date},${m},${a},${e},${t}\n`;
     });
+    csv += `TOTALS,${totalMorn},${totalAftn},${totalEve},${grandTotal}\n`;
 
-    const reportHtml = `
-      <div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:8px; margin-bottom:12px;">
-        <h2 style="margin:0; font-size:1.1rem; color:#0f172a;">AD FARMS ; HERD &amp; HARVEST</h2>
-        <div style="font-size:0.85rem; font-weight:bold; color:#334155; margin-top:2px;">Egg Collection Report</div>
-        <div style="font-size:0.75rem; color:#64748b;">Period: <b>${fromDate}</b> to <b>${toDate}</b></div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Morning</th>
-            <th>Afternoon</th>
-            <th>Evening</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rowsHtml}
-          <tr style="font-weight:bold; background:#f1f5f9;">
-            <td>TOTALS</td>
-            <td>${totalMorn}</td>
-            <td>${totalAftn}</td>
-            <td>${totalEve}</td>
-            <td style="color:#0284c7;">${grandTotal}</td>
-          </tr>
-        </tbody>
-      </table>
-      <div style="font-size:0.7rem; color:#64748b; text-align:right; margin-top:10px;">Generated: ${new Date().toLocaleString('en-GB')}</div>
-    `;
-
-    document.getElementById('reportContent').innerHTML = reportHtml;
-    document.getElementById('printModal').style.display = "none";
-    document.getElementById('mainContainer').style.display = "none";
-    document.getElementById('reportView').style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    handleFileDelivery(`AD_Farms_EggLog_${fromDate}_to_${toDate}.csv`, csv, "Egg Collection Log");
   }
 
-  function renderIncubationReport() {
+  function exportIncubationData() {
     const sortedBatches = [...batches].sort((a, b) => new Date(a.rawDate) - new Date(b.rawDate));
     if (sortedBatches.length === 0) return alert("No batches recorded yet.");
 
@@ -1024,64 +1032,22 @@
     if (idxFrom > idxTo) { const temp = idxFrom; idxFrom = idxTo; idxTo = temp; }
 
     const selected = sortedBatches.slice(idxFrom, idxTo + 1);
+
+    let csv = "Batch Name,Eggs Set,Set Date (D1),Hatcher Date (D18),Pull Date (D21),Chicks Hatched,Hatch Rate (%)\n";
     let totalEggs = 0, totalChicks = 0;
-    let rowsHtml = "";
 
     selected.forEach(b => {
       totalEggs += b.eggs;
       if (b.chicksHatched !== null) totalChicks += b.chicksHatched;
-
-      rowsHtml += `
-        <tr>
-          <td><b>${b.name}</b></td>
-          <td>${b.eggs}</td>
-          <td>${b.labelD1}</td>
-          <td>${b.labelD18}</td>
-          <td>${b.labelD21}</td>
-          <td>${b.chicksHatched !== null ? b.chicksHatched : '-'}</td>
-          <td>${b.hatchRate !== null ? b.hatchRate + '%' : '-'}</td>
-        </tr>`;
+      const chicks = b.chicksHatched !== null ? b.chicksHatched : "Pending";
+      const rate = b.hatchRate !== null ? `${b.hatchRate}%` : "Pending";
+      csv += `"${b.name}",${b.eggs},"${b.labelD1}","${b.labelD18}","${b.labelD21}",${chicks},${rate}\n`;
     });
 
-    const overallRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + '%' : '-';
+    const overallRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + "%" : "Pending";
+    csv += `TOTALS,${totalEggs},-,-,-,${totalChicks > 0 ? totalChicks : 0},${overallRate}\n`;
 
-    const reportHtml = `
-      <div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:8px; margin-bottom:12px;">
-        <h2 style="margin:0; font-size:1.1rem; color:#0f172a;">AD FARMS ; HERD &amp; HARVEST</h2>
-        <div style="font-size:0.85rem; font-weight:bold; color:#334155; margin-top:2px;">Incubation &amp; Hatch Performance Report</div>
-        <div style="font-size:0.75rem; color:#64748b;">Batches: <b>${selected[0].name}</b> to <b>${selected[selected.length - 1].name}</b></div>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Batch</th>
-            <th>Eggs</th>
-            <th>D1 (Set)</th>
-            <th>D18 (Hatch)</th>
-            <th>D21 (Pull)</th>
-            <th>Chicks</th>
-            <th>Rate</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rowsHtml}
-          <tr style="font-weight:bold; background:#f1f5f9;">
-            <td>SUMMARY</td>
-            <td>${totalEggs}</td>
-            <td colspan="3">-</td>
-            <td>${totalChicks > 0 ? totalChicks : '-'}</td>
-            <td style="color:#16a34a;">${overallRate}</td>
-          </tr>
-        </tbody>
-      </table>
-      <div style="font-size:0.7rem; color:#64748b; text-align:right; margin-top:10px;">Generated: ${new Date().toLocaleString('en-GB')}</div>
-    `;
-
-    document.getElementById('reportContent').innerHTML = reportHtml;
-    document.getElementById('printModal').style.display = "none";
-    document.getElementById('mainContainer').style.display = "none";
-    document.getElementById('reportView').style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    handleFileDelivery(`AD_Farms_Batches_${selected[0].name}_to_${selected[selected.length - 1].name}.csv`, csv, "Incubation Batches Report");
   }
 
   // Initial render
