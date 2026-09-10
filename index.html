@@ -136,7 +136,7 @@
   /* TABLE */
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-  th, td { border: 1px solid #e2e8f0; padding: 8px 6px; text-align: center; }
+  th, td { border: 1px solid #e2e8f0; padding: 8px 5px; text-align: center; }
   th { background: #f1f5f9; color: #475569; font-weight: 700; }
 
   /* CALENDAR */
@@ -309,8 +309,12 @@
       </div>
       <div class="form-row">
         <div>
-          <label>Eggs Picked</label>
-          <input type="number" id="colCount" placeholder="e.g. 35" min="1">
+          <label>Eggs Picked (Good)</label>
+          <input type="number" id="colCount" placeholder="e.g. 35" min="0">
+        </div>
+        <div>
+          <label>Broken Eggs</label>
+          <input type="number" id="colBroken" placeholder="e.g. 2" min="0" value="0">
         </div>
       </div>
       <button class="btn-submit" onclick="saveCollection()">Add Collection</button>
@@ -326,6 +330,7 @@
               <th>Morn</th>
               <th>Aftn</th>
               <th>Eve</th>
+              <th>Broken</th>
               <th>Total</th>
               <th>Del</th>
             </tr>
@@ -405,7 +410,7 @@
   </div>
 </div>
 
-<!-- FALLBACK DATA DISPLAY (USED IF THE WRAPPER BLOCKS EVERYTHING) -->
+<!-- FALLBACK DATA DISPLAY (CLIPBOARD MODAL) -->
 <div class="modal-overlay" id="clipboardModal" onclick="closeClipboardModal(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <h3>
@@ -571,25 +576,34 @@
   }
   applyReminderUI();
 
-  // Collections
+  // Collections (BROKEN EGGS EXCLUDED FROM TOTAL TALLY)
   function saveCollection() {
     const date = document.getElementById('colDate').value;
     const slot = document.getElementById('colSlot').value;
-    const count = parseInt(document.getElementById('colCount').value, 10);
+    const countVal = document.getElementById('colCount').value;
+    const brokenVal = document.getElementById('colBroken').value;
+
+    const count = parseInt(countVal, 10) || 0;
+    const broken = parseInt(brokenVal, 10) || 0;
 
     if (!date) return alert("Select date");
-    if (isNaN(count) || count <= 0) return alert("Enter valid egg count");
+    if (count === 0 && broken === 0) return alert("Please enter either intact eggs or broken eggs.");
 
     let existing = collections.find(c => c.date === date);
     let m = existing ? (existing.morning || 0) : 0;
     let a = existing ? (existing.afternoon || 0) : 0;
     let e = existing ? (existing.evening || 0) : 0;
+    let b = existing ? (existing.broken || 0) : 0;
 
     if (slot === "Morning") m += count;
     if (slot === "Afternoon") a += count;
     if (slot === "Evening") e += count;
+    b += broken;
 
-    const entry = { id: date, date: date, morning: m, afternoon: a, evening: e, total: (m + a + e) };
+    // Total strictly sums Morn + Aftn + Eve; broken eggs are tracked but not added to total
+    const grandTotal = m + a + e;
+
+    const entry = { id: date, date: date, morning: m, afternoon: a, evening: e, broken: b, total: grandTotal };
 
     if (existing) Object.assign(existing, entry);
     else collections.push(entry);
@@ -597,7 +611,9 @@
     syncToLocalStorage();
     renderCollections();
     renderCalendar();
+    
     document.getElementById('colCount').value = "";
+    document.getElementById('colBroken').value = "0";
 
     if (db) db.collection("collections").doc(date).set(entry).catch(e => console.warn(e));
   }
@@ -625,6 +641,7 @@
         <td>${c.morning || '-'}</td>
         <td>${c.afternoon || '-'}</td>
         <td>${c.evening || '-'}</td>
+        <td style="color:#b91c1c; font-weight:bold;">${c.broken || '-'}</td>
         <td style="color:#0284c7; font-weight:bold;">${c.total}</td>
         <td><button style="border:none; background:#fee2e2; color:#b91c1c; border-radius:4px; font-weight:bold; padding:4px 8px;" onclick="deleteCollection('${c.id}')">✕</button></td>
       `;
@@ -875,12 +892,13 @@
     });
 
     const col = collections.find(c => c.date === dateKey);
-    if (col && col.total > 0) {
+    if (col && (col.total > 0 || (col.broken || 0) > 0)) {
       html += `
         <div class="event-item" style="border-left: 4px solid #0284c7;">
           <b>🥚 Daily Egg Pickings</b><br>
           Morning: <b>${col.morning || 0}</b> | Afternoon: <b>${col.afternoon || 0}</b> | Evening: <b>${col.evening || 0}</b><br>
-          <b>Total Eggs: ${col.total}</b>
+          Broken Eggs: <b style="color:#b91c1c;">${col.broken || 0}</b><br>
+          <b>Intact Eggs Total: ${col.total}</b>
         </div>`;
     }
 
@@ -898,7 +916,7 @@
     }
   }
 
-  // --- ROOT CAUSE FIX: BULLETPROOF EXPORT ENGINE ---
+  // --- EXPORT & SHARE ENGINE ---
   function openPrintModal() {
     const sortedBatches = [...batches].sort((a, b) => new Date(a.rawDate) - new Date(b.rawDate));
     const bFrom = document.getElementById('printBatchFrom');
@@ -937,7 +955,7 @@
   async function handleFileDelivery(filename, csvData, title) {
     closePrintModal();
 
-    // Strategy 1: Modern Android Web Share File API (Direct to Files / Drive / WhatsApp)
+    // Strategy 1: Modern Android Web Share File API
     try {
       const blob = new Blob(["\ufeff" + csvData], { type: 'text/csv;charset=utf-8;' });
       const file = new File([blob], filename, { type: 'text/csv' });
@@ -950,7 +968,7 @@
         return;
       }
     } catch(err) {
-      console.warn("Native file sharing unavailable or dismissed:", err);
+      console.warn("Native file sharing unavailable:", err);
     }
 
     // Strategy 2: Direct Anchor Download
@@ -966,10 +984,10 @@
       setTimeout(() => URL.revokeObjectURL(url), 1000);
       return;
     } catch(err) {
-      console.warn("Direct blob anchor failed:", err);
+      console.warn("Direct download failed:", err);
     }
 
-    // Strategy 3: Guaranteed Fallback Clipboard Modal
+    // Strategy 3: Direct Clipboard Fallback
     document.getElementById('csvTextArea').value = csvData;
     document.getElementById('clipboardModal').style.display = "flex";
   }
@@ -1008,15 +1026,18 @@
 
     if (filtered.length === 0) return alert("No egg collections found in this date range.");
 
-    let csv = "Date,Morning,Afternoon,Evening,Daily Total\n";
-    let totalMorn = 0, totalAftn = 0, totalEve = 0, grandTotal = 0;
+    let csv = "Date,Morning,Afternoon,Evening,Broken Eggs,Daily Intact Total\n";
+    let totalMorn = 0, totalAftn = 0, totalEve = 0, totalBroken = 0, grandTotal = 0;
 
     filtered.forEach(c => {
-      const m = c.morning || 0, a = c.afternoon || 0, e = c.evening || 0, t = c.total || 0;
-      totalMorn += m; totalAftn += a; totalEve += e; grandTotal += t;
-      csv += `${c.date},${m},${a},${e},${t}\n`;
+      const m = c.morning || 0, a = c.afternoon || 0, e = c.evening || 0;
+      const b = c.broken || 0;
+      const t = c.total || 0;
+
+      totalMorn += m; totalAftn += a; totalEve += e; totalBroken += b; grandTotal += t;
+      csv += `${c.date},${m},${a},${e},${b},${t}\n`;
     });
-    csv += `TOTALS,${totalMorn},${totalAftn},${totalEve},${grandTotal}\n`;
+    csv += `TOTALS,${totalMorn},${totalAftn},${totalEve},${totalBroken},${grandTotal}\n`;
 
     handleFileDelivery(`AD_Farms_EggLog_${fromDate}_to_${toDate}.csv`, csv, "Egg Collection Log");
   }
