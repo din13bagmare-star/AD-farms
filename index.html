@@ -19,7 +19,7 @@
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
   .brand-group { display: flex; align-items: center; gap: 10px; }
   .logo-box {
@@ -40,54 +40,25 @@
   .brand-text .sub-title { margin: 0; font-size: 0.68rem; color: #0284c7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
   
   .header-actions { display: flex; align-items: center; gap: 8px; }
-  .status-badge { font-size: 0.65rem; padding: 3px 6px; border-radius: 10px; font-weight: bold; background: #e2e8f0; color: #475569; }
-  .btn-print-top {
+  .status-badge { font-size: 0.65rem; padding: 4px 8px; border-radius: 10px; font-weight: bold; background: #e2e8f0; color: #475569; }
+  .btn-data-top {
     background: #0284c7;
     color: #ffffff;
     border: none;
     border-radius: 6px;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     font-weight: 700;
-    padding: 6px 10px;
+    padding: 7px 12px;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 4px;
   }
-  .btn-print-top:active { background: #0369a1; }
-
-  /* GLOBAL REMINDER CONTROL */
-  .settings-box {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    padding: 10px 12px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-  }
-  .settings-title { font-size: 0.76rem; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px; display: flex; justify-content: space-between; }
-  .settings-row { display: flex; gap: 8px; align-items: center; }
-  .mode-toggle-btn {
-    flex: 1;
-    padding: 7px 4px;
-    border-radius: 6px;
-    font-size: 0.76rem;
-    font-weight: 800;
-    border: 1px solid #cbd5e1;
-    background: #f8fafc;
-    color: #475569;
-    cursor: pointer;
-    text-align: center;
-  }
-  .mode-toggle-btn.active-ring { background: #ecfdf5; color: #047857; border-color: #10b981; }
-  .mode-toggle-btn.active-silent { background: #fef2f2; color: #b91c1c; border-color: #f87171; }
-  .time-input-group { display: flex; align-items: center; gap: 4px; }
-  .time-input-group label { font-size: 0.72rem; font-weight: 700; color: #64748b; margin: 0; }
-  .time-input-group input { width: 90px; padding: 6px; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: bold; font-size: 0.8rem; background: #fff; }
+  .btn-data-top:active { background: #0369a1; }
 
   /* TABS */
   .tab-bar { display: flex; background: #e2e8f0; border-radius: 8px; padding: 3px; gap: 3px; margin-bottom: 12px; }
-  .tab-btn { flex: 1; border: none; background: transparent; padding: 8px 4px; font-size: 0.82rem; font-weight: 700; color: #475569; border-radius: 6px; cursor: pointer; }
+  .tab-btn { flex: 1; border: none; background: transparent; padding: 9px 4px; font-size: 0.82rem; font-weight: 700; color: #475569; border-radius: 6px; cursor: pointer; }
   .tab-btn.active { background: #ffffff; color: #0284c7; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
   /* CARDS */
@@ -117,7 +88,7 @@
 
   .batch-results-bar { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 7px 10px; border-radius: 6px; font-size: 0.8rem; margin-bottom: 8px; border: 1px solid #f1f5f9; }
   
-  /* NEUTRAL ACTION BUTTONS */
+  /* NEUTRAL BUTTONS */
   .batch-actions { display: flex; gap: 6px; }
   .btn-neutral {
     flex: 1;
@@ -166,6 +137,24 @@
   .stage-remove { background: #bbf7d0 !important; color: #166534 !important; border: 1.5px solid #22c55e !important; }
   .stage-tag { font-size: 0.52rem; font-weight: 900; line-height: 1; text-transform: uppercase; margin-top: 2px; }
 
+  /* FULL SCREEN DATA DISPLAY CONTAINER */
+  #dataDisplayView {
+    display: none;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .data-display-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+  }
+
   /* MODALS */
   .modal-overlay {
     display: none;
@@ -192,14 +181,14 @@
   .modal-close { background: #e2e8f0; border: none; border-radius: 50%; width: 28px; height: 28px; font-weight: bold; cursor: pointer; }
   .event-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-bottom: 8px; font-size: 0.85rem; }
   
-  .print-opt-box {
+  .data-opt-box {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
     padding: 12px;
     margin-bottom: 12px;
   }
-  .print-opt-box h4 { margin: 0 0 8px 0; font-size: 0.88rem; color: #334155; }
+  .data-opt-box h4 { margin: 0 0 8px 0; font-size: 0.88rem; color: #334155; }
 
   .view-panel { display: none; }
   .view-panel.active { display: block; }
@@ -211,7 +200,8 @@
 </head>
 <body>
 
-<div class="container">
+<!-- APP DASHBOARD CONTAINER -->
+<div class="container" id="mainDashboard">
 
   <!-- TOP HEADER -->
   <div class="top-bar">
@@ -229,24 +219,8 @@
     </div>
     
     <div class="header-actions">
-      <button class="btn-print-top" onclick="openPrintModal()">📥 Export / Save</button>
+      <button class="btn-data-top" onclick="openDataModal()">📊 Data</button>
       <div id="cloudStatus" class="status-badge">🟢 Cloud</div>
-    </div>
-  </div>
-
-  <!-- SINGLE TOP REMINDER STATUS -->
-  <div class="settings-box">
-    <div class="settings-title">
-      <span>🔔 18th &amp; 21st Day Alarms</span>
-      <span id="modeStatusText" style="color:#047857;">RINGING (08:00)</span>
-    </div>
-    <div class="settings-row">
-      <button class="mode-toggle-btn active-ring" id="btnModeRing" onclick="setGlobalReminderMode('ring')">🔔 All Alarms ON</button>
-      <button class="mode-toggle-btn" id="btnModeSilent" onclick="setGlobalReminderMode('silent')">🔕 Silence / OFF</button>
-      <div class="time-input-group">
-        <label>Time:</label>
-        <input type="time" id="alertTime" value="08:00" onchange="updateAlertTime(this.value)">
-      </div>
     </div>
   </div>
 
@@ -368,58 +342,54 @@
 
 </div>
 
-<!-- EXPORT & SHARE MODAL -->
-<div class="modal-overlay" id="printModal" onclick="closePrintModal(event)">
+<!-- DATA REPORT DISPLAY VIEW -->
+<div class="container" id="dataDisplayView">
+  <div class="data-display-header">
+    <button class="btn-neutral" style="padding:6px 12px; font-weight:800;" onclick="closeDataDisplay()">◀ Back to App</button>
+    <div style="font-size:0.85rem; font-weight:800; color:#0284c7;">AD FARMS REPORT</div>
+  </div>
+  <div id="dataReportContent"></div>
+</div>
+
+<!-- DATA SELECTION MODAL -->
+<div class="modal-overlay" id="dataModal" onclick="closeDataModal(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <h3>
-      <span>📤 Export / Save Data</span>
-      <button class="modal-close" onclick="closePrintModal()">✕</button>
+      <span>📊 View Data Reports</span>
+      <button class="modal-close" onclick="closeDataModal()">✕</button>
     </h3>
 
-    <!-- 1. EGG COLLECTION SECTION -->
-    <div class="print-opt-box">
+    <!-- 1. EGG REPORT OPTION -->
+    <div class="data-opt-box">
       <h4>🥚 1. Egg Collection Report</h4>
       <div class="form-row">
         <div>
           <label>From Date (DD/MM/YYYY)</label>
-          <input type="text" id="printColFrom" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
+          <input type="text" id="reportColFrom" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
         </div>
         <div>
           <label>To Date (DD/MM/YYYY)</label>
-          <input type="text" id="printColTo" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
+          <input type="text" id="reportColTo" placeholder="DD/MM/YYYY" maxlength="10" oninput="formatDateInput(this)">
         </div>
       </div>
-      <button class="btn-submit" style="background:#059669; padding:10px; font-size:0.85rem;" onclick="exportEggData()">Save / Share Egg Data (Excel)</button>
+      <button class="btn-submit" style="background:#059669; padding:10px; font-size:0.85rem;" onclick="displayEggDataReport()">Show Egg Data</button>
     </div>
 
-    <!-- 2. INCUBATION BATCHES SECTION -->
-    <div class="print-opt-box">
+    <!-- 2. INCUBATION REPORT OPTION -->
+    <div class="data-opt-box">
       <h4>🐥 2. Incubation Batches Report</h4>
       <div class="form-row">
         <div>
           <label>From Batch</label>
-          <select id="printBatchFrom"></select>
+          <select id="reportBatchFrom"></select>
         </div>
         <div>
           <label>To Batch</label>
-          <select id="printBatchTo"></select>
+          <select id="reportBatchTo"></select>
         </div>
       </div>
-      <button class="btn-submit" style="background:#0284c7; padding:10px; font-size:0.85rem;" onclick="exportIncubationData()">Save / Share Incubation Data (Excel)</button>
+      <button class="btn-submit" style="background:#0284c7; padding:10px; font-size:0.85rem;" onclick="displayIncubationDataReport()">Show Incubation Data</button>
     </div>
-  </div>
-</div>
-
-<!-- FALLBACK DATA DISPLAY (CLIPBOARD MODAL) -->
-<div class="modal-overlay" id="clipboardModal" onclick="closeClipboardModal(event)">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <h3>
-      <span>📋 Copy Spreadsheet Data</span>
-      <button class="modal-close" onclick="closeClipboardModal()">✕</button>
-    </h3>
-    <p style="font-size:0.75rem; color:#64748b; margin:4px 0 8px 0;">Tap Copy below to copy all rows, then paste directly into Microsoft Excel or Google Sheets.</p>
-    <textarea id="csvTextArea" style="width:100%; height:160px; font-size:0.75rem; font-family:monospace; padding:8px; border:1px solid #cbd5e1; border-radius:6px;"></textarea>
-    <button class="btn-submit" style="margin-top:8px;" onclick="copyCsvToClipboard()">📋 Copy All to Clipboard</button>
   </div>
 </div>
 
@@ -438,7 +408,6 @@
   // --- STRICT DD/MM/YYYY FORMATTING & PARSING ENGINE ---
   function pad(n) { return String(n).padStart(2, '0'); }
 
-  // Auto-mask typed dates to DD/MM/YYYY
   function formatDateInput(el) {
     let v = el.value.replace(/\D/g, '').slice(0, 8);
     if (v.length >= 5) {
@@ -459,35 +428,51 @@
     return `${pad(dateObj.getDate())}/${pad(dateObj.getMonth() + 1)}/${dateObj.getFullYear()}`;
   }
 
-  function parseDDMMYYYY(str) {
+  function parseAnyDate(str) {
     if (!str || typeof str !== 'string') return null;
-    const parts = str.trim().split('/');
-    if (parts.length !== 3) return null;
-    const day = parseInt(parts[0], 10);
-    const month = parseInt(parts[1], 10);
-    const year = parseInt(parts[2], 10);
-    if (isNaN(day) || isNaN(month) || isNaN(year) || day < 1 || day > 31 || month < 1 || month > 12 || year < 2000 || year > 2100) {
-      return null;
+    str = str.trim();
+
+    if (str.includes('/')) {
+      const parts = str.split('/');
+      if (parts.length === 3) {
+        const d = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10);
+        const y = parseInt(parts[2], 10);
+        if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 2000) {
+          const dt = new Date(y, m - 1, d);
+          if (dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d) return dt;
+        }
+      }
     }
-    const d = new Date(year, month - 1, day);
-    if (d.getFullYear() !== year || d.getMonth() !== month - 1 || d.getDate() !== day) return null;
-    return d;
+
+    if (str.includes('-')) {
+      const parts = str.split('-');
+      if (parts.length === 3) {
+        const y = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10);
+        const d = parseInt(parts[2], 10);
+        if (d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 2000) {
+          const dt = new Date(y, m - 1, d);
+          if (dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d) return dt;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  function formatStrictDDMMYYYY(dateString) {
+    const dt = parseAnyDate(dateString);
+    return dt ? dateToDDMMYYYY(dt) : dateString;
   }
 
   function toIsoKey(dateObj) {
     return `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}`;
   }
 
-  function ddmmyyyyToIsoKey(str) {
-    const d = parseDDMMYYYY(str);
-    return d ? toIsoKey(d) : null;
-  }
-
-  // --- LOCAL & CLOUD STORAGE ARCHITECTURE ---
+  // --- LOCAL & CLOUD STORAGE ---
   let collections = JSON.parse(localStorage.getItem("ad_farms_local_collections") || "[]");
   let batches = JSON.parse(localStorage.getItem("ad_farms_local_batches") || "[]");
-  let reminderMode = localStorage.getItem("ad_farms_reminder_mode") || "ring";
-  let reminderTime = localStorage.getItem("ad_farms_alert_time") || "08:00";
   let curYear = new Date().getFullYear();
   let curMonth = new Date().getMonth();
 
@@ -500,7 +485,7 @@
     localStorage.setItem("ad_farms_local_batches", JSON.stringify(batches));
   }
 
-  // Firebase Cloud Link
+  // Firebase Setup
   const firebaseConfig = {
     apiKey: "AIzaSyC0fvccTExFtjDF5jijNVExvdXvyAq54DY",
     authDomain: "poultry-a6902.firebaseapp.com",
@@ -539,7 +524,7 @@
       }
     }, err => console.warn(err));
   } catch(e) {
-    console.warn("Offline local mode active", e);
+    console.warn("Offline mode active", e);
   }
 
   function switchTab(tabId, btn) {
@@ -584,48 +569,10 @@
   }
   checkAndLockLogo();
 
-  // Settings UI
-  function applyReminderUI() {
-    const btnRing = document.getElementById('btnModeRing');
-    const btnSilent = document.getElementById('btnModeSilent');
-    const statusText = document.getElementById('modeStatusText');
-    const timeInput = document.getElementById('alertTime');
-
-    timeInput.value = reminderTime;
-
-    if (reminderMode === "ring") {
-      btnRing.className = "mode-toggle-btn active-ring";
-      btnSilent.className = "mode-toggle-btn";
-      statusText.textContent = `RINGING (${reminderTime})`;
-      statusText.style.color = "#047857";
-      timeInput.disabled = false;
-    } else {
-      btnRing.className = "mode-toggle-btn";
-      btnSilent.className = "mode-toggle-btn active-silent";
-      statusText.textContent = "MUTED / SILENT";
-      statusText.style.color = "#b91c1c";
-      timeInput.disabled = true;
-    }
-  }
-
-  function setGlobalReminderMode(mode) {
-    reminderMode = mode;
-    localStorage.setItem("ad_farms_reminder_mode", mode);
-    applyReminderUI();
-  }
-
-  function updateAlertTime(newTime) {
-    if (!newTime) return;
-    reminderTime = newTime;
-    localStorage.setItem("ad_farms_alert_time", newTime);
-    applyReminderUI();
-  }
-  applyReminderUI();
-
   // --- EGG COLLECTIONS ---
   function saveCollection() {
     const rawDate = document.getElementById('colDate').value.trim();
-    const dateObj = parseDDMMYYYY(rawDate);
+    const dateObj = parseAnyDate(rawDate);
     if (!dateObj) return alert("Please enter a valid date in DD/MM/YYYY format (e.g. 10/09/2026).");
 
     const slot = document.getElementById('colSlot').value;
@@ -637,7 +584,7 @@
     const formattedDate = dateToDDMMYYYY(dateObj);
     const docKey = toIsoKey(dateObj);
 
-    let existing = collections.find(c => c.docKey === docKey || c.date === formattedDate);
+    let existing = collections.find(c => c.docKey === docKey || c.date === formattedDate || c.date === docKey);
     let m = existing ? (existing.morning || 0) : 0;
     let a = existing ? (existing.afternoon || 0) : 0;
     let e = existing ? (existing.evening || 0) : 0;
@@ -648,7 +595,7 @@
     if (slot === "Evening") e += count;
     b += broken;
 
-    const grandTotal = m + a + e; // Broken eggs strictly excluded from daily total tally
+    const grandTotal = m + a + e; // Broken eggs strictly excluded from daily total
 
     const entry = {
       id: docKey,
@@ -689,17 +636,17 @@
     tbody.innerHTML = "";
     document.getElementById('noCollections').style.display = collections.length === 0 ? "block" : "none";
 
-    // Sort chronologically descending
     const sorted = [...collections].sort((a, b) => {
-      const da = parseDDMMYYYY(a.date) || new Date(0);
-      const db = parseDDMMYYYY(b.date) || new Date(0);
+      const da = parseAnyDate(a.date) || new Date(0);
+      const db = parseAnyDate(b.date) || new Date(0);
       return db - da;
     });
 
     sorted.forEach(c => {
+      const displayDate = formatStrictDDMMYYYY(c.date);
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><b>${c.date}</b></td>
+        <td><b>${displayDate}</b></td>
         <td>${c.morning || '-'}</td>
         <td>${c.afternoon || '-'}</td>
         <td>${c.evening || '-'}</td>
@@ -732,7 +679,7 @@
     const rawDate = document.getElementById('sdate').value.trim();
     const editDocId = document.getElementById('editDocId').value;
 
-    const d1Date = parseDDMMYYYY(rawDate);
+    const d1Date = parseAnyDate(rawDate);
     if (!d1Date) return alert("Please enter setting date strictly in DD/MM/YYYY format (e.g. 10/09/2026).");
 
     const milestones = computeMilestonesStrict(d1Date);
@@ -790,16 +737,19 @@
     container.innerHTML = "";
     document.getElementById('noBatches').style.display = batches.length === 0 ? "block" : "none";
 
-    // Chronological auto-sort earliest first
     const sortedBatches = [...batches].sort((a, b) => {
-      const da = parseDDMMYYYY(a.rawDate) || new Date(a.isoDate || 0);
-      const db = parseDDMMYYYY(b.rawDate) || new Date(b.isoDate || 0);
+      const da = parseAnyDate(a.rawDate) || new Date(a.isoDate || 0);
+      const db = parseAnyDate(b.rawDate) || new Date(b.isoDate || 0);
       return da - db;
     });
 
     sortedBatches.forEach(b => {
       const rateText = b.hatchRate !== null ? `<b style="color:#16a34a;">${b.hatchRate}%</b>` : `<span style="color:#94a3b8;">Pending</span>`;
       const chickCount = b.chicksHatched !== null ? `<b>${b.chicksHatched}</b> chicks` : `<span style="color:#94a3b8;">Not entered</span>`;
+
+      const d1Text = formatStrictDDMMYYYY(b.labelD1 || b.rawDate);
+      const d18Text = formatStrictDDMMYYYY(b.labelD18);
+      const d21Text = formatStrictDDMMYYYY(b.labelD21);
 
       const card = document.createElement('div');
       card.className = 'batch-card';
@@ -812,15 +762,15 @@
         <div class="batch-dates-grid">
           <div class="date-pill d1">
             <span class="pill-lbl">Day 1 (Set)</span>
-            <span class="pill-val">${b.labelD1}</span>
+            <span class="pill-val">${d1Text}</span>
           </div>
           <div class="date-pill d18">
             <span class="pill-lbl">Day 18 (Hatch)</span>
-            <span class="pill-val">${b.labelD18}</span>
+            <span class="pill-val">${d18Text}</span>
           </div>
           <div class="date-pill d21">
             <span class="pill-lbl">Day 21 (Pull)</span>
-            <span class="pill-val">${b.labelD21}</span>
+            <span class="pill-val">${d21Text}</span>
           </div>
         </div>
 
@@ -843,7 +793,7 @@
     const b = batches.find(item => item.id === docId);
     document.getElementById('bname').value = b.name;
     document.getElementById('eggsSet').value = b.eggs;
-    document.getElementById('sdate').value = b.labelD1 || b.rawDate;
+    document.getElementById('sdate').value = formatStrictDDMMYYYY(b.labelD1 || b.rawDate);
     document.getElementById('editDocId').value = docId;
 
     document.getElementById('submitBtn').innerText = "Update Batch";
@@ -871,7 +821,7 @@
     document.getElementById('cancelBtn').style.display = "none";
   }
 
-  // --- CALENDAR ENGINE ---
+  // --- CALENDAR ---
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calMonthYear').innerText = `${monthNames[curMonth]} ${curYear}`;
@@ -903,7 +853,7 @@
         if (b.isoD21 === isoKey || b.labelD21 === ddmmyyyy) isD21 = true;
       });
 
-      const colRecord = collections.find(c => c.docKey === isoKey || c.date === ddmmyyyy);
+      const colRecord = collections.find(c => c.docKey === isoKey || c.date === ddmmyyyy || c.date === isoKey);
 
       let subtext = "";
       if (isSet) { cell.classList.add('stage-set'); subtext = "SET"; }
@@ -951,7 +901,7 @@
           <div class="event-item" style="border-left: 4px solid #ea580c;">
             <b style="color:#ea580c;">🐣 Day 18: HATCHER LOCKDOWN</b><br>
             <b>Batch:</b> ${b.name} (${b.eggs} eggs)<br>
-            <span style="font-size:0.78rem; color:#475569;">Action: Move to hatching basket, stop egg turning, increase humidity.</span>
+            <span style="font-size:0.78rem; color:#475569;">Action: Move to hatching basket, stop turning, increase humidity.</span>
           </div>`;
       }
       if (b.isoD21 === isoKey || b.labelD21 === ddmmyyyy) {
@@ -964,7 +914,7 @@
       }
     });
 
-    const col = collections.find(c => c.docKey === isoKey || c.date === ddmmyyyy);
+    const col = collections.find(c => c.docKey === isoKey || c.date === ddmmyyyy || c.date === isoKey);
     if (col && (col.total > 0 || (col.broken || 0) > 0)) {
       html += `
         <div class="event-item" style="border-left: 4px solid #0284c7;">
@@ -989,22 +939,23 @@
     }
   }
 
-  // --- STRICT "Data" HEADER EXPORT & SHARE ENGINE ---
-  function openPrintModal() {
+  // --- DATA MODAL & DIRECT ON-SCREEN REPORT DISPLAY ---
+  function openDataModal() {
     const sortedBatches = [...batches].sort((a, b) => {
-      const da = parseDDMMYYYY(a.rawDate) || new Date(a.isoDate || 0);
-      const db = parseDDMMYYYY(b.rawDate) || new Date(b.isoDate || 0);
+      const da = parseAnyDate(a.rawDate) || new Date(a.isoDate || 0);
+      const db = parseAnyDate(b.rawDate) || new Date(b.isoDate || 0);
       return da - db;
     });
 
-    const bFrom = document.getElementById('printBatchFrom');
-    const bTo = document.getElementById('printBatchTo');
+    const bFrom = document.getElementById('reportBatchFrom');
+    const bTo = document.getElementById('reportBatchTo');
     bFrom.innerHTML = "";
     bTo.innerHTML = "";
 
     sortedBatches.forEach((b, idx) => {
-      const opt1 = new Option(`${b.name} (${b.labelD1})`, idx);
-      const opt2 = new Option(`${b.name} (${b.labelD1})`, idx);
+      const d1Str = formatStrictDDMMYYYY(b.labelD1 || b.rawDate);
+      const opt1 = new Option(`${b.name} (${d1Str})`, idx);
+      const opt2 = new Option(`${b.name} (${d1Str})`, idx);
       bFrom.add(opt1);
       bTo.add(opt2);
     });
@@ -1014,152 +965,188 @@
       bTo.selectedIndex = sortedBatches.length - 1;
     }
 
-    // Default dates for egg collection in strict DD/MM/YYYY
     const dTo = new Date();
     const dFrom = new Date();
     dFrom.setDate(dTo.getDate() - 30);
-    document.getElementById('printColTo').value = dateToDDMMYYYY(dTo);
-    document.getElementById('printColFrom').value = dateToDDMMYYYY(dFrom);
+    document.getElementById('reportColTo').value = dateToDDMMYYYY(dTo);
+    document.getElementById('reportColFrom').value = dateToDDMMYYYY(dFrom);
 
-    document.getElementById('printModal').style.display = "flex";
+    document.getElementById('dataModal').style.display = "flex";
   }
 
-  function closePrintModal(e) {
-    if (!e || e.target.id === "printModal" || e.target.classList.contains("modal-close")) {
-      document.getElementById('printModal').style.display = "none";
+  function closeDataModal(e) {
+    if (!e || e.target.id === "dataModal" || e.target.classList.contains("modal-close")) {
+      document.getElementById('dataModal').style.display = "none";
     }
   }
 
-  async function handleFileDelivery(filename, csvData, title) {
-    closePrintModal();
-
-    try {
-      const blob = new Blob(["\ufeff" + csvData], { type: 'text/csv;charset=utf-8;' });
-      const file = new File([blob], filename, { type: 'text/csv' });
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: title,
-          text: `AD Farms ${title}`
-        });
-        return;
-      }
-    } catch(err) {
-      console.warn("Native share skipped:", err);
-    }
-
-    try {
-      const blob = new Blob(["\ufeff" + csvData], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      return;
-    } catch(err) {
-      console.warn("Blob anchor skipped:", err);
-    }
-
-    document.getElementById('csvTextArea').value = csvData;
-    document.getElementById('clipboardModal').style.display = "flex";
+  function closeDataDisplay() {
+    document.getElementById('dataDisplayView').style.display = "none";
+    document.getElementById('mainDashboard').style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function copyCsvToClipboard() {
-    const ta = document.getElementById('csvTextArea');
-    ta.select();
-    ta.setSelectionRange(0, 99999);
-    try {
-      navigator.clipboard.writeText(ta.value).then(() => {
-        alert("Copied to clipboard! Open Excel or Google Sheets and tap Paste.");
-        document.getElementById('clipboardModal').style.display = "none";
-      });
-    } catch(err) {
-      document.execCommand("copy");
-      alert("Copied! Open Excel or Google Sheets and tap Paste.");
-      document.getElementById('clipboardModal').style.display = "none";
-    }
-  }
+  // DISPLAY 1: EGG DATA WITH STRICT "Data" FIRST HEADER
+  function displayEggDataReport() {
+    const rawFrom = document.getElementById('reportColFrom').value.trim();
+    const rawTo = document.getElementById('reportColTo').value.trim();
 
-  function closeClipboardModal(e) {
-    if (!e || e.target.id === "clipboardModal" || e.target.classList.contains("modal-close")) {
-      document.getElementById('clipboardModal').style.display = "none";
-    }
-  }
-
-  // EXPORT EGG DATA WITH STRICT "Data" FIRST HEADER & STRICT DD/MM/YYYY
-  function exportEggData() {
-    const rawFrom = document.getElementById('printColFrom').value.trim();
-    const rawTo = document.getElementById('printColTo').value.trim();
-
-    const dFrom = parseDDMMYYYY(rawFrom);
-    const dTo = parseDDMMYYYY(rawTo);
+    const dFrom = parseAnyDate(rawFrom);
+    const dTo = parseAnyDate(rawTo);
 
     if (!dFrom || !dTo) return alert("Please enter both From and To dates strictly in DD/MM/YYYY format.");
     if (dFrom > dTo) return alert("'From Date' cannot be after 'To Date'.");
 
     const filtered = collections.filter(c => {
-      const cd = parseDDMMYYYY(c.date);
+      const cd = parseAnyDate(c.date);
       return cd && cd >= dFrom && cd <= dTo;
-    }).sort((a, b) => (parseDDMMYYYY(a.date) || 0) - (parseDDMMYYYY(b.date) || 0));
+    }).sort((a, b) => (parseAnyDate(a.date) || 0) - (parseAnyDate(b.date) || 0));
 
     if (filtered.length === 0) return alert("No egg collections recorded in this date range.");
 
-    // Header strictly starts with 'Data'
-    let csv = "Data,Morning,Afternoon,Evening,Broken Eggs,Daily Intact Total\n";
     let totalMorn = 0, totalAftn = 0, totalEve = 0, totalBroken = 0, grandTotal = 0;
+    let rowsHtml = "";
 
     filtered.forEach(c => {
+      const dateFormatted = formatStrictDDMMYYYY(c.date);
       const m = c.morning || 0, a = c.afternoon || 0, e = c.evening || 0, b = c.broken || 0, t = c.total || 0;
       totalMorn += m; totalAftn += a; totalEve += e; totalBroken += b; grandTotal += t;
-      csv += `${c.date},${m},${a},${e},${b},${t}\n`;
-    });
-    csv += `TOTALS,${totalMorn},${totalAftn},${totalEve},${totalBroken},${grandTotal}\n`;
 
-    const fname = `AD_Farms_EggLog_${rawFrom.replace(/\//g, '-')}_to_${rawTo.replace(/\//g, '-')}.csv`;
-    handleFileDelivery(fname, csv, "Egg Collection Log");
+      rowsHtml += `
+        <tr>
+          <td><b>${dateFormatted}</b></td>
+          <td>${m}</td>
+          <td>${a}</td>
+          <td>${e}</td>
+          <td style="color:#b91c1c; font-weight:bold;">${b}</td>
+          <td style="color:#0284c7; font-weight:bold;">${t}</td>
+        </tr>`;
+    });
+
+    const reportHtml = `
+      <div style="margin-bottom:12px; text-align:center;">
+        <h3 style="margin:0; font-size:1.05rem; color:#0f172a;">Daily Egg Collection Report</h3>
+        <div style="font-size:0.76rem; color:#64748b; margin-top:2px;">Period: <b>${rawFrom}</b> to <b>${rawTo}</b></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="background:#0284c7; color:#ffffff;">Data</th>
+              <th>Morning</th>
+              <th>Afternoon</th>
+              <th>Evening</th>
+              <th>Broken</th>
+              <th>Total Intact</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+            <tr style="font-weight:bold; background:#f1f5f9;">
+              <td style="font-weight:800;">TOTALS</td>
+              <td>${totalMorn}</td>
+              <td>${totalAftn}</td>
+              <td>${totalEve}</td>
+              <td style="color:#b91c1c;">${totalBroken}</td>
+              <td style="color:#0284c7;">${grandTotal}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:14px; font-size:0.7rem; color:#94a3b8; text-align:right;">AD Farms ; Herd &amp; Harvest</div>
+    `;
+
+    document.getElementById('dataReportContent').innerHTML = reportHtml;
+    document.getElementById('dataModal').style.display = "none";
+    document.getElementById('mainDashboard').style.display = "none";
+    document.getElementById('dataDisplayView').style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // EXPORT INCUBATION DATA WITH STRICT "Data" FIRST HEADER & STRICT DD/MM/YYYY
-  function exportIncubationData() {
+  // DISPLAY 2: INCUBATION DATA WITH STRICT "Data" FIRST HEADER
+  function displayIncubationDataReport() {
     const sortedBatches = [...batches].sort((a, b) => {
-      const da = parseDDMMYYYY(a.rawDate) || new Date(a.isoDate || 0);
-      const db = parseDDMMYYYY(b.rawDate) || new Date(b.isoDate || 0);
+      const da = parseAnyDate(a.rawDate) || new Date(a.isoDate || 0);
+      const db = parseAnyDate(b.rawDate) || new Date(b.isoDate || 0);
       return da - db;
     });
 
     if (sortedBatches.length === 0) return alert("No batches recorded yet.");
 
-    let idxFrom = parseInt(document.getElementById('printBatchFrom').value, 10);
-    let idxTo = parseInt(document.getElementById('printBatchTo').value, 10);
+    let idxFrom = parseInt(document.getElementById('reportBatchFrom').value, 10);
+    let idxTo = parseInt(document.getElementById('reportBatchTo').value, 10);
 
     if (isNaN(idxFrom) || isNaN(idxTo)) return alert("Select valid batches.");
     if (idxFrom > idxTo) { const temp = idxFrom; idxFrom = idxTo; idxTo = temp; }
 
     const selected = sortedBatches.slice(idxFrom, idxTo + 1);
-
-    // Header strictly starts with 'Data'
-    let csv = "Data,Eggs Set,Set Date (D1),Hatcher Date (D18),Pull Date (D21),Chicks Hatched,Hatch Rate (%)\n";
     let totalEggs = 0, totalChicks = 0;
+    let rowsHtml = "";
 
     selected.forEach(b => {
       totalEggs += b.eggs;
       if (b.chicksHatched !== null) totalChicks += b.chicksHatched;
-      const chicks = b.chicksHatched !== null ? b.chicksHatched : "Pending";
-      const rate = b.hatchRate !== null ? `${b.hatchRate}%` : "Pending";
-      csv += `"${b.name}",${b.eggs},"${b.labelD1}","${b.labelD18}","${b.labelD21}",${chicks},${rate}\n`;
+      const chicks = b.chicksHatched !== null ? b.chicksHatched : "-";
+      const rate = b.hatchRate !== null ? `${b.hatchRate}%` : "-";
+      const d1 = formatStrictDDMMYYYY(b.labelD1 || b.rawDate);
+      const d18 = formatStrictDDMMYYYY(b.labelD18);
+      const d21 = formatStrictDDMMYYYY(b.labelD21);
+
+      rowsHtml += `
+        <tr>
+          <td><b>${b.name}</b></td>
+          <td>${b.eggs}</td>
+          <td>${d1}</td>
+          <td>${d18}</td>
+          <td>${d21}</td>
+          <td>${chicks}</td>
+          <td style="color:#16a34a; font-weight:bold;">${rate}</td>
+        </tr>`;
     });
 
-    const overallRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + "%" : "Pending";
-    csv += `TOTALS,${totalEggs},-,-,-,${totalChicks > 0 ? totalChicks : 0},${overallRate}\n`;
+    const overallRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + "%" : "-";
 
-    const fname = `AD_Farms_Batches_${selected[0].name}_to_${selected[selected.length - 1].name}.csv`;
-    handleFileDelivery(fname, csv, "Incubation Batches Report");
+    const reportHtml = `
+      <div style="margin-bottom:12px; text-align:center;">
+        <h3 style="margin:0; font-size:1.05rem; color:#0f172a;">Incubation &amp; Hatch Performance Report</h3>
+        <div style="font-size:0.76rem; color:#64748b; margin-top:2px;">Batches: <b>${selected[0].name}</b> to <b>${selected[selected.length - 1].name}</b></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="background:#0284c7; color:#ffffff;">Data</th>
+              <th>Eggs Set</th>
+              <th>Set (D1)</th>
+              <th>Hatch (D18)</th>
+              <th>Pull (D21)</th>
+              <th>Chicks</th>
+              <th>Hatch Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+            <tr style="font-weight:bold; background:#f1f5f9;">
+              <td style="font-weight:800;">SUMMARY</td>
+              <td>${totalEggs}</td>
+              <td colspan="3">-</td>
+              <td>${totalChicks > 0 ? totalChicks : '-'}</td>
+              <td style="color:#16a34a;">${overallRate}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="margin-top:14px; font-size:0.7rem; color:#94a3b8; text-align:right;">AD Farms ; Herd &amp; Harvest</div>
+    `;
+
+    document.getElementById('dataReportContent').innerHTML = reportHtml;
+    document.getElementById('dataModal').style.display = "none";
+    document.getElementById('mainDashboard').style.display = "none";
+    document.getElementById('dataDisplayView').style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // Initial render
+  // Initial draw
   renderCollections();
   renderBatches();
   renderCalendar();
