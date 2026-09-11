@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>AD Farms · Herd &amp; Harvest</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,7 +42,11 @@
 
   * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
   html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; background: var(--brand-bg); color: var(--text-main); }
-  body { padding-bottom: 96px; }
+  
+  /* Padded bottom to prevent last card getting hidden behind the lifted FAB */
+  body { 
+    padding-bottom: calc(115px + env(safe-area-inset-bottom, 20px)); 
+  }
   .container { max-width: 540px; margin: auto; padding: 10px 12px; }
 
   /* TOP APP BAR */
@@ -215,25 +219,32 @@
     background: #f1f5f9; border-radius: 3px; padding: 1px 2px; margin-top: 1px;
   }
 
-  /* FLOATING ACTION BUTTON */
+  /* FLOATING QUICK LOG BUTTON WITH PHONE NAVIGATION INSET CLEARANCE */
   .fab-button {
-    position: fixed; bottom: 20px; right: 20px; z-index: 50;
+    position: fixed;
+    /* Lifted cleanly above 3-button navigation and gesture pills */
+    bottom: calc(34px + env(safe-area-inset-bottom, 15px));
+    right: 18px;
+    z-index: 50;
     background: linear-gradient(135deg, #0284c7, #0369a1);
-    color: #ffffff; border: none; height: 48px; border-radius: 24px;
-    padding: 0 18px; font-size: 0.85rem; font-weight: 800;
-    display: flex; align-items: center; gap: 6px;
-    box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4); cursor: pointer;
+    color: #ffffff; border: none; height: 50px; border-radius: 25px;
+    padding: 0 20px; font-size: 0.88rem; font-weight: 800;
+    display: flex; align-items: center; gap: 7px;
+    box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45); cursor: pointer;
   }
   .fab-button:active { transform: scale(0.96); }
 
-  /* BOTTOM SHEET MODAL (DRAWER) */
+  /* BOTTOM SHEET MODAL (DRAWER) WITH SAFE AREA CLEARANCE */
   .sheet-backdrop {
     display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55);
     backdrop-filter: blur(4px); z-index: 90; align-items: flex-end; justify-content: center;
   }
   .sheet-modal {
     background: #ffffff; width: 100%; max-width: 540px;
-    border-radius: 20px 20px 0 0; padding: 16px; max-height: 88vh;
+    border-radius: 22px 22px 0 0; padding: 16px; 
+    /* Ensures bottom inputs and save button are not hidden behind nav keys */
+    padding-bottom: calc(24px + env(safe-area-inset-bottom, 20px));
+    max-height: 90vh;
     overflow-y: auto; box-shadow: var(--shadow-lg); animation: sheetUp 0.2s ease-out;
   }
   @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -391,7 +402,7 @@
 
 </main>
 
-<!-- FLOATING QUICK LOG BUTTON -->
+<!-- FLOATING QUICK LOG BUTTON (SAFE OFFSET) -->
 <button class="fab-button" onclick="openQuickDrawer()">＋ Quick Log</button>
 
 <!-- BOTTOM SHEET ENTRY DRAWER -->
@@ -660,7 +671,6 @@
     const baseOffsetPercent = -(currentTabIndex * 25);
     const dragOffsetPercent = (currentDeltaX / containerWidth) * 25;
     
-    // Slight edge resistance
     let finalOffset = baseOffsetPercent + dragOffsetPercent;
     if ((currentTabIndex === 0 && currentDeltaX > 0) || (currentTabIndex === 3 && currentDeltaX < 0)) {
       finalOffset = baseOffsetPercent + (dragOffsetPercent * 0.3);
@@ -675,7 +685,7 @@
 
     if (isHorizontalGesture) {
       const containerWidth = swipeContainer.offsetWidth;
-      const swipeThreshold = containerWidth * 0.18; // 18% screen drag threshold
+      const swipeThreshold = containerWidth * 0.18;
 
       if (currentDeltaX < -swipeThreshold && currentTabIndex < 3) {
         slideToIndex(currentTabIndex + 1);
@@ -1030,7 +1040,7 @@
     document.getElementById('entryDrawer').style.display = "flex";
   }
 
-  // --- CALENDAR ENGINE (SAFE RENDERING) ---
+  // --- CALENDAR ENGINE ---
   function renderCalendar() {
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calLabel').textContent = `${months[activeCalMonth]} ${activeCalYear}`;
