@@ -3,492 +3,692 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AD Farms ; Herd & Harvest</title>
+<title>AD Farms · Herd &amp; Harvest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <style>
-  * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-  body { background: #f8fafc; color: #0f172a; margin: 0; padding: 10px; padding-bottom: 30px; }
-  .container { max-width: 600px; margin: auto; }
-
-  /* TOP HEADER */
-  .top-bar {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 12px;
-    padding: 10px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-    margin-bottom: 12px;
+  :root {
+    --brand-primary: #0284c7;
+    --brand-primary-dark: #0369a1;
+    --brand-accent: #38bdf8;
+    --brand-surface: #ffffff;
+    --brand-bg: #f8fafc;
+    --border-subtle: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --success: #10b981;
+    --success-bg: #ecfdf5;
+    --warning: #ea580c;
+    --warning-bg: #fff7ed;
+    --danger: #ef4444;
+    --danger-bg: #fef2f2;
+    --stage-set: #0284c7;
+    --stage-set-bg: #e0f2fe;
+    --stage-hatch: #ea580c;
+    --stage-hatch-bg: #ffedd5;
+    --stage-pull: #16a34a;
+    --stage-pull-bg: #dcfce7;
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 18px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 14px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.15);
   }
-  .brand-group { display: flex; align-items: center; gap: 10px; }
-  .logo-box {
-    width: 44px;
-    height: 44px;
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
+
+  * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
+  html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; background: var(--brand-bg); color: var(--text-main); }
+  body { padding-bottom: 96px; }
+  .container { max-width: 540px; margin: auto; padding: 10px 12px; }
+
+  /* TOP APP BAR */
+  .top-app-bar {
+    position: sticky; top: 0; z-index: 40;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 8px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .brand-group { display: flex; align-items: center; gap: 8px; }
+  .logo-avatar {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: linear-gradient(135deg, #0284c7, #38bdf8);
+    color: white; font-weight: 800; font-size: 0.75rem;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; cursor: pointer; flex-shrink: 0;
+  }
+  .logo-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .brand-text h1 { margin: 0; font-size: 0.96rem; font-weight: 800; line-height: 1.1; }
+  .brand-text .sub-title { margin: 0; font-size: 0.62rem; color: var(--brand-primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .status-pill {
+    font-size: 0.65rem; font-weight: 700; padding: 4px 8px; border-radius: 20px;
+    background: #f1f5f9; color: var(--text-muted); display: inline-flex; align-items: center; gap: 4px;
+  }
+  .status-pill.online { background: #dcfce7; color: #15803d; }
+
+  /* KPI DASHBOARD SUMMARY STRIP */
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+  .kpi-card {
+    background: var(--brand-surface); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md); padding: 8px 4px; text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .kpi-label { font-size: 0.58rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px; }
+  .kpi-val { font-size: 1.25rem; font-weight: 800; margin-top: 1px; }
+
+  /* NAVIGATION TABS */
+  .nav-tabs-wrapper {
+    display: flex; background: #e2e8f0; border-radius: var(--radius-md);
+    padding: 3px; gap: 4px; margin-bottom: 12px; overflow-x: auto;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .nav-tabs-wrapper::-webkit-scrollbar { display: none; }
+  .nav-tab-item {
+    flex: 1 0 auto; border: none; background: transparent; padding: 8px 10px;
+    font-size: 0.74rem; font-weight: 700; color: var(--text-muted);
+    border-radius: 10px; cursor: pointer; text-align: center; white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .nav-tab-item.active { background: #ffffff; color: var(--brand-primary); box-shadow: var(--shadow-sm); }
+
+  /* SWIPE CAROUSEL ENGINE */
+  .swipe-track-container {
     overflow: hidden;
+    width: 100%;
     position: relative;
+    touch-action: pan-y pinch-zoom;
+  }
+  .swipe-slides-wrapper {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 400%;
+    transition: transform 0.28s cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: transform;
+  }
+  .swipe-slide {
+    width: 25%;
     flex-shrink: 0;
+    box-sizing: border-box;
   }
-  .logo-box img { width: 100%; height: 100%; object-fit: contain; }
-  .brand-text h1 { margin: 0; font-size: 1.05rem; color: #0f172a; line-height: 1.1; font-weight: 800; }
-  .brand-text .sub-title { margin: 0; font-size: 0.68rem; color: #0284c7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-  
-  .header-actions { display: flex; align-items: center; gap: 8px; }
-  .status-badge { font-size: 0.65rem; padding: 4px 8px; border-radius: 10px; font-weight: bold; background: #e2e8f0; color: #475569; }
-  .btn-data-top {
-    background: #0284c7;
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    padding: 7px 12px;
-    cursor: pointer;
-  }
-  .btn-data-top:active { background: #0369a1; }
-
-  /* TABS */
-  .tab-bar { display: flex; background: #e2e8f0; border-radius: 8px; padding: 3px; gap: 3px; margin-bottom: 12px; }
-  .tab-btn { flex: 1; border: none; background: transparent; padding: 9px 2px; font-size: 0.78rem; font-weight: 700; color: #475569; border-radius: 6px; cursor: pointer; text-align: center; }
-  .tab-btn.active { background: #ffffff; color: #0284c7; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-
-  /* CARDS */
-  .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
-  .card h2 { margin: 0 0 10px 0; font-size: 0.95rem; color: #0284c7; font-weight: 800; }
-  .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
-  .form-row > div { flex: 1; }
-  label { font-size: 0.74rem; font-weight: 700; color: #475569; display: block; margin-bottom: 3px; }
-  input, select { width: 100%; padding: 9px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.88rem; background: #ffffff; color: #0f172a; }
-  .btn-submit { width: 100%; background: #0284c7; color: #ffffff; border: none; padding: 11px; border-radius: 6px; font-weight: bold; font-size: 0.9rem; cursor: pointer; margin-top: 4px; }
-  .btn-submit:active { background: #0369a1; }
-  .btn-cancel { width: 100%; background: #64748b; color: #ffffff; border: none; padding: 8px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; margin-top: 6px; display: none; }
 
   /* BATCH CARDS */
-  .batch-card { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-  .batch-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 8px; }
-  .batch-title { font-size: 0.98rem; font-weight: 800; color: #0f172a; }
-  .batch-eggs { font-size: 0.78rem; background: #e0f2fe; color: #0284c7; font-weight: 800; padding: 2px 8px; border-radius: 12px; }
+  .batch-card {
+    background: var(--brand-surface); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg); padding: 12px; margin-bottom: 10px;
+    box-shadow: var(--shadow-sm);
+  }
+  .batch-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .batch-title { font-size: 0.92rem; font-weight: 800; }
+  .badge-eggs {
+    background: var(--stage-set-bg); color: var(--stage-set);
+    font-weight: 800; font-size: 0.72rem; padding: 2px 7px; border-radius: 12px;
+  }
+  .timeline-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 8px; }
+  .timeline-step {
+    border-radius: var(--radius-sm); padding: 6px 2px; text-align: center;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .timeline-step.s-set { background: var(--stage-set-bg); color: var(--stage-set); }
+  .timeline-step.s-hatch { background: var(--stage-hatch-bg); color: var(--stage-hatch); }
+  .timeline-step.s-pull { background: var(--stage-pull-bg); color: var(--stage-pull); }
+  .step-lbl { font-size: 0.58rem; font-weight: 800; text-transform: uppercase; }
+  .step-date { font-size: 0.72rem; font-weight: 800; margin-top: 1px; }
 
-  .batch-dates-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; text-align: center; margin-bottom: 8px; }
-  .date-pill { padding: 6px 4px; border-radius: 6px; }
-  .date-pill.d1 { background: #bae6fd; color: #0369a1; }
-  .date-pill.d18 { background: #fed7aa; color: #9a3412; }
-  .date-pill.d21 { background: #bbf7d0; color: #166534; }
-  .pill-lbl { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; display: block; }
-  .pill-val { font-size: 0.76rem; font-weight: 800; margin-top: 2px; display: block; }
+  .batch-meta-banner {
+    display: flex; justify-content: space-between; align-items: center;
+    background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);
+    padding: 6px 10px; font-size: 0.75rem; font-weight: 700; margin-bottom: 8px;
+  }
+  .action-row { display: flex; gap: 6px; }
+  .btn-touch {
+    flex: 1; padding: 8px 4px; border-radius: var(--radius-sm); font-size: 0.76rem;
+    font-weight: 700; border: 1px solid var(--border-strong); background: #ffffff;
+    color: var(--text-main); cursor: pointer; text-align: center;
+  }
+  .btn-touch:active { background: #f1f5f9; }
 
-  .batch-results-bar { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 7px 10px; border-radius: 6px; font-size: 0.8rem; margin-bottom: 8px; border: 1px solid #f1f5f9; }
-  
-  .batch-actions { display: flex; gap: 6px; }
-  .btn-neutral { flex: 1; padding: 8px 4px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; color: #334155; background: #ffffff; border: 1px solid #cbd5e1; cursor: pointer; text-align: center; }
-  .btn-neutral:active { background: #f1f5f9; }
+  /* DATA TABLES */
+  .surface-card {
+    background: var(--brand-surface); border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg); padding: 12px; margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+  }
+  .surface-card h2 { margin: 0 0 8px 0; font-size: 0.92rem; font-weight: 800; color: var(--brand-primary); }
+  .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.76rem; min-width: 320px; }
+  th, td { border-bottom: 1px solid var(--border-subtle); padding: 8px 4px; text-align: center; }
+  th { background: #f8fafc; color: var(--text-muted); font-weight: 700; font-size: 0.7rem; }
 
-  /* TABLE */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-  th, td { border: 1px solid #e2e8f0; padding: 8px 5px; text-align: center; }
-  th { background: #f1f5f9; color: #475569; font-weight: 700; }
-
-  /* CALENDAR DISPLAY */
-  .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-  .cal-header button { padding: 4px 12px; background: #e2e8f0; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
-  .cal-day-name { font-size: 0.7rem; font-weight: bold; color: #64748b; padding-bottom: 4px; }
-  
+  /* CALENDAR VIEW */
+  .cal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 3px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .cal-head {
+    font-size: 0.65rem; font-weight: 800; color: var(--text-muted);
+    text-align: center; padding: 3px 0;
+  }
   .cal-cell {
-    min-height: 64px;
+    min-height: 58px;
     border-radius: 6px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-subtle);
     background: #ffffff;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    padding: 3px 2px;
-    font-size: 0.82rem;
+    padding: 2px 1px;
+    font-size: 0.74rem;
     font-weight: 700;
     cursor: pointer;
     overflow: hidden;
+    box-sizing: border-box;
   }
-  .cal-cell:active { filter: brightness(0.95); }
-  .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; }
+  .cal-cell.empty { border: none; background: transparent; cursor: default; }
+  .cal-cell.has-set { background: var(--stage-set-bg) !important; border-color: var(--stage-set) !important; }
+  .cal-cell.has-hatch { background: var(--stage-hatch-bg) !important; border-color: var(--stage-hatch) !important; }
+  .cal-cell.has-pull { background: var(--stage-pull-bg) !important; border-color: var(--stage-pull) !important; }
 
-  /* STRICT COLOR CODING */
-  .stage-set {
-    background: #bae6fd !important;
-    border: 1.5px solid #0284c7 !important;
-    color: #0369a1 !important;
-  }
-  .stage-hatch {
-    background: #fed7aa !important;
-    border: 1.5px solid #ea580c !important;
-    color: #9a3412 !important;
-  }
-  .stage-remove {
-    background: #bbf7d0 !important;
-    border: 1.5px solid #16a34a !important;
-    color: #166534 !important;
-  }
-  .stage-tag {
-    font-size: 0.52rem;
-    font-weight: 900;
+  .cal-badge {
+    display: block;
+    width: 96%;
+    font-size: 0.49rem;
+    font-weight: 800;
     line-height: 1.1;
-    text-transform: uppercase;
-    margin-top: 2px;
-    padding: 2px 3px;
+    padding: 1.5px 1px;
     border-radius: 3px;
+    margin-top: 1px;
     white-space: nowrap;
-    max-width: 96%;
     overflow: hidden;
     text-overflow: ellipsis;
-    display: block;
+    text-align: center;
   }
-  .egg-badge {
-    background: #0284c7;
-    color: #ffffff;
-    border-radius: 8px;
-    font-size: 0.58rem;
-    padding: 1px 4px;
-    margin-top: 2px;
-    font-weight: 800;
-    display: inline-block;
+  .cal-egg-pill {
+    font-size: 0.5rem; font-weight: 800; color: var(--brand-primary);
+    background: #f1f5f9; border-radius: 3px; padding: 1px 2px; margin-top: 1px;
   }
 
-  /* REPORT SCREEN */
-  #dataDisplayView { display: none; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-  .data-display-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 12px; }
+  /* FLOATING ACTION BUTTON */
+  .fab-button {
+    position: fixed; bottom: 20px; right: 20px; z-index: 50;
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    color: #ffffff; border: none; height: 48px; border-radius: 24px;
+    padding: 0 18px; font-size: 0.85rem; font-weight: 800;
+    display: flex; align-items: center; gap: 6px;
+    box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4); cursor: pointer;
+  }
+  .fab-button:active { transform: scale(0.96); }
 
-  /* MODALS */
-  .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 999; align-items: center; justify-content: center; padding: 16px; }
-  .modal-box { background: #ffffff; width: 100%; max-width: 440px; border-radius: 12px; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
-  .modal-box h3 { margin: 0 0 12px 0; color: #0284c7; font-size: 1.05rem; display: flex; justify-content: space-between; align-items: center; }
-  .modal-close { background: #e2e8f0; border: none; border-radius: 50%; width: 28px; height: 28px; font-weight: bold; cursor: pointer; }
-  .event-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-bottom: 8px; font-size: 0.85rem; }
+  /* BOTTOM SHEET MODAL (DRAWER) */
+  .sheet-backdrop {
+    display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px); z-index: 90; align-items: flex-end; justify-content: center;
+  }
+  .sheet-modal {
+    background: #ffffff; width: 100%; max-width: 540px;
+    border-radius: 20px 20px 0 0; padding: 16px; max-height: 88vh;
+    overflow-y: auto; box-shadow: var(--shadow-lg); animation: sheetUp 0.2s ease-out;
+  }
+  @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
   
-  .data-opt-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
-  .data-opt-box h4 { margin: 0 0 8px 0; font-size: 0.88rem; color: #334155; }
-  .view-panel { display: none; }
-  .view-panel.active { display: block; }
+  .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .sheet-header h3 { margin: 0; font-size: 1rem; font-weight: 800; }
+  .btn-close-sheet {
+    background: #f1f5f9; border: none; width: 28px; height: 28px;
+    border-radius: 50%; font-weight: 800; cursor: pointer;
+  }
+
+  /* FORMS */
+  .form-group { margin-bottom: 8px; }
+  .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .form-row > div { flex: 1; }
+  label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 3px; }
+  input, select {
+    width: 100%; padding: 10px; border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm); font-size: 0.9rem; background: #ffffff; color: var(--text-main);
+  }
+  .stepper-row { display: flex; align-items: center; gap: 6px; }
+  .step-btn-quick {
+    background: #f1f5f9; border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
+    padding: 8px 12px; font-size: 0.8rem; font-weight: 800; cursor: pointer;
+  }
+  .btn-submit-main {
+    width: 100%; background: var(--brand-primary); color: #ffffff; border: none;
+    padding: 12px; border-radius: var(--radius-sm); font-weight: 800; font-size: 0.9rem;
+    cursor: pointer; margin-top: 8px;
+  }
 </style>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-<div class="container" id="mainDashboard">
-
-  <!-- TOP HEADER -->
-  <div class="top-bar">
-    <div class="brand-group">
-      <div class="logo-box" id="logoContainer" onclick="triggerUploadOnce()">
-        <img id="logoDisplay" alt="AD Farms" style="display:none;">
-        <span id="placeholderText" style="font-size:0.6rem; font-weight:bold;">AD<br>FARMS</span>
-      </div>
-      <input type="file" id="logoInput" accept="image/*" style="display: none;" onchange="handleLogoUpload(this)">
-      <div class="brand-text">
-        <h1>AD Farms</h1>
-        <div class="sub-title">Herd &amp; Harvest</div>
-      </div>
+<!-- TOP APP BAR -->
+<header class="top-app-bar">
+  <div class="brand-group">
+    <div class="logo-avatar" id="logoBox" onclick="document.getElementById('logoFile').click()">
+      <span id="logoLetters">AD</span>
+      <img id="logoImg" style="display:none;" alt="Logo">
     </div>
-    <div class="header-actions">
-      <button class="btn-data-top" onclick="openDataModal()">📊 Data</button>
-      <div id="cloudStatus" class="status-badge">🟢 Cloud</div>
+    <input type="file" id="logoFile" accept="image/*" style="display:none;" onchange="handleLogoUpdate(this)">
+    <div class="brand-text">
+      <h1>AD Farms</h1>
+      <div class="sub-title">Herd &amp; Harvest</div>
+    </div>
+  </div>
+  <div style="display:flex; align-items:center; gap:6px;">
+    <button class="btn-touch" style="padding:4px 8px; font-size:0.72rem; font-weight:800;" onclick="openReportModal()">📊 Reports</button>
+    <div id="cloudBadge" class="status-pill online">● Cloud</div>
+  </div>
+</header>
+
+<main class="container" id="mainAppSection">
+
+  <!-- OVERVIEW METRICS STRIP -->
+  <section class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Live Flock</div>
+      <div class="kpi-val" style="color:var(--success);" id="kpiLiveFlock">0</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">In Incubator</div>
+      <div class="kpi-val" style="color:var(--brand-primary);" id="kpiIncubating">0</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Hatch Rate</div>
+      <div class="kpi-val" style="color:var(--warning);" id="kpiHatchRate">0%</div>
+    </div>
+  </section>
+
+  <!-- NAVIGATION TABS -->
+  <nav class="nav-tabs-wrapper" id="navTabsBar">
+    <button class="nav-tab-item active" onclick="slideToIndex(0)">🐣 Batches</button>
+    <button class="nav-tab-item" onclick="slideToIndex(1)">🥚 Daily Eggs</button>
+    <button class="nav-tab-item" onclick="slideToIndex(2)">☠️ Mortality</button>
+    <button class="nav-tab-item" onclick="slideToIndex(3)">📅 Timeline</button>
+  </nav>
+
+  <!-- HORIZONTAL SWIPE CAROUSEL WRAPPER -->
+  <div class="swipe-track-container" id="swipeContainer">
+    <div class="swipe-slides-wrapper" id="swipeTrack">
+
+      <!-- SLIDE 0: BATCHES -->
+      <div class="swipe-slide" id="slide-0">
+        <div id="batchesList"></div>
+        <div id="noBatchesMsg" style="display:none; text-align:center; padding:25px; color:var(--text-muted); font-size:0.8rem;">
+          No incubator batches recorded. Tap <b>+ Quick Log</b> to create one.
+        </div>
+      </div>
+
+      <!-- SLIDE 1: EGGS -->
+      <div class="swipe-slide" id="slide-1">
+        <div class="surface-card">
+          <h2>🥚 Daily Pickings Log</h2>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Morn</th>
+                  <th>Aftn</th>
+                  <th>Eve</th>
+                  <th>Broken</th>
+                  <th>Total</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="eggsTableBody"></tbody>
+            </table>
+            <div id="noEggsMsg" style="display:none; text-align:center; padding:15px; color:var(--text-muted); font-size:0.8rem;">No egg records found.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 2: MORTALITY -->
+      <div class="swipe-slide" id="slide-2">
+        <div class="surface-card">
+          <h2>☠️ Mortality Register</h2>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Dead</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="mortalityTableBody"></tbody>
+            </table>
+            <div id="noMortMsg" style="display:none; text-align:center; padding:15px; color:var(--text-muted); font-size:0.8rem;">No mortality recorded.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 3: CALENDAR TIMELINE -->
+      <div class="swipe-slide" id="slide-3">
+        <div class="surface-card">
+          <div class="cal-top">
+            <button class="btn-touch" style="flex:0 0 36px; padding:4px;" onclick="shiftCalMonth(-1)">◀</button>
+            <div id="calLabel" style="font-weight:800; font-size:0.92rem;">Timeline</div>
+            <button class="btn-touch" style="flex:0 0 36px; padding:4px;" onclick="shiftCalMonth(1)">▶</button>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-head">Sun</div><div class="cal-head">Mon</div><div class="cal-head">Tue</div>
+            <div class="cal-head">Wed</div><div class="cal-head">Thu</div><div class="cal-head">Fri</div><div class="cal-head">Sat</div>
+          </div>
+          <div class="cal-grid" id="calCellsGrid"></div>
+          <div style="font-size:0.7rem; color:var(--text-muted); text-align:center; margin-top:8px;">💡 Tap any date cell to view batch and egg operations.</div>
+        </div>
+      </div>
+
     </div>
   </div>
 
-  <!-- TABS -->
-  <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('batchesTab', this)">📋 Batches</button>
-    <button class="tab-btn" onclick="switchTab('collectionsTab', this)">🥚 Egg Log</button>
-    <button class="tab-btn" onclick="switchTab('mortalityTab', this)">☠️ Mortality</button>
-    <button class="tab-btn" onclick="switchTab('calendarTab', this)">📅 Calendar</button>
-  </div>
+</main>
 
-  <!-- TAB 1: BATCHES -->
-  <div id="batchesTab" class="view-panel active">
-    <div class="card">
-      <h2>🐥 Set New Incubator Batch</h2>
-      <input type="hidden" id="editDocId" value="">
+<!-- FLOATING QUICK LOG BUTTON -->
+<button class="fab-button" onclick="openQuickDrawer()">＋ Quick Log</button>
+
+<!-- BOTTOM SHEET ENTRY DRAWER -->
+<div class="sheet-backdrop" id="entryDrawer" onclick="handleDrawerBackdrop(event)">
+  <div class="sheet-modal" onclick="event.stopPropagation()">
+    <div class="sheet-header">
+      <h3 id="drawerTitle">Quick Farm Log</h3>
+      <button class="btn-close-sheet" onclick="closeDrawer()">✕</button>
+    </div>
+
+    <input type="hidden" id="editEntryId" value="">
+
+    <div class="form-group">
+      <label>Record Type</label>
+      <select id="quickTypeSelect" onchange="switchDrawerFormType()">
+        <option value="batch">🐣 New Incubator Batch</option>
+        <option value="egg">🥚 Daily Egg Collection</option>
+        <option value="mortality">☠️ Flock Mortality</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Date</label>
+      <input type="date" id="recordDate">
+    </div>
+
+    <!-- FORM: BATCH -->
+    <div id="formSectionBatch">
       <div class="form-row">
         <div>
-          <label>Batch Name / Tray</label>
-          <input type="text" id="bname" placeholder="e.g. Tray 1">
+          <label>Batch / Tray Identifier</label>
+          <input type="text" id="batchNameInput" placeholder="e.g. Tray 1">
         </div>
         <div style="flex: 0.6;">
           <label>Egg Count</label>
-          <input type="number" id="eggsSet" value="102" min="1">
+          <input type="number" id="batchEggCount" value="102" min="1">
         </div>
       </div>
-      <div class="form-row">
-        <div>
-          <label>Setting Date (Today Auto-Filled)</label>
-          <input type="date" id="sdate">
-        </div>
-      </div>
-      <button class="btn-submit" id="submitBtn" onclick="saveBatch()">Start / Save Batch</button>
-      <button class="btn-cancel" id="cancelBtn" onclick="resetBatchForm()">Cancel Edit</button>
     </div>
-    <div id="batchContainer"></div>
-    <div id="noBatches" style="text-align:center; color:#94a3b8; padding:20px; font-size:0.85rem;">No active batches recorded.</div>
-  </div>
 
-  <!-- TAB 2: COLLECTIONS -->
-  <div id="collectionsTab" class="view-panel">
-    <div class="card">
-      <h2 id="eggFormTitle">🥚 Record Egg Collection</h2>
+    <!-- FORM: EGGS -->
+    <div id="formSectionEggs" style="display:none;">
       <div class="form-row">
         <div>
-          <label>Date (Today Auto-Filled)</label>
-          <input type="date" id="colDate">
-        </div>
-        <div>
-          <label>Time Slot</label>
-          <select id="colSlot">
+          <label>Collection Slot</label>
+          <select id="eggSlotSelect">
             <option value="Morning">Morning (1st)</option>
             <option value="Afternoon">Afternoon (2nd)</option>
             <option value="Evening">Evening (3rd)</option>
           </select>
         </div>
-      </div>
-      <div class="form-row">
         <div>
-          <label>Eggs Picked (Good)</label>
-          <input type="number" id="colCount" placeholder="e.g. 35" min="0">
-        </div>
-        <div>
-          <label>Broken Eggs</label>
-          <input type="number" id="colBroken" placeholder="e.g. 2" min="0" value="0">
+          <label>Intact Eggs</label>
+          <input type="number" id="eggCountInput" placeholder="0" min="0">
         </div>
       </div>
-      <button class="btn-submit" id="colSubmitBtn" onclick="saveCollection()">Add Collection</button>
-      <button class="btn-cancel" id="colCancelBtn" onclick="resetEggForm()">Cancel Edit</button>
-    </div>
-    <div class="card">
-      <h2>📅 Daily Pickings Log</h2>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Morn</th>
-              <th>Aftn</th>
-              <th>Eve</th>
-              <th>Broken</th>
-              <th>Total</th>
-              <th>Edit</th>
-            </tr>
-          </thead>
-          <tbody id="collectionBody"></tbody>
-        </table>
-        <div id="noCollections" style="text-align:center; color:#94a3b8; padding:15px; font-size:0.8rem;">No collections entered yet.</div>
+      <div class="form-group">
+        <label>Broken Eggs</label>
+        <input type="number" id="eggBrokenInput" value="0" min="0">
       </div>
     </div>
-  </div>
 
-  <!-- TAB 3: MORTALITY -->
-  <div id="mortalityTab" class="view-panel">
-    <div class="card" style="background: #f8fafc; border-color: #cbd5e1;">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <div>
-          <h2 style="margin:0; color:#0f172a;">Live Birds in Stock</h2>
-          <div style="font-size:0.75rem; color:#64748b;">Chicks Hatched − Dead Birds</div>
-        </div>
-        <div style="text-align:right;">
-          <div id="remainingBirdsDisplay" style="font-size:1.6rem; font-weight:900; color:#059669;">0</div>
-          <div style="font-size:0.65rem; font-weight:bold; color:#475569; text-transform:uppercase;">Birds Present</div>
+    <!-- FORM: MORTALITY -->
+    <div id="formSectionMort" style="display:none;">
+      <div class="form-group">
+        <label>Bird Losses</label>
+        <div class="stepper-row">
+          <input type="number" id="mortCountInput" placeholder="Count" min="1" style="flex:1;">
+          <button type="button" class="step-btn-quick" onclick="incrementInput('mortCountInput', 1)">+1</button>
+          <button type="button" class="step-btn-quick" onclick="incrementInput('mortCountInput', 5)">+5</button>
         </div>
       </div>
     </div>
 
-    <div class="card">
-      <h2 id="mortFormTitle">☠️ Log Daily Mortality</h2>
-      <div class="form-row">
-        <div>
-          <label>Date (Today Auto-Filled)</label>
-          <input type="date" id="mortDate">
-        </div>
-        <div>
-          <label>Birds Dead</label>
-          <input type="number" id="mortCount" placeholder="e.g. 2" min="1">
-        </div>
-      </div>
-      <button class="btn-submit" id="mortSubmitBtn" style="background:#b91c1c;" onclick="saveMortality()">Log Mortality</button>
-      <button class="btn-cancel" id="mortCancelBtn" onclick="resetMortForm()">Cancel Edit</button>
-    </div>
-
-    <div class="card">
-      <h2>📋 Mortality Log</h2>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Dead</th>
-              <th>Edit</th>
-            </tr>
-          </thead>
-          <tbody id="mortalityBody"></tbody>
-        </table>
-        <div id="noMortality" style="text-align:center; color:#94a3b8; padding:15px; font-size:0.8rem;">No mortality recorded.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TAB 4: CALENDAR -->
-  <div id="calendarTab" class="view-panel">
-    <div class="card">
-      <div class="cal-header">
-        <button onclick="changeMonth(-1)">◀</button>
-        <h3 id="calMonthYear" style="margin:0; font-size:0.95rem; color:#0f172a;">Month</h3>
-        <button onclick="changeMonth(1)">▶</button>
-      </div>
-      <div class="cal-grid">
-        <div class="cal-day-name">Sun</div>
-        <div class="cal-day-name">Mon</div>
-        <div class="cal-day-name">Tue</div>
-        <div class="cal-day-name">Wed</div>
-        <div class="cal-day-name">Thu</div>
-        <div class="cal-day-name">Fri</div>
-        <div class="cal-day-name">Sat</div>
-      </div>
-      <div class="cal-grid" id="calGrid"></div>
-      <div style="font-size:0.75rem; text-align:center; color:#64748b; margin-top:8px;">💡 Tap any date on the calendar to view batch details.</div>
-    </div>
-  </div>
-
-</div>
-
-<!-- DATA REPORT DISPLAY VIEW -->
-<div class="container" id="dataDisplayView">
-  <div class="data-display-header">
-    <button class="btn-neutral" style="padding:6px 12px; font-weight:800;" onclick="closeDataDisplay()">◀ Back to App</button>
-    <div style="font-size:0.85rem; font-weight:800; color:#0284c7;">AD FARMS REPORT</div>
-  </div>
-  <div id="dataReportContent"></div>
-</div>
-
-<!-- DATA SELECTION MODAL -->
-<div class="modal-overlay" id="dataModal" onclick="closeDataModal(event)">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <h3>
-      <span>📊 View Data Reports</span>
-      <button class="modal-close" onclick="closeDataModal()">✕</button>
-    </h3>
-    <div class="data-opt-box">
-      <h4>🥚 1. Egg Collection Report</h4>
-      <div class="form-row">
-        <div>
-          <label>From Date</label>
-          <input type="date" id="reportColFrom">
-        </div>
-        <div>
-          <label>To Date</label>
-          <input type="date" id="reportColTo">
-        </div>
-      </div>
-      <button class="btn-submit" style="background:#059669; padding:10px; font-size:0.85rem;" onclick="displayEggDataReport()">Show Egg Data</button>
-    </div>
-    <div class="data-opt-box">
-      <h4>🐥 2. Incubation Batches Report</h4>
-      <div class="form-row">
-        <div>
-          <label>From Batch</label>
-          <select id="reportBatchFrom"></select>
-        </div>
-        <div>
-          <label>To Batch</label>
-          <select id="reportBatchTo"></select>
-        </div>
-      </div>
-      <button class="btn-submit" style="background:#0284c7; padding:10px; font-size:0.85rem;" onclick="displayIncubationDataReport()">Show Incubation Data</button>
-    </div>
+    <button class="btn-submit-main" id="btnSaveRecord" onclick="handleRecordSave()">Save Record</button>
   </div>
 </div>
 
-<!-- DATE DETAILS MODAL -->
-<div class="modal-overlay" id="dateModal" onclick="closeDateDetails(event)">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <h3>
-      <span id="modalDateTitle">Date Details</span>
-      <button class="modal-close" onclick="closeDateDetails()">✕</button>
-    </h3>
-    <div id="modalDetailsBody"></div>
+<!-- HARVEST CHICKS MODAL -->
+<div class="sheet-backdrop" id="harvestModal" onclick="closeHarvestModal(event)">
+  <div class="sheet-modal" style="border-radius:20px;" onclick="event.stopPropagation()">
+    <div class="sheet-header">
+      <h3>🐥 Log Live Chicks Hatched</h3>
+      <button class="btn-close-sheet" onclick="closeHarvestModal()">✕</button>
+    </div>
+    <input type="hidden" id="harvestBatchId">
+    <p id="harvestBatchMeta" style="font-size:0.82rem; color:var(--text-muted); margin-top:0;"></p>
+    <div class="form-group">
+      <label>Number of Live Chicks Pulled</label>
+      <input type="number" id="harvestChickCount" min="0" placeholder="e.g. 85">
+    </div>
+    <button class="btn-submit-main" onclick="submitChickHarvest()">Confirm &amp; Update Hatch Rate</button>
+  </div>
+</div>
+
+<!-- CALENDAR DATE INSPECTOR MODAL -->
+<div class="sheet-backdrop" id="inspectorModal" onclick="closeInspectorModal(event)">
+  <div class="sheet-modal" style="border-radius:20px;" onclick="event.stopPropagation()">
+    <div class="sheet-header">
+      <h3 id="inspectorDateTitle">Date Breakdown</h3>
+      <button class="btn-close-sheet" onclick="closeInspectorModal()">✕</button>
+    </div>
+    <div id="inspectorContentBody"></div>
+  </div>
+</div>
+
+<!-- REPORT DISPLAY SCREEN -->
+<div class="container" id="reportViewContainer" style="display:none;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+    <button class="btn-touch" style="padding:5px 10px; font-weight:800;" onclick="closeReportView()">◀ Back to App</button>
+    <b style="color:var(--brand-primary); font-size:0.85rem;">AD FARMS STATEMENT</b>
+  </div>
+  <div id="reportContentArea"></div>
+</div>
+
+<!-- REPORT CONFIG MODAL -->
+<div class="sheet-backdrop" id="reportModal" onclick="closeReportModal(event)">
+  <div class="sheet-modal" style="border-radius:20px;" onclick="event.stopPropagation()">
+    <div class="sheet-header">
+      <h3>📊 Export Farm Reports</h3>
+      <button class="btn-close-sheet" onclick="closeReportModal()">✕</button>
+    </div>
+    
+    <div style="background:#f8fafc; border:1px solid var(--border-subtle); border-radius:12px; padding:10px; margin-bottom:10px;">
+      <b style="font-size:0.82rem;">🥚 1. Egg Collection Audit</b>
+      <div class="form-row" style="margin-top:6px;">
+        <div>
+          <label>From</label>
+          <input type="date" id="repEggFrom">
+        </div>
+        <div>
+          <label>To</label>
+          <input type="date" id="repEggTo">
+        </div>
+      </div>
+      <button class="btn-submit-main" style="background:#059669; padding:9px;" onclick="buildEggReport()">View Egg Audit</button>
+    </div>
+
+    <div style="background:#f8fafc; border:1px solid var(--border-subtle); border-radius:12px; padding:10px;">
+      <b style="font-size:0.82rem;">🐥 2. Incubation Batches Audit</b>
+      <div class="form-row" style="margin-top:6px;">
+        <div>
+          <label>From Tray</label>
+          <select id="repBatchFrom"></select>
+        </div>
+        <div>
+          <label>To Tray</label>
+          <select id="repBatchTo"></select>
+        </div>
+      </div>
+      <button class="btn-submit-main" style="padding:9px;" onclick="buildIncubationReport()">View Batch Audit</button>
+    </div>
   </div>
 </div>
 
 <script>
-  // --- STANDARD YYYY-MM-DD DATE UTILITIES ---
-  function pad(n) { return String(n).padStart(2, '0'); }
-
-  function dateToISO(dateObj) {
-    if (!dateObj || isNaN(dateObj.getTime())) return "";
-    return `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}`;
+  // --- DATE MATH UTILITIES ---
+  const padZero = (n) => String(n).padStart(2, '0');
+  function toISODate(d) {
+    if (!d || isNaN(d.getTime())) return "";
+    return `${d.getFullYear()}-${padZero(d.getMonth() + 1)}-${padZero(d.getDate())}`;
   }
+  function todayISO() { return toISODate(new Date()); }
 
-  function getTodayISO() {
-    return dateToISO(new Date());
-  }
-
-  function toNormalizedISO(input) {
+  function normalizeToISO(input) {
     if (!input) return "";
-    if (typeof input === 'object' && input.seconds) {
-      return dateToISO(new Date(input.seconds * 1000));
-    }
+    if (typeof input === 'object' && input.seconds) return toISODate(new Date(input.seconds * 1000));
     let s = String(input).trim();
     if (s.includes('-')) {
-      const parts = s.split('-');
-      if (parts.length === 3 && parts[0].length === 4) {
-        return `${parts[0]}-${pad(parts[1])}-${pad(parts[2])}`;
-      }
+      const p = s.split('-');
+      if (p.length === 3 && p[0].length === 4) return `${p[0]}-${padZero(p[1])}-${padZero(p[2])}`;
     }
     if (s.includes('/')) {
-      const parts = s.split('/');
-      if (parts.length === 3) {
-        const y = parts[2].length === 4 ? parts[2] : ('20' + parts[2]);
-        return `${y}-${pad(parts[1])}-${pad(parts[0])}`;
+      const p = s.split('/');
+      if (p.length === 3) {
+        const y = p[2].length === 4 ? p[2] : ('20' + p[2]);
+        return `${y}-${padZero(p[1])}-${padZero(p[0])}`;
       }
     }
-    const parsed = new Date(s);
-    return isNaN(parsed.getTime()) ? "" : dateToISO(parsed);
+    const d = new Date(s);
+    return isNaN(d.getTime()) ? "" : toISODate(d);
   }
 
-  function formatDisplayDate(isoStr) {
-    const norm = toNormalizedISO(isoStr);
-    if (!norm) return isoStr || "-";
-    const parts = norm.split('-');
-    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  function displayFormatDate(iso) {
+    const s = normalizeToISO(iso);
+    if (!s) return iso || "-";
+    const p = s.split('-');
+    return `${p[2]}/${p[1]}/${p[0]}`;
   }
 
-  // --- STORAGE & AUTO-FILL TODAY ---
+  function calcBatchCycles(startDateISO) {
+    const p = startDateISO.split('-');
+    const base = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+    const d18 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 17);
+    const d21 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 20);
+    return { d1: startDateISO, d18: toISODate(d18), d21: toISODate(d21) };
+  }
+
+  // --- STATE STORAGE ---
   let collections = JSON.parse(localStorage.getItem("ad_farms_local_collections") || "[]");
   let batches = JSON.parse(localStorage.getItem("ad_farms_local_batches") || "[]");
   let mortality = JSON.parse(localStorage.getItem("ad_farms_local_mortality") || "[]");
 
-  const todayDateObj = new Date();
-  let curYear = todayDateObj.getFullYear();
-  let curMonth = todayDateObj.getMonth();
+  let currentTabIndex = 0;
+  let activeCalYear = new Date().getFullYear();
+  let activeCalMonth = new Date().getMonth();
 
-  function initTodayInputs() {
-    const todayISO = getTodayISO();
-    document.getElementById('colDate').value = todayISO;
-    document.getElementById('sdate').value = todayISO;
-    document.getElementById('mortDate').value = todayISO;
-  }
-  initTodayInputs();
-
-  function syncToLocalStorage() {
+  function commitState() {
     localStorage.setItem("ad_farms_local_collections", JSON.stringify(collections));
     localStorage.setItem("ad_farms_local_batches", JSON.stringify(batches));
     localStorage.setItem("ad_farms_local_mortality", JSON.stringify(mortality));
+    updateOverviewStats();
   }
 
-  // Firebase Cloud Link
+  // --- SWIPE TOUCH ENGINE ---
+  const swipeTrack = document.getElementById('swipeTrack');
+  const navButtons = document.querySelectorAll('.nav-tab-item');
+  const swipeContainer = document.getElementById('swipeContainer');
+
+  let startX = 0;
+  let startY = 0;
+  let currentDeltaX = 0;
+  let isSwiping = false;
+  let isHorizontalGesture = null;
+
+  function slideToIndex(index, animate = true) {
+    currentTabIndex = Math.max(0, Math.min(index, 3));
+    swipeTrack.style.transition = animate ? 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1)' : 'none';
+    swipeTrack.style.transform = `translateX(-${currentTabIndex * 25}%)`;
+
+    navButtons.forEach((btn, i) => {
+      btn.classList.toggle('active', i === currentTabIndex);
+      if (i === currentTabIndex) {
+        btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    });
+
+    if (currentTabIndex === 3) renderCalendar();
+  }
+
+  swipeContainer.addEventListener('touchstart', (e) => {
+    if (e.target.closest('.table-responsive') || e.target.closest('.sheet-backdrop')) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    currentDeltaX = 0;
+    isSwiping = true;
+    isHorizontalGesture = null;
+    swipeTrack.style.transition = 'none';
+  }, { passive: true });
+
+  swipeContainer.addEventListener('touchmove', (e) => {
+    if (!isSwiping) return;
+    const diffX = e.touches[0].clientX - startX;
+    const diffY = e.touches[0].clientY - startY;
+
+    if (isHorizontalGesture === null) {
+      if (Math.abs(diffX) > 8 || Math.abs(diffY) > 8) {
+        isHorizontalGesture = Math.abs(diffX) > Math.abs(diffY);
+      }
+    }
+
+    if (!isHorizontalGesture) return;
+
+    currentDeltaX = diffX;
+    const containerWidth = swipeContainer.offsetWidth;
+    const baseOffsetPercent = -(currentTabIndex * 25);
+    const dragOffsetPercent = (currentDeltaX / containerWidth) * 25;
+    
+    // Slight edge resistance
+    let finalOffset = baseOffsetPercent + dragOffsetPercent;
+    if ((currentTabIndex === 0 && currentDeltaX > 0) || (currentTabIndex === 3 && currentDeltaX < 0)) {
+      finalOffset = baseOffsetPercent + (dragOffsetPercent * 0.3);
+    }
+
+    swipeTrack.style.transform = `translateX(${finalOffset}%)`;
+  }, { passive: true });
+
+  swipeContainer.addEventListener('touchend', () => {
+    if (!isSwiping) return;
+    isSwiping = false;
+
+    if (isHorizontalGesture) {
+      const containerWidth = swipeContainer.offsetWidth;
+      const swipeThreshold = containerWidth * 0.18; // 18% screen drag threshold
+
+      if (currentDeltaX < -swipeThreshold && currentTabIndex < 3) {
+        slideToIndex(currentTabIndex + 1);
+      } else if (currentDeltaX > swipeThreshold && currentTabIndex > 0) {
+        slideToIndex(currentTabIndex - 1);
+      } else {
+        slideToIndex(currentTabIndex);
+      }
+    }
+    isHorizontalGesture = null;
+  });
+
+  // --- FIREBASE CLOUD LINK ---
   const firebaseConfig = {
     apiKey: "AIzaSyC0fvccTExFtjDF5jijNVExvdXvyAq54DY",
     authDomain: "poultry-a6902.firebaseapp.com",
@@ -499,607 +699,602 @@
     measurementId: "G-X6YB06QW7S"
   };
 
-  let db = null;
+  let firestoreDb = null;
   try {
     firebase.initializeApp(firebaseConfig);
-    db = firebase.firestore();
+    firestoreDb = firebase.firestore();
 
-    db.collection("collections").onSnapshot(snapshot => {
-      let cloudCols = [];
-      snapshot.forEach(doc => cloudCols.push({ id: doc.id, ...doc.data() }));
-      if (cloudCols.length > 0) {
-        collections = cloudCols;
-        syncToLocalStorage();
-        renderCollections();
+    firestoreDb.collection("collections").onSnapshot(snap => {
+      let remote = [];
+      snap.forEach(d => remote.push({ id: d.id, ...d.data() }));
+      if (remote.length > 0) {
+        collections = remote;
+        commitState();
+        renderCollectionsTable();
         renderCalendar();
       }
-      document.getElementById('cloudStatus').textContent = "🟢 Cloud";
+      document.getElementById('cloudBadge').textContent = "● Cloud";
+      document.getElementById('cloudBadge').classList.add('online');
     }, err => console.warn(err));
 
-    db.collection("batches").onSnapshot(snapshot => {
-      let cloudBatches = [];
-      snapshot.forEach(doc => cloudBatches.push({ id: doc.id, ...doc.data() }));
-      if (cloudBatches.length > 0) {
-        batches = cloudBatches;
-        syncToLocalStorage();
-        renderBatches();
-        renderMortality();
+    firestoreDb.collection("batches").onSnapshot(snap => {
+      let remote = [];
+      snap.forEach(d => remote.push({ id: d.id, ...d.data() }));
+      if (remote.length > 0) {
+        batches = remote;
+        commitState();
+        renderBatchesList();
         renderCalendar();
       }
     }, err => console.warn(err));
 
-    db.collection("mortality").onSnapshot(snapshot => {
-      let cloudMort = [];
-      snapshot.forEach(doc => cloudMort.push({ id: doc.id, ...doc.data() }));
-      if (cloudMort.length > 0) {
-        mortality = cloudMort;
-        syncToLocalStorage();
-        renderMortality();
+    firestoreDb.collection("mortality").onSnapshot(snap => {
+      let remote = [];
+      snap.forEach(d => remote.push({ id: d.id, ...d.data() }));
+      if (remote.length > 0) {
+        mortality = remote;
+        commitState();
+        renderMortalityTable();
       }
     }, err => console.warn(err));
-
-  } catch(e) { console.warn("Offline mode active", e); }
-
-  function switchTab(tabId, btn) {
-    document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    btn.classList.add('active');
-    if (tabId === 'calendarTab') renderCalendar();
-    if (tabId === 'mortalityTab') renderMortality();
+  } catch(e) {
+    document.getElementById('cloudBadge').textContent = "Offline";
+    document.getElementById('cloudBadge').classList.remove('online');
   }
 
-  // --- LOGO LOCK ---
-  function checkAndLockLogo() {
-    const saved = localStorage.getItem("ad_farms_logo");
-    if (saved) {
-      document.getElementById('logoDisplay').src = saved;
-      document.getElementById('logoDisplay').style.display = "block";
-      document.getElementById('placeholderText').style.display = "none";
-      document.getElementById('logoContainer').style.cursor = "default";
-      return true;
-    }
-    return false;
-  }
-  function triggerUploadOnce() { if (!checkAndLockLogo()) document.getElementById('logoInput').click(); }
-  function handleLogoUpload(input) {
-    if (input.files && input.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function(e) { localStorage.setItem("ad_farms_logo", e.target.result); checkAndLockLogo(); input.value = ""; };
-      reader.readAsDataURL(input.files[0]);
-    }
-  }
-  checkAndLockLogo();
-
-  // --- MORTALITY ---
-  let isEditingMortality = false;
-
-  function saveMortality() {
-    const dateVal = document.getElementById('mortDate').value || getTodayISO();
-    const count = parseInt(document.getElementById('mortCount').value, 10);
-    if (isNaN(count) || count < 0) return alert("Enter valid dead count.");
-
-    const isoDate = toNormalizedISO(dateVal);
-    let existing = mortality.find(m => toNormalizedISO(m.date) === isoDate);
-
-    // If editing directly, replace count; otherwise add to today's count
-    let deadCount = isEditingMortality ? count : (existing ? (existing.dead + count) : count);
-
-    const entry = { id: "mort_" + isoDate.replace(/-/g, ''), date: isoDate, dead: deadCount };
-    if (existing) Object.assign(existing, entry);
-    else mortality.push(entry);
-
-    syncToLocalStorage();
-    renderMortality();
-    resetMortForm();
-    if (db) db.collection("mortality").doc(entry.id).set(entry).catch(e => console.warn(e));
-  }
-
-  function startEditMortality(docId) {
-    const m = mortality.find(item => item.id === docId);
-    if (!m) return;
-    document.getElementById('mortDate').value = toNormalizedISO(m.date);
-    document.getElementById('mortCount').value = m.dead;
-    isEditingMortality = true;
-    document.getElementById('mortFormTitle').innerText = "✏️ Edit Mortality Record";
-    document.getElementById('mortSubmitBtn').innerText = "Update Mortality";
-    document.getElementById('mortCancelBtn').style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  function resetMortForm() {
-    document.getElementById('mortCount').value = "";
-    document.getElementById('mortDate').value = getTodayISO();
-    isEditingMortality = false;
-    document.getElementById('mortFormTitle').innerText = "☠️ Log Daily Mortality";
-    document.getElementById('mortSubmitBtn').innerText = "Log Mortality";
-    document.getElementById('mortCancelBtn').style.display = "none";
-  }
-
-  function renderMortality() {
-    const tbody = document.getElementById('mortalityBody');
-    tbody.innerHTML = "";
-    document.getElementById('noMortality').style.display = mortality.length === 0 ? "block" : "none";
-
-    let totalDead = 0;
-    const sorted = [...mortality].sort((a, b) => toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date)));
-
-    sorted.forEach(m => {
-      totalDead += m.dead;
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><b>${formatDisplayDate(m.date)}</b></td>
-        <td style="color:#b91c1c; font-weight:bold;">${m.dead}</td>
-        <td><button style="border:1px solid #cbd5e1; background:#ffffff; color:#0284c7; border-radius:4px; font-weight:bold; padding:4px 10px; cursor:pointer;" onclick="startEditMortality('${m.id}')">✎ Edit</button></td>
-      `;
-      tbody.appendChild(tr);
-    });
-
-    let totalChicksHatched = 0;
+  // --- STATS ---
+  function updateOverviewStats() {
+    let totalHatched = 0, totalSet = 0, hatchedBatchesCount = 0, rateSum = 0;
     batches.forEach(b => {
-      if (b.chicksHatched !== null && b.chicksHatched !== undefined) totalChicksHatched += b.chicksHatched;
+      totalSet += (b.eggs || 0);
+      if (b.chicksHatched !== null && b.chicksHatched !== undefined) {
+        totalHatched += b.chicksHatched;
+        if (b.hatchRate) {
+          rateSum += parseFloat(b.hatchRate);
+          hatchedBatchesCount++;
+        }
+      }
     });
+    let totalDead = mortality.reduce((acc, m) => acc + (m.dead || 0), 0);
+    const liveFlock = Math.max(0, totalHatched - totalDead);
 
-    const liveBirds = totalChicksHatched - totalDead;
-    document.getElementById('remainingBirdsDisplay').innerText = liveBirds >= 0 ? liveBirds : 0;
+    document.getElementById('kpiLiveFlock').textContent = liveFlock;
+    document.getElementById('kpiIncubating').textContent = totalSet;
+    document.getElementById('kpiHatchRate').textContent = hatchedBatchesCount > 0 ? ((rateSum / hatchedBatchesCount).toFixed(1) + "%") : "0%";
   }
 
-  // --- EGG COLLECTIONS ---
-  let isEditingCollection = false;
+  // --- QUICK ENTRY DRAWER ---
+  function openQuickDrawer(type = "batch") {
+    document.getElementById('editEntryId').value = "";
+    document.getElementById('quickTypeSelect').value = type;
+    document.getElementById('quickTypeSelect').disabled = false;
+    document.getElementById('recordDate').value = todayISO();
+    document.getElementById('drawerTitle').textContent = "Quick Farm Log";
+    document.getElementById('btnSaveRecord').textContent = "Save Record";
+    switchDrawerFormType();
+    document.getElementById('entryDrawer').style.display = "flex";
+  }
 
-  function saveCollection() {
-    const dateVal = document.getElementById('colDate').value || getTodayISO();
-    const slot = document.getElementById('colSlot').value;
-    const count = parseInt(document.getElementById('colCount').value, 10) || 0;
-    const broken = parseInt(document.getElementById('colBroken').value, 10) || 0;
-    if (count === 0 && broken === 0 && !isEditingCollection) return alert("Enter intact or broken eggs.");
+  function closeDrawer() {
+    document.getElementById('entryDrawer').style.display = "none";
+  }
 
-    const isoDate = toNormalizedISO(dateVal);
-    let existing = collections.find(c => toNormalizedISO(c.date) === isoDate);
-    let m = existing ? (existing.morning || 0) : 0, a = existing ? (existing.afternoon || 0) : 0;
-    let e = existing ? (existing.evening || 0) : 0, b = existing ? (existing.broken || 0) : 0;
+  function handleDrawerBackdrop(e) {
+    if (e.target.id === 'entryDrawer') closeDrawer();
+  }
 
-    if (slot === "Morning") m = count;
-    if (slot === "Afternoon") a = count;
-    if (slot === "Evening") e = count;
-    b = broken;
+  function switchDrawerFormType() {
+    const t = document.getElementById('quickTypeSelect').value;
+    document.getElementById('formSectionBatch').style.display = t === 'batch' ? 'block' : 'none';
+    document.getElementById('formSectionEggs').style.display = t === 'egg' ? 'block' : 'none';
+    document.getElementById('formSectionMort').style.display = t === 'mortality' ? 'block' : 'none';
+  }
 
-    const entry = { id: "col_" + isoDate.replace(/-/g, ''), date: isoDate, morning: m, afternoon: a, evening: e, broken: b, total: (m + a + e) };
-    if (existing) Object.assign(existing, entry); else collections.push(entry);
+  function incrementInput(id, delta) {
+    const el = document.getElementById(id);
+    el.value = Math.max(0, (parseInt(el.value || 0, 10) + delta));
+  }
 
-    syncToLocalStorage();
-    renderCollections();
+  function handleRecordSave() {
+    const type = document.getElementById('quickTypeSelect').value;
+    const editId = document.getElementById('editEntryId').value;
+    const dateStr = normalizeToISO(document.getElementById('recordDate').value || todayISO());
+
+    if (type === 'batch') {
+      const name = document.getElementById('batchNameInput').value.trim() || "Tray Batch";
+      const eggs = parseInt(document.getElementById('batchEggCount').value, 10) || 102;
+      const cycle = calcBatchCycles(dateStr);
+      const id = editId || ("batch_" + Date.now());
+
+      const data = {
+        id, name, eggs,
+        startDate: cycle.d1,
+        d18Date: cycle.d18,
+        d21Date: cycle.d21,
+        rawDate: cycle.d1
+      };
+
+      if (editId) {
+        const idx = batches.findIndex(b => b.id === editId);
+        if (idx !== -1) {
+          data.chicksHatched = batches[idx].chicksHatched !== undefined ? batches[idx].chicksHatched : null;
+          data.hatchRate = batches[idx].hatchRate !== undefined ? batches[idx].hatchRate : null;
+          batches[idx] = data;
+        }
+      } else {
+        data.chicksHatched = null;
+        data.hatchRate = null;
+        batches.unshift(data);
+      }
+
+      if (firestoreDb) firestoreDb.collection("batches").doc(id).set(data, { merge: true }).catch(console.warn);
+      renderBatchesList();
+    } 
+    else if (type === 'egg') {
+      const slot = document.getElementById('eggSlotSelect').value;
+      const count = parseInt(document.getElementById('eggCountInput').value, 10) || 0;
+      const broken = parseInt(document.getElementById('eggBrokenInput').value, 10) || 0;
+      const id = editId || ("col_" + dateStr.replace(/-/g, ''));
+
+      let existing = collections.find(c => c.id === id || normalizeToISO(c.date) === dateStr);
+      let m = existing ? (existing.morning || 0) : 0;
+      let a = existing ? (existing.afternoon || 0) : 0;
+      let e = existing ? (existing.evening || 0) : 0;
+
+      if (slot === "Morning") m = count;
+      if (slot === "Afternoon") a = count;
+      if (slot === "Evening") e = count;
+
+      const record = { id, date: dateStr, morning: m, afternoon: a, evening: e, broken: broken, total: (m + a + e) };
+      if (existing) Object.assign(existing, record); else collections.push(record);
+
+      if (firestoreDb) firestoreDb.collection("collections").doc(id).set(record, { merge: true }).catch(console.warn);
+      renderCollectionsTable();
+    }
+    else if (type === 'mortality') {
+      const count = parseInt(document.getElementById('mortCountInput').value, 10) || 0;
+      if (count <= 0 && !editId) return alert("Enter dead bird count");
+      const id = editId || ("mort_" + dateStr.replace(/-/g, ''));
+
+      let existing = mortality.find(m => m.id === id || normalizeToISO(m.date) === dateStr);
+      let deadVal = editId ? count : (existing ? (existing.dead + count) : count);
+
+      const record = { id, date: dateStr, dead: deadVal };
+      if (existing) Object.assign(existing, record); else mortality.push(record);
+
+      if (firestoreDb) firestoreDb.collection("mortality").doc(id).set(record, { merge: true }).catch(console.warn);
+      renderMortalityTable();
+    }
+
+    commitState();
     renderCalendar();
-    resetEggForm();
-
-    if (db) db.collection("collections").doc(entry.id).set(entry).catch(err => console.warn(err));
+    closeDrawer();
   }
 
-  function startEditCollection(docId) {
-    const c = collections.find(item => item.id === docId);
-    if (!c) return;
-    document.getElementById('colDate').value = toNormalizedISO(c.date);
-    document.getElementById('colSlot').value = "Morning";
-    document.getElementById('colCount').value = c.morning || 0;
-    document.getElementById('colBroken').value = c.broken || 0;
-    isEditingCollection = true;
-    document.getElementById('eggFormTitle').innerText = "✏️ Edit Egg Pickings";
-    document.getElementById('colSubmitBtn').innerText = "Update Slot & Save";
-    document.getElementById('colCancelBtn').style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  // --- BATCHES RENDERING & HARVEST ---
+  function renderBatchesList() {
+    const box = document.getElementById('batchesList');
+    box.innerHTML = "";
+    document.getElementById('noBatchesMsg').style.display = batches.length === 0 ? "block" : "none";
+
+    const sorted = [...batches].sort((a,b) => normalizeToISO(b.startDate || b.rawDate).localeCompare(normalizeToISO(a.startDate || a.rawDate)));
+
+    sorted.forEach(b => {
+      const sISO = normalizeToISO(b.startDate || b.rawDate);
+      const cycle = calcBatchCycles(sISO);
+      const rateLabel = b.hatchRate ? `<span style="color:var(--success); font-weight:800;">${b.hatchRate}%</span>` : `<span style="color:var(--text-muted);">In Progress</span>`;
+      const harvestLabel = b.chicksHatched !== null && b.chicksHatched !== undefined ? `<b>${b.chicksHatched} chicks</b>` : `<span style="color:var(--text-muted);">Not Entered</span>`;
+
+      const card = document.createElement('div');
+      card.className = "batch-card";
+      card.innerHTML = `
+        <div class="batch-head">
+          <span class="batch-title">${b.name}</span>
+          <span class="badge-eggs">${b.eggs} eggs</span>
+        </div>
+        <div class="timeline-bar">
+          <div class="timeline-step s-set">
+            <span class="step-lbl">Day 1 (Set)</span>
+            <span class="step-date">${displayFormatDate(cycle.d1)}</span>
+          </div>
+          <div class="timeline-step s-hatch">
+            <span class="step-lbl">Day 18 (Hatch)</span>
+            <span class="step-date">${displayFormatDate(cycle.d18)}</span>
+          </div>
+          <div class="timeline-step s-pull">
+            <span class="step-lbl">Day 21 (Harvest)</span>
+            <span class="step-date">${displayFormatDate(cycle.d21)}</span>
+          </div>
+        </div>
+        <div class="batch-meta-banner">
+          <div>Harvest: ${harvestLabel}</div>
+          <div>Success: ${rateLabel}</div>
+        </div>
+        <div class="action-row">
+          <button class="btn-touch" style="border-color:var(--stage-pull); color:var(--stage-pull); font-weight:800;" onclick="openHarvestDialog('${b.id}')">🐣 Chicks Pulled</button>
+          <button class="btn-touch" onclick="editBatchItem('${b.id}')">✎ Edit</button>
+        </div>
+      `;
+      box.appendChild(card);
+    });
   }
 
-  function resetEggForm() {
-    document.getElementById('colCount').value = "";
-    document.getElementById('colBroken').value = "0";
-    document.getElementById('colDate').value = getTodayISO();
-    isEditingCollection = false;
-    document.getElementById('eggFormTitle').innerText = "🥚 Record Egg Collection";
-    document.getElementById('colSubmitBtn').innerText = "Add Collection";
-    document.getElementById('colCancelBtn').style.display = "none";
+  function editBatchItem(id) {
+    const b = batches.find(x => x.id === id);
+    if (!b) return;
+    document.getElementById('editEntryId').value = b.id;
+    document.getElementById('quickTypeSelect').value = 'batch';
+    document.getElementById('quickTypeSelect').disabled = true;
+    document.getElementById('recordDate').value = normalizeToISO(b.startDate || b.rawDate);
+    document.getElementById('batchNameInput').value = b.name;
+    document.getElementById('batchEggCount').value = b.eggs;
+    document.getElementById('drawerTitle').textContent = "Edit Incubator Batch";
+    document.getElementById('btnSaveRecord').textContent = "Update Batch";
+    switchDrawerFormType();
+    document.getElementById('entryDrawer').style.display = "flex";
   }
 
-  function renderCollections() {
-    const tbody = document.getElementById('collectionBody');
+  function openHarvestDialog(batchId) {
+    const b = batches.find(x => x.id === batchId);
+    if (!b) return;
+    document.getElementById('harvestBatchId').value = batchId;
+    document.getElementById('harvestBatchMeta').textContent = `${b.name} (${b.eggs} Eggs Set)`;
+    document.getElementById('harvestChickCount').value = b.chicksHatched !== null ? b.chicksHatched : "";
+    document.getElementById('harvestModal').style.display = "flex";
+  }
+  function closeHarvestModal(e) {
+    if (!e || e.target.id === 'harvestModal' || e.target.classList.contains('btn-close-sheet')) {
+      document.getElementById('harvestModal').style.display = "none";
+    }
+  }
+  function submitChickHarvest() {
+    const id = document.getElementById('harvestBatchId').value;
+    const count = parseInt(document.getElementById('harvestChickCount').value, 10);
+    if (isNaN(count) || count < 0) return alert("Enter chick count");
+    const b = batches.find(x => x.id === id);
+    b.chicksHatched = count;
+    b.hatchRate = ((count / b.eggs) * 100).toFixed(1);
+
+    commitState();
+    renderBatchesList();
+    closeHarvestModal();
+    if (firestoreDb) firestoreDb.collection("batches").doc(id).update({ chicksHatched: b.chicksHatched, hatchRate: b.hatchRate }).catch(console.warn);
+  }
+
+  // --- TABLES ---
+  function renderCollectionsTable() {
+    const tbody = document.getElementById('eggsTableBody');
     tbody.innerHTML = "";
-    document.getElementById('noCollections').style.display = collections.length === 0 ? "block" : "none";
-    const sorted = [...collections].sort((a, b) => toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date)));
+    document.getElementById('noEggsMsg').style.display = collections.length === 0 ? "block" : "none";
+    const sorted = [...collections].sort((a,b) => normalizeToISO(b.date).localeCompare(normalizeToISO(a.date)));
+
     sorted.forEach(c => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><b>${formatDisplayDate(c.date)}</b></td>
-        <td>${c.morning || '-'}</td><td>${c.afternoon || '-'}</td><td>${c.evening || '-'}</td>
-        <td style="color:#b91c1c; font-weight:bold;">${c.broken || '-'}</td>
-        <td style="color:#0284c7; font-weight:bold;">${c.total}</td>
-        <td><button style="border:1px solid #cbd5e1; background:#ffffff; color:#0284c7; border-radius:4px; font-weight:bold; padding:4px 10px; cursor:pointer;" onclick="startEditCollection('${c.id}')">✎ Edit</button></td>
+        <td><b>${displayFormatDate(c.date)}</b></td>
+        <td>${c.morning || '-'}</td>
+        <td>${c.afternoon || '-'}</td>
+        <td>${c.evening || '-'}</td>
+        <td style="color:var(--danger); font-weight:800;">${c.broken || '-'}</td>
+        <td style="color:var(--brand-primary); font-weight:800;">${c.total}</td>
+        <td><button class="btn-touch" style="padding:3px 6px; font-size:0.72rem;" onclick="editEggItem('${c.id}')">✎</button></td>
       `;
       tbody.appendChild(tr);
     });
   }
 
-  // --- BATCHES ---
-  function computeBatchDates(startDateISO) {
-    const parts = startDateISO.split('-');
-    const base = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-    const d18 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 17);
-    const d21 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 20);
-    return {
-      d1ISO: startDateISO,
-      d18ISO: dateToISO(d18),
-      d21ISO: dateToISO(d21)
-    };
+  function editEggItem(id) {
+    const c = collections.find(x => x.id === id);
+    if (!c) return;
+    document.getElementById('editEntryId').value = c.id;
+    document.getElementById('quickTypeSelect').value = 'egg';
+    document.getElementById('quickTypeSelect').disabled = true;
+    document.getElementById('recordDate').value = normalizeToISO(c.date);
+    document.getElementById('eggSlotSelect').value = 'Morning';
+    document.getElementById('eggCountInput').value = c.morning || 0;
+    document.getElementById('eggBrokenInput').value = c.broken || 0;
+    document.getElementById('drawerTitle').textContent = "Edit Egg Log";
+    document.getElementById('btnSaveRecord').textContent = "Update Entry";
+    switchDrawerFormType();
+    document.getElementById('entryDrawer').style.display = "flex";
   }
 
-  function saveBatch() {
-    const name = document.getElementById('bname').value.trim() || "Batch";
-    const eggs = parseInt(document.getElementById('eggsSet').value, 10) || 102;
-    const dateInput = document.getElementById('sdate').value || getTodayISO();
-    const editDocId = document.getElementById('editDocId').value;
-    const startDateISO = toNormalizedISO(dateInput);
+  function renderMortalityTable() {
+    const tbody = document.getElementById('mortalityTableBody');
+    tbody.innerHTML = "";
+    document.getElementById('noMortMsg').style.display = mortality.length === 0 ? "block" : "none";
+    const sorted = [...mortality].sort((a,b) => normalizeToISO(b.date).localeCompare(normalizeToISO(a.date)));
 
-    const calc = computeBatchDates(startDateISO);
-    const id = editDocId || ("batch_" + Date.now());
-    const data = { 
-      id, 
-      name, 
-      eggs, 
-      startDate: calc.d1ISO,
-      d18Date: calc.d18ISO,
-      d21Date: calc.d21ISO,
-      rawDate: calc.d1ISO
-    };
-
-    if (editDocId) {
-      const idx = batches.findIndex(b => b.id === editDocId);
-      if (idx !== -1) {
-        data.chicksHatched = batches[idx].chicksHatched !== undefined ? batches[idx].chicksHatched : null;
-        data.hatchRate = batches[idx].hatchRate !== undefined ? batches[idx].hatchRate : null;
-        batches[idx] = data;
-      }
-    } else {
-      data.chicksHatched = null;
-      data.hatchRate = null;
-      batches.unshift(data);
-    }
-
-    syncToLocalStorage();
-    renderBatches();
-    renderMortality();
-    renderCalendar();
-    resetBatchForm();
-
-    if (db) {
-      if (editDocId) db.collection("batches").doc(editDocId).set(data, { merge: true }).catch(e => console.warn(e));
-      else db.collection("batches").doc(id).set(data).catch(e => console.warn(e));
-    }
-  }
-
-  function recordHatchResult(docId) {
-    const b = batches.find(item => item.id === docId);
-    const val = prompt(`AD Farms: "${b.name}"\nEnter live chicks pulled:`, b.chicksHatched !== null ? b.chicksHatched : "");
-    if (val === null) return;
-    const count = parseInt(val, 10);
-    if (isNaN(count) || count < 0) return alert("Enter valid chick count");
-    b.chicksHatched = count;
-    b.hatchRate = ((count / b.eggs) * 100).toFixed(1);
-    syncToLocalStorage();
-    renderBatches();
-    renderMortality();
-    if (db) db.collection("batches").doc(docId).update({ chicksHatched: b.chicksHatched, hatchRate: b.hatchRate }).catch(e => console.warn(e));
-  }
-
-  function renderBatches() {
-    const container = document.getElementById('batchContainer');
-    container.innerHTML = "";
-    document.getElementById('noBatches').style.display = batches.length === 0 ? "block" : "none";
-    const sortedBatches = [...batches].sort((a, b) => {
-      const dateA = toNormalizedISO(a.startDate || a.rawDate || a.labelD1);
-      const dateB = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
-      return dateA.localeCompare(dateB);
-    });
-
-    sortedBatches.forEach(b => {
-      const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
-      const calc = sISO ? computeBatchDates(sISO) : null;
-      const rateText = b.hatchRate !== null && b.hatchRate !== undefined ? `<b style="color:#16a34a;">${b.hatchRate}%</b>` : `<span style="color:#94a3b8;">Pending</span>`;
-      const chickCount = b.chicksHatched !== null && b.chicksHatched !== undefined ? `<b>${b.chicksHatched}</b> chicks` : `<span style="color:#94a3b8;">Not entered</span>`;
-      
-      const card = document.createElement('div');
-      card.className = 'batch-card';
-      card.innerHTML = `
-        <div class="batch-card-header"><span class="batch-title">${b.name}</span><span class="batch-eggs">${b.eggs} eggs</span></div>
-        <div class="batch-dates-grid">
-          <div class="date-pill d1"><span class="pill-lbl">Day 1 (Set)</span><span class="pill-val">${formatDisplayDate(calc ? calc.d1ISO : sISO)}</span></div>
-          <div class="date-pill d18"><span class="pill-lbl">Day 18 (Hatch)</span><span class="pill-val">${formatDisplayDate(calc ? calc.d18ISO : '')}</span></div>
-          <div class="date-pill d21"><span class="pill-lbl">Day 21 (Pull)</span><span class="pill-val">${formatDisplayDate(calc ? calc.d21ISO : '')}</span></div>
-        </div>
-        <div class="batch-results-bar"><div>Harvest: ${chickCount}</div><div>Hatch Rate: ${rateText}</div></div>
-        <div class="batch-actions">
-          <button class="btn-neutral" onclick="recordHatchResult('${b.id}')">🐥 Chicks</button>
-          <button class="btn-neutral" onclick="startEditBatch('${b.id}')">✎ Edit</button>
-        </div>
+    sorted.forEach(m => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><b>${displayFormatDate(m.date)}</b></td>
+        <td style="color:var(--danger); font-weight:800;">${m.dead}</td>
+        <td><button class="btn-touch" style="padding:3px 6px; font-size:0.72rem;" onclick="editMortItem('${m.id}')">✎</button></td>
       `;
-      container.appendChild(card);
+      tbody.appendChild(tr);
     });
   }
 
-  function startEditBatch(docId) {
-    const b = batches.find(item => item.id === docId);
-    document.getElementById('bname').value = b.name;
-    document.getElementById('eggsSet').value = b.eggs;
-    document.getElementById('sdate').value = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
-    document.getElementById('editDocId').value = docId;
-    document.getElementById('submitBtn').innerText = "Update Batch";
-    document.getElementById('cancelBtn').style.display = "block";
-    switchTab('batchesTab', document.querySelectorAll('.tab-btn')[0]);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  function editMortItem(id) {
+    const m = mortality.find(x => x.id === id);
+    if (!m) return;
+    document.getElementById('editEntryId').value = m.id;
+    document.getElementById('quickTypeSelect').value = 'mortality';
+    document.getElementById('quickTypeSelect').disabled = true;
+    document.getElementById('recordDate').value = normalizeToISO(m.date);
+    document.getElementById('mortCountInput').value = m.dead;
+    document.getElementById('drawerTitle').textContent = "Edit Mortality Record";
+    document.getElementById('btnSaveRecord').textContent = "Update Entry";
+    switchDrawerFormType();
+    document.getElementById('entryDrawer').style.display = "flex";
   }
 
-  function resetBatchForm() {
-    document.getElementById('bname').value = "";
-    document.getElementById('eggsSet').value = "102";
-    document.getElementById('sdate').value = getTodayISO();
-    document.getElementById('editDocId').value = "";
-    document.getElementById('submitBtn').innerText = "Start / Save Batch";
-    document.getElementById('cancelBtn').style.display = "none";
-  }
-
-  // --- CALENDAR WITH BULLETPROOF ISO COMPARISONS ---
+  // --- CALENDAR ENGINE (SAFE RENDERING) ---
   function renderCalendar() {
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    document.getElementById('calMonthYear').innerText = `${monthNames[curMonth]} ${curYear}`;
-    const firstDayIndex = new Date(curYear, curMonth, 1).getDay();
-    const lastDateOfMonth = new Date(curYear, curMonth + 1, 0).getDate();
-    const grid = document.getElementById('calGrid');
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    document.getElementById('calLabel').textContent = `${months[activeCalMonth]} ${activeCalYear}`;
+
+    const grid = document.getElementById('calCellsGrid');
     grid.innerHTML = "";
 
-    for (let i = 0; i < firstDayIndex; i++) {
-      const emptyDiv = document.createElement('div');
-      emptyDiv.className = 'cal-cell empty';
-      grid.appendChild(emptyDiv);
+    const firstDay = new Date(activeCalYear, activeCalMonth, 1).getDay();
+    const daysInMonth = new Date(activeCalYear, activeCalMonth + 1, 0).getDate();
+
+    for (let i = 0; i < firstDay; i++) {
+      const empty = document.createElement('div');
+      empty.className = 'cal-cell empty';
+      grid.appendChild(empty);
     }
 
-    for (let d = 1; d <= lastDateOfMonth; d++) {
-      const cellDateObj = new Date(curYear, curMonth, d);
-      const cellISO = dateToISO(cellDateObj);
-
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateObj = new Date(activeCalYear, activeCalMonth, day);
+      const iso = toISODate(dateObj);
       const cell = document.createElement('div');
       cell.className = 'cal-cell';
-      cell.onclick = () => showDateDetailsStrict(cellISO);
+      cell.onclick = () => openInspectorDate(iso);
 
-      let dayEvents = [];
+      let badgesHtml = `<span style="font-size:0.74rem; line-height:1;">${day}</span>`;
+      let hasSet = false, hasHatch = false, hasPull = false;
 
       batches.forEach(b => {
-        const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
-        if (!sISO) return;
-        const calc = computeBatchDates(sISO);
+        const cycle = calcBatchCycles(normalizeToISO(b.startDate || b.rawDate));
+        const shortName = b.name.length > 6 ? b.name.substring(0, 5) + '…' : b.name;
 
-        if (cellISO === calc.d1ISO) {
-          dayEvents.push({ type: 'set', name: b.name });
+        if (iso === cycle.d1) {
+          hasSet = true;
+          badgesHtml += `<span class="cal-badge" style="background:#0284c7; color:#fff;">S: ${shortName}</span>`;
         }
-        if (cellISO === calc.d18ISO) {
-          dayEvents.push({ type: 'hatch', name: b.name });
+        if (iso === cycle.d18) {
+          hasHatch = true;
+          badgesHtml += `<span class="cal-badge" style="background:#ea580c; color:#fff;">H: ${shortName}</span>`;
         }
-        if (cellISO === calc.d21ISO) {
-          dayEvents.push({ type: 'remove', name: b.name });
-        }
-      });
-
-      const colRecord = collections.find(c => toNormalizedISO(c.date) === cellISO);
-
-      if (dayEvents.some(e => e.type === 'set')) {
-        cell.classList.add('stage-set');
-      } else if (dayEvents.some(e => e.type === 'hatch')) {
-        cell.classList.add('stage-hatch');
-      } else if (dayEvents.some(e => e.type === 'remove')) {
-        cell.classList.add('stage-remove');
-      }
-
-      let content = `<span>${d}</span>`;
-
-      dayEvents.forEach(ev => {
-        if (ev.type === 'set') {
-          content += `<span class="stage-tag" style="background:#0284c7; color:#ffffff;">SET: ${ev.name}</span>`;
-        } else if (ev.type === 'hatch') {
-          content += `<span class="stage-tag" style="background:#ea580c; color:#ffffff;">D18: ${ev.name}</span>`;
-        } else if (ev.type === 'remove') {
-          content += `<span class="stage-tag" style="background:#16a34a; color:#ffffff;">PULL: ${ev.name}</span>`;
+        if (iso === cycle.d21) {
+          hasPull = true;
+          badgesHtml += `<span class="cal-badge" style="background:#16a34a; color:#fff;">P: ${shortName}</span>`;
         }
       });
 
-      if (colRecord && colRecord.total > 0) {
-        content += `<span class="egg-badge">+${colRecord.total}🥚</span>`;
+      const eggRec = collections.find(c => normalizeToISO(c.date) === iso);
+      if (eggRec && eggRec.total > 0) {
+        badgesHtml += `<span class="cal-egg-pill">+${eggRec.total}🥚</span>`;
       }
 
-      cell.innerHTML = content;
+      if (hasSet) cell.classList.add('has-set');
+      if (hasHatch) cell.classList.add('has-hatch');
+      if (hasPull) cell.classList.add('has-pull');
+
+      cell.innerHTML = badgesHtml;
       grid.appendChild(cell);
     }
   }
 
-  function changeMonth(delta) {
-    curMonth += delta;
-    if (curMonth < 0) { curMonth = 11; curYear -= 1; }
-    else if (curMonth > 11) { curMonth = 0; curYear += 1; }
+  function shiftCalMonth(delta) {
+    activeCalMonth += delta;
+    if (activeCalMonth < 0) { activeCalMonth = 11; activeCalYear -= 1; }
+    else if (activeCalMonth > 11) { activeCalMonth = 0; activeCalYear += 1; }
     renderCalendar();
   }
 
-  function showDateDetailsStrict(dateISO) {
-    const modal = document.getElementById('dateModal');
-    const title = document.getElementById('modalDateTitle');
-    const body = document.getElementById('modalDetailsBody');
-
-    title.innerText = formatDisplayDate(dateISO);
+  function openInspectorDate(iso) {
+    const modal = document.getElementById('inspectorModal');
+    document.getElementById('inspectorDateTitle').textContent = displayFormatDate(iso);
+    const body = document.getElementById('inspectorContentBody');
     let html = "";
 
     batches.forEach(b => {
-      const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
-      if (!sISO) return;
-      const calc = computeBatchDates(sISO);
-
-      if (dateISO === calc.d1ISO) {
-        html += `<div class="event-item" style="border-left: 5px solid #0284c7; background: #f0f9ff; margin-bottom: 8px;">
-          <b style="color: #0284c7; font-size: 0.95rem;">🥚 DAY 1: EGGS SET</b><br>
-          <b>Batch / Tray:</b> ${b.name}<br>
-          <b>Eggs Set:</b> ${b.eggs} eggs<br>
-          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Action: Confirm setter temp (99.5°F–100°F) and check automatic turning.</div>
+      const cycle = calcBatchCycles(normalizeToISO(b.startDate || b.rawDate));
+      if (iso === cycle.d1) {
+        html += `<div style="background:var(--stage-set-bg); border-left:4px solid var(--stage-set); padding:8px 10px; border-radius:6px; margin-bottom:6px; font-size:0.8rem;">
+          <b style="color:var(--stage-set);">🥚 DAY 1: SET IN INCUBATOR</b><br>
+          <b>Batch:</b> ${b.name} (${b.eggs} eggs)<br>
+          <span style="font-size:0.7rem; color:var(--text-muted);">Ensure temperature is 99.5°F–100°F and turning is active.</span>
         </div>`;
       }
-
-      if (dateISO === calc.d18ISO) {
-        html += `<div class="event-item" style="border-left: 5px solid #ea580c; background: #fff7ed; margin-bottom: 8px;">
-          <b style="color: #ea580c; font-size: 0.95rem;">🐣 DAY 18: LOCKDOWN / HATCHER</b><br>
-          <b>Batch / Tray:</b> ${b.name}<br>
-          <b>Eggs:</b> ${b.eggs} eggs<br>
-          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Action: Shift eggs to hatcher baskets, turn off turning mechanism, and increase humidity.</div>
+      if (iso === cycle.d18) {
+        html += `<div style="background:var(--stage-hatch-bg); border-left:4px solid var(--stage-hatch); padding:8px 10px; border-radius:6px; margin-bottom:6px; font-size:0.8rem;">
+          <b style="color:var(--stage-hatch);">🐣 DAY 18: LOCKDOWN / HATCHER</b><br>
+          <b>Batch:</b> ${b.name} (${b.eggs} eggs)<br>
+          <span style="font-size:0.7rem; color:var(--text-muted);">Shift to hatching trays, stop turning, increase humidity.</span>
         </div>`;
       }
-
-      if (dateISO === calc.d21ISO) {
-        html += `<div class="event-item" style="border-left: 5px solid #16a34a; background: #f0fdf4; margin-bottom: 8px;">
-          <b style="color: #16a34a; font-size: 0.95rem;">🐥 DAY 21: PULL CHICKS</b><br>
-          <b>Batch / Tray:</b> ${b.name}<br>
-          <b>Initial Eggs:</b> ${b.eggs} eggs<br>
-          <b>Hatch Status:</b> ${b.chicksHatched !== null && b.chicksHatched !== undefined ? b.chicksHatched + ' chicks (' + b.hatchRate + '%)' : 'Pending results entry'}<br>
-          <div style="font-size: 0.75rem; color: #475569; margin-top: 4px;">Action: Move dry chicks to brooder and log hatch count in the Batches tab.</div>
+      if (iso === cycle.d21) {
+        html += `<div style="background:var(--stage-pull-bg); border-left:4px solid var(--stage-pull); padding:8px 10px; border-radius:6px; margin-bottom:6px; font-size:0.8rem;">
+          <b style="color:var(--stage-pull);">🐥 DAY 21: PULL CHICKS</b><br>
+          <b>Batch:</b> ${b.name}<br>
+          <b>Harvest:</b> ${b.chicksHatched !== null ? (b.chicksHatched + ' chicks pulled (' + b.hatchRate + '%)') : 'Harvest count pending'}<br>
         </div>`;
       }
     });
 
-    const col = collections.find(c => toNormalizedISO(c.date) === dateISO);
-    if (col && (col.total > 0 || (col.broken || 0) > 0)) {
-      html += `<div class="event-item" style="border-left: 5px solid #64748b; background: #f8fafc; margin-bottom: 8px;">
-        <b>🥚 Daily Egg Pickings</b><br>
-        Morn: ${col.morning || 0} | Aftn: ${col.afternoon || 0} | Eve: ${col.evening || 0}<br>
-        Broken: <b style="color: #b91c1c;">${col.broken || 0}</b> | <b>Total Intact: ${col.total}</b>
+    const egg = collections.find(c => normalizeToISO(c.date) === iso);
+    if (egg) {
+      html += `<div style="background:#f8fafc; border-left:4px solid var(--border-strong); padding:8px 10px; border-radius:6px; margin-bottom:6px; font-size:0.8rem;">
+        <b>🥚 Daily Egg Pickings:</b><br>
+        Morn: ${egg.morning||0} | Aftn: ${egg.afternoon||0} | Eve: ${egg.evening||0}<br>
+        Broken: <span style="color:var(--danger);">${egg.broken||0}</span> | <b>Total Intact: ${egg.total}</b>
       </div>`;
     }
 
-    const mort = mortality.find(m => toNormalizedISO(m.date) === dateISO);
-    if (mort && mort.dead > 0) {
-      html += `<div class="event-item" style="border-left: 5px solid #b91c1c; background: #fef2f2; margin-bottom: 8px;">
-        <b style="color: #b91c1c;">☠️ Mortality Logged</b><br>
-        Birds Dead: <b>${mort.dead}</b>
+    const mort = mortality.find(m => normalizeToISO(m.date) === iso);
+    if (mort) {
+      html += `<div style="background:var(--danger-bg); border-left:4px solid var(--danger); padding:8px 10px; border-radius:6px; margin-bottom:6px; font-size:0.8rem;">
+        <b style="color:var(--danger);">☠️ Bird Losses:</b> ${mort.dead}
       </div>`;
     }
 
-    if (!html) {
-      html = `<div style="text-align:center; padding:15px; color:#94a3b8; font-size:0.85rem;">No actions or batches recorded for this date.</div>`;
-    }
-
+    if (!html) html = `<div style="text-align:center; color:var(--text-muted); padding:20px; font-size:0.8rem;">No farm events on this date.</div>`;
     body.innerHTML = html;
     modal.style.display = "flex";
   }
 
-  function closeDateDetails(e) {
-    if (!e || e.target.id === "dateModal" || e.target.classList.contains("modal-close")) {
-      document.getElementById('dateModal').style.display = "none";
+  function closeInspectorModal(e) {
+    if (!e || e.target.id === 'inspectorModal' || e.target.classList.contains('btn-close-sheet')) {
+      document.getElementById('inspectorModal').style.display = "none";
     }
   }
 
-  // --- DATA REPORTS ---
-  function openDataModal() {
-    const sortedBatches = [...batches].sort((a, b) => {
-      const dateA = toNormalizedISO(a.startDate || a.rawDate || a.labelD1);
-      const dateB = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
-      return dateA.localeCompare(dateB);
-    });
-    const bFrom = document.getElementById('reportBatchFrom'), bTo = document.getElementById('reportBatchTo');
-    bFrom.innerHTML = ""; bTo.innerHTML = "";
-    sortedBatches.forEach((b, idx) => {
-      const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
-      bFrom.add(new Option(`${b.name} (${formatDisplayDate(sISO)})`, idx));
-      bTo.add(new Option(`${b.name} (${formatDisplayDate(sISO)})`, idx));
-    });
-    if (sortedBatches.length > 0) { bFrom.selectedIndex = 0; bTo.selectedIndex = sortedBatches.length - 1; }
+  // --- REPORT EXPORTS ---
+  function openReportModal() {
+    const sFrom = document.getElementById('repBatchFrom'), sTo = document.getElementById('repBatchTo');
+    sFrom.innerHTML = ""; sTo.innerHTML = "";
+    const sorted = [...batches].sort((a,b) => normalizeToISO(a.startDate||a.rawDate).localeCompare(normalizeToISO(b.startDate||b.rawDate)));
 
-    const dTo = new Date(), dFrom = new Date(); dFrom.setDate(dTo.getDate() - 30);
-    document.getElementById('reportColTo').value = dateToISO(dTo);
-    document.getElementById('reportColFrom').value = dateToISO(dFrom);
-    document.getElementById('dataModal').style.display = "flex";
+    sorted.forEach((b, idx) => {
+      sFrom.add(new Option(`${b.name} (${displayFormatDate(b.startDate||b.rawDate)})`, idx));
+      sTo.add(new Option(`${b.name} (${displayFormatDate(b.startDate||b.rawDate)})`, idx));
+    });
+    if (sorted.length > 0) { sFrom.selectedIndex = 0; sTo.selectedIndex = sorted.length - 1; }
+
+    const end = new Date();
+    const start = new Date(); start.setDate(end.getDate() - 30);
+    document.getElementById('repEggTo').value = toISODate(end);
+    document.getElementById('repEggFrom').value = toISODate(start);
+    document.getElementById('reportModal').style.display = "flex";
   }
-
-  function closeDataModal(e) {
-    if (!e || e.target.id === "dataModal" || e.target.classList.contains("modal-close")) {
-      document.getElementById('dataModal').style.display = "none";
+  function closeReportModal(e) {
+    if (!e || e.target.id === 'reportModal' || e.target.classList.contains('btn-close-sheet')) {
+      document.getElementById('reportModal').style.display = "none";
     }
   }
-
-  function closeDataDisplay() {
-    document.getElementById('dataDisplayView').style.display = "none";
-    document.getElementById('mainDashboard').style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  function closeReportView() {
+    document.getElementById('reportViewContainer').style.display = 'none';
+    document.getElementById('mainAppSection').style.display = 'block';
   }
 
-  function displayEggDataReport() {
-    const rawFrom = document.getElementById('reportColFrom').value;
-    const rawTo = document.getElementById('reportColTo').value;
-    if (!rawFrom || !rawTo) return alert("Enter valid dates.");
-    if (rawFrom > rawTo) return alert("From Date cannot be after To Date.");
+  function buildEggReport() {
+    const f = document.getElementById('repEggFrom').value;
+    const t = document.getElementById('repEggTo').value;
+    if (!f || !t || f > t) return alert("Select valid dates");
 
     const filtered = collections.filter(c => {
-      const cd = toNormalizedISO(c.date);
-      return cd && cd >= rawFrom && cd <= rawTo;
-    }).sort((a, b) => toNormalizedISO(a.date).localeCompare(toNormalizedISO(b.date)));
+      const d = normalizeToISO(c.date);
+      return d && d >= f && d <= t;
+    }).sort((a,b) => normalizeToISO(a.date).localeCompare(normalizeToISO(b.date)));
 
-    if (filtered.length === 0) return alert("No egg collections found.");
+    if (filtered.length === 0) return alert("No egg entries in this date window");
 
-    let totalMorn = 0, totalAftn = 0, totalEve = 0, totalBroken = 0, grandTotal = 0;
-    let rowsHtml = "";
-
+    let totM = 0, totA = 0, totE = 0, totB = 0, grand = 0;
+    let rows = "";
     filtered.forEach(c => {
-      const d = formatDisplayDate(c.date), m = c.morning||0, a = c.afternoon||0, e = c.evening||0, b = c.broken||0, t = c.total||0;
-      totalMorn += m; totalAftn += a; totalEve += e; totalBroken += b; grandTotal += t;
-      rowsHtml += `<tr><td><b>${d}</b></td><td>${m}</td><td>${a}</td><td>${e}</td><td style="color:#b91c1c; font-weight:bold;">${b}</td><td style="color:#0284c7; font-weight:bold;">${t}</td></tr>`;
+      totM += (c.morning||0); totA += (c.afternoon||0); totE += (c.evening||0); totB += (c.broken||0); grand += (c.total||0);
+      rows += `<tr><td><b>${displayFormatDate(c.date)}</b></td><td>${c.morning||0}</td><td>${c.afternoon||0}</td><td>${c.evening||0}</td><td style="color:var(--danger);">${c.broken||0}</td><td style="color:var(--brand-primary); font-weight:800;">${c.total||0}</td></tr>`;
     });
 
-    const html = `<div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:8px; margin-bottom:12px;"><h2 style="margin:0; font-size:1.1rem;">AD FARMS ; HERD & HARVEST</h2><div style="font-size:0.85rem; font-weight:bold; margin-top:2px;">Egg Collection Report</div><div style="font-size:0.75rem; color:#64748b;">Period: <b>${formatDisplayDate(rawFrom)}</b> to <b>${formatDisplayDate(rawTo)}</b></div></div>
-      <div class="table-wrap"><table><thead><tr><th style="background:#0284c7; color:#fff;">Data</th><th>Morn</th><th>Aftn</th><th>Eve</th><th>Broken</th><th>Total Intact</th></tr></thead><tbody>${rowsHtml}<tr style="font-weight:bold; background:#f1f5f9;"><td>TOTALS</td><td>${totalMorn}</td><td>${totalAftn}</td><td>${totalEve}</td><td style="color:#b91c1c;">${totalBroken}</td><td style="color:#0284c7;">${grandTotal}</td></tr></tbody></table></div>`;
-    
-    document.getElementById('dataReportContent').innerHTML = html;
-    document.getElementById('dataModal').style.display = "none";
-    document.getElementById('mainDashboard').style.display = "none";
-    document.getElementById('dataDisplayView').style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const reportHtml = `
+      <div class="surface-card">
+        <h3 style="margin:0 0 4px 0; text-align:center;">AD FARMS · EGG COLLECTION AUDIT</h3>
+        <p style="text-align:center; font-size:0.72rem; color:var(--text-muted); margin:0 0 10px 0;">${displayFormatDate(f)} — ${displayFormatDate(t)}</p>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Date</th><th>Morn</th><th>Aftn</th><th>Eve</th><th>Broken</th><th>Total Intact</th></tr></thead>
+            <tbody>${rows}
+              <tr style="font-weight:800; background:#f8fafc;">
+                <td>TOTALS</td><td>${totM}</td><td>${totA}</td><td>${totE}</td><td style="color:var(--danger);">${totB}</td><td style="color:var(--brand-primary);">${grand}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+    document.getElementById('reportContentArea').innerHTML = reportHtml;
+    document.getElementById('reportModal').style.display = 'none';
+    document.getElementById('mainAppSection').style.display = 'none';
+    document.getElementById('reportViewContainer').style.display = 'block';
   }
 
-  function displayIncubationDataReport() {
-    const sorted = [...batches].sort((a, b) => {
-      const dateA = toNormalizedISO(a.startDate || a.rawDate || a.labelD1);
-      const dateB = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
-      return dateA.localeCompare(dateB);
-    });
-    if (sorted.length === 0) return alert("No batches recorded.");
-    let idxFrom = parseInt(document.getElementById('reportBatchFrom').value, 10), idxTo = parseInt(document.getElementById('reportBatchTo').value, 10);
-    if (idxFrom > idxTo) { const temp = idxFrom; idxFrom = idxTo; idxTo = temp; }
-    const selected = sorted.slice(idxFrom, idxTo + 1);
+  function buildIncubationReport() {
+    const sorted = [...batches].sort((a,b) => normalizeToISO(a.startDate||a.rawDate).localeCompare(normalizeToISO(b.startDate||b.rawDate)));
+    if (sorted.length === 0) return alert("No batches available");
+    let fromIdx = parseInt(document.getElementById('repBatchFrom').value, 10);
+    let toIdx = parseInt(document.getElementById('repBatchTo').value, 10);
+    if (fromIdx > toIdx) { const tmp = fromIdx; fromIdx = toIdx; toIdx = tmp; }
 
-    let totalEggs = 0, totalChicks = 0, rowsHtml = "";
-    selected.forEach(b => {
-      const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
-      const calc = sISO ? computeBatchDates(sISO) : { d1ISO: '', d18ISO: '', d21ISO: '' };
+    const subset = sorted.slice(fromIdx, toIdx + 1);
+    let totalEggs = 0, totalChicks = 0, rows = "";
+
+    subset.forEach(b => {
+      const cycle = calcBatchCycles(normalizeToISO(b.startDate||b.rawDate));
       totalEggs += b.eggs;
-      if (b.chicksHatched !== null && b.chicksHatched !== undefined) totalChicks += b.chicksHatched;
-      const c = b.chicksHatched !== null && b.chicksHatched !== undefined ? b.chicksHatched : "-", r = b.hatchRate !== null && b.hatchRate !== undefined ? `${b.hatchRate}%` : "-";
-      rowsHtml += `<tr><td><b>${b.name}</b></td><td>${b.eggs}</td><td>${formatDisplayDate(calc.d1ISO)}</td><td>${formatDisplayDate(calc.d18ISO)}</td><td>${formatDisplayDate(calc.d21ISO)}</td><td>${c}</td><td style="color:#16a34a; font-weight:bold;">${r}</td></tr>`;
+      if (b.chicksHatched) totalChicks += b.chicksHatched;
+      rows += `<tr>
+        <td><b>${b.name}</b></td><td>${b.eggs}</td><td>${displayFormatDate(cycle.d1)}</td><td>${displayFormatDate(cycle.d18)}</td><td>${displayFormatDate(cycle.d21)}</td>
+        <td>${b.chicksHatched || '-'}</td><td style="color:var(--success); font-weight:800;">${b.hatchRate ? b.hatchRate + '%' : '-'}</td>
+      </tr>`;
     });
-    const overallRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + "%" : "-";
 
-    const html = `<div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:8px; margin-bottom:12px;"><h2 style="margin:0; font-size:1.1rem;">AD FARMS ; HERD & HARVEST</h2><div style="font-size:0.85rem; font-weight:bold; margin-top:2px;">Incubation Performance</div><div style="font-size:0.75rem; color:#64748b;">Batches: <b>${selected[0].name}</b> to <b>${selected[selected.length - 1].name}</b></div></div>
-      <div class="table-wrap"><table><thead><tr><th style="background:#0284c7; color:#fff;">Data</th><th>Eggs</th><th>Set (D1)</th><th>Hatch (D18)</th><th>Pull (D21)</th><th>Chicks</th><th>Rate</th></tr></thead><tbody>${rowsHtml}<tr style="font-weight:bold; background:#f1f5f9;"><td>SUMMARY</td><td>${totalEggs}</td><td colspan="3">-</td><td>${totalChicks>0?totalChicks:'-'}</td><td style="color:#16a34a;">${overallRate}</td></tr></tbody></table></div>`;
-    
-    document.getElementById('dataReportContent').innerHTML = html;
-    document.getElementById('dataModal').style.display = "none";
-    document.getElementById('mainDashboard').style.display = "none";
-    document.getElementById('dataDisplayView').style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const netRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + "%" : "-";
+
+    const reportHtml = `
+      <div class="surface-card">
+        <h3 style="margin:0 0 4px 0; text-align:center;">AD FARMS · INCUBATION REPORT</h3>
+        <p style="text-align:center; font-size:0.72rem; color:var(--text-muted); margin:0 0 10px 0;">Batches: ${subset[0].name} to ${subset[subset.length - 1].name}</p>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Batch</th><th>Eggs</th><th>Day 1</th><th>Day 18</th><th>Day 21</th><th>Chicks</th><th>Hatch %</th></tr></thead>
+            <tbody>${rows}
+              <tr style="font-weight:800; background:#f8fafc;">
+                <td>SUMMARY</td><td>${totalEggs}</td><td colspan="3">-</td><td>${totalChicks||'-'}</td><td style="color:var(--success);">${netRate}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+    document.getElementById('reportContentArea').innerHTML = reportHtml;
+    document.getElementById('reportModal').style.display = 'none';
+    document.getElementById('mainAppSection').style.display = 'none';
+    document.getElementById('reportViewContainer').style.display = 'block';
   }
 
-  // Initial draw
-  renderCollections();
-  renderBatches();
-  renderMortality();
-  renderCalendar();
-</script>
+  // --- LOGO PERSISTENCE ---
+  function initLogo() {
+    const saved = localStorage.getItem("ad_farms_logo");
+    if (saved) {
+      document.getElementById('logoImg').src = saved;
+      document.getElementById('logoImg').style.display = "block";
+      document.getElementById('logoLetters').style.display = "none";
+    }
+  }
+  function handleLogoUpdate(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        localStorage.setItem("ad_farms_logo", e.target.result);
+        initLogo();
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
 
+  // --- BOOTSTRAP ---
+  initLogo();
+  renderBatchesList();
+  renderCollectionsTable();
+  renderMortalityTable();
+  renderCalendar();
+  updateOverviewStats();
+  slideToIndex(0, false);
+</script>
 </body>
 </html>
