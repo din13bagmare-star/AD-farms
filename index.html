@@ -18,6 +18,14 @@
     --border-card: #e2e8f0;
     --text-primary: #0f172a;
     --text-secondary: #64748b;
+    --nav-bar-bg: #e2e8f0;
+    --nav-btn-active: #ffffff;
+    --table-head-bg: #f8fafc;
+    --row-border: #f1f5f9;
+    --slot-bg: #ffffff;
+    --slot-progress-bg: #e2e8f0;
+    --input-bg: #ffffff;
+    --input-border: #cbd5e1;
 
     /* Stage Accents */
     --grad-set: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
@@ -29,23 +37,49 @@
     --grad-rate: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
   }
 
+  /* DARK MODE STYLES */
+  body.dark-mode {
+    --bg-main: #090d16;
+    --surface-card: #131b2e;
+    --border-card: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --nav-bar-bg: #131b2e;
+    --nav-btn-active: #1e293b;
+    --table-head-bg: #0d1527;
+    --row-border: #1e293b;
+    --slot-bg: #131b2e;
+    --slot-progress-bg: #1e293b;
+    --input-bg: #090d16;
+    --input-border: #334155;
+
+    /* Dark Stage Overlays */
+    --grad-set: linear-gradient(135deg, #0c2b48 0%, #103a61 100%);
+    --grad-hatch: linear-gradient(135deg, #422006 0%, #572c08 100%);
+    --grad-pull: linear-gradient(135deg, #052e16 0%, #0a4422 100%);
+  }
+
   * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
-  html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; background: var(--bg-main); color: var(--text-primary); }
-  body { padding-bottom: 125px; }
+  html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; background: var(--bg-main); color: var(--text-primary); transition: background 0.2s ease, color 0.2s ease; }
+  body { padding-bottom: calc(150px + env(safe-area-inset-bottom, 25px)); }
   .container { max-width: 540px; margin: auto; padding: 12px; }
 
-  /* TOP GLOSSY APP BAR */
+  /* TOP APP BAR */
   .top-app-bar {
     position: sticky; top: 0; z-index: 40;
     background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(14px);
-    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    border-bottom: 1px solid var(--border-card);
     padding-top: calc(10px + env(safe-area-inset-top, 0px));
     padding-bottom: 10px;
     padding-left: 14px;
     padding-right: 14px;
     display: flex; align-items: center; justify-content: space-between;
     box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  body.dark-mode .top-app-bar {
+    background: rgba(19, 27, 46, 0.92);
   }
   .brand-group { display: flex; align-items: center; gap: 10px; }
   .logo-avatar {
@@ -57,35 +91,44 @@
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
   }
   .logo-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .brand-text h1 { margin: 0; font-size: 1.05rem; font-weight: 900; line-height: 1.1; background: linear-gradient(135deg, #0f172a, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .brand-text h1 { margin: 0; font-size: 1.05rem; font-weight: 900; line-height: 1.1; background: linear-gradient(135deg, var(--text-primary), #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .brand-text .sub-title { margin: 0; font-size: 0.65rem; color: #0284c7; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; }
   
+  .btn-icon-toggle {
+    background: var(--surface-card);
+    border: 1px solid var(--border-card);
+    border-radius: 20px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
   .btn-fancy-report {
-    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
-    border: 1px solid #cbd5e1;
+    background: var(--surface-card);
+    border: 1px solid var(--border-card);
     border-radius: 20px;
     padding: 6px 12px;
     font-size: 0.74rem;
     font-weight: 800;
-    color: #0f172a;
+    color: var(--text-primary);
     box-shadow: 0 2px 6px rgba(0,0,0,0.04);
     cursor: pointer;
   }
-  .btn-fancy-report:active { transform: scale(0.96); }
-
   .status-pill {
     font-size: 0.65rem; font-weight: 800; padding: 4px 8px; border-radius: 20px;
-    background: #e2e8f0; color: #64748b; display: inline-flex; align-items: center; gap: 4px;
+    background: var(--border-card); color: var(--text-secondary); display: inline-flex; align-items: center; gap: 4px;
   }
   .status-pill.online { background: #dcfce7; color: #15803d; box-shadow: 0 0 10px rgba(34, 197, 94, 0.25); }
+  body.dark-mode .status-pill.online { background: #052e16; color: #4ade80; }
 
-  /* VIBRANT GRADIENT STAT CARDS */
+  /* STAT CARDS */
   .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
   .kpi-card {
     border-radius: 16px; padding: 10px 6px; text-align: center;
     position: relative; overflow: hidden;
     box-shadow: 0 4px 14px rgba(0,0,0,0.04);
-    background: #ffffff; border: 1px solid #e2e8f0;
+    background: var(--surface-card); border: 1px solid var(--border-card);
   }
   .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
   .kpi-card.c-live::before { background: var(--grad-live); }
@@ -94,29 +137,31 @@
   
   .kpi-label { font-size: 0.6rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; }
   .kpi-val { font-size: 1.35rem; font-weight: 900; margin-top: 2px; }
-  .kpi-val.v-live { color: #059669; }
-  .kpi-val.v-incub { color: #0284c7; }
-  .kpi-val.v-rate { color: #ea580c; }
+  .kpi-val.v-live { color: #10b981; }
+  .kpi-val.v-incub { color: #38bdf8; }
+  .kpi-val.v-rate { color: #f59e0b; }
 
-  /* PILL SWITCH TABS */
+  /* NAVIGATION TABS */
   .nav-tabs-wrapper {
-    display: flex; background: #e2e8f0; border-radius: 14px;
+    display: flex; background: var(--nav-bar-bg); border-radius: 14px;
     padding: 4px; gap: 4px; margin-bottom: 14px; overflow-x: auto;
     scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--border-card);
   }
   .nav-tabs-wrapper::-webkit-scrollbar { display: none; }
   .nav-tab-item {
     flex: 1 0 auto; border: none; background: transparent; padding: 9px 12px;
-    font-size: 0.74rem; font-weight: 800; color: #64748b;
+    font-size: 0.74rem; font-weight: 800; color: var(--text-secondary);
     border-radius: 11px; cursor: pointer; text-align: center; white-space: nowrap;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .nav-tab-item.active {
-    background: #ffffff; color: #0284c7;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    background: var(--nav-btn-active); color: #0284c7;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
   }
+  body.dark-mode .nav-tab-item.active { color: #38bdf8; }
 
-  /* SWIPE ENGINE WRAPPERS */
+  /* SWIPE ENGINE */
   .swipe-track-container {
     overflow: hidden; width: 100%; position: relative;
     touch-action: pan-y pinch-zoom;
@@ -128,7 +173,7 @@
   }
   .swipe-slide { width: 20%; flex-shrink: 0; box-sizing: border-box; }
 
-  /* PHYSICAL INCUBATOR RACK VIEW */
+  /* RACK VIEW */
   .rack-instructions {
     display: flex; justify-content: space-between; align-items: center;
     font-size: 0.74rem; font-weight: 800; color: var(--text-secondary);
@@ -138,12 +183,12 @@
     display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
   }
   .rack-slot-card {
-    background: #ffffff;
-    border: 1.5px solid #e2e8f0;
+    background: var(--slot-bg);
+    border: 1.5px solid var(--border-card);
     border-radius: 18px;
     padding: 12px;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
     position: relative;
     overflow: hidden;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
@@ -152,22 +197,23 @@
 
   .rack-slot-card.stage-set {
     border-color: #38bdf8;
-    background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+    background: linear-gradient(180deg, var(--slot-bg) 0%, rgba(56, 189, 248, 0.1) 100%);
   }
   .rack-slot-card.stage-hatch {
     border-color: #fb923c;
-    background: linear-gradient(180deg, #ffffff 0%, #fff7ed 100%);
+    background: linear-gradient(180deg, var(--slot-bg) 0%, rgba(251, 146, 60, 0.1) 100%);
   }
   .rack-slot-card.stage-pull {
     border-color: #4ade80;
-    background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+    background: linear-gradient(180deg, var(--slot-bg) 0%, rgba(74, 222, 128, 0.1) 100%);
   }
 
   .slot-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-  .slot-name { font-size: 0.96rem; font-weight: 900; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px; }
+  .slot-name { font-size: 0.96rem; font-weight: 900; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px; }
   .slot-eggs { font-size: 0.72rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 2px 7px; border-radius: 12px; }
+  body.dark-mode .slot-eggs { color: #38bdf8; background: #0c2b48; }
 
-  .slot-progress-wrap { width: 100%; height: 7px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin: 8px 0; }
+  .slot-progress-wrap { width: 100%; height: 7px; background: var(--slot-progress-bg); border-radius: 4px; overflow: hidden; margin: 8px 0; }
   .slot-progress-bar { height: 100%; border-radius: 4px; }
 
   .slot-footer {
@@ -178,38 +224,39 @@
     padding: 2px 6px; border-radius: 6px; font-size: 0.6rem; font-weight: 900; text-transform: uppercase;
   }
 
-  /* COLORFUL DATA CARDS */
+  /* DATA CARDS & TABLES */
   .surface-card {
-    background: #ffffff; border: 1px solid #e2e8f0;
+    background: var(--surface-card); border: 1px solid var(--border-card);
     border-radius: 20px; padding: 14px; margin-bottom: 12px;
-    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.06);
   }
   .surface-card h2 { margin: 0 0 10px 0; font-size: 0.95rem; font-weight: 900; color: #0284c7; }
+  body.dark-mode .surface-card h2 { color: #38bdf8; }
   .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 12px; }
   table { width: 100%; border-collapse: collapse; font-size: 0.78rem; min-width: 320px; }
-  th, td { border-bottom: 1px solid #f1f5f9; padding: 9px 6px; text-align: center; }
-  th { background: #f8fafc; color: #64748b; font-weight: 800; font-size: 0.72rem; text-transform: uppercase; }
+  th, td { border-bottom: 1px solid var(--row-border); padding: 9px 6px; text-align: center; }
+  th { background: var(--table-head-bg); color: var(--text-secondary); font-weight: 800; font-size: 0.72rem; text-transform: uppercase; }
 
   .btn-touch {
     padding: 6px 10px; border-radius: 8px; font-size: 0.74rem;
-    font-weight: 800; border: 1px solid #cbd5e1; background: #ffffff;
-    color: #0f172a; cursor: pointer; text-align: center;
+    font-weight: 800; border: 1px solid var(--border-card); background: var(--surface-card);
+    color: var(--text-primary); cursor: pointer; text-align: center;
   }
-  .btn-touch:active { transform: scale(0.96); background: #f8fafc; }
+  .btn-touch:active { transform: scale(0.96); opacity: 0.85; }
 
-  /* FILTER BAR FOR ACTIVITIES */
+  /* FILTER BAR */
   .filter-pill-bar {
     display: flex; gap: 6px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 4px;
     scrollbar-width: none; -webkit-overflow-scrolling: touch;
   }
   .filter-pill-bar::-webkit-scrollbar { display: none; }
   .filter-pill {
-    flex: 0 0 auto; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 14px;
+    flex: 0 0 auto; background: var(--nav-bar-bg); border: 1px solid var(--border-card); border-radius: 14px;
     padding: 5px 10px; font-size: 0.7rem; font-weight: 800; color: var(--text-secondary); cursor: pointer;
   }
   .filter-pill.active { background: #7c3aed; color: #ffffff; border-color: #7c3aed; }
 
-  /* CALENDAR TILES */
+  /* CALENDAR VIEW */
   .cal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
   .cal-grid {
     display: grid;
@@ -219,14 +266,14 @@
     box-sizing: border-box;
   }
   .cal-head {
-    font-size: 0.65rem; font-weight: 900; color: #64748b;
+    font-size: 0.65rem; font-weight: 900; color: var(--text-secondary);
     text-align: center; padding: 4px 0; text-transform: uppercase;
   }
   .cal-cell {
     min-height: 60px;
     border-radius: 10px;
-    border: 1px solid #e2e8f0;
-    background: #ffffff;
+    border: 1px solid var(--border-card);
+    background: var(--surface-card);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -239,9 +286,13 @@
   }
   .cal-cell:active { transform: scale(0.94); }
   .cal-cell.empty { border: none; background: transparent; cursor: default; }
+  
   .cal-cell.has-set { background: #e0f2fe !important; border-color: #38bdf8 !important; }
   .cal-cell.has-hatch { background: #ffedd5 !important; border-color: #fb923c !important; }
   .cal-cell.has-pull { background: #dcfce7 !important; border-color: #4ade80 !important; }
+  body.dark-mode .cal-cell.has-set { background: #0c2b48 !important; }
+  body.dark-mode .cal-cell.has-hatch { background: #422006 !important; }
+  body.dark-mode .cal-cell.has-pull { background: #052e16 !important; }
 
   .cal-badge {
     display: block;
@@ -256,23 +307,23 @@
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
   }
   .cal-egg-pill {
     font-size: 0.52rem; font-weight: 900; color: #0284c7;
-    background: #ffffff; border-radius: 4px; padding: 1px 3px; margin-top: 2px;
-    border: 1px solid #bae6fd;
+    background: var(--surface-card); border-radius: 4px; padding: 1px 3px; margin-top: 2px;
+    border: 1px solid var(--border-card);
   }
   .cal-activity-pill {
     font-size: 0.5rem; font-weight: 900; color: #7c3aed;
     background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 3px;
     padding: 1px 2px; margin-top: 1px; max-width: 95%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
+  body.dark-mode .cal-activity-pill { background: #2e1065; color: #c4b5fd; border-color: #4c1d95; }
 
-  /* QUICK LOG BUTTON */
+  /* FLOATING BUTTON (LIFTED CLEAR OF PHONE KEYS) */
   .fab-button {
     position: fixed;
-    bottom: 34px;
+    bottom: calc(75px + env(safe-area-inset-bottom, 20px));
     right: 18px;
     z-index: 50;
     background: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #06b6d4 100%);
@@ -282,30 +333,33 @@
     box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45), 0 0 0 3px rgba(255, 255, 255, 0.85);
     cursor: pointer;
   }
+  body.dark-mode .fab-button {
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.6), 0 0 0 3px rgba(19, 27, 46, 0.85);
+  }
   .fab-button:active { transform: scale(0.95); }
 
-  /* BOTTOM SHEET MODALS */
+  /* BOTTOM SHEETS (RAISED CLEAR OF PHONE KEYS) */
   .sheet-backdrop {
-    display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6);
+    display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65);
     backdrop-filter: blur(8px); z-index: 90; align-items: flex-end; justify-content: center;
   }
   .sheet-modal {
-    background: #ffffff; width: 100%; max-width: 540px;
+    background: var(--surface-card); width: 100%; max-width: 540px;
     border-radius: 26px 26px 0 0; padding: 18px 16px; 
-    padding-bottom: 32px;
+    padding-bottom: calc(75px + env(safe-area-inset-bottom, 25px));
     max-height: 88vh;
-    overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.2); animation: sheetUp 0.22s ease-out;
+    overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.3); animation: sheetUp 0.22s ease-out;
   }
   @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
   
   .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-  .sheet-header h3 { margin: 0; font-size: 1.1rem; font-weight: 900; color: #0f172a; }
+  .sheet-header h3 { margin: 0; font-size: 1.1rem; font-weight: 900; color: var(--text-primary); }
   .btn-close-sheet {
-    background: #f1f5f9; border: none; width: 32px; height: 32px;
-    border-radius: 50%; font-weight: 900; cursor: pointer; color: #64748b;
+    background: var(--nav-bar-bg); border: none; width: 32px; height: 32px;
+    border-radius: 50%; font-weight: 900; cursor: pointer; color: var(--text-secondary);
   }
 
-  /* POPUP CARD TIMELINE VIEW */
+  /* TIMELINE IN MODAL */
   .timeline-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
   .timeline-step {
     border-radius: 12px; padding: 8px 4px; text-align: center;
@@ -314,6 +368,9 @@
   .timeline-step.s-set { background: var(--grad-set); color: #0369a1; border: 1px solid #bae6fd; }
   .timeline-step.s-hatch { background: var(--grad-hatch); color: #9a3412; border: 1px solid #fed7aa; }
   .timeline-step.s-pull { background: var(--grad-pull); color: #166534; border: 1px solid #bbf7d0; }
+  body.dark-mode .timeline-step.s-set { color: #38bdf8; border-color: #0284c7; }
+  body.dark-mode .timeline-step.s-hatch { color: #fb923c; border-color: #ea580c; }
+  body.dark-mode .timeline-step.s-pull { color: #4ade80; border-color: #16a34a; }
   .step-lbl { font-size: 0.58rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3px; }
   .step-date { font-size: 0.76rem; font-weight: 800; margin-top: 2px; }
 
@@ -321,16 +378,16 @@
   .form-group { margin-bottom: 10px; }
   .form-row { display: flex; gap: 8px; margin-bottom: 10px; }
   .form-row > div { flex: 1; }
-  label { font-size: 0.72rem; font-weight: 800; color: #64748b; display: block; margin-bottom: 4px; text-transform: uppercase; }
+  label { font-size: 0.72rem; font-weight: 800; color: var(--text-secondary); display: block; margin-bottom: 4px; text-transform: uppercase; }
   input, select, textarea {
-    width: 100%; padding: 11px; border: 1.5px solid #cbd5e1;
-    border-radius: 12px; font-size: 0.92rem; background: #ffffff; color: #0f172a;
+    width: 100%; padding: 11px; border: 1.5px solid var(--input-border);
+    border-radius: 12px; font-size: 0.92rem; background: var(--input-bg); color: var(--text-primary);
     font-weight: 700;
   }
   .stepper-row { display: flex; align-items: center; gap: 6px; }
   .step-btn-quick {
-    background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px;
-    padding: 10px 14px; font-size: 0.85rem; font-weight: 900; cursor: pointer; color: #0284c7;
+    background: var(--nav-bar-bg); border: 1.5px solid var(--input-border); border-radius: 10px;
+    padding: 10px 14px; font-size: 0.85rem; font-weight: 900; cursor: pointer; color: var(--primary-solid);
   }
   .btn-submit-main {
     width: 100%; background: var(--primary-grad); color: #ffffff; border: none;
@@ -355,7 +412,9 @@
       <div class="sub-title">Herd &amp; Harvest</div>
     </div>
   </div>
-  <div style="display:flex; align-items:center; gap:8px;">
+  <div style="display:flex; align-items:center; gap:6px;">
+    <!-- DARK/LIGHT THEME SWITCHER -->
+    <button class="btn-icon-toggle" id="themeToggleBtn" onclick="toggleThemeMode()" title="Toggle Dark/Light Mode">🌙</button>
     <button class="btn-fancy-report" onclick="openReportModal()">📊 Reports</button>
     <div id="cloudBadge" class="status-pill online">● Cloud</div>
   </div>
@@ -388,11 +447,11 @@
     <button class="nav-tab-item" onclick="slideToIndex(4)">📅 Timeline</button>
   </nav>
 
-  <!-- HORIZONTAL SWIPE CAROUSEL WRAPPER -->
+  <!-- SWIPE CAROUSEL WRAPPER -->
   <div class="swipe-track-container" id="swipeContainer">
     <div class="swipe-slides-wrapper" id="swipeTrack">
 
-      <!-- SLIDE 0: PHYSICAL RACK VIEW FOR BATCHES -->
+      <!-- SLIDE 0: PHYSICAL RACK VIEW -->
       <div class="swipe-slide" id="slide-0">
         <div class="rack-instructions">
           <span>INCUBATOR TRAY MATRIX</span>
@@ -453,7 +512,7 @@
         <div class="surface-card">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
             <h2 style="color:#7c3aed; margin:0;">📝 Activity &amp; Task Ledger</h2>
-            <button class="btn-touch" style="color:#7c3aed; border-color:#ddd6fe; background:#f5f3ff;" onclick="openQuickDrawer('activity')">+ New Log</button>
+            <button class="btn-touch" style="color:#7c3aed; border-color:#7c3aed;" onclick="openQuickDrawer('activity')">+ New Log</button>
           </div>
           <div class="filter-pill-bar" id="activityFilterBar">
             <button class="filter-pill active" onclick="filterActivities('All', this)">All</button>
@@ -473,7 +532,7 @@
         <div class="surface-card">
           <div class="cal-top">
             <button class="btn-touch" style="padding:4px 10px;" onclick="shiftCalMonth(-1)">◀</button>
-            <div id="calLabel" style="font-weight:900; font-size:0.95rem; color:#0f172a;">Timeline</div>
+            <div id="calLabel" style="font-weight:900; font-size:0.95rem; color:var(--text-primary);">Timeline</div>
             <button class="btn-touch" style="padding:4px 10px;" onclick="shiftCalMonth(1)">▶</button>
           </div>
           <div class="cal-grid">
@@ -504,7 +563,6 @@
       <button class="btn-close-sheet" onclick="closeTrayDetails()">✕</button>
     </div>
 
-    <!-- 3-STAGE TIMELINE PILLS -->
     <div class="timeline-bar">
       <div class="timeline-step s-set">
         <span class="step-lbl">Day 1 (Set)</span>
@@ -520,8 +578,7 @@
       </div>
     </div>
 
-    <!-- TRAY STATS CARDS -->
-    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px; margin-bottom:14px; font-size:0.82rem;">
+    <div style="background:var(--nav-bar-bg); border:1px solid var(--border-card); border-radius:14px; padding:12px; margin-bottom:14px; font-size:0.82rem;">
       <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
         <span style="color:var(--text-secondary); font-weight:700;">Eggs Placed:</span>
         <b id="popEggsCount">0</b>
@@ -536,10 +593,9 @@
       </div>
     </div>
 
-    <!-- ACTIONS ROW INSIDE POPUP -->
     <div style="display:flex; gap:8px;">
       <button class="btn-submit-main" id="btnPopHarvest" style="margin:0; flex:1.2; background:var(--grad-pull); color:#166534; border:1px solid #86efac;">🐣 Chicks Pulled</button>
-      <button class="btn-submit-main" id="btnPopEdit" style="margin:0; flex:1; background:#ffffff; color:#0f172a; border:1.5px solid #cbd5e1; box-shadow:none;">✎ Edit Tray</button>
+      <button class="btn-submit-main" id="btnPopEdit" style="margin:0; flex:1; background:var(--surface-card); color:var(--text-primary); border:1.5px solid var(--border-card); box-shadow:none;">✎ Edit Tray</button>
     </div>
   </div>
 </div>
@@ -617,7 +673,7 @@
       </div>
     </div>
 
-    <!-- FORM: ACTIVITY / TASK -->
+    <!-- FORM: ACTIVITY -->
     <div id="formSectionActivity" style="display:none;">
       <div class="form-group">
         <label>Activity Category</label>
@@ -657,7 +713,7 @@
   </div>
 </div>
 
-<!-- CALENDAR DATE INSPECTOR & ACTIVITY MODAL -->
+<!-- CALENDAR DATE INSPECTOR MODAL -->
 <div class="sheet-backdrop" id="inspectorModal" onclick="closeInspectorModal(event)">
   <div class="sheet-modal" style="border-radius:24px;" onclick="event.stopPropagation()">
     <div class="sheet-header">
@@ -667,8 +723,7 @@
     
     <div id="inspectorContentBody"></div>
 
-    <!-- QUICK ADD ACTIVITY BUTTON ON INSPECTED DATE -->
-    <div style="margin-top:14px; padding-top:12px; border-top:1px dashed #cbd5e1;">
+    <div style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--border-card);">
       <button class="btn-submit-main" id="btnDateQuickActivity" style="margin:0; background:#7c3aed;">＋ Add Activity to this Date</button>
     </div>
   </div>
@@ -691,7 +746,7 @@
       <button class="btn-close-sheet" onclick="closeReportModal()">✕</button>
     </div>
     
-    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px; margin-bottom:10px;">
+    <div style="background:var(--nav-bar-bg); border:1px solid var(--border-card); border-radius:14px; padding:12px; margin-bottom:10px;">
       <b style="font-size:0.85rem; color:#059669;">🥚 1. Egg Collection Audit</b>
       <div class="form-row" style="margin-top:8px;">
         <div>
@@ -706,7 +761,7 @@
       <button class="btn-submit-main" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); padding:10px;" onclick="buildEggReport()">View Egg Audit</button>
     </div>
 
-    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px; margin-bottom:10px;">
+    <div style="background:var(--nav-bar-bg); border:1px solid var(--border-card); border-radius:14px; padding:12px; margin-bottom:10px;">
       <b style="font-size:0.85rem; color:#0284c7;">🐥 2. Incubation Batches Audit</b>
       <div class="form-row" style="margin-top:8px;">
         <div>
@@ -721,7 +776,7 @@
       <button class="btn-submit-main" style="padding:10px;" onclick="buildIncubationReport()">View Batch Audit</button>
     </div>
 
-    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px;">
+    <div style="background:var(--nav-bar-bg); border:1px solid var(--border-card); border-radius:14px; padding:12px;">
       <b style="font-size:0.85rem; color:#7c3aed;">📝 3. Farm Activities &amp; Ledger Audit</b>
       <div class="form-row" style="margin-top:8px;">
         <div>
@@ -739,6 +794,24 @@
 </div>
 
 <script>
+  // --- DARK / LIGHT THEME TOGGLE ENGINE ---
+  function initTheme() {
+    const savedTheme = localStorage.getItem("ad_farms_theme") || "light";
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark-mode");
+      document.getElementById("themeToggleBtn").textContent = "☀️";
+    } else {
+      document.body.classList.remove("dark-mode");
+      document.getElementById("themeToggleBtn").textContent = "🌙";
+    }
+  }
+
+  function toggleThemeMode() {
+    const isDark = document.body.classList.toggle("dark-mode");
+    localStorage.setItem("ad_farms_theme", isDark ? "dark" : "light");
+    document.getElementById("themeToggleBtn").textContent = isDark ? "☀️" : "🌙";
+  }
+
   // --- DATE MATH UTILITIES ---
   const padZero = (n) => String(n).padStart(2, '0');
   function toISODate(d) {
@@ -800,7 +873,7 @@
     updateOverviewStats();
   }
 
-  // --- SWIPE TOUCH ENGINE (5 TABS TOTAL) ---
+  // --- SWIPE TOUCH ENGINE ---
   const swipeTrack = document.getElementById('swipeTrack');
   const navButtons = document.querySelectorAll('.nav-tab-item');
   const swipeContainer = document.getElementById('swipeContainer');
@@ -964,9 +1037,7 @@
     document.getElementById('kpiHatchRate').textContent = hatchedBatchesCount > 0 ? ((rateSum / hatchedBatchesCount).toFixed(1) + "%") : "0%";
   }
 
-  // ============================================================
-  // RACK VIEW (PURE NUMERIC EGG COUNT, NO 'e')
-  // ============================================================
+  // --- RACK VIEW ---
   function renderRackView() {
     const grid = document.getElementById('rackGridContainer');
     grid.innerHTML = "";
@@ -1058,9 +1129,7 @@
     }
   }
 
-  // ============================================================
-  // TAB 4: FARM ACTIVITIES & TASK LEDGER
-  // ============================================================
+  // --- ACTIVITIES LEDGER ---
   function filterActivities(category, btn) {
     currentActivityFilter = category;
     document.querySelectorAll('#activityFilterBar .filter-pill').forEach(p => p.classList.remove('active'));
@@ -1090,12 +1159,12 @@
       if (act.category === "Maintenance") icon = "🔧";
 
       const card = document.createElement('div');
-      card.style.cssText = "background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:flex-start;";
+      card.style.cssText = "background:var(--nav-bar-bg); border:1px solid var(--border-card); border-radius:12px; padding:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:flex-start;";
       card.innerHTML = `
         <div>
           <div style="font-size:0.68rem; font-weight:800; color:var(--text-secondary);">${displayFormatDate(act.date)}</div>
-          <div style="font-size:0.85rem; font-weight:900; color:#0f172a; margin-top:2px;">${icon} ${act.category}</div>
-          <div style="font-size:0.78rem; font-weight:600; color:#334155; margin-top:4px;">${act.details}</div>
+          <div style="font-size:0.85rem; font-weight:900; color:var(--text-primary); margin-top:2px;">${icon} ${act.category}</div>
+          <div style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); margin-top:4px;">${act.details}</div>
         </div>
         <button onclick="deleteActivity('${act.id}')" style="background:transparent; border:none; color:#ef4444; font-size:0.75rem; font-weight:800; cursor:pointer; padding:4px;">✕</button>
       `;
@@ -1103,7 +1172,7 @@
     });
   }
 
-  // --- QUICK ENTRY DRAWER ENGINE ---
+  // --- QUICK ENTRY DRAWER ---
   function openQuickDrawer(type = "batch", prefillDate = null) {
     document.getElementById('editEntryId').value = "";
     document.getElementById('quickTypeSelect').value = type;
@@ -1387,7 +1456,6 @@
         badgesHtml += `<span class="cal-egg-pill">+${eggRec.total}🥚</span>`;
       }
 
-      // Render Activity Pill on calendar cell
       const dayActs = activities.filter(a => normalizeToISO(a.date) === iso);
       if (dayActs.length > 0) {
         badgesHtml += `<span class="cal-activity-pill">📌 ${dayActs[0].category.substring(0,6)}..</span>`;
@@ -1426,14 +1494,14 @@
         html += `<div style="background:var(--grad-set); border-left:4px solid #0284c7; padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:0.82rem;">
           <b style="color:#0284c7;">🥚 DAY 1: SET IN INCUBATOR</b><br>
           <b>Batch:</b> ${b.name} (${b.eggs} eggs)<br>
-          <span style="font-size:0.72rem; color:#64748b;">Setter operating at 99.5°F–100°F with turning mechanism active.</span>
+          <span style="font-size:0.72rem; color:var(--text-secondary);">Setter operating at 99.5°F–100°F with turning mechanism active.</span>
         </div>`;
       }
       if (iso === cycle.d18) {
         html += `<div style="background:var(--grad-hatch); border-left:4px solid #ea580c; padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:0.82rem;">
           <b style="color:#ea580c;">🐣 DAY 18: LOCKDOWN / HATCHER</b><br>
           <b>Batch:</b> ${b.name} (${b.eggs} eggs)<br>
-          <span style="font-size:0.72rem; color:#64748b;">Lockdown: stop turning and increase wet bulb humidity.</span>
+          <span style="font-size:0.72rem; color:var(--text-secondary);">Lockdown: stop turning and increase wet bulb humidity.</span>
         </div>`;
       }
       if (iso === cycle.d21) {
@@ -1447,7 +1515,7 @@
 
     const egg = collections.find(c => normalizeToISO(c.date) === iso);
     if (egg) {
-      html += `<div style="background:#f8fafc; border-left:4px solid #cbd5e1; padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:0.82rem;">
+      html += `<div style="background:var(--nav-bar-bg); border-left:4px solid var(--border-card); padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:0.82rem;">
         <b>🥚 Daily Egg Pickings:</b><br>
         Morn: ${egg.morning||0} | Aftn: ${egg.afternoon||0} | Eve: ${egg.evening||0}<br>
         Broken: <span style="color:#ef4444; font-weight:800;">${egg.broken||0}</span> | <b>Total Intact: ${egg.total}</b>
@@ -1461,12 +1529,11 @@
       </div>`;
     }
 
-    // Render logged activities for this inspected date
     const dayActs = activities.filter(a => normalizeToISO(a.date) === iso);
     if (dayActs.length > 0) {
       html += `<div style="margin-top:10px; font-weight:900; font-size:0.82rem; color:#7c3aed;">📝 FARM ACTIVITIES &amp; TASKS</div>`;
       dayActs.forEach(act => {
-        html += `<div style="background:#f5f3ff; border-left:4px solid #7c3aed; padding:8px 10px; border-radius:8px; margin-top:6px; font-size:0.8rem;">
+        html += `<div style="background:var(--nav-bar-bg); border-left:4px solid #7c3aed; padding:8px 10px; border-radius:8px; margin-top:6px; font-size:0.8rem;">
           <b>${act.category}:</b> ${act.details}
           <div style="text-align:right; margin-top:4px;">
             <button onclick="deleteActivity('${act.id}')" style="background:transparent; border:none; color:#ef4444; font-size:0.7rem; font-weight:800; cursor:pointer;">✕ Remove</button>
@@ -1475,7 +1542,7 @@
       });
     }
 
-    if (!html) html = `<div style="text-align:center; color:#64748b; padding:20px; font-size:0.85rem;">No farm records or tasks logged for this date.</div>`;
+    if (!html) html = `<div style="text-align:center; color:var(--text-secondary); padding:20px; font-size:0.85rem;">No farm records or tasks logged for this date.</div>`;
     body.innerHTML = html;
     modal.style.display = "flex";
   }
@@ -1548,12 +1615,12 @@
     const reportHtml = `
       <div class="surface-card">
         <h3 style="margin:0 0 4px 0; text-align:center; font-weight:900;">AD FARMS · EGG COLLECTION AUDIT</h3>
-        <p style="text-align:center; font-size:0.75rem; color:#64748b; margin:0 0 12px 0;">${displayFormatDate(f)} — ${displayFormatDate(t)}</p>
+        <p style="text-align:center; font-size:0.75rem; color:var(--text-secondary); margin:0 0 12px 0;">${displayFormatDate(f)} — ${displayFormatDate(t)}</p>
         <div class="table-responsive">
           <table>
             <thead><tr><th>Date</th><th>Morn</th><th>Aftn</th><th>Eve</th><th>Broken</th><th>Total Intact</th></tr></thead>
             <tbody>${rows}
-              <tr style="font-weight:900; background:#f8fafc;">
+              <tr style="font-weight:900; background:var(--nav-bar-bg);">
                 <td>TOTALS</td><td>${totM}</td><td>${totA}</td><td>${totE}</td><td style="color:#ef4444;">${totB}</td><td style="color:#0284c7;">${grand}</td>
               </tr>
             </tbody>
@@ -1592,12 +1659,12 @@
     const reportHtml = `
       <div class="surface-card">
         <h3 style="margin:0 0 4px 0; text-align:center; font-weight:900;">AD FARMS · INCUBATION REPORT</h3>
-        <p style="text-align:center; font-size:0.75rem; color:#64748b; margin:0 0 12px 0;">Batches: ${subset[0].name} to ${subset[subset.length - 1].name}</p>
+        <p style="text-align:center; font-size:0.75rem; color:var(--text-secondary); margin:0 0 12px 0;">Batches: ${subset[0].name} to ${subset[subset.length - 1].name}</p>
         <div class="table-responsive">
           <table>
             <thead><tr><th>Batch</th><th>Eggs</th><th>Day 1</th><th>Day 18</th><th>Day 21</th><th>Chicks</th><th>Hatch %</th></tr></thead>
             <tbody>${rows}
-              <tr style="font-weight:900; background:#f8fafc;">
+              <tr style="font-weight:900; background:var(--nav-bar-bg);">
                 <td>SUMMARY</td><td>${totalEggs}</td><td colspan="3">-</td><td>${totalChicks||'-'}</td><td style="color:#059669;">${netRate}</td>
               </tr>
             </tbody>
@@ -1631,7 +1698,7 @@
     const reportHtml = `
       <div class="surface-card">
         <h3 style="margin:0 0 4px 0; text-align:center; font-weight:900; color:#7c3aed;">AD FARMS · ACTIVITIES &amp; HEALTH AUDIT</h3>
-        <p style="text-align:center; font-size:0.75rem; color:#64748b; margin:0 0 12px 0;">${displayFormatDate(f)} — ${displayFormatDate(t)}</p>
+        <p style="text-align:center; font-size:0.75rem; color:var(--text-secondary); margin:0 0 12px 0;">${displayFormatDate(f)} — ${displayFormatDate(t)}</p>
         <div class="table-responsive">
           <table>
             <thead><tr><th>Date</th><th>Category</th><th style="text-align:left;">Details &amp; Notes</th></tr></thead>
@@ -1667,6 +1734,7 @@
   }
 
   // --- BOOTSTRAP ---
+  initTheme();
   initLogo();
   renderRackView();
   renderCollectionsTable();
