@@ -2,278 +2,341 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>AD Farms · Herd &amp; Harvest</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <style>
   :root {
-    --brand-primary: #0284c7;
-    --brand-primary-dark: #0369a1;
-    --brand-accent: #38bdf8;
-    --brand-surface: #ffffff;
-    --brand-bg: #f8fafc;
-    --border-subtle: #e2e8f0;
-    --border-strong: #cbd5e1;
-    --text-main: #0f172a;
-    --text-muted: #64748b;
-    --success: #10b981;
-    --success-bg: #ecfdf5;
-    --warning: #ea580c;
-    --warning-bg: #fff7ed;
-    --danger: #ef4444;
-    --danger-bg: #fef2f2;
-    --stage-set: #0284c7;
-    --stage-set-bg: #e0f2fe;
-    --stage-hatch: #ea580c;
-    --stage-hatch-bg: #ffedd5;
-    --stage-pull: #16a34a;
-    --stage-pull-bg: #dcfce7;
-    --radius-sm: 8px;
-    --radius-md: 14px;
-    --radius-lg: 18px;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-    --shadow-md: 0 4px 14px rgba(0,0,0,0.06);
-    --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.15);
+    --primary-grad: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+    --primary-solid: #0284c7;
+    --bg-main: #f1f5f9;
+    --surface-card: #ffffff;
+    --border-card: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+
+    /* Stage Accents */
+    --grad-set: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    --grad-hatch: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
+    --grad-pull: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+
+    --grad-live: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --grad-incub: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+    --grad-rate: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
   }
 
   * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
-  html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; background: var(--brand-bg); color: var(--text-main); }
-  
-  /* Padded bottom to prevent last card getting hidden behind the lifted FAB */
-  body { 
-    padding-bottom: calc(115px + env(safe-area-inset-bottom, 20px)); 
-  }
-  .container { max-width: 540px; margin: auto; padding: 10px 12px; }
+  html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; background: var(--bg-main); color: var(--text-primary); }
+  body { padding-bottom: 125px; }
+  .container { max-width: 540px; margin: auto; padding: 12px; }
 
-  /* TOP APP BAR */
+  /* TOP GLOSSY APP BAR */
   .top-app-bar {
     position: sticky; top: 0; z-index: 40;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-subtle);
-    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    padding-top: calc(10px + env(safe-area-inset-top, 0px));
+    padding-bottom: 10px;
+    padding-left: 14px;
+    padding-right: 14px;
     display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
   }
-  .brand-group { display: flex; align-items: center; gap: 8px; }
+  .brand-group { display: flex; align-items: center; gap: 10px; }
   .logo-avatar {
-    width: 38px; height: 38px; border-radius: 10px;
-    background: linear-gradient(135deg, #0284c7, #38bdf8);
-    color: white; font-weight: 800; font-size: 0.75rem;
+    width: 42px; height: 42px; border-radius: 12px;
+    background: var(--primary-grad);
+    color: white; font-weight: 900; font-size: 0.82rem;
     display: flex; align-items: center; justify-content: center;
     overflow: hidden; cursor: pointer; flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
   }
   .logo-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .brand-text h1 { margin: 0; font-size: 0.96rem; font-weight: 800; line-height: 1.1; }
-  .brand-text .sub-title { margin: 0; font-size: 0.62rem; color: var(--brand-primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .brand-text h1 { margin: 0; font-size: 1.05rem; font-weight: 900; line-height: 1.1; background: linear-gradient(135deg, #0f172a, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .brand-text .sub-title { margin: 0; font-size: 0.65rem; color: #0284c7; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; }
+  
+  .btn-fancy-report {
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+    border: 1px solid #cbd5e1;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 0.74rem;
+    font-weight: 800;
+    color: #0f172a;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    cursor: pointer;
+  }
+  .btn-fancy-report:active { transform: scale(0.96); }
+
   .status-pill {
-    font-size: 0.65rem; font-weight: 700; padding: 4px 8px; border-radius: 20px;
-    background: #f1f5f9; color: var(--text-muted); display: inline-flex; align-items: center; gap: 4px;
+    font-size: 0.65rem; font-weight: 800; padding: 4px 8px; border-radius: 20px;
+    background: #e2e8f0; color: #64748b; display: inline-flex; align-items: center; gap: 4px;
   }
-  .status-pill.online { background: #dcfce7; color: #15803d; }
+  .status-pill.online { background: #dcfce7; color: #15803d; box-shadow: 0 0 10px rgba(34, 197, 94, 0.25); }
 
-  /* KPI DASHBOARD SUMMARY STRIP */
-  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+  /* VIBRANT GRADIENT STAT CARDS */
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
   .kpi-card {
-    background: var(--brand-surface); border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md); padding: 8px 4px; text-align: center;
-    box-shadow: var(--shadow-sm);
+    border-radius: 16px; padding: 10px 6px; text-align: center;
+    position: relative; overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+    background: #ffffff; border: 1px solid #e2e8f0;
   }
-  .kpi-label { font-size: 0.58rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px; }
-  .kpi-val { font-size: 1.25rem; font-weight: 800; margin-top: 1px; }
+  .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .kpi-card.c-live::before { background: var(--grad-live); }
+  .kpi-card.c-incub::before { background: var(--grad-incub); }
+  .kpi-card.c-rate::before { background: var(--grad-rate); }
+  
+  .kpi-label { font-size: 0.6rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; }
+  .kpi-val { font-size: 1.35rem; font-weight: 900; margin-top: 2px; }
+  .kpi-val.v-live { color: #059669; }
+  .kpi-val.v-incub { color: #0284c7; }
+  .kpi-val.v-rate { color: #ea580c; }
 
-  /* NAVIGATION TABS */
+  /* PILL SWITCH TABS */
   .nav-tabs-wrapper {
-    display: flex; background: #e2e8f0; border-radius: var(--radius-md);
-    padding: 3px; gap: 4px; margin-bottom: 12px; overflow-x: auto;
+    display: flex; background: #e2e8f0; border-radius: 14px;
+    padding: 4px; gap: 4px; margin-bottom: 14px; overflow-x: auto;
     scrollbar-width: none; -webkit-overflow-scrolling: touch;
   }
   .nav-tabs-wrapper::-webkit-scrollbar { display: none; }
   .nav-tab-item {
-    flex: 1 0 auto; border: none; background: transparent; padding: 8px 10px;
-    font-size: 0.74rem; font-weight: 700; color: var(--text-muted);
-    border-radius: 10px; cursor: pointer; text-align: center; white-space: nowrap;
-    transition: background 0.15s ease, color 0.15s ease;
+    flex: 1 0 auto; border: none; background: transparent; padding: 9px 12px;
+    font-size: 0.74rem; font-weight: 800; color: #64748b;
+    border-radius: 11px; cursor: pointer; text-align: center; white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  .nav-tab-item.active { background: #ffffff; color: var(--brand-primary); box-shadow: var(--shadow-sm); }
+  .nav-tab-item.active {
+    background: #ffffff; color: #0284c7;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  }
 
-  /* SWIPE CAROUSEL ENGINE */
+  /* SWIPE ENGINE WRAPPERS */
   .swipe-track-container {
-    overflow: hidden;
-    width: 100%;
-    position: relative;
+    overflow: hidden; width: 100%; position: relative;
     touch-action: pan-y pinch-zoom;
   }
   .swipe-slides-wrapper {
-    display: flex;
-    width: 400%;
+    display: flex; width: 500%;
     transition: transform 0.28s cubic-bezier(0.25, 1, 0.5, 1);
     will-change: transform;
   }
-  .swipe-slide {
-    width: 25%;
-    flex-shrink: 0;
-    box-sizing: border-box;
-  }
+  .swipe-slide { width: 20%; flex-shrink: 0; box-sizing: border-box; }
 
-  /* BATCH CARDS */
-  .batch-card {
-    background: var(--brand-surface); border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg); padding: 12px; margin-bottom: 10px;
-    box-shadow: var(--shadow-sm);
-  }
-  .batch-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-  .batch-title { font-size: 0.92rem; font-weight: 800; }
-  .badge-eggs {
-    background: var(--stage-set-bg); color: var(--stage-set);
-    font-weight: 800; font-size: 0.72rem; padding: 2px 7px; border-radius: 12px;
-  }
-  .timeline-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 8px; }
-  .timeline-step {
-    border-radius: var(--radius-sm); padding: 6px 2px; text-align: center;
-    display: flex; flex-direction: column; justify-content: center;
-  }
-  .timeline-step.s-set { background: var(--stage-set-bg); color: var(--stage-set); }
-  .timeline-step.s-hatch { background: var(--stage-hatch-bg); color: var(--stage-hatch); }
-  .timeline-step.s-pull { background: var(--stage-pull-bg); color: var(--stage-pull); }
-  .step-lbl { font-size: 0.58rem; font-weight: 800; text-transform: uppercase; }
-  .step-date { font-size: 0.72rem; font-weight: 800; margin-top: 1px; }
-
-  .batch-meta-banner {
+  /* PHYSICAL INCUBATOR RACK VIEW */
+  .rack-instructions {
     display: flex; justify-content: space-between; align-items: center;
-    background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);
-    padding: 6px 10px; font-size: 0.75rem; font-weight: 700; margin-bottom: 8px;
+    font-size: 0.74rem; font-weight: 800; color: var(--text-secondary);
+    margin-bottom: 10px; padding: 0 4px;
   }
-  .action-row { display: flex; gap: 6px; }
-  .btn-touch {
-    flex: 1; padding: 8px 4px; border-radius: var(--radius-sm); font-size: 0.76rem;
-    font-weight: 700; border: 1px solid var(--border-strong); background: #ffffff;
-    color: var(--text-main); cursor: pointer; text-align: center;
+  .rack-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
   }
-  .btn-touch:active { background: #f1f5f9; }
+  .rack-slot-card {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .rack-slot-card:active { transform: scale(0.96); }
 
-  /* DATA TABLES */
+  .rack-slot-card.stage-set {
+    border-color: #38bdf8;
+    background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+  }
+  .rack-slot-card.stage-hatch {
+    border-color: #fb923c;
+    background: linear-gradient(180deg, #ffffff 0%, #fff7ed 100%);
+  }
+  .rack-slot-card.stage-pull {
+    border-color: #4ade80;
+    background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+  }
+
+  .slot-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .slot-name { font-size: 0.96rem; font-weight: 900; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px; }
+  .slot-eggs { font-size: 0.72rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 2px 7px; border-radius: 12px; }
+
+  .slot-progress-wrap { width: 100%; height: 7px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin: 8px 0; }
+  .slot-progress-bar { height: 100%; border-radius: 4px; }
+
+  .slot-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.68rem; font-weight: 800; color: var(--text-secondary);
+  }
+  .slot-badge-pill {
+    padding: 2px 6px; border-radius: 6px; font-size: 0.6rem; font-weight: 900; text-transform: uppercase;
+  }
+
+  /* COLORFUL DATA CARDS */
   .surface-card {
-    background: var(--brand-surface); border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg); padding: 12px; margin-bottom: 12px;
-    box-shadow: var(--shadow-sm);
+    background: #ffffff; border: 1px solid #e2e8f0;
+    border-radius: 20px; padding: 14px; margin-bottom: 12px;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
   }
-  .surface-card h2 { margin: 0 0 8px 0; font-size: 0.92rem; font-weight: 800; color: var(--brand-primary); }
-  .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.76rem; min-width: 320px; }
-  th, td { border-bottom: 1px solid var(--border-subtle); padding: 8px 4px; text-align: center; }
-  th { background: #f8fafc; color: var(--text-muted); font-weight: 700; font-size: 0.7rem; }
+  .surface-card h2 { margin: 0 0 10px 0; font-size: 0.95rem; font-weight: 900; color: #0284c7; }
+  .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.78rem; min-width: 320px; }
+  th, td { border-bottom: 1px solid #f1f5f9; padding: 9px 6px; text-align: center; }
+  th { background: #f8fafc; color: #64748b; font-weight: 800; font-size: 0.72rem; text-transform: uppercase; }
 
-  /* CALENDAR VIEW */
-  .cal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .btn-touch {
+    padding: 6px 10px; border-radius: 8px; font-size: 0.74rem;
+    font-weight: 800; border: 1px solid #cbd5e1; background: #ffffff;
+    color: #0f172a; cursor: pointer; text-align: center;
+  }
+  .btn-touch:active { transform: scale(0.96); background: #f8fafc; }
+
+  /* FILTER BAR FOR ACTIVITIES */
+  .filter-pill-bar {
+    display: flex; gap: 6px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 4px;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .filter-pill-bar::-webkit-scrollbar { display: none; }
+  .filter-pill {
+    flex: 0 0 auto; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 14px;
+    padding: 5px 10px; font-size: 0.7rem; font-weight: 800; color: var(--text-secondary); cursor: pointer;
+  }
+  .filter-pill.active { background: #7c3aed; color: #ffffff; border-color: #7c3aed; }
+
+  /* CALENDAR TILES */
+  .cal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
   .cal-grid {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
-    gap: 3px;
+    gap: 4px;
     width: 100%;
     box-sizing: border-box;
   }
   .cal-head {
-    font-size: 0.65rem; font-weight: 800; color: var(--text-muted);
-    text-align: center; padding: 3px 0;
+    font-size: 0.65rem; font-weight: 900; color: #64748b;
+    text-align: center; padding: 4px 0; text-transform: uppercase;
   }
   .cal-cell {
-    min-height: 58px;
-    border-radius: 6px;
-    border: 1px solid var(--border-subtle);
+    min-height: 60px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
     background: #ffffff;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2px 1px;
-    font-size: 0.74rem;
-    font-weight: 700;
+    padding: 3px 1px;
+    font-size: 0.76rem;
+    font-weight: 800;
     cursor: pointer;
     overflow: hidden;
     box-sizing: border-box;
   }
+  .cal-cell:active { transform: scale(0.94); }
   .cal-cell.empty { border: none; background: transparent; cursor: default; }
-  .cal-cell.has-set { background: var(--stage-set-bg) !important; border-color: var(--stage-set) !important; }
-  .cal-cell.has-hatch { background: var(--stage-hatch-bg) !important; border-color: var(--stage-hatch) !important; }
-  .cal-cell.has-pull { background: var(--stage-pull-bg) !important; border-color: var(--stage-pull) !important; }
+  .cal-cell.has-set { background: #e0f2fe !important; border-color: #38bdf8 !important; }
+  .cal-cell.has-hatch { background: #ffedd5 !important; border-color: #fb923c !important; }
+  .cal-cell.has-pull { background: #dcfce7 !important; border-color: #4ade80 !important; }
 
   .cal-badge {
     display: block;
     width: 96%;
-    font-size: 0.49rem;
-    font-weight: 800;
+    font-size: 0.52rem;
+    font-weight: 900;
     line-height: 1.1;
-    padding: 1.5px 1px;
-    border-radius: 3px;
+    padding: 2px 1px;
+    border-radius: 4px;
     margin-top: 1px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
   }
   .cal-egg-pill {
-    font-size: 0.5rem; font-weight: 800; color: var(--brand-primary);
-    background: #f1f5f9; border-radius: 3px; padding: 1px 2px; margin-top: 1px;
+    font-size: 0.52rem; font-weight: 900; color: #0284c7;
+    background: #ffffff; border-radius: 4px; padding: 1px 3px; margin-top: 2px;
+    border: 1px solid #bae6fd;
+  }
+  .cal-activity-pill {
+    font-size: 0.5rem; font-weight: 900; color: #7c3aed;
+    background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 3px;
+    padding: 1px 2px; margin-top: 1px; max-width: 95%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
 
-  /* FLOATING QUICK LOG BUTTON WITH PHONE NAVIGATION INSET CLEARANCE */
+  /* QUICK LOG BUTTON */
   .fab-button {
     position: fixed;
-    /* Lifted cleanly above 3-button navigation and gesture pills */
-    bottom: calc(34px + env(safe-area-inset-bottom, 15px));
+    bottom: 34px;
     right: 18px;
     z-index: 50;
-    background: linear-gradient(135deg, #0284c7, #0369a1);
-    color: #ffffff; border: none; height: 50px; border-radius: 25px;
-    padding: 0 20px; font-size: 0.88rem; font-weight: 800;
-    display: flex; align-items: center; gap: 7px;
-    box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45); cursor: pointer;
+    background: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #06b6d4 100%);
+    color: #ffffff; border: none; height: 52px; border-radius: 26px;
+    padding: 0 22px; font-size: 0.9rem; font-weight: 900;
+    display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45), 0 0 0 3px rgba(255, 255, 255, 0.85);
+    cursor: pointer;
   }
-  .fab-button:active { transform: scale(0.96); }
+  .fab-button:active { transform: scale(0.95); }
 
-  /* BOTTOM SHEET MODAL (DRAWER) WITH SAFE AREA CLEARANCE */
+  /* BOTTOM SHEET MODALS */
   .sheet-backdrop {
-    display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.55);
-    backdrop-filter: blur(4px); z-index: 90; align-items: flex-end; justify-content: center;
+    display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px); z-index: 90; align-items: flex-end; justify-content: center;
   }
   .sheet-modal {
     background: #ffffff; width: 100%; max-width: 540px;
-    border-radius: 22px 22px 0 0; padding: 16px; 
-    /* Ensures bottom inputs and save button are not hidden behind nav keys */
-    padding-bottom: calc(24px + env(safe-area-inset-bottom, 20px));
-    max-height: 90vh;
-    overflow-y: auto; box-shadow: var(--shadow-lg); animation: sheetUp 0.2s ease-out;
+    border-radius: 26px 26px 0 0; padding: 18px 16px; 
+    padding-bottom: 32px;
+    max-height: 88vh;
+    overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.2); animation: sheetUp 0.22s ease-out;
   }
   @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
   
-  .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .sheet-header h3 { margin: 0; font-size: 1rem; font-weight: 800; }
+  .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .sheet-header h3 { margin: 0; font-size: 1.1rem; font-weight: 900; color: #0f172a; }
   .btn-close-sheet {
-    background: #f1f5f9; border: none; width: 28px; height: 28px;
-    border-radius: 50%; font-weight: 800; cursor: pointer;
+    background: #f1f5f9; border: none; width: 32px; height: 32px;
+    border-radius: 50%; font-weight: 900; cursor: pointer; color: #64748b;
   }
 
+  /* POPUP CARD TIMELINE VIEW */
+  .timeline-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
+  .timeline-step {
+    border-radius: 12px; padding: 8px 4px; text-align: center;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .timeline-step.s-set { background: var(--grad-set); color: #0369a1; border: 1px solid #bae6fd; }
+  .timeline-step.s-hatch { background: var(--grad-hatch); color: #9a3412; border: 1px solid #fed7aa; }
+  .timeline-step.s-pull { background: var(--grad-pull); color: #166534; border: 1px solid #bbf7d0; }
+  .step-lbl { font-size: 0.58rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3px; }
+  .step-date { font-size: 0.76rem; font-weight: 800; margin-top: 2px; }
+
   /* FORMS */
-  .form-group { margin-bottom: 8px; }
-  .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .form-group { margin-bottom: 10px; }
+  .form-row { display: flex; gap: 8px; margin-bottom: 10px; }
   .form-row > div { flex: 1; }
-  label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 3px; }
-  input, select {
-    width: 100%; padding: 10px; border: 1px solid var(--border-strong);
-    border-radius: var(--radius-sm); font-size: 0.9rem; background: #ffffff; color: var(--text-main);
+  label { font-size: 0.72rem; font-weight: 800; color: #64748b; display: block; margin-bottom: 4px; text-transform: uppercase; }
+  input, select, textarea {
+    width: 100%; padding: 11px; border: 1.5px solid #cbd5e1;
+    border-radius: 12px; font-size: 0.92rem; background: #ffffff; color: #0f172a;
+    font-weight: 700;
   }
   .stepper-row { display: flex; align-items: center; gap: 6px; }
   .step-btn-quick {
-    background: #f1f5f9; border: 1px solid var(--border-strong); border-radius: var(--radius-sm);
-    padding: 8px 12px; font-size: 0.8rem; font-weight: 800; cursor: pointer;
+    background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 10px;
+    padding: 10px 14px; font-size: 0.85rem; font-weight: 900; cursor: pointer; color: #0284c7;
   }
   .btn-submit-main {
-    width: 100%; background: var(--brand-primary); color: #ffffff; border: none;
-    padding: 12px; border-radius: var(--radius-sm); font-weight: 800; font-size: 0.9rem;
-    cursor: pointer; margin-top: 8px;
+    width: 100%; background: var(--primary-grad); color: #ffffff; border: none;
+    padding: 14px; border-radius: 14px; font-weight: 900; font-size: 0.95rem;
+    cursor: pointer; margin-top: 10px;
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
   }
 </style>
 </head>
@@ -292,8 +355,8 @@
       <div class="sub-title">Herd &amp; Harvest</div>
     </div>
   </div>
-  <div style="display:flex; align-items:center; gap:6px;">
-    <button class="btn-touch" style="padding:4px 8px; font-size:0.72rem; font-weight:800;" onclick="openReportModal()">📊 Reports</button>
+  <div style="display:flex; align-items:center; gap:8px;">
+    <button class="btn-fancy-report" onclick="openReportModal()">📊 Reports</button>
     <div id="cloudBadge" class="status-pill online">● Cloud</div>
   </div>
 </header>
@@ -302,37 +365,42 @@
 
   <!-- OVERVIEW METRICS STRIP -->
   <section class="kpi-grid">
-    <div class="kpi-card">
+    <div class="kpi-card c-live">
       <div class="kpi-label">Live Flock</div>
-      <div class="kpi-val" style="color:var(--success);" id="kpiLiveFlock">0</div>
+      <div class="kpi-val v-live" id="kpiLiveFlock">0</div>
     </div>
-    <div class="kpi-card">
+    <div class="kpi-card c-incub">
       <div class="kpi-label">In Incubator</div>
-      <div class="kpi-val" style="color:var(--brand-primary);" id="kpiIncubating">0</div>
+      <div class="kpi-val v-incub" id="kpiIncubating">0</div>
     </div>
-    <div class="kpi-card">
+    <div class="kpi-card c-rate">
       <div class="kpi-label">Hatch Rate</div>
-      <div class="kpi-val" style="color:var(--warning);" id="kpiHatchRate">0%</div>
+      <div class="kpi-val v-rate" id="kpiHatchRate">0%</div>
     </div>
   </section>
 
   <!-- NAVIGATION TABS -->
   <nav class="nav-tabs-wrapper" id="navTabsBar">
-    <button class="nav-tab-item active" onclick="slideToIndex(0)">🐣 Batches</button>
+    <button class="nav-tab-item active" onclick="slideToIndex(0)">🗄️ Rack View</button>
     <button class="nav-tab-item" onclick="slideToIndex(1)">🥚 Daily Eggs</button>
     <button class="nav-tab-item" onclick="slideToIndex(2)">☠️ Mortality</button>
-    <button class="nav-tab-item" onclick="slideToIndex(3)">📅 Timeline</button>
+    <button class="nav-tab-item" onclick="slideToIndex(3)">📝 Farm Ledger</button>
+    <button class="nav-tab-item" onclick="slideToIndex(4)">📅 Timeline</button>
   </nav>
 
   <!-- HORIZONTAL SWIPE CAROUSEL WRAPPER -->
   <div class="swipe-track-container" id="swipeContainer">
     <div class="swipe-slides-wrapper" id="swipeTrack">
 
-      <!-- SLIDE 0: BATCHES -->
+      <!-- SLIDE 0: PHYSICAL RACK VIEW FOR BATCHES -->
       <div class="swipe-slide" id="slide-0">
-        <div id="batchesList"></div>
-        <div id="noBatchesMsg" style="display:none; text-align:center; padding:25px; color:var(--text-muted); font-size:0.8rem;">
-          No incubator batches recorded. Tap <b>+ Quick Log</b> to create one.
+        <div class="rack-instructions">
+          <span>INCUBATOR TRAY MATRIX</span>
+          <span>Tap tray to open details</span>
+        </div>
+        <div class="rack-grid" id="rackGridContainer"></div>
+        <div id="noBatchesMsg" style="display:none; text-align:center; padding:30px; color:var(--text-secondary); font-size:0.85rem;">
+          No incubator trays active. Tap <b>+ Quick Log</b> to place Tray 1.
         </div>
       </div>
 
@@ -355,7 +423,7 @@
               </thead>
               <tbody id="eggsTableBody"></tbody>
             </table>
-            <div id="noEggsMsg" style="display:none; text-align:center; padding:15px; color:var(--text-muted); font-size:0.8rem;">No egg records found.</div>
+            <div id="noEggsMsg" style="display:none; text-align:center; padding:15px; color:var(--text-secondary); font-size:0.8rem;">No egg records found.</div>
           </div>
         </div>
       </div>
@@ -363,7 +431,7 @@
       <!-- SLIDE 2: MORTALITY -->
       <div class="swipe-slide" id="slide-2">
         <div class="surface-card">
-          <h2>☠️ Mortality Register</h2>
+          <h2 style="color:#ef4444;">☠️ Mortality Register</h2>
           <div class="table-responsive">
             <table>
               <thead>
@@ -375,25 +443,45 @@
               </thead>
               <tbody id="mortalityTableBody"></tbody>
             </table>
-            <div id="noMortMsg" style="display:none; text-align:center; padding:15px; color:var(--text-muted); font-size:0.8rem;">No mortality recorded.</div>
+            <div id="noMortMsg" style="display:none; text-align:center; padding:15px; color:var(--text-secondary); font-size:0.8rem;">No mortality recorded.</div>
           </div>
         </div>
       </div>
 
-      <!-- SLIDE 3: CALENDAR TIMELINE -->
+      <!-- SLIDE 3: FARM ACTIVITIES / LEDGER -->
       <div class="swipe-slide" id="slide-3">
         <div class="surface-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h2 style="color:#7c3aed; margin:0;">📝 Activity &amp; Task Ledger</h2>
+            <button class="btn-touch" style="color:#7c3aed; border-color:#ddd6fe; background:#f5f3ff;" onclick="openQuickDrawer('activity')">+ New Log</button>
+          </div>
+          <div class="filter-pill-bar" id="activityFilterBar">
+            <button class="filter-pill active" onclick="filterActivities('All', this)">All</button>
+            <button class="filter-pill" onclick="filterActivities('Vaccination', this)">💉 Vaccines</button>
+            <button class="filter-pill" onclick="filterActivities('Medication', this)">💊 Medication</button>
+            <button class="filter-pill" onclick="filterActivities('Sales', this)">💰 Sales</button>
+            <button class="filter-pill" onclick="filterActivities('Feed', this)">🌾 Feed</button>
+            <button class="filter-pill" onclick="filterActivities('Maintenance', this)">🔧 Maint</button>
+          </div>
+          <div id="activitiesListContainer"></div>
+          <div id="noActivitiesMsg" style="display:none; text-align:center; padding:20px; color:var(--text-secondary); font-size:0.8rem;">No activity records logged.</div>
+        </div>
+      </div>
+
+      <!-- SLIDE 4: CALENDAR TIMELINE -->
+      <div class="swipe-slide" id="slide-4">
+        <div class="surface-card">
           <div class="cal-top">
-            <button class="btn-touch" style="flex:0 0 36px; padding:4px;" onclick="shiftCalMonth(-1)">◀</button>
-            <div id="calLabel" style="font-weight:800; font-size:0.92rem;">Timeline</div>
-            <button class="btn-touch" style="flex:0 0 36px; padding:4px;" onclick="shiftCalMonth(1)">▶</button>
+            <button class="btn-touch" style="padding:4px 10px;" onclick="shiftCalMonth(-1)">◀</button>
+            <div id="calLabel" style="font-weight:900; font-size:0.95rem; color:#0f172a;">Timeline</div>
+            <button class="btn-touch" style="padding:4px 10px;" onclick="shiftCalMonth(1)">▶</button>
           </div>
           <div class="cal-grid">
             <div class="cal-head">Sun</div><div class="cal-head">Mon</div><div class="cal-head">Tue</div>
             <div class="cal-head">Wed</div><div class="cal-head">Thu</div><div class="cal-head">Fri</div><div class="cal-head">Sat</div>
           </div>
           <div class="cal-grid" id="calCellsGrid"></div>
-          <div style="font-size:0.7rem; color:var(--text-muted); text-align:center; margin-top:8px;">💡 Tap any date cell to view batch and egg operations.</div>
+          <div style="font-size:0.72rem; color:var(--text-secondary); text-align:center; margin-top:8px;">💡 Tap any date tile to inspect operations or record activities.</div>
         </div>
       </div>
 
@@ -402,8 +490,59 @@
 
 </main>
 
-<!-- FLOATING QUICK LOG BUTTON (SAFE OFFSET) -->
+<!-- FLOATING QUICK LOG BUTTON -->
 <button class="fab-button" onclick="openQuickDrawer()">＋ Quick Log</button>
+
+<!-- POPUP MODAL: TRAY DETAILS (ACTIVATED BY CLICKING A TRAY) -->
+<div class="sheet-backdrop" id="trayDetailModal" onclick="closeTrayDetails(event)">
+  <div class="sheet-modal" style="border-radius:24px;" onclick="event.stopPropagation()">
+    <div class="sheet-header">
+      <div>
+        <h3 id="popTrayName" style="margin:0; font-size:1.15rem; font-weight:900;">Tray Name</h3>
+        <span id="popTraySub" style="font-size:0.72rem; font-weight:800; color:var(--primary-solid);"></span>
+      </div>
+      <button class="btn-close-sheet" onclick="closeTrayDetails()">✕</button>
+    </div>
+
+    <!-- 3-STAGE TIMELINE PILLS -->
+    <div class="timeline-bar">
+      <div class="timeline-step s-set">
+        <span class="step-lbl">Day 1 (Set)</span>
+        <span class="step-date" id="popDay1Date">-</span>
+      </div>
+      <div class="timeline-step s-hatch">
+        <span class="step-lbl">Day 18 (Hatch)</span>
+        <span class="step-date" id="popDay18Date">-</span>
+      </div>
+      <div class="timeline-step s-pull">
+        <span class="step-lbl">Day 21 (Pull)</span>
+        <span class="step-date" id="popDay21Date">-</span>
+      </div>
+    </div>
+
+    <!-- TRAY STATS CARDS -->
+    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px; margin-bottom:14px; font-size:0.82rem;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+        <span style="color:var(--text-secondary); font-weight:700;">Eggs Placed:</span>
+        <b id="popEggsCount">0</b>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+        <span style="color:var(--text-secondary); font-weight:700;">Chicks Pulled:</span>
+        <b id="popChicksHarvested">Not entered</b>
+      </div>
+      <div style="display:flex; justify-content:space-between;">
+        <span style="color:var(--text-secondary); font-weight:700;">Hatch Rate:</span>
+        <b id="popHatchSuccess" style="color:#10b981;">0%</b>
+      </div>
+    </div>
+
+    <!-- ACTIONS ROW INSIDE POPUP -->
+    <div style="display:flex; gap:8px;">
+      <button class="btn-submit-main" id="btnPopHarvest" style="margin:0; flex:1.2; background:var(--grad-pull); color:#166534; border:1px solid #86efac;">🐣 Chicks Pulled</button>
+      <button class="btn-submit-main" id="btnPopEdit" style="margin:0; flex:1; background:#ffffff; color:#0f172a; border:1.5px solid #cbd5e1; box-shadow:none;">✎ Edit Tray</button>
+    </div>
+  </div>
+</div>
 
 <!-- BOTTOM SHEET ENTRY DRAWER -->
 <div class="sheet-backdrop" id="entryDrawer" onclick="handleDrawerBackdrop(event)">
@@ -421,6 +560,7 @@
         <option value="batch">🐣 New Incubator Batch</option>
         <option value="egg">🥚 Daily Egg Collection</option>
         <option value="mortality">☠️ Flock Mortality</option>
+        <option value="activity">📝 Farm Activity / Task</option>
       </select>
     </div>
 
@@ -477,19 +617,38 @@
       </div>
     </div>
 
+    <!-- FORM: ACTIVITY / TASK -->
+    <div id="formSectionActivity" style="display:none;">
+      <div class="form-group">
+        <label>Activity Category</label>
+        <select id="actCategory">
+          <option value="Vaccination">💉 Vaccination</option>
+          <option value="Medication">💊 Medication</option>
+          <option value="Sales">💰 Birds / Egg Sales</option>
+          <option value="Feed">🌾 Feed &amp; Nutrition</option>
+          <option value="Maintenance">🔧 Shed / Farm Maintenance</option>
+          <option value="Other">📝 General Note</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Details &amp; Notes</label>
+        <textarea id="actDetails" rows="2" placeholder="e.g. Lasota vaccine in drinking water, or Sold 50 birds @ ₹350"></textarea>
+      </div>
+    </div>
+
     <button class="btn-submit-main" id="btnSaveRecord" onclick="handleRecordSave()">Save Record</button>
   </div>
 </div>
 
 <!-- HARVEST CHICKS MODAL -->
 <div class="sheet-backdrop" id="harvestModal" onclick="closeHarvestModal(event)">
-  <div class="sheet-modal" style="border-radius:20px;" onclick="event.stopPropagation()">
+  <div class="sheet-modal" style="border-radius:24px;" onclick="event.stopPropagation()">
     <div class="sheet-header">
       <h3>🐥 Log Live Chicks Hatched</h3>
       <button class="btn-close-sheet" onclick="closeHarvestModal()">✕</button>
     </div>
     <input type="hidden" id="harvestBatchId">
-    <p id="harvestBatchMeta" style="font-size:0.82rem; color:var(--text-muted); margin-top:0;"></p>
+    <p id="harvestBatchMeta" style="font-size:0.85rem; color:var(--text-secondary); margin-top:0; font-weight:700;"></p>
     <div class="form-group">
       <label>Number of Live Chicks Pulled</label>
       <input type="number" id="harvestChickCount" min="0" placeholder="e.g. 85">
@@ -498,37 +657,43 @@
   </div>
 </div>
 
-<!-- CALENDAR DATE INSPECTOR MODAL -->
+<!-- CALENDAR DATE INSPECTOR & ACTIVITY MODAL -->
 <div class="sheet-backdrop" id="inspectorModal" onclick="closeInspectorModal(event)">
-  <div class="sheet-modal" style="border-radius:20px;" onclick="event.stopPropagation()">
+  <div class="sheet-modal" style="border-radius:24px;" onclick="event.stopPropagation()">
     <div class="sheet-header">
       <h3 id="inspectorDateTitle">Date Breakdown</h3>
       <button class="btn-close-sheet" onclick="closeInspectorModal()">✕</button>
     </div>
+    
     <div id="inspectorContentBody"></div>
+
+    <!-- QUICK ADD ACTIVITY BUTTON ON INSPECTED DATE -->
+    <div style="margin-top:14px; padding-top:12px; border-top:1px dashed #cbd5e1;">
+      <button class="btn-submit-main" id="btnDateQuickActivity" style="margin:0; background:#7c3aed;">＋ Add Activity to this Date</button>
+    </div>
   </div>
 </div>
 
 <!-- REPORT DISPLAY SCREEN -->
 <div class="container" id="reportViewContainer" style="display:none;">
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-    <button class="btn-touch" style="padding:5px 10px; font-weight:800;" onclick="closeReportView()">◀ Back to App</button>
-    <b style="color:var(--brand-primary); font-size:0.85rem;">AD FARMS STATEMENT</b>
+    <button class="btn-touch" style="padding:6px 12px; font-weight:800;" onclick="closeReportView()">◀ Back to App</button>
+    <b style="color:#0284c7; font-size:0.9rem; font-weight:900;">AD FARMS STATEMENT</b>
   </div>
   <div id="reportContentArea"></div>
 </div>
 
 <!-- REPORT CONFIG MODAL -->
 <div class="sheet-backdrop" id="reportModal" onclick="closeReportModal(event)">
-  <div class="sheet-modal" style="border-radius:20px;" onclick="event.stopPropagation()">
+  <div class="sheet-modal" style="border-radius:24px;" onclick="event.stopPropagation()">
     <div class="sheet-header">
       <h3>📊 Export Farm Reports</h3>
       <button class="btn-close-sheet" onclick="closeReportModal()">✕</button>
     </div>
     
-    <div style="background:#f8fafc; border:1px solid var(--border-subtle); border-radius:12px; padding:10px; margin-bottom:10px;">
-      <b style="font-size:0.82rem;">🥚 1. Egg Collection Audit</b>
-      <div class="form-row" style="margin-top:6px;">
+    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px; margin-bottom:10px;">
+      <b style="font-size:0.85rem; color:#059669;">🥚 1. Egg Collection Audit</b>
+      <div class="form-row" style="margin-top:8px;">
         <div>
           <label>From</label>
           <input type="date" id="repEggFrom">
@@ -538,12 +703,12 @@
           <input type="date" id="repEggTo">
         </div>
       </div>
-      <button class="btn-submit-main" style="background:#059669; padding:9px;" onclick="buildEggReport()">View Egg Audit</button>
+      <button class="btn-submit-main" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); padding:10px;" onclick="buildEggReport()">View Egg Audit</button>
     </div>
 
-    <div style="background:#f8fafc; border:1px solid var(--border-subtle); border-radius:12px; padding:10px;">
-      <b style="font-size:0.82rem;">🐥 2. Incubation Batches Audit</b>
-      <div class="form-row" style="margin-top:6px;">
+    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px; margin-bottom:10px;">
+      <b style="font-size:0.85rem; color:#0284c7;">🐥 2. Incubation Batches Audit</b>
+      <div class="form-row" style="margin-top:8px;">
         <div>
           <label>From Tray</label>
           <select id="repBatchFrom"></select>
@@ -553,7 +718,22 @@
           <select id="repBatchTo"></select>
         </div>
       </div>
-      <button class="btn-submit-main" style="padding:9px;" onclick="buildIncubationReport()">View Batch Audit</button>
+      <button class="btn-submit-main" style="padding:10px;" onclick="buildIncubationReport()">View Batch Audit</button>
+    </div>
+
+    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:12px;">
+      <b style="font-size:0.85rem; color:#7c3aed;">📝 3. Farm Activities &amp; Ledger Audit</b>
+      <div class="form-row" style="margin-top:8px;">
+        <div>
+          <label>From</label>
+          <input type="date" id="repActFrom">
+        </div>
+        <div>
+          <label>To</label>
+          <input type="date" id="repActTo">
+        </div>
+      </div>
+      <button class="btn-submit-main" style="background:#7c3aed; padding:10px;" onclick="buildActivityReport()">View Activity Audit</button>
     </div>
   </div>
 </div>
@@ -605,8 +785,10 @@
   let collections = JSON.parse(localStorage.getItem("ad_farms_local_collections") || "[]");
   let batches = JSON.parse(localStorage.getItem("ad_farms_local_batches") || "[]");
   let mortality = JSON.parse(localStorage.getItem("ad_farms_local_mortality") || "[]");
+  let activities = JSON.parse(localStorage.getItem("ad_farms_local_activities") || "[]");
 
   let currentTabIndex = 0;
+  let currentActivityFilter = 'All';
   let activeCalYear = new Date().getFullYear();
   let activeCalMonth = new Date().getMonth();
 
@@ -614,24 +796,21 @@
     localStorage.setItem("ad_farms_local_collections", JSON.stringify(collections));
     localStorage.setItem("ad_farms_local_batches", JSON.stringify(batches));
     localStorage.setItem("ad_farms_local_mortality", JSON.stringify(mortality));
+    localStorage.setItem("ad_farms_local_activities", JSON.stringify(activities));
     updateOverviewStats();
   }
 
-  // --- SWIPE TOUCH ENGINE ---
+  // --- SWIPE TOUCH ENGINE (5 TABS TOTAL) ---
   const swipeTrack = document.getElementById('swipeTrack');
   const navButtons = document.querySelectorAll('.nav-tab-item');
   const swipeContainer = document.getElementById('swipeContainer');
 
-  let startX = 0;
-  let startY = 0;
-  let currentDeltaX = 0;
-  let isSwiping = false;
-  let isHorizontalGesture = null;
+  let startX = 0, startY = 0, currentDeltaX = 0, isSwiping = false, isHorizontalGesture = null;
 
   function slideToIndex(index, animate = true) {
-    currentTabIndex = Math.max(0, Math.min(index, 3));
+    currentTabIndex = Math.max(0, Math.min(index, 4));
     swipeTrack.style.transition = animate ? 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1)' : 'none';
-    swipeTrack.style.transform = `translateX(-${currentTabIndex * 25}%)`;
+    swipeTrack.style.transform = `translateX(-${currentTabIndex * 20}%)`;
 
     navButtons.forEach((btn, i) => {
       btn.classList.toggle('active', i === currentTabIndex);
@@ -640,7 +819,8 @@
       }
     });
 
-    if (currentTabIndex === 3) renderCalendar();
+    if (currentTabIndex === 3) renderActivitiesLedger();
+    if (currentTabIndex === 4) renderCalendar();
   }
 
   swipeContainer.addEventListener('touchstart', (e) => {
@@ -668,11 +848,11 @@
 
     currentDeltaX = diffX;
     const containerWidth = swipeContainer.offsetWidth;
-    const baseOffsetPercent = -(currentTabIndex * 25);
-    const dragOffsetPercent = (currentDeltaX / containerWidth) * 25;
+    const baseOffsetPercent = -(currentTabIndex * 20);
+    const dragOffsetPercent = (currentDeltaX / containerWidth) * 20;
     
     let finalOffset = baseOffsetPercent + dragOffsetPercent;
-    if ((currentTabIndex === 0 && currentDeltaX > 0) || (currentTabIndex === 3 && currentDeltaX < 0)) {
+    if ((currentTabIndex === 0 && currentDeltaX > 0) || (currentTabIndex === 4 && currentDeltaX < 0)) {
       finalOffset = baseOffsetPercent + (dragOffsetPercent * 0.3);
     }
 
@@ -687,7 +867,7 @@
       const containerWidth = swipeContainer.offsetWidth;
       const swipeThreshold = containerWidth * 0.18;
 
-      if (currentDeltaX < -swipeThreshold && currentTabIndex < 3) {
+      if (currentDeltaX < -swipeThreshold && currentTabIndex < 4) {
         slideToIndex(currentTabIndex + 1);
       } else if (currentDeltaX > swipeThreshold && currentTabIndex > 0) {
         slideToIndex(currentTabIndex - 1);
@@ -733,7 +913,7 @@
       if (remote.length > 0) {
         batches = remote;
         commitState();
-        renderBatchesList();
+        renderRackView();
         renderCalendar();
       }
     }, err => console.warn(err));
@@ -747,12 +927,23 @@
         renderMortalityTable();
       }
     }, err => console.warn(err));
+
+    firestoreDb.collection("activities").onSnapshot(snap => {
+      let remote = [];
+      snap.forEach(d => remote.push({ id: d.id, ...d.data() }));
+      if (remote.length > 0) {
+        activities = remote;
+        commitState();
+        renderActivitiesLedger();
+        renderCalendar();
+      }
+    }, err => console.warn(err));
   } catch(e) {
     document.getElementById('cloudBadge').textContent = "Offline";
     document.getElementById('cloudBadge').classList.remove('online');
   }
 
-  // --- STATS ---
+  // --- STATS RECALCULATION ---
   function updateOverviewStats() {
     let totalHatched = 0, totalSet = 0, hatchedBatchesCount = 0, rateSum = 0;
     batches.forEach(b => {
@@ -773,31 +964,166 @@
     document.getElementById('kpiHatchRate').textContent = hatchedBatchesCount > 0 ? ((rateSum / hatchedBatchesCount).toFixed(1) + "%") : "0%";
   }
 
-  // --- QUICK ENTRY DRAWER ---
-  function openQuickDrawer(type = "batch") {
+  // ============================================================
+  // RACK VIEW (PURE NUMERIC EGG COUNT, NO 'e')
+  // ============================================================
+  function renderRackView() {
+    const grid = document.getElementById('rackGridContainer');
+    grid.innerHTML = "";
+    document.getElementById('noBatchesMsg').style.display = batches.length === 0 ? "block" : "none";
+
+    const sorted = [...batches].sort((a,b) => normalizeToISO(b.startDate || b.rawDate).localeCompare(normalizeToISO(a.startDate || a.rawDate)));
+    const today = new Date();
+
+    sorted.forEach(b => {
+      const sISO = normalizeToISO(b.startDate || b.rawDate);
+      const cycle = calcBatchCycles(sISO);
+      const p = sISO.split('-');
+      const bDate = new Date(parseInt(p[0], 10), parseInt(p[1], 10)-1, parseInt(p[2], 10));
+
+      const elapsedDays = Math.max(1, Math.floor((today - bDate) / (1000 * 60 * 60 * 24)) + 1);
+      const progressPercent = Math.min(100, Math.max(0, (elapsedDays / 21) * 100));
+
+      let stageClass = "stage-set";
+      let stageLabel = `Day ${elapsedDays} · Setter`;
+      let barColor = "#0284c7";
+      let badgeStyle = "background:#e0f2fe; color:#0369a1;";
+
+      if (elapsedDays >= 18 && elapsedDays < 21) {
+        stageClass = "stage-hatch";
+        stageLabel = `Day ${elapsedDays} · Hatcher`;
+        barColor = "#ea580c";
+        badgeStyle = "background:#ffedd5; color:#9a3412;";
+      } else if (elapsedDays >= 21) {
+        stageClass = "stage-pull";
+        stageLabel = `Day ${elapsedDays} · Ready Pull`;
+        barColor = "#16a34a";
+        badgeStyle = "background:#dcfce7; color:#166534;";
+      }
+
+      const card = document.createElement('div');
+      card.className = `rack-slot-card ${stageClass}`;
+      card.onclick = () => openTrayPopup(b.id);
+
+      card.innerHTML = `
+        <div class="slot-header">
+          <div class="slot-name">${b.name}</div>
+          <span class="slot-eggs">${b.eggs}</span>
+        </div>
+        <div class="slot-progress-wrap">
+          <div class="slot-progress-bar" style="width:${progressPercent}%; background:${barColor};"></div>
+        </div>
+        <div class="slot-footer">
+          <span class="slot-badge-pill" style="${badgeStyle}">${stageLabel}</span>
+          <span>${b.chicksHatched !== null && b.chicksHatched !== undefined ? b.chicksHatched + ' chicks' : 'Running'}</span>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  // --- TRAY DETAIL POPUP MODAL ---
+  function openTrayPopup(batchId) {
+    const b = batches.find(x => x.id === batchId);
+    if (!b) return;
+
+    const sISO = normalizeToISO(b.startDate || b.rawDate);
+    const cycle = calcBatchCycles(sISO);
+
+    document.getElementById('popTrayName').textContent = b.name;
+    document.getElementById('popTraySub').textContent = `Placed on: ${displayFormatDate(cycle.d1)}`;
+    document.getElementById('popDay1Date').textContent = displayFormatDate(cycle.d1);
+    document.getElementById('popDay18Date').textContent = displayFormatDate(cycle.d18);
+    document.getElementById('popDay21Date').textContent = displayFormatDate(cycle.d21);
+
+    document.getElementById('popEggsCount').textContent = `${b.eggs} Eggs Set`;
+    document.getElementById('popChicksHarvested').textContent = b.chicksHatched !== null && b.chicksHatched !== undefined ? `${b.chicksHatched} Live Chicks` : `Pending Entry`;
+    document.getElementById('popHatchSuccess').textContent = b.hatchRate ? `${b.hatchRate}% Success` : `In Progress`;
+
+    document.getElementById('btnPopHarvest').onclick = () => {
+      closeTrayDetails();
+      openHarvestDialog(b.id);
+    };
+    document.getElementById('btnPopEdit').onclick = () => {
+      closeTrayDetails();
+      editBatchItem(b.id);
+    };
+
+    document.getElementById('trayDetailModal').style.display = 'flex';
+  }
+
+  function closeTrayDetails(e) {
+    if (!e || e.target.id === 'trayDetailModal' || e.target.classList.contains('btn-close-sheet')) {
+      document.getElementById('trayDetailModal').style.display = 'none';
+    }
+  }
+
+  // ============================================================
+  // TAB 4: FARM ACTIVITIES & TASK LEDGER
+  // ============================================================
+  function filterActivities(category, btn) {
+    currentActivityFilter = category;
+    document.querySelectorAll('#activityFilterBar .filter-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    renderActivitiesLedger();
+  }
+
+  function renderActivitiesLedger() {
+    const container = document.getElementById('activitiesListContainer');
+    container.innerHTML = "";
+    
+    let filtered = activities;
+    if (currentActivityFilter !== 'All') {
+      filtered = activities.filter(a => a.category === currentActivityFilter);
+    }
+
+    document.getElementById('noActivitiesMsg').style.display = filtered.length === 0 ? "block" : "none";
+
+    const sorted = [...filtered].sort((a,b) => normalizeToISO(b.date).localeCompare(normalizeToISO(a.date)));
+
+    sorted.forEach(act => {
+      let icon = "📝";
+      if (act.category === "Vaccination") icon = "💉";
+      if (act.category === "Medication") icon = "💊";
+      if (act.category === "Sales") icon = "💰";
+      if (act.category === "Feed") icon = "🌾";
+      if (act.category === "Maintenance") icon = "🔧";
+
+      const card = document.createElement('div');
+      card.style.cssText = "background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:flex-start;";
+      card.innerHTML = `
+        <div>
+          <div style="font-size:0.68rem; font-weight:800; color:var(--text-secondary);">${displayFormatDate(act.date)}</div>
+          <div style="font-size:0.85rem; font-weight:900; color:#0f172a; margin-top:2px;">${icon} ${act.category}</div>
+          <div style="font-size:0.78rem; font-weight:600; color:#334155; margin-top:4px;">${act.details}</div>
+        </div>
+        <button onclick="deleteActivity('${act.id}')" style="background:transparent; border:none; color:#ef4444; font-size:0.75rem; font-weight:800; cursor:pointer; padding:4px;">✕</button>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  // --- QUICK ENTRY DRAWER ENGINE ---
+  function openQuickDrawer(type = "batch", prefillDate = null) {
     document.getElementById('editEntryId').value = "";
     document.getElementById('quickTypeSelect').value = type;
     document.getElementById('quickTypeSelect').disabled = false;
-    document.getElementById('recordDate').value = todayISO();
+    document.getElementById('recordDate').value = prefillDate || todayISO();
     document.getElementById('drawerTitle').textContent = "Quick Farm Log";
     document.getElementById('btnSaveRecord').textContent = "Save Record";
     switchDrawerFormType();
     document.getElementById('entryDrawer').style.display = "flex";
   }
 
-  function closeDrawer() {
-    document.getElementById('entryDrawer').style.display = "none";
-  }
-
-  function handleDrawerBackdrop(e) {
-    if (e.target.id === 'entryDrawer') closeDrawer();
-  }
+  function closeDrawer() { document.getElementById('entryDrawer').style.display = "none"; }
+  function handleDrawerBackdrop(e) { if (e.target.id === 'entryDrawer') closeDrawer(); }
 
   function switchDrawerFormType() {
     const t = document.getElementById('quickTypeSelect').value;
     document.getElementById('formSectionBatch').style.display = t === 'batch' ? 'block' : 'none';
     document.getElementById('formSectionEggs').style.display = t === 'egg' ? 'block' : 'none';
     document.getElementById('formSectionMort').style.display = t === 'mortality' ? 'block' : 'none';
+    document.getElementById('formSectionActivity').style.display = t === 'activity' ? 'block' : 'none';
   }
 
   function incrementInput(id, delta) {
@@ -838,7 +1164,7 @@
       }
 
       if (firestoreDb) firestoreDb.collection("batches").doc(id).set(data, { merge: true }).catch(console.warn);
-      renderBatchesList();
+      renderRackView();
     } 
     else if (type === 'egg') {
       const slot = document.getElementById('eggSlotSelect').value;
@@ -875,58 +1201,28 @@
       if (firestoreDb) firestoreDb.collection("mortality").doc(id).set(record, { merge: true }).catch(console.warn);
       renderMortalityTable();
     }
+    else if (type === 'activity') {
+      const cat = document.getElementById('actCategory').value;
+      const details = document.getElementById('actDetails').value.trim();
+      if (!details) return alert("Enter details for the activity");
+      const id = editId || ("act_" + Date.now());
+
+      const actRecord = { id, date: dateStr, category: cat, details: details };
+      if (editId) {
+        const idx = activities.findIndex(a => a.id === editId);
+        if (idx !== -1) activities[idx] = actRecord;
+      } else {
+        activities.unshift(actRecord);
+      }
+
+      if (firestoreDb) firestoreDb.collection("activities").doc(id).set(actRecord, { merge: true }).catch(console.warn);
+      document.getElementById('actDetails').value = "";
+      renderActivitiesLedger();
+    }
 
     commitState();
     renderCalendar();
     closeDrawer();
-  }
-
-  // --- BATCHES RENDERING & HARVEST ---
-  function renderBatchesList() {
-    const box = document.getElementById('batchesList');
-    box.innerHTML = "";
-    document.getElementById('noBatchesMsg').style.display = batches.length === 0 ? "block" : "none";
-
-    const sorted = [...batches].sort((a,b) => normalizeToISO(b.startDate || b.rawDate).localeCompare(normalizeToISO(a.startDate || a.rawDate)));
-
-    sorted.forEach(b => {
-      const sISO = normalizeToISO(b.startDate || b.rawDate);
-      const cycle = calcBatchCycles(sISO);
-      const rateLabel = b.hatchRate ? `<span style="color:var(--success); font-weight:800;">${b.hatchRate}%</span>` : `<span style="color:var(--text-muted);">In Progress</span>`;
-      const harvestLabel = b.chicksHatched !== null && b.chicksHatched !== undefined ? `<b>${b.chicksHatched} chicks</b>` : `<span style="color:var(--text-muted);">Not Entered</span>`;
-
-      const card = document.createElement('div');
-      card.className = "batch-card";
-      card.innerHTML = `
-        <div class="batch-head">
-          <span class="batch-title">${b.name}</span>
-          <span class="badge-eggs">${b.eggs} eggs</span>
-        </div>
-        <div class="timeline-bar">
-          <div class="timeline-step s-set">
-            <span class="step-lbl">Day 1 (Set)</span>
-            <span class="step-date">${displayFormatDate(cycle.d1)}</span>
-          </div>
-          <div class="timeline-step s-hatch">
-            <span class="step-lbl">Day 18 (Hatch)</span>
-            <span class="step-date">${displayFormatDate(cycle.d18)}</span>
-          </div>
-          <div class="timeline-step s-pull">
-            <span class="step-lbl">Day 21 (Harvest)</span>
-            <span class="step-date">${displayFormatDate(cycle.d21)}</span>
-          </div>
-        </div>
-        <div class="batch-meta-banner">
-          <div>Harvest: ${harvestLabel}</div>
-          <div>Success: ${rateLabel}</div>
-        </div>
-        <div class="action-row">
-          <button class="btn-touch" style="border-color:var(--stage-pull); color:var(--stage-pull); font-weight:800;" onclick="openHarvestDialog('${b.id}')">🐣 Chicks Pulled</button>
-          <button class="btn-touch" onclick="editBatchItem('${b.id}')">✎ Edit</button>
-        </div>
-      `;
-      box.appendChild(card);
-    });
   }
 
   function editBatchItem(id) {
@@ -938,12 +1234,13 @@
     document.getElementById('recordDate').value = normalizeToISO(b.startDate || b.rawDate);
     document.getElementById('batchNameInput').value = b.name;
     document.getElementById('batchEggCount').value = b.eggs;
-    document.getElementById('drawerTitle').textContent = "Edit Incubator Batch";
-    document.getElementById('btnSaveRecord').textContent = "Update Batch";
+    document.getElementById('drawerTitle').textContent = "Edit Incubator Tray";
+    document.getElementById('btnSaveRecord').textContent = "Update Tray";
     switchDrawerFormType();
     document.getElementById('entryDrawer').style.display = "flex";
   }
 
+  // --- HARVEST MODAL ---
   function openHarvestDialog(batchId) {
     const b = batches.find(x => x.id === batchId);
     if (!b) return;
@@ -966,7 +1263,7 @@
     b.hatchRate = ((count / b.eggs) * 100).toFixed(1);
 
     commitState();
-    renderBatchesList();
+    renderRackView();
     closeHarvestModal();
     if (firestoreDb) firestoreDb.collection("batches").doc(id).update({ chicksHatched: b.chicksHatched, hatchRate: b.hatchRate }).catch(console.warn);
   }
@@ -985,9 +1282,9 @@
         <td>${c.morning || '-'}</td>
         <td>${c.afternoon || '-'}</td>
         <td>${c.evening || '-'}</td>
-        <td style="color:var(--danger); font-weight:800;">${c.broken || '-'}</td>
-        <td style="color:var(--brand-primary); font-weight:800;">${c.total}</td>
-        <td><button class="btn-touch" style="padding:3px 6px; font-size:0.72rem;" onclick="editEggItem('${c.id}')">✎</button></td>
+        <td style="color:#ef4444; font-weight:800;">${c.broken || '-'}</td>
+        <td style="color:#0284c7; font-weight:900;">${c.total}</td>
+        <td><button class="btn-touch" onclick="editEggItem('${c.id}')">✎</button></td>
       `;
       tbody.appendChild(tr);
     });
@@ -1019,8 +1316,8 @@
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><b>${displayFormatDate(m.date)}</b></td>
-        <td style="color:var(--danger); font-weight:800;">${m.dead}</td>
-        <td><button class="btn-touch" style="padding:3px 6px; font-size:0.72rem;" onclick="editMortItem('${m.id}')">✎</button></td>
+        <td style="color:#ef4444; font-weight:900;">${m.dead}</td>
+        <td><button class="btn-touch" onclick="editMortItem('${m.id}')">✎</button></td>
       `;
       tbody.appendChild(tr);
     });
@@ -1064,7 +1361,7 @@
       cell.className = 'cal-cell';
       cell.onclick = () => openInspectorDate(iso);
 
-      let badgesHtml = `<span style="font-size:0.74rem; line-height:1;">${day}</span>`;
+      let badgesHtml = `<span style="font-size:0.76rem; line-height:1; font-weight:900;">${day}</span>`;
       let hasSet = false, hasHatch = false, hasPull = false;
 
       batches.forEach(b => {
@@ -1090,6 +1387,12 @@
         badgesHtml += `<span class="cal-egg-pill">+${eggRec.total}🥚</span>`;
       }
 
+      // Render Activity Pill on calendar cell
+      const dayActs = activities.filter(a => normalizeToISO(a.date) === iso);
+      if (dayActs.length > 0) {
+        badgesHtml += `<span class="cal-activity-pill">📌 ${dayActs[0].category.substring(0,6)}..</span>`;
+      }
+
       if (hasSet) cell.classList.add('has-set');
       if (hasHatch) cell.classList.add('has-hatch');
       if (hasPull) cell.classList.add('has-pull');
@@ -1112,25 +1415,30 @@
     const body = document.getElementById('inspectorContentBody');
     let html = "";
 
+    document.getElementById('btnDateQuickActivity').onclick = () => {
+      closeInspectorModal();
+      openQuickDrawer('activity', iso);
+    };
+
     batches.forEach(b => {
       const cycle = calcBatchCycles(normalizeToISO(b.startDate || b.rawDate));
       if (iso === cycle.d1) {
-        html += `<div style="background:var(--stage-set-bg); border-left:4px solid var(--stage-set); padding:8px 10px; border-radius:6px; margin-bottom:6px; font-size:0.8rem;">
-          <b style="color:var(--stage-set);">🥚 DAY 1: SET IN INCUBATOR</b><br>
+        html += `<div style="background:var(--grad-set); border-left:4px solid #0284c7; padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:0.82rem;">
+          <b style="color:#0284c7;">🥚 DAY 1: SET IN INCUBATOR</b><br>
           <b>Batch:</b> ${b.name} (${b.eggs} eggs)<br>
-          <span style="font-size:0.7rem; color:var(--text-muted);">Ensure temperature is 99.5°F–100°F and turning is active.</span>
+          <span style="font-size:0.72rem; color:#64748b;">Setter operating at 99.5°F–100°F with turning mechanism active.</span>
         </div>`;
       }
       if (iso === cycle.d18) {
-        html += `<div style="background:var(--stage-hatch-bg); border-left:4px solid var(--stage-hatch); padding:8px 10px; border-radius:6px; margin-bottom:6px; font-size:0.8rem;">
-          <b style="color:var(--stage-hatch);">🐣 DAY 18: LOCKDOWN / HATCHER</b><br>
+        html += `<div style="background:var(--grad-hatch); border-left:4px solid #ea580c; padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:0.82rem;">
+          <b style="color:#ea580c;">🐣 DAY 18: LOCKDOWN / HATCHER</b><br>
           <b>Batch:</b> ${b.name} (${b.eggs} eggs)<br>
-          <span style="font-size:0.7rem; color:var(--text-muted);">Shift to hatching trays, stop turning, increase humidity.</span>
+          <span style="font-size:0.72rem; color:#64748b;">Lockdown: stop turning and increase wet bulb humidity.</span>
         </div>`;
       }
       if (iso === cycle.d21) {
-        html += `<div style="background:var(--stage-pull-bg); border-left:4px solid var(--stage-pull); padding:8px 10px; border-radius:6px; margin-bottom:6px; font-size:0.8rem;">
-          <b style="color:var(--stage-pull);">🐥 DAY 21: PULL CHICKS</b><br>
+        html += `<div style="background:var(--grad-pull); border-left:4px solid #16a34a; padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:0.82rem;">
+          <b style="color:#16a34a;">🐥 DAY 21: PULL CHICKS</b><br>
           <b>Batch:</b> ${b.name}<br>
           <b>Harvest:</b> ${b.chicksHatched !== null ? (b.chicksHatched + ' chicks pulled (' + b.hatchRate + '%)') : 'Harvest count pending'}<br>
         </div>`;
@@ -1139,23 +1447,47 @@
 
     const egg = collections.find(c => normalizeToISO(c.date) === iso);
     if (egg) {
-      html += `<div style="background:#f8fafc; border-left:4px solid var(--border-strong); padding:8px 10px; border-radius:6px; margin-bottom:6px; font-size:0.8rem;">
+      html += `<div style="background:#f8fafc; border-left:4px solid #cbd5e1; padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:0.82rem;">
         <b>🥚 Daily Egg Pickings:</b><br>
         Morn: ${egg.morning||0} | Aftn: ${egg.afternoon||0} | Eve: ${egg.evening||0}<br>
-        Broken: <span style="color:var(--danger);">${egg.broken||0}</span> | <b>Total Intact: ${egg.total}</b>
+        Broken: <span style="color:#ef4444; font-weight:800;">${egg.broken||0}</span> | <b>Total Intact: ${egg.total}</b>
       </div>`;
     }
 
     const mort = mortality.find(m => normalizeToISO(m.date) === iso);
     if (mort) {
-      html += `<div style="background:var(--danger-bg); border-left:4px solid var(--danger); padding:8px 10px; border-radius:6px; margin-bottom:6px; font-size:0.8rem;">
-        <b style="color:var(--danger);">☠️ Bird Losses:</b> ${mort.dead}
+      html += `<div style="background:#fef2f2; border-left:4px solid #ef4444; padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:0.82rem;">
+        <b style="color:#ef4444;">☠️ Bird Losses:</b> ${mort.dead}
       </div>`;
     }
 
-    if (!html) html = `<div style="text-align:center; color:var(--text-muted); padding:20px; font-size:0.8rem;">No farm events on this date.</div>`;
+    // Render logged activities for this inspected date
+    const dayActs = activities.filter(a => normalizeToISO(a.date) === iso);
+    if (dayActs.length > 0) {
+      html += `<div style="margin-top:10px; font-weight:900; font-size:0.82rem; color:#7c3aed;">📝 FARM ACTIVITIES &amp; TASKS</div>`;
+      dayActs.forEach(act => {
+        html += `<div style="background:#f5f3ff; border-left:4px solid #7c3aed; padding:8px 10px; border-radius:8px; margin-top:6px; font-size:0.8rem;">
+          <b>${act.category}:</b> ${act.details}
+          <div style="text-align:right; margin-top:4px;">
+            <button onclick="deleteActivity('${act.id}')" style="background:transparent; border:none; color:#ef4444; font-size:0.7rem; font-weight:800; cursor:pointer;">✕ Remove</button>
+          </div>
+        </div>`;
+      });
+    }
+
+    if (!html) html = `<div style="text-align:center; color:#64748b; padding:20px; font-size:0.85rem;">No farm records or tasks logged for this date.</div>`;
     body.innerHTML = html;
     modal.style.display = "flex";
+  }
+
+  function deleteActivity(actId) {
+    if (!confirm("Remove this activity note?")) return;
+    activities = activities.filter(a => a.id !== actId);
+    commitState();
+    renderActivitiesLedger();
+    renderCalendar();
+    closeInspectorModal();
+    if (firestoreDb) firestoreDb.collection("activities").doc(actId).delete().catch(console.warn);
   }
 
   function closeInspectorModal(e) {
@@ -1180,6 +1512,8 @@
     const start = new Date(); start.setDate(end.getDate() - 30);
     document.getElementById('repEggTo').value = toISODate(end);
     document.getElementById('repEggFrom').value = toISODate(start);
+    document.getElementById('repActTo').value = toISODate(end);
+    document.getElementById('repActFrom').value = toISODate(start);
     document.getElementById('reportModal').style.display = "flex";
   }
   function closeReportModal(e) {
@@ -1208,19 +1542,19 @@
     let rows = "";
     filtered.forEach(c => {
       totM += (c.morning||0); totA += (c.afternoon||0); totE += (c.evening||0); totB += (c.broken||0); grand += (c.total||0);
-      rows += `<tr><td><b>${displayFormatDate(c.date)}</b></td><td>${c.morning||0}</td><td>${c.afternoon||0}</td><td>${c.evening||0}</td><td style="color:var(--danger);">${c.broken||0}</td><td style="color:var(--brand-primary); font-weight:800;">${c.total||0}</td></tr>`;
+      rows += `<tr><td><b>${displayFormatDate(c.date)}</b></td><td>${c.morning||0}</td><td>${c.afternoon||0}</td><td>${c.evening||0}</td><td style="color:#ef4444;">${c.broken||0}</td><td style="color:#0284c7; font-weight:800;">${c.total||0}</td></tr>`;
     });
 
     const reportHtml = `
       <div class="surface-card">
-        <h3 style="margin:0 0 4px 0; text-align:center;">AD FARMS · EGG COLLECTION AUDIT</h3>
-        <p style="text-align:center; font-size:0.72rem; color:var(--text-muted); margin:0 0 10px 0;">${displayFormatDate(f)} — ${displayFormatDate(t)}</p>
+        <h3 style="margin:0 0 4px 0; text-align:center; font-weight:900;">AD FARMS · EGG COLLECTION AUDIT</h3>
+        <p style="text-align:center; font-size:0.75rem; color:#64748b; margin:0 0 12px 0;">${displayFormatDate(f)} — ${displayFormatDate(t)}</p>
         <div class="table-responsive">
           <table>
             <thead><tr><th>Date</th><th>Morn</th><th>Aftn</th><th>Eve</th><th>Broken</th><th>Total Intact</th></tr></thead>
             <tbody>${rows}
-              <tr style="font-weight:800; background:#f8fafc;">
-                <td>TOTALS</td><td>${totM}</td><td>${totA}</td><td>${totE}</td><td style="color:var(--danger);">${totB}</td><td style="color:var(--brand-primary);">${grand}</td>
+              <tr style="font-weight:900; background:#f8fafc;">
+                <td>TOTALS</td><td>${totM}</td><td>${totA}</td><td>${totE}</td><td style="color:#ef4444;">${totB}</td><td style="color:#0284c7;">${grand}</td>
               </tr>
             </tbody>
           </table>
@@ -1249,7 +1583,7 @@
       if (b.chicksHatched) totalChicks += b.chicksHatched;
       rows += `<tr>
         <td><b>${b.name}</b></td><td>${b.eggs}</td><td>${displayFormatDate(cycle.d1)}</td><td>${displayFormatDate(cycle.d18)}</td><td>${displayFormatDate(cycle.d21)}</td>
-        <td>${b.chicksHatched || '-'}</td><td style="color:var(--success); font-weight:800;">${b.hatchRate ? b.hatchRate + '%' : '-'}</td>
+        <td>${b.chicksHatched || '-'}</td><td style="color:#059669; font-weight:900;">${b.hatchRate ? b.hatchRate + '%' : '-'}</td>
       </tr>`;
     });
 
@@ -1257,16 +1591,51 @@
 
     const reportHtml = `
       <div class="surface-card">
-        <h3 style="margin:0 0 4px 0; text-align:center;">AD FARMS · INCUBATION REPORT</h3>
-        <p style="text-align:center; font-size:0.72rem; color:var(--text-muted); margin:0 0 10px 0;">Batches: ${subset[0].name} to ${subset[subset.length - 1].name}</p>
+        <h3 style="margin:0 0 4px 0; text-align:center; font-weight:900;">AD FARMS · INCUBATION REPORT</h3>
+        <p style="text-align:center; font-size:0.75rem; color:#64748b; margin:0 0 12px 0;">Batches: ${subset[0].name} to ${subset[subset.length - 1].name}</p>
         <div class="table-responsive">
           <table>
             <thead><tr><th>Batch</th><th>Eggs</th><th>Day 1</th><th>Day 18</th><th>Day 21</th><th>Chicks</th><th>Hatch %</th></tr></thead>
             <tbody>${rows}
-              <tr style="font-weight:800; background:#f8fafc;">
-                <td>SUMMARY</td><td>${totalEggs}</td><td colspan="3">-</td><td>${totalChicks||'-'}</td><td style="color:var(--success);">${netRate}</td>
+              <tr style="font-weight:900; background:#f8fafc;">
+                <td>SUMMARY</td><td>${totalEggs}</td><td colspan="3">-</td><td>${totalChicks||'-'}</td><td style="color:#059669;">${netRate}</td>
               </tr>
             </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+    document.getElementById('reportContentArea').innerHTML = reportHtml;
+    document.getElementById('reportModal').style.display = 'none';
+    document.getElementById('mainAppSection').style.display = 'none';
+    document.getElementById('reportViewContainer').style.display = 'block';
+  }
+
+  function buildActivityReport() {
+    const f = document.getElementById('repActFrom').value;
+    const t = document.getElementById('repActTo').value;
+    if (!f || !t || f > t) return alert("Select valid dates");
+
+    const filtered = activities.filter(a => {
+      const d = normalizeToISO(a.date);
+      return d && d >= f && d <= t;
+    }).sort((a,b) => normalizeToISO(a.date).localeCompare(normalizeToISO(b.date)));
+
+    if (filtered.length === 0) return alert("No activities recorded in this date window");
+
+    let rows = "";
+    filtered.forEach(a => {
+      rows += `<tr><td><b>${displayFormatDate(a.date)}</b></td><td><b>${a.category}</b></td><td style="text-align:left;">${a.details}</td></tr>`;
+    });
+
+    const reportHtml = `
+      <div class="surface-card">
+        <h3 style="margin:0 0 4px 0; text-align:center; font-weight:900; color:#7c3aed;">AD FARMS · ACTIVITIES &amp; HEALTH AUDIT</h3>
+        <p style="text-align:center; font-size:0.75rem; color:#64748b; margin:0 0 12px 0;">${displayFormatDate(f)} — ${displayFormatDate(t)}</p>
+        <div class="table-responsive">
+          <table>
+            <thead><tr><th>Date</th><th>Category</th><th style="text-align:left;">Details &amp; Notes</th></tr></thead>
+            <tbody>${rows}</tbody>
           </table>
         </div>
       </div>
@@ -1299,9 +1668,10 @@
 
   // --- BOOTSTRAP ---
   initLogo();
-  renderBatchesList();
+  renderRackView();
   renderCollectionsTable();
   renderMortalityTable();
+  renderActivitiesLedger();
   renderCalendar();
   updateOverviewStats();
   slideToIndex(0, false);
