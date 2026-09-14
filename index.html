@@ -49,7 +49,7 @@
     align-items: center;
     justify-content: space-between;
     box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
   .brand-group { display: flex; align-items: center; gap: 8px; }
   .logo-box {
@@ -95,12 +95,12 @@
   .btn-header.primary { background: #e2e8f0; color: #334155; }
   .btn-header.danger { background: #fee2e2; color: #b91c1c; }
 
-  /* METRICS STRIP */
+  /* TOP METRICS SUMMARY */
   .metrics-strip {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
   .metric-card {
     background: var(--card-bg);
@@ -112,6 +112,26 @@
   }
   .metric-lbl { font-size: 0.60rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
   .metric-val { font-size: 1.35rem; font-weight: 900; line-height: 1.1; }
+
+  /* READY FOR SETTER BANNER */
+  .setter-progress-card {
+    background: var(--card-bg);
+    border: 1.5px solid #86efac;
+    border-radius: 14px;
+    padding: 9px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 5px rgba(22, 163, 74, 0.05);
+  }
+  .setter-progress-card.dark-theme {
+    border-color: #166534;
+  }
+  .setter-left { display: flex; flex-direction: column; }
+  .setter-tag { font-size: 0.64rem; font-weight: 800; text-transform: uppercase; color: #15803d; letter-spacing: 0.5px; }
+  .setter-sub { font-size: 0.76rem; font-weight: 700; color: var(--text-muted); margin-top: 1px; }
+  .setter-val { font-size: 1.45rem; font-weight: 900; color: #16a34a; line-height: 1; }
 
   /* TABS */
   .tab-bar {
@@ -459,7 +479,7 @@
     </div>
   </div>
 
-  <!-- TOP METRICS -->
+  <!-- TOP METRICS (PRIMARY STRIP) -->
   <div class="metrics-strip">
     <div class="metric-card">
       <div class="metric-lbl">CHICKS ALIVE</div>
@@ -473,6 +493,15 @@
       <div class="metric-lbl">HATCH RATE</div>
       <div class="metric-val" id="hatchRateDisplay" style="color: #ea580c;">--</div>
     </div>
+  </div>
+
+  <!-- FULL-WIDTH READY FOR SETTER BANNER -->
+  <div class="setter-progress-card">
+    <div class="setter-left">
+      <span class="setter-tag">🥚 READY FOR SETTER</span>
+      <span class="setter-sub" id="trayProgressSub">0 / 102 Tray Filled</span>
+    </div>
+    <div class="setter-val" id="inventoryEggsDisplay">0</div>
   </div>
 
   <!-- NAVIGATION TABS -->
@@ -881,6 +910,10 @@
 </div>
 
 <script>
+  // --- BASE INVENTORY ANCHOR (12th Sept Evening setting with 18 leftover eggs) ---
+  const INITIAL_ANCHOR_DATE = "2026-09-12"; 
+  const INITIAL_ANCHOR_LEFTOVER = 18;
+
   function pad(n) { return String(n).padStart(2, '0'); }
 
   function dateToISO(dateObj) {
@@ -930,6 +963,13 @@
     if (!norm) return isoStr || "-";
     const parts = norm.split('-');
     return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+
+  function getNextDayISO(isoStr) {
+    const p = isoStr.split('-');
+    const d = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+    d.setDate(d.getDate() + 1);
+    return dateToISO(d);
   }
 
   // --- THEME ENGINE ---
@@ -1006,7 +1046,7 @@
     db.collection("collections").onSnapshot(snapshot => {
       let cloudCols = [];
       snapshot.forEach(doc => cloudCols.push({ id: doc.id, ...doc.data() }));
-      if (cloudCols.length > 0) { collections = cloudCols; syncToLocalStorage(); renderCollections(); renderCalendar(); }
+      if (cloudCols.length > 0) { collections = cloudCols; syncToLocalStorage(); renderCollections(); renderLiveMetrics(); renderCalendar(); }
       document.getElementById('cloudStatus').textContent = "🟢 Cloud";
     }, err => console.warn(err));
 
@@ -1111,7 +1151,44 @@
     return Date.now() <= calc.d21EndTimestamp;
   }
 
-  // --- ACCURATE METRICS & STRICT CHICK ISOLATION ---
+  // --- SLIDING WINDOW INVENTORY CALCULATION ---
+  function calculateSlidingWindowInventory() {
+    const chronologicalBatches = [...batches]
+      .map(b => ({
+        ...b,
+        normalizedDate: toNormalizedISO(b.startDate || b.rawDate || b.labelD1),
+        eggCount: parseInt(b.eggs, 10) || 0
+      }))
+      .filter(b => Boolean(b.normalizedDate))
+      .sort((a, b) => a.normalizedDate.localeCompare(b.normalizedDate));
+
+    let currentStock = INITIAL_ANCHOR_LEFTOVER;
+    let windowStart = getNextDayISO(INITIAL_ANCHOR_DATE);
+
+    chronologicalBatches.forEach(b => {
+      if (b.normalizedDate > INITIAL_ANCHOR_DATE) {
+        collections.forEach(c => {
+          const cDate = toNormalizedISO(c.date);
+          if (cDate && cDate >= windowStart && cDate <= b.normalizedDate) {
+            currentStock += (parseInt(c.total, 10) || 0);
+          }
+        });
+        currentStock = Math.max(0, currentStock - b.eggCount);
+        windowStart = getNextDayISO(b.normalizedDate);
+      }
+    });
+
+    collections.forEach(c => {
+      const cDate = toNormalizedISO(c.date);
+      if (cDate && cDate >= windowStart) {
+        currentStock += (parseInt(c.total, 10) || 0);
+      }
+    });
+
+    return Math.max(0, currentStock);
+  }
+
+  // --- ACCURATE METRICS, READY FOR SETTER, & STRICT CHICK ISOLATION ---
   function renderLiveMetrics() {
     let currentIncubatorEggs = 0;
     let completedInitialEggs = 0;
@@ -1155,6 +1232,19 @@
     document.getElementById('liveChicksTopDisplay').innerText = liveChicks;
     document.getElementById('liveChicksBalance').innerText = liveChicks;
     document.getElementById('totalChicksDeadSub').innerText = `${chicksDeadTotal} dead`;
+
+    // Render Ready for Setter Progress
+    const eggsAvailable = calculateSlidingWindowInventory();
+    document.getElementById('inventoryEggsDisplay').innerText = eggsAvailable;
+
+    if (eggsAvailable >= 102) {
+      const fullTrays = Math.floor(eggsAvailable / 102);
+      const remainder = eggsAvailable % 102;
+      document.getElementById('trayProgressSub').innerText = `✅ ${fullTrays} Full Tray${fullTrays > 1 ? 's' : ''} Ready (${remainder} rem)`;
+    } else {
+      const needed = 102 - eggsAvailable;
+      document.getElementById('trayProgressSub').innerText = `${eggsAvailable} / 102 Tray Filled (${needed} needed)`;
+    }
   }
 
   // --- QUICK LOG MODAL ---
@@ -1356,7 +1446,7 @@
     if (existing) Object.assign(existing, entry); else collections.push(entry);
 
     syncToLocalStorage();
-    renderCollections(); renderCalendar();
+    renderCollections(); renderLiveMetrics(); renderCalendar();
     closeQuickLogModal();
     if (db) db.collection("collections").doc(entry.id).set(entry).catch(err => console.warn(err));
   }
