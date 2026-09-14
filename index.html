@@ -3,471 +3,507 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>AD Farms · Herd &amp; Harvest</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<title>AD Farms ; Herd & Harvest</title>
 <style>
   :root {
-    --primary-grad: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
-    --primary-solid: #0284c7;
-    --bg-main: #f1f5f9;
-    --surface-card: #ffffff;
-    --border-card: #e2e8f0;
+    --bg-main: #f4f7fb;
+    --card-bg: #ffffff;
+    --card-border: #e2e8f0;
     --text-primary: #0f172a;
-    --text-secondary: #64748b;
-    --nav-bar-bg: #e2e8f0;
-    --nav-btn-active: #ffffff;
-    --table-head-bg: #f8fafc;
-    --row-border: #f1f5f9;
-    --slot-bg: #ffffff;
-    --slot-progress-bg: #e2e8f0;
-    --input-bg: #ffffff;
-    --input-border: #cbd5e1;
-
-    /* Stage Accents */
-    --grad-set: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-    --grad-hatch: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
-    --grad-pull: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-
-    --grad-live: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    --grad-incub: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
-    --grad-rate: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+    --text-muted: #64748b;
+    --cell-bg: #ffffff;
+    --cell-border: #cbd5e1;
+    --row-alt: #f8fafc;
+    --tab-bar-bg: #e9eef5;
+    --tab-active-bg: #ffffff;
+    --tab-text: #64748b;
+    --tab-active-text: #0284c7;
   }
 
-  /* DARK MODE STYLES */
-  body.dark-mode {
-    --bg-main: #090d16;
-    --surface-card: #131b2e;
-    --border-card: #1e293b;
+  body.dark-theme {
+    --bg-main: #0b1120;
+    --card-bg: #1e293b;
+    --card-border: #334155;
     --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --nav-bar-bg: #131b2e;
-    --nav-btn-active: #1e293b;
-    --table-head-bg: #0d1527;
-    --row-border: #1e293b;
-    --slot-bg: #131b2e;
-    --slot-progress-bg: #1e293b;
-    --input-bg: #090d16;
-    --input-border: #334155;
-
-    /* Dark Stage Overlays */
-    --grad-set: linear-gradient(135deg, #0c2b48 0%, #103a61 100%);
-    --grad-hatch: linear-gradient(135deg, #422006 0%, #572c08 100%);
-    --grad-pull: linear-gradient(135deg, #052e16 0%, #0a4422 100%);
+    --text-muted: #94a3b8;
+    --cell-bg: #1e293b;
+    --cell-border: #475569;
+    --row-alt: #0f172a;
+    --tab-bar-bg: #0f172a;
+    --tab-active-bg: #334155;
+    --tab-text: #94a3b8;
+    --tab-active-text: #38bdf8;
   }
 
-  * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
-  html, body { overflow-x: hidden; width: 100%; margin: 0; padding: 0; background: var(--bg-main); color: var(--text-primary); transition: background 0.2s ease, color 0.2s ease; }
-  body { padding-bottom: calc(150px + env(safe-area-inset-bottom, 25px)); }
-  .container { max-width: 540px; margin: auto; padding: 12px; }
+  * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--bg-main); color: var(--text-primary); margin: 0; padding: 10px; padding-bottom: 85px; overflow-x: hidden; transition: background 0.2s ease, color 0.2s ease; }
+  .container { max-width: 600px; margin: auto; position: relative; }
 
-  /* TOP APP BAR */
-  .top-app-bar {
-    position: sticky; top: 0; z-index: 40;
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(14px);
-    border-bottom: 1px solid var(--border-card);
-    padding-top: calc(10px + env(safe-area-inset-top, 0px));
-    padding-bottom: 10px;
-    padding-left: 14px;
-    padding-right: 14px;
-    display: flex; align-items: center; justify-content: space-between;
-    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
-    transition: background 0.2s ease, border-color 0.2s ease;
+  /* TOP HEADER */
+  .top-bar {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    margin-bottom: 12px;
   }
-  body.dark-mode .top-app-bar {
-    background: rgba(19, 27, 46, 0.92);
+  .brand-group { display: flex; align-items: center; gap: 8px; }
+  .logo-box {
+    width: 42px;
+    height: 42px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
   }
-  .brand-group { display: flex; align-items: center; gap: 10px; }
-  .logo-avatar {
-    width: 42px; height: 42px; border-radius: 12px;
-    background: var(--primary-grad);
-    color: white; font-weight: 900; font-size: 0.82rem;
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden; cursor: pointer; flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
-  }
-  .logo-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .brand-text h1 { margin: 0; font-size: 1.05rem; font-weight: 900; line-height: 1.1; background: linear-gradient(135deg, var(--text-primary), #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .brand-text .sub-title { margin: 0; font-size: 0.65rem; color: #0284c7; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; }
+  .logo-box img { width: 100%; height: 100%; object-fit: contain; }
+  .brand-text h1 { margin: 0; font-size: 1rem; color: var(--text-primary); line-height: 1.1; font-weight: 800; }
+  .brand-text .sub-title { margin: 0; font-size: 0.65rem; color: #0284c7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
   
-  .btn-icon-toggle {
-    background: var(--surface-card);
-    border: 1px solid var(--border-card);
-    border-radius: 20px;
-    padding: 6px 10px;
-    font-size: 0.8rem;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-  }
-  .btn-fancy-report {
-    background: var(--surface-card);
-    border: 1px solid var(--border-card);
-    border-radius: 20px;
-    padding: 6px 12px;
-    font-size: 0.74rem;
-    font-weight: 800;
+  .header-actions { display: flex; align-items: center; gap: 5px; }
+  .btn-theme {
+    background: var(--tab-bar-bg);
+    border: 1px solid var(--card-border);
     color: var(--text-primary);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
     cursor: pointer;
   }
-  .status-pill {
-    font-size: 0.65rem; font-weight: 800; padding: 4px 8px; border-radius: 20px;
-    background: var(--border-card); color: var(--text-secondary); display: inline-flex; align-items: center; gap: 4px;
+  .status-badge { font-size: 0.65rem; padding: 4px 6px; border-radius: 10px; font-weight: bold; background: #e0f2fe; color: #0284c7; }
+  .btn-header {
+    border: none;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 6px 9px;
+    cursor: pointer;
   }
-  .status-pill.online { background: #dcfce7; color: #15803d; box-shadow: 0 0 10px rgba(34, 197, 94, 0.25); }
-  body.dark-mode .status-pill.online { background: #052e16; color: #4ade80; }
+  .btn-header.primary { background: #e2e8f0; color: #334155; }
+  .btn-header.danger { background: #fee2e2; color: #b91c1c; }
 
-  /* STAT CARDS */
-  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
-  .kpi-card {
-    border-radius: 16px; padding: 10px 6px; text-align: center;
-    position: relative; overflow: hidden;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.04);
-    background: var(--surface-card); border: 1px solid var(--border-card);
+  /* METRICS STRIP */
+  .metrics-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
   }
-  .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
-  .kpi-card.c-live::before { background: var(--grad-live); }
-  .kpi-card.c-incub::before { background: var(--grad-incub); }
-  .kpi-card.c-rate::before { background: var(--grad-rate); }
-  
-  .kpi-label { font-size: 0.6rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; }
-  .kpi-val { font-size: 1.35rem; font-weight: 900; margin-top: 2px; }
-  .kpi-val.v-live { color: #10b981; }
-  .kpi-val.v-incub { color: #38bdf8; }
-  .kpi-val.v-rate { color: #f59e0b; }
+  .metric-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 10px 6px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  }
+  .metric-lbl { font-size: 0.60rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
+  .metric-val { font-size: 1.35rem; font-weight: 900; line-height: 1.1; }
 
-  /* NAVIGATION TABS */
-  .nav-tabs-wrapper {
-    display: flex; background: var(--nav-bar-bg); border-radius: 14px;
-    padding: 4px; gap: 4px; margin-bottom: 14px; overflow-x: auto;
-    scrollbar-width: none; -webkit-overflow-scrolling: touch;
-    border: 1px solid var(--border-card);
+  /* TABS */
+  .tab-bar {
+    display: flex;
+    background: var(--tab-bar-bg);
+    border-radius: 14px;
+    padding: 4px;
+    gap: 2px;
+    margin-bottom: 12px;
+    overflow-x: auto;
   }
-  .nav-tabs-wrapper::-webkit-scrollbar { display: none; }
-  .nav-tab-item {
-    flex: 1 0 auto; border: none; background: transparent; padding: 9px 12px;
-    font-size: 0.74rem; font-weight: 800; color: var(--text-secondary);
-    border-radius: 11px; cursor: pointer; text-align: center; white-space: nowrap;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  .tab-btn {
+    flex: 1;
+    min-width: fit-content;
+    border: none;
+    background: transparent;
+    padding: 9px 8px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--tab-text);
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    white-space: nowrap;
   }
-  .nav-tab-item.active {
-    background: var(--nav-btn-active); color: #0284c7;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+  .tab-btn.active {
+    background: var(--tab-active-bg);
+    color: var(--tab-active-text);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.06);
   }
-  body.dark-mode .nav-tab-item.active { color: #38bdf8; }
 
-  /* SWIPE ENGINE */
-  .swipe-track-container {
-    overflow: hidden; width: 100%; position: relative;
-    touch-action: pan-y pinch-zoom;
+  /* SLIDING VIEWPORT */
+  .swipe-viewport {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    border-radius: 14px;
   }
-  .swipe-slides-wrapper {
-    display: flex; width: 500%;
+  .swipe-track {
+    display: flex;
+    width: 500%;
     transition: transform 0.28s cubic-bezier(0.25, 1, 0.5, 1);
     will-change: transform;
   }
-  .swipe-slide { width: 20%; flex-shrink: 0; box-sizing: border-box; }
+  .swipe-slide {
+    width: 20%;
+    flex-shrink: 0;
+    min-height: 480px;
+    padding-bottom: 10px;
+  }
 
-  /* RACK VIEW */
-  .rack-instructions {
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 0.74rem; font-weight: 800; color: var(--text-secondary);
-    margin-bottom: 10px; padding: 0 4px;
+  /* CARDS */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
   }
-  .rack-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+  .card h2 { margin: 0 0 12px 0; font-size: 0.95rem; color: var(--text-primary); font-weight: 800; }
+  .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .form-row > div { flex: 1; }
+  label { font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 3px; }
+  input, select, textarea {
+    width: 100%;
+    padding: 9px;
+    border: 1px solid var(--cell-border);
+    border-radius: 8px;
+    font-size: 0.88rem;
+    background: var(--cell-bg);
+    color: var(--text-primary);
   }
-  .rack-slot-card {
-    background: var(--slot-bg);
-    border: 1.5px solid var(--border-card);
+  .btn-submit { width: 100%; background: #0284c7; color: #ffffff; border: none; padding: 11px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; cursor: pointer; margin-top: 4px; }
+  .btn-cancel { width: 100%; background: #64748b; color: #ffffff; border: none; padding: 8px; border-radius: 8px; font-weight: bold; font-size: 0.8rem; margin-top: 6px; display: none; }
+
+  /* BATCH CARDS */
+  .batch-card { background: var(--card-bg); border: 1.5px solid #0284c7; border-radius: 12px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(2, 132, 199, 0.08); }
+  .batch-card.archived { border-color: var(--card-border); opacity: 0.75; }
+  .batch-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 6px; margin-bottom: 8px; }
+  .batch-title { font-size: 0.98rem; font-weight: 800; color: var(--text-primary); }
+  .batch-eggs { font-size: 0.78rem; background: #e0f2fe; color: #0284c7; font-weight: 800; padding: 2px 8px; border-radius: 12px; }
+  .batch-dates-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; text-align: center; margin-bottom: 8px; }
+  .date-pill { padding: 5px 2px; border-radius: 6px; }
+  .date-pill.d1 { background: #bae6fd; color: #0369a1; }
+  .date-pill.d7 { background: #f3e8ff; color: #6b21a8; }
+  .date-pill.d14 { background: #fef08a; color: #854d0e; }
+  .date-pill.d18 { background: #fed7aa; color: #9a3412; }
+  .pill-lbl { font-size: 0.58rem; font-weight: 800; text-transform: uppercase; display: block; }
+  .pill-val { font-size: 0.72rem; font-weight: 800; margin-top: 2px; display: block; }
+  .batch-results-bar { display: flex; justify-content: space-between; align-items: center; background: var(--row-alt); padding: 7px 10px; border-radius: 6px; font-size: 0.78rem; margin-bottom: 8px; }
+  .batch-actions { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; }
+  .btn-neutral { padding: 7px 3px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; color: var(--text-primary); background: var(--card-bg); border: 1px solid var(--card-border); cursor: pointer; text-align: center; }
+
+  /* RIGID TABLE SYSTEM WITH HIGH-CONTRAST BORDERS */
+  .table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    border: 1px solid var(--cell-border);
+    background: var(--card-bg);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    text-align: center;
+  }
+  th {
+    background: var(--tab-bar-bg);
+    color: var(--text-primary);
+    font-weight: 800;
+    padding: 8px 6px;
+    border: 1px solid var(--cell-border);
+    white-space: nowrap;
+  }
+  td {
+    padding: 8px 5px;
+    border: 1px solid var(--cell-border);
+    color: var(--text-primary);
+    background: var(--cell-bg);
+    white-space: nowrap;
+  }
+  tr:nth-child(even) td {
+    background: var(--row-alt);
+  }
+
+  /* ACTIVITY & TASK LEDGER */
+  .ledger-main-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 18px;
-    padding: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  }
+  .ledger-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .ledger-title-text {
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: #7c3aed;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-new-log {
+    background: var(--card-bg);
+    border: 1.5px solid #7c3aed;
+    color: #7c3aed;
+    font-size: 0.78rem;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 10px;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .rack-slot-card:active { transform: scale(0.96); }
-
-  .rack-slot-card.stage-set {
-    border-color: #38bdf8;
-    background: linear-gradient(180deg, var(--slot-bg) 0%, rgba(56, 189, 248, 0.1) 100%);
+  .ledger-pills-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+    scrollbar-width: none;
   }
-  .rack-slot-card.stage-hatch {
-    border-color: #fb923c;
-    background: linear-gradient(180deg, var(--slot-bg) 0%, rgba(251, 146, 60, 0.1) 100%);
-  }
-  .rack-slot-card.stage-pull {
-    border-color: #4ade80;
-    background: linear-gradient(180deg, var(--slot-bg) 0%, rgba(74, 222, 128, 0.1) 100%);
-  }
-
-  .slot-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-  .slot-name { font-size: 0.96rem; font-weight: 900; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px; }
-  .slot-eggs { font-size: 0.72rem; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 2px 7px; border-radius: 12px; }
-  body.dark-mode .slot-eggs { color: #38bdf8; background: #0c2b48; }
-
-  .slot-progress-wrap { width: 100%; height: 7px; background: var(--slot-progress-bg); border-radius: 4px; overflow: hidden; margin: 8px 0; }
-  .slot-progress-bar { height: 100%; border-radius: 4px; }
-
-  .slot-footer {
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 0.68rem; font-weight: 800; color: var(--text-secondary);
-  }
-  .slot-badge-pill {
-    padding: 2px 6px; border-radius: 6px; font-size: 0.6rem; font-weight: 900; text-transform: uppercase;
-  }
-
-  /* DATA CARDS & TABLES */
-  .surface-card {
-    background: var(--surface-card); border: 1px solid var(--border-card);
-    border-radius: 20px; padding: 14px; margin-bottom: 12px;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.06);
-  }
-  .surface-card h2 { margin: 0 0 10px 0; font-size: 0.95rem; font-weight: 900; color: #0284c7; }
-  body.dark-mode .surface-card h2 { color: #38bdf8; }
-  .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; border-radius: 12px; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.78rem; min-width: 320px; }
-  th, td { border-bottom: 1px solid var(--row-border); padding: 9px 6px; text-align: center; }
-  th { background: var(--table-head-bg); color: var(--text-secondary); font-weight: 800; font-size: 0.72rem; text-transform: uppercase; }
-
-  .btn-touch {
-    padding: 6px 10px; border-radius: 8px; font-size: 0.74rem;
-    font-weight: 800; border: 1px solid var(--border-card); background: var(--surface-card);
-    color: var(--text-primary); cursor: pointer; text-align: center;
-  }
-  .btn-touch:active { transform: scale(0.96); opacity: 0.85; }
-
-  /* FILTER BAR */
-  .filter-pill-bar {
-    display: flex; gap: 6px; overflow-x: auto; margin-bottom: 12px; padding-bottom: 4px;
-    scrollbar-width: none; -webkit-overflow-scrolling: touch;
-  }
-  .filter-pill-bar::-webkit-scrollbar { display: none; }
+  .ledger-pills-row::-webkit-scrollbar { display: none; }
   .filter-pill {
-    flex: 0 0 auto; background: var(--nav-bar-bg); border: 1px solid var(--border-card); border-radius: 14px;
-    padding: 5px 10px; font-size: 0.7rem; font-weight: 800; color: var(--text-secondary); cursor: pointer;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    background: var(--tab-bar-bg);
+    color: var(--text-muted);
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
   }
-  .filter-pill.active { background: #7c3aed; color: #ffffff; border-color: #7c3aed; }
+  .filter-pill.active {
+    background: #7c3aed;
+    color: #ffffff;
+  }
+  .ledger-item-card {
+    background: var(--row-alt);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .ledger-item-date { font-size: 0.74rem; color: var(--text-muted); font-weight: 700; margin-bottom: 3px; }
+  .ledger-item-type { font-size: 0.96rem; font-weight: 900; color: var(--text-primary); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .ledger-item-notes { font-size: 0.84rem; color: var(--text-muted); font-weight: 600; }
+  .btn-item-delete { position: absolute; top: 10px; right: 12px; background: transparent; border: none; color: #ef4444; font-size: 1rem; font-weight: bold; cursor: pointer; }
 
-  /* CALENDAR VIEW */
-  .cal-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  .cal-grid {
+  /* FLOATING QUICK LOG BUTTON */
+  .fab-quick-log {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 22px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    box-shadow: 0 8px 20px rgba(2, 132, 199, 0.4);
+    cursor: pointer;
+    z-index: 900;
+  }
+
+  /* 7-COLUMN CALENDAR */
+  .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .cal-header button { padding: 5px 14px; background: var(--tab-bar-bg); color: var(--text-primary); border: 1px solid var(--card-border); border-radius: 8px; font-weight: bold; cursor: pointer; }
+  .cal-grid-header {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
-    gap: 4px;
+    gap: 3px;
+    text-align: center;
+    margin-bottom: 4px;
     width: 100%;
-    box-sizing: border-box;
   }
-  .cal-head {
-    font-size: 0.65rem; font-weight: 900; color: var(--text-secondary);
-    text-align: center; padding: 4px 0; text-transform: uppercase;
+  .cal-day-name {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    padding-bottom: 4px;
+  }
+  .cal-grid-body {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 3px;
+    width: 100%;
   }
   .cal-cell {
-    min-height: 60px;
-    border-radius: 10px;
-    border: 1px solid var(--border-card);
-    background: var(--surface-card);
+    min-height: 66px;
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--cell-border);
+    background: var(--cell-bg);
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-start;
     padding: 3px 1px;
-    font-size: 0.76rem;
+    font-size: 0.78rem;
     font-weight: 800;
     cursor: pointer;
     overflow: hidden;
-    box-sizing: border-box;
   }
-  .cal-cell:active { transform: scale(0.94); }
-  .cal-cell.empty { border: none; background: transparent; cursor: default; }
-  
-  .cal-cell.has-set { background: #e0f2fe !important; border-color: #38bdf8 !important; }
-  .cal-cell.has-hatch { background: #ffedd5 !important; border-color: #fb923c !important; }
-  .cal-cell.has-pull { background: #dcfce7 !important; border-color: #4ade80 !important; }
-  body.dark-mode .cal-cell.has-set { background: #0c2b48 !important; }
-  body.dark-mode .cal-cell.has-hatch { background: #422006 !important; }
-  body.dark-mode .cal-cell.has-pull { background: #052e16 !important; }
+  .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; }
 
-  .cal-badge {
-    display: block;
-    width: 96%;
-    font-size: 0.52rem;
+  .stage-set { background: #bae6fd !important; border: 1.5px solid #0284c7 !important; color: #0369a1 !important; }
+  .stage-d7 { background: #f3e8ff !important; border: 1.5px solid #9333ea !important; color: #6b21a8 !important; }
+  .stage-d14 { background: #fef08a !important; border: 1.5px solid #ca8a04 !important; color: #854d0e !important; }
+  .stage-hatch { background: #fed7aa !important; border: 1.5px solid #ea580c !important; color: #9a3412 !important; }
+  .stage-remove { background: #bbf7d0 !important; border: 1.5px solid #16a34a !important; color: #166534 !important; }
+  .stage-tag {
+    font-size: 0.48rem;
     font-weight: 900;
     line-height: 1.1;
-    padding: 2px 1px;
-    border-radius: 4px;
+    text-transform: uppercase;
     margin-top: 1px;
+    padding: 1px 2px;
+    border-radius: 3px;
     white-space: nowrap;
+    max-width: 96%;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-align: center;
+    display: block;
   }
-  .cal-egg-pill {
-    font-size: 0.52rem; font-weight: 900; color: #0284c7;
-    background: var(--surface-card); border-radius: 4px; padding: 1px 3px; margin-top: 2px;
-    border: 1px solid var(--border-card);
-  }
-  .cal-activity-pill {
-    font-size: 0.5rem; font-weight: 900; color: #7c3aed;
-    background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 3px;
-    padding: 1px 2px; margin-top: 1px; max-width: 95%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  body.dark-mode .cal-activity-pill { background: #2e1065; color: #c4b5fd; border-color: #4c1d95; }
+  .egg-badge { background: #0284c7; color: #ffffff; border-radius: 6px; font-size: 0.52rem; padding: 1px 3px; margin-top: 1px; font-weight: 800; max-width: 96%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; }
+  .task-cal-badge { background: #7c3aed; color: #ffffff; border-radius: 6px; font-size: 0.50rem; padding: 1px 3px; margin-top: 1px; font-weight: 800; max-width: 96%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; }
 
-  /* FLOATING BUTTON (LIFTED CLEAR OF PHONE KEYS) */
-  .fab-button {
-    position: fixed;
-    bottom: calc(75px + env(safe-area-inset-bottom, 20px));
-    right: 18px;
-    z-index: 50;
-    background: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #06b6d4 100%);
-    color: #ffffff; border: none; height: 52px; border-radius: 26px;
-    padding: 0 22px; font-size: 0.9rem; font-weight: 900;
-    display: flex; align-items: center; gap: 8px;
-    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45), 0 0 0 3px rgba(255, 255, 255, 0.85);
-    cursor: pointer;
+  /* AUDIT MODAL */
+  .audit-section-box {
+    background: var(--row-alt);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 14px;
   }
-  body.dark-mode .fab-button {
-    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.6), 0 0 0 3px rgba(19, 27, 46, 0.85);
+  .audit-title {
+    font-size: 0.88rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
-  .fab-button:active { transform: scale(0.95); }
+  .audit-select-row { display: flex; gap: 8px; margin-bottom: 10px; }
+  .audit-select-row > div { flex: 1; }
+  .audit-lbl { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; display: block; }
 
-  /* BOTTOM SHEETS (RAISED CLEAR OF PHONE KEYS) */
-  .sheet-backdrop {
-    display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65);
-    backdrop-filter: blur(8px); z-index: 90; align-items: flex-end; justify-content: center;
-  }
-  .sheet-modal {
-    background: var(--surface-card); width: 100%; max-width: 540px;
-    border-radius: 26px 26px 0 0; padding: 18px 16px; 
-    padding-bottom: calc(75px + env(safe-area-inset-bottom, 25px));
-    max-height: 88vh;
-    overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.3); animation: sheetUp 0.22s ease-out;
-  }
-  @keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-  
-  .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-  .sheet-header h3 { margin: 0; font-size: 1.1rem; font-weight: 900; color: var(--text-primary); }
-  .btn-close-sheet {
-    background: var(--nav-bar-bg); border: none; width: 32px; height: 32px;
-    border-radius: 50%; font-weight: 900; cursor: pointer; color: var(--text-secondary);
-  }
+  /* MODALS */
+  .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 999; align-items: center; justify-content: center; padding: 16px; }
+  .modal-box { background: var(--card-bg); border: 1px solid var(--card-border); width: 100%; max-width: 440px; border-radius: 16px; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; color: var(--text-primary); }
+  .modal-box h3 { margin: 0 0 12px 0; color: #0284c7; font-size: 1.05rem; display: flex; justify-content: space-between; align-items: center; }
+  .modal-close { background: var(--tab-bar-bg); color: var(--text-primary); border: 1px solid var(--card-border); border-radius: 50%; width: 28px; height: 28px; font-weight: bold; cursor: pointer; }
+  .event-item { background: var(--row-alt); border: 1px solid var(--card-border); border-radius: 8px; padding: 10px; margin-bottom: 8px; font-size: 0.85rem; }
+  .sub-tab-bar { display: flex; gap: 4px; margin-bottom: 12px; background: var(--tab-bar-bg); padding: 3px; border-radius: 8px; }
+  .sub-tab-btn { flex: 1; border: none; background: transparent; padding: 7px 2px; font-size: 0.72rem; font-weight: bold; color: var(--text-muted); border-radius: 6px; cursor: pointer; }
+  .sub-tab-btn.active { background: var(--tab-active-bg); color: var(--text-primary); }
 
-  /* TIMELINE IN MODAL */
-  .timeline-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 12px; }
-  .timeline-step {
-    border-radius: 12px; padding: 8px 4px; text-align: center;
-    display: flex; flex-direction: column; justify-content: center;
-  }
-  .timeline-step.s-set { background: var(--grad-set); color: #0369a1; border: 1px solid #bae6fd; }
-  .timeline-step.s-hatch { background: var(--grad-hatch); color: #9a3412; border: 1px solid #fed7aa; }
-  .timeline-step.s-pull { background: var(--grad-pull); color: #166534; border: 1px solid #bbf7d0; }
-  body.dark-mode .timeline-step.s-set { color: #38bdf8; border-color: #0284c7; }
-  body.dark-mode .timeline-step.s-hatch { color: #fb923c; border-color: #ea580c; }
-  body.dark-mode .timeline-step.s-pull { color: #4ade80; border-color: #16a34a; }
-  .step-lbl { font-size: 0.58rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.3px; }
-  .step-date { font-size: 0.76rem; font-weight: 800; margin-top: 2px; }
-
-  /* FORMS */
-  .form-group { margin-bottom: 10px; }
-  .form-row { display: flex; gap: 8px; margin-bottom: 10px; }
-  .form-row > div { flex: 1; }
-  label { font-size: 0.72rem; font-weight: 800; color: var(--text-secondary); display: block; margin-bottom: 4px; text-transform: uppercase; }
-  input, select, textarea {
-    width: 100%; padding: 11px; border: 1.5px solid var(--input-border);
-    border-radius: 12px; font-size: 0.92rem; background: var(--input-bg); color: var(--text-primary);
-    font-weight: 700;
-  }
-  .stepper-row { display: flex; align-items: center; gap: 6px; }
-  .step-btn-quick {
-    background: var(--nav-bar-bg); border: 1.5px solid var(--input-border); border-radius: 10px;
-    padding: 10px 14px; font-size: 0.85rem; font-weight: 900; cursor: pointer; color: var(--primary-solid);
-  }
-  .btn-submit-main {
-    width: 100%; background: var(--primary-grad); color: #ffffff; border: none;
-    padding: 14px; border-radius: 14px; font-weight: 900; font-size: 0.95rem;
-    cursor: pointer; margin-top: 10px;
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+  /* REPORT SCREEN DISPLAY */
+  #dataDisplayView {
+    display: none;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 16px;
+    margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
   }
 </style>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-<!-- TOP APP BAR -->
-<header class="top-app-bar">
-  <div class="brand-group">
-    <div class="logo-avatar" id="logoBox" onclick="document.getElementById('logoFile').click()">
-      <span id="logoLetters">AD</span>
-      <img id="logoImg" style="display:none;" alt="Logo">
+<div class="container" id="mainDashboard">
+
+  <!-- TOP HEADER -->
+  <div class="top-bar">
+    <div class="brand-group">
+      <div class="logo-box" id="logoContainer" onclick="triggerUploadOnce()">
+        <img id="logoDisplay" alt="AD Farms" style="display:none;">
+        <span id="placeholderText" style="font-size:0.6rem; font-weight:bold;">AD<br>FARMS</span>
+      </div>
+      <input type="file" id="logoInput" accept="image/*" style="display: none;" onchange="handleLogoUpload(this)">
+      <div class="brand-text">
+        <h1>AD Farms</h1>
+        <div class="sub-title">Herd &amp; Harvest</div>
+      </div>
     </div>
-    <input type="file" id="logoFile" accept="image/*" style="display:none;" onchange="handleLogoUpdate(this)">
-    <div class="brand-text">
-      <h1>AD Farms</h1>
-      <div class="sub-title">Herd &amp; Harvest</div>
+    <div class="header-actions">
+      <button class="btn-theme" onclick="toggleThemeMode()" title="Toggle Dark/Light Mode">🌙</button>
+      <button class="btn-header danger" onclick="openDeleteCenterModal()">🗑️ Delete</button>
+      <button class="btn-header primary" onclick="openDataModal()">📊 Reports</button>
+      <div id="cloudStatus" class="status-badge">🟢 Cloud</div>
     </div>
   </div>
-  <div style="display:flex; align-items:center; gap:6px;">
-    <!-- DARK/LIGHT THEME SWITCHER -->
-    <button class="btn-icon-toggle" id="themeToggleBtn" onclick="toggleThemeMode()" title="Toggle Dark/Light Mode">🌙</button>
-    <button class="btn-fancy-report" onclick="openReportModal()">📊 Reports</button>
-    <div id="cloudBadge" class="status-pill online">● Cloud</div>
+
+  <!-- TOP METRICS -->
+  <div class="metrics-strip">
+    <div class="metric-card">
+      <div class="metric-lbl">CHICKS ALIVE</div>
+      <div class="metric-val" id="liveChicksTopDisplay" style="color: #059669;">0</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-lbl">IN INCUBATOR</div>
+      <div class="metric-val" id="inIncubatorDisplay" style="color: #0284c7;">0</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-lbl">HATCH RATE</div>
+      <div class="metric-val" id="hatchRateDisplay" style="color: #ea580c;">--</div>
+    </div>
   </div>
-</header>
-
-<main class="container" id="mainAppSection">
-
-  <!-- OVERVIEW METRICS STRIP -->
-  <section class="kpi-grid">
-    <div class="kpi-card c-live">
-      <div class="kpi-label">Live Flock</div>
-      <div class="kpi-val v-live" id="kpiLiveFlock">0</div>
-    </div>
-    <div class="kpi-card c-incub">
-      <div class="kpi-label">In Incubator</div>
-      <div class="kpi-val v-incub" id="kpiIncubating">0</div>
-    </div>
-    <div class="kpi-card c-rate">
-      <div class="kpi-label">Hatch Rate</div>
-      <div class="kpi-val v-rate" id="kpiHatchRate">0%</div>
-    </div>
-  </section>
 
   <!-- NAVIGATION TABS -->
-  <nav class="nav-tabs-wrapper" id="navTabsBar">
-    <button class="nav-tab-item active" onclick="slideToIndex(0)">🗄️ Rack View</button>
-    <button class="nav-tab-item" onclick="slideToIndex(1)">🥚 Daily Eggs</button>
-    <button class="nav-tab-item" onclick="slideToIndex(2)">☠️ Mortality</button>
-    <button class="nav-tab-item" onclick="slideToIndex(3)">📝 Farm Ledger</button>
-    <button class="nav-tab-item" onclick="slideToIndex(4)">📅 Timeline</button>
-  </nav>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="goToSlide(0)">🗄️ Rack View</button>
+    <button class="tab-btn" onclick="goToSlide(1)">🥚 Daily Eggs</button>
+    <button class="tab-btn" onclick="goToSlide(2)">☠️ Mortality</button>
+    <button class="tab-btn" onclick="goToSlide(3)">📝 Farm Ledger</button>
+    <button class="tab-btn" onclick="goToSlide(4)">📅 Timeline</button>
+  </div>
 
-  <!-- SWIPE CAROUSEL WRAPPER -->
-  <div class="swipe-track-container" id="swipeContainer">
-    <div class="swipe-slides-wrapper" id="swipeTrack">
+  <!-- SLIDING CAROUSEL -->
+  <div class="swipe-viewport" id="swipeViewport">
+    <div class="swipe-track" id="swipeTrack">
 
-      <!-- SLIDE 0: PHYSICAL RACK VIEW -->
-      <div class="swipe-slide" id="slide-0">
-        <div class="rack-instructions">
-          <span>INCUBATOR TRAY MATRIX</span>
-          <span>Tap tray to open details</span>
+      <!-- SLIDE 0: RACK VIEW -->
+      <div class="swipe-slide" id="slide0">
+        <div style="font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:4px 2px 8px 2px;">Incubator Tray Matrix</div>
+        <div id="batchContainer"></div>
+        <div id="noBatches" style="text-align:center; color:var(--text-muted); padding:30px 20px; font-size:0.85rem;">No active batches inside incubator.<br><br>Tap <b>+ Quick Log</b> below to set a new batch.</div>
+        <div class="archive-toggle-bar" style="text-align:center; margin:10px 0;">
+          <button class="btn-neutral" style="border-radius:20px; padding:6px 14px;" onclick="toggleArchivedBatches()" id="toggleArchiveBtn">👁️ Show Archived Batches</button>
         </div>
-        <div class="rack-grid" id="rackGridContainer"></div>
-        <div id="noBatchesMsg" style="display:none; text-align:center; padding:30px; color:var(--text-secondary); font-size:0.85rem;">
-          No incubator trays active. Tap <b>+ Quick Log</b> to place Tray 1.
-        </div>
+        <div id="archivedContainer" style="display:none;"></div>
       </div>
 
-      <!-- SLIDE 1: EGGS -->
-      <div class="swipe-slide" id="slide-1">
-        <div class="surface-card">
-          <h2>🥚 Daily Pickings Log</h2>
-          <div class="table-responsive">
+      <!-- SLIDE 1: DAILY EGGS -->
+      <div class="swipe-slide" id="slide1">
+        <div class="card">
+          <h2>📅 Daily Pickings Log</h2>
+          <div class="table-wrap">
             <table>
               <thead>
                 <tr>
@@ -477,481 +513,481 @@
                   <th>Eve</th>
                   <th>Broken</th>
                   <th>Total</th>
-                  <th>Action</th>
+                  <th>Edit</th>
                 </tr>
               </thead>
-              <tbody id="eggsTableBody"></tbody>
+              <tbody id="collectionBody"></tbody>
             </table>
-            <div id="noEggsMsg" style="display:none; text-align:center; padding:15px; color:var(--text-secondary); font-size:0.8rem;">No egg records found.</div>
+            <div id="noCollections" style="text-align:center; color:var(--text-muted); padding:15px; font-size:0.8rem;">No collections entered yet.</div>
           </div>
         </div>
       </div>
 
       <!-- SLIDE 2: MORTALITY -->
-      <div class="swipe-slide" id="slide-2">
-        <div class="surface-card">
-          <h2 style="color:#ef4444;">☠️ Mortality Register</h2>
-          <div class="table-responsive">
+      <div class="swipe-slide" id="slide2">
+        <div class="card" style="padding: 10px;">
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px; text-align:center;">
+            <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:8px; padding:8px 4px;">
+              <div id="liveChicksBalance" style="font-size:1.3rem; font-weight:900; color:#059669;">0</div>
+              <div style="font-size:0.60rem; font-weight:bold; color:var(--text-muted);">CHICKS ALIVE</div>
+              <div style="font-size:0.60rem; color:#b91c1c; font-weight:bold;" id="totalChicksDeadSub">0 dead</div>
+            </div>
+            <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:8px; padding:8px 4px;">
+              <div id="growersLoss30D" style="font-size:1.3rem; font-weight:900; color:#dc2626;">0</div>
+              <div style="font-size:0.60rem; font-weight:bold; color:var(--text-muted);">GROWER LOSS</div>
+              <div style="font-size:0.60rem; color:var(--text-muted); font-weight:bold;" id="growersLoss7DSub">0 last 7 days</div>
+            </div>
+            <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:8px; padding:8px 4px;">
+              <div id="breedersLoss30D" style="font-size:1.3rem; font-weight:900; color:#dc2626;">0</div>
+              <div style="font-size:0.60rem; font-weight:bold; color:var(--text-muted);">BREEDER LOSS</div>
+              <div style="font-size:0.60rem; color:var(--text-muted); font-weight:bold;" id="breedersLoss7DSub">0 last 7 days</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="sub-tab-bar">
+            <button class="sub-tab-btn active" onclick="switchMortalityView('All', this)">All Sections</button>
+            <button class="sub-tab-btn" onclick="switchMortalityView('Chicks', this)">🐥 Chicks</button>
+            <button class="sub-tab-btn" onclick="switchMortalityView('Growers', this)">🐓 Growers</button>
+            <button class="sub-tab-btn" onclick="switchMortalityView('Breeders', this)">🥚 Breeders</button>
+          </div>
+          <div class="table-wrap">
             <table>
               <thead>
                 <tr>
                   <th>Date</th>
+                  <th>Section</th>
                   <th>Dead</th>
-                  <th>Action</th>
+                  <th>Edit</th>
                 </tr>
               </thead>
-              <tbody id="mortalityTableBody"></tbody>
+              <tbody id="mortalityBody"></tbody>
             </table>
-            <div id="noMortMsg" style="display:none; text-align:center; padding:15px; color:var(--text-secondary); font-size:0.8rem;">No mortality recorded.</div>
+            <div id="noMortality" style="text-align:center; color:var(--text-muted); padding:15px; font-size:0.8rem;">No mortality recorded.</div>
           </div>
         </div>
       </div>
 
-      <!-- SLIDE 3: FARM ACTIVITIES / LEDGER -->
-      <div class="swipe-slide" id="slide-3">
-        <div class="surface-card">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <h2 style="color:#7c3aed; margin:0;">📝 Activity &amp; Task Ledger</h2>
-            <button class="btn-touch" style="color:#7c3aed; border-color:#7c3aed;" onclick="openQuickDrawer('activity')">+ New Log</button>
+      <!-- SLIDE 3: ACTIVITY & TASK LEDGER -->
+      <div class="swipe-slide" id="slide3">
+        <div class="ledger-main-card">
+          <div class="ledger-header">
+            <div class="ledger-title-text">
+              <span>📝</span> Activity &amp; Task Ledger
+            </div>
+            <button class="btn-new-log" onclick="openQuickLogModal('quickLedger')">+ New Log</button>
           </div>
-          <div class="filter-pill-bar" id="activityFilterBar">
-            <button class="filter-pill active" onclick="filterActivities('All', this)">All</button>
-            <button class="filter-pill" onclick="filterActivities('Vaccination', this)">💉 Vaccines</button>
-            <button class="filter-pill" onclick="filterActivities('Medication', this)">💊 Medication</button>
-            <button class="filter-pill" onclick="filterActivities('Sales', this)">💰 Sales</button>
-            <button class="filter-pill" onclick="filterActivities('Feed', this)">🌾 Feed</button>
-            <button class="filter-pill" onclick="filterActivities('Maintenance', this)">🔧 Maint</button>
+
+          <div class="ledger-pills-row">
+            <button class="filter-pill active" onclick="filterLedgerView('All', this)">All</button>
+            <button class="filter-pill" onclick="filterLedgerView('Medication', this)">💊 Medication</button>
+            <button class="filter-pill" onclick="filterLedgerView('Sales', this)">💰 Sales</button>
+            <button class="filter-pill" onclick="filterLedgerView('Feed', this)">🌽 Feed</button>
+            <button class="filter-pill" onclick="filterLedgerView('Maint', this)">🔧 Maint</button>
           </div>
-          <div id="activitiesListContainer"></div>
-          <div id="noActivitiesMsg" style="display:none; text-align:center; padding:20px; color:var(--text-secondary); font-size:0.8rem;">No activity records logged.</div>
+
+          <div id="ledgerCardList"></div>
+          <div id="noLedgerCards" style="text-align:center; color:var(--text-muted); padding:30px 10px; font-size:0.85rem;">No activity logged yet.<br><br>Tap <b>+ New Log</b> to record tasks, medicines, or sales.</div>
         </div>
       </div>
 
-      <!-- SLIDE 4: CALENDAR TIMELINE -->
-      <div class="swipe-slide" id="slide-4">
-        <div class="surface-card">
-          <div class="cal-top">
-            <button class="btn-touch" style="padding:4px 10px;" onclick="shiftCalMonth(-1)">◀</button>
-            <div id="calLabel" style="font-weight:900; font-size:0.95rem; color:var(--text-primary);">Timeline</div>
-            <button class="btn-touch" style="padding:4px 10px;" onclick="shiftCalMonth(1)">▶</button>
+      <!-- SLIDE 4: TIMELINE (ALIGNED CALENDAR) -->
+      <div class="swipe-slide" id="slide4">
+        <div class="card" style="padding: 12px 10px;">
+          <div class="cal-header">
+            <button onclick="changeMonth(-1)">◀</button>
+            <h3 id="calMonthYear" style="margin:0; font-size:0.95rem; color:var(--text-primary);">Month</h3>
+            <button onclick="changeMonth(1)">▶</button>
           </div>
-          <div class="cal-grid">
-            <div class="cal-head">Sun</div><div class="cal-head">Mon</div><div class="cal-head">Tue</div>
-            <div class="cal-head">Wed</div><div class="cal-head">Thu</div><div class="cal-head">Fri</div><div class="cal-head">Sat</div>
+
+          <div class="cal-grid-header">
+            <div class="cal-day-name">Sun</div>
+            <div class="cal-day-name">Mon</div>
+            <div class="cal-day-name">Tue</div>
+            <div class="cal-day-name">Wed</div>
+            <div class="cal-day-name">Thu</div>
+            <div class="cal-day-name">Fri</div>
+            <div class="cal-day-name">Sat</div>
           </div>
-          <div class="cal-grid" id="calCellsGrid"></div>
-          <div style="font-size:0.72rem; color:var(--text-secondary); text-align:center; margin-top:8px;">💡 Tap any date tile to inspect operations or record activities.</div>
+
+          <div class="cal-grid-body" id="calGridBody"></div>
+
+          <div style="font-size:0.72rem; text-align:center; color:var(--text-muted); margin-top:10px;">💡 Tap any date to add a note or view scheduled events.</div>
         </div>
       </div>
 
     </div>
   </div>
 
-</main>
-
-<!-- FLOATING QUICK LOG BUTTON -->
-<button class="fab-button" onclick="openQuickDrawer()">＋ Quick Log</button>
-
-<!-- POPUP MODAL: TRAY DETAILS (ACTIVATED BY CLICKING A TRAY) -->
-<div class="sheet-backdrop" id="trayDetailModal" onclick="closeTrayDetails(event)">
-  <div class="sheet-modal" style="border-radius:24px;" onclick="event.stopPropagation()">
-    <div class="sheet-header">
-      <div>
-        <h3 id="popTrayName" style="margin:0; font-size:1.15rem; font-weight:900;">Tray Name</h3>
-        <span id="popTraySub" style="font-size:0.72rem; font-weight:800; color:var(--primary-solid);"></span>
-      </div>
-      <button class="btn-close-sheet" onclick="closeTrayDetails()">✕</button>
-    </div>
-
-    <div class="timeline-bar">
-      <div class="timeline-step s-set">
-        <span class="step-lbl">Day 1 (Set)</span>
-        <span class="step-date" id="popDay1Date">-</span>
-      </div>
-      <div class="timeline-step s-hatch">
-        <span class="step-lbl">Day 18 (Hatch)</span>
-        <span class="step-date" id="popDay18Date">-</span>
-      </div>
-      <div class="timeline-step s-pull">
-        <span class="step-lbl">Day 21 (Pull)</span>
-        <span class="step-date" id="popDay21Date">-</span>
-      </div>
-    </div>
-
-    <div style="background:var(--nav-bar-bg); border:1px solid var(--border-card); border-radius:14px; padding:12px; margin-bottom:14px; font-size:0.82rem;">
-      <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-        <span style="color:var(--text-secondary); font-weight:700;">Eggs Placed:</span>
-        <b id="popEggsCount">0</b>
-      </div>
-      <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-        <span style="color:var(--text-secondary); font-weight:700;">Chicks Pulled:</span>
-        <b id="popChicksHarvested">Not entered</b>
-      </div>
-      <div style="display:flex; justify-content:space-between;">
-        <span style="color:var(--text-secondary); font-weight:700;">Hatch Rate:</span>
-        <b id="popHatchSuccess" style="color:#10b981;">0%</b>
-      </div>
-    </div>
-
-    <div style="display:flex; gap:8px;">
-      <button class="btn-submit-main" id="btnPopHarvest" style="margin:0; flex:1.2; background:var(--grad-pull); color:#166534; border:1px solid #86efac;">🐣 Chicks Pulled</button>
-      <button class="btn-submit-main" id="btnPopEdit" style="margin:0; flex:1; background:var(--surface-card); color:var(--text-primary); border:1.5px solid var(--border-card); box-shadow:none;">✎ Edit Tray</button>
-    </div>
-  </div>
 </div>
 
-<!-- BOTTOM SHEET ENTRY DRAWER -->
-<div class="sheet-backdrop" id="entryDrawer" onclick="handleDrawerBackdrop(event)">
-  <div class="sheet-modal" onclick="event.stopPropagation()">
-    <div class="sheet-header">
-      <h3 id="drawerTitle">Quick Farm Log</h3>
-      <button class="btn-close-sheet" onclick="closeDrawer()">✕</button>
+<!-- FLOATING QUICK LOG BUTTON -->
+<button class="fab-quick-log" onclick="openQuickLogModal()">
+  <span>+ Quick Log</span>
+</button>
+
+<!-- QUICK LOG MODAL -->
+<div class="modal-overlay" id="quickLogModal" onclick="closeQuickLogModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3>
+      <span>⚡ Quick Log Station</span>
+      <button class="modal-close" onclick="closeQuickLogModal()">✕</button>
+    </h3>
+
+    <div class="sub-tab-bar">
+      <button class="sub-tab-btn active" onclick="switchQuickLogTab('quickBatch', this)">🐥 Batch</button>
+      <button class="sub-tab-btn" onclick="switchQuickLogTab('quickEgg', this)">🥚 Eggs</button>
+      <button class="sub-tab-btn" onclick="switchQuickLogTab('quickMort', this)">☠️ Loss</button>
+      <button class="sub-tab-btn" onclick="switchQuickLogTab('quickLedger', this)">📝 Ledger</button>
     </div>
 
-    <input type="hidden" id="editEntryId" value="">
-
-    <div class="form-group">
-      <label>Record Type</label>
-      <select id="quickTypeSelect" onchange="switchDrawerFormType()">
-        <option value="batch">🐣 New Incubator Batch</option>
-        <option value="egg">🥚 Daily Egg Collection</option>
-        <option value="mortality">☠️ Flock Mortality</option>
-        <option value="activity">📝 Farm Activity / Task</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Date</label>
-      <input type="date" id="recordDate">
-    </div>
-
-    <!-- FORM: BATCH -->
-    <div id="formSectionBatch">
+    <!-- 1. BATCH -->
+    <div id="quickBatchForm" class="quick-form-panel">
+      <input type="hidden" id="editDocId" value="">
       <div class="form-row">
         <div>
-          <label>Batch / Tray Identifier</label>
-          <input type="text" id="batchNameInput" placeholder="e.g. Tray 1">
+          <label>Tray Name</label>
+          <input type="text" id="bname" placeholder="e.g. B7T4">
         </div>
         <div style="flex: 0.6;">
           <label>Egg Count</label>
-          <input type="number" id="batchEggCount" value="102" min="1">
+          <input type="number" id="eggsSet" value="102" min="1" max="102">
         </div>
       </div>
-    </div>
-
-    <!-- FORM: EGGS -->
-    <div id="formSectionEggs" style="display:none;">
       <div class="form-row">
         <div>
-          <label>Collection Slot</label>
-          <select id="eggSlotSelect">
+          <label>Setting Date</label>
+          <input type="date" id="sdate">
+        </div>
+      </div>
+      <button class="btn-submit" id="submitBtn" onclick="saveBatch()">Set Batch (AM/PM Auto-Stamped)</button>
+      <button class="btn-cancel" id="cancelBtn" onclick="resetBatchForm()">Cancel</button>
+    </div>
+
+    <!-- 2. EGGS -->
+    <div id="quickEggForm" class="quick-form-panel" style="display:none;">
+      <div class="form-row">
+        <div>
+          <label>Date</label>
+          <input type="date" id="colDate">
+        </div>
+        <div>
+          <label>Slot</label>
+          <select id="colSlot">
             <option value="Morning">Morning (1st)</option>
             <option value="Afternoon">Afternoon (2nd)</option>
             <option value="Evening">Evening (3rd)</option>
           </select>
         </div>
+      </div>
+      <div class="form-row">
         <div>
-          <label>Intact Eggs</label>
-          <input type="number" id="eggCountInput" placeholder="0" min="0">
+          <label>Good Eggs</label>
+          <input type="number" id="colCount" placeholder="e.g. 35" min="0">
+        </div>
+        <div>
+          <label>Broken</label>
+          <input type="number" id="colBroken" placeholder="e.g. 2" min="0" value="0">
         </div>
       </div>
-      <div class="form-group">
-        <label>Broken Eggs</label>
-        <input type="number" id="eggBrokenInput" value="0" min="0">
-      </div>
+      <button class="btn-submit" id="colSubmitBtn" onclick="saveCollection()">Save Collection</button>
+      <button class="btn-cancel" id="colCancelBtn" onclick="resetEggForm()">Cancel</button>
     </div>
 
-    <!-- FORM: MORTALITY -->
-    <div id="formSectionMort" style="display:none;">
-      <div class="form-group">
-        <label>Bird Losses</label>
-        <div class="stepper-row">
-          <input type="number" id="mortCountInput" placeholder="Count" min="1" style="flex:1;">
-          <button type="button" class="step-btn-quick" onclick="incrementInput('mortCountInput', 1)">+1</button>
-          <button type="button" class="step-btn-quick" onclick="incrementInput('mortCountInput', 5)">+5</button>
+    <!-- 3. MORTALITY -->
+    <div id="quickMortForm" class="quick-form-panel" style="display:none;">
+      <div class="form-row">
+        <div>
+          <label>Date</label>
+          <input type="date" id="mortDate">
+        </div>
+        <div>
+          <label>Section</label>
+          <select id="mortCategory">
+            <option value="Chicks">Chicks (Brooder)</option>
+            <option value="Growers">Grower Stock</option>
+            <option value="Breeders">Breeder / Layers</option>
+          </select>
         </div>
       </div>
+      <div class="form-row">
+        <div>
+          <label>Dead Count</label>
+          <input type="number" id="mortCount" placeholder="e.g. 2" min="1">
+        </div>
+      </div>
+      <button class="btn-submit" id="mortSubmitBtn" style="background:#b91c1c;" onclick="saveMortality()">Log Mortality</button>
+      <button class="btn-cancel" id="mortCancelBtn" onclick="resetMortForm()">Cancel</button>
     </div>
 
-    <!-- FORM: ACTIVITY -->
-    <div id="formSectionActivity" style="display:none;">
-      <div class="form-group">
-        <label>Activity Category</label>
-        <select id="actCategory">
-          <option value="Vaccination">💉 Vaccination</option>
-          <option value="Medication">💊 Medication</option>
-          <option value="Sales">💰 Birds / Egg Sales</option>
-          <option value="Feed">🌾 Feed &amp; Nutrition</option>
-          <option value="Maintenance">🔧 Shed / Farm Maintenance</option>
-          <option value="Other">📝 General Note</option>
-        </select>
+    <!-- 4. LEDGER -->
+    <div id="quickLedgerForm" class="quick-form-panel" style="display:none;">
+      <div class="form-row">
+        <div>
+          <label>Date</label>
+          <input type="date" id="ledgerDate">
+        </div>
+        <div>
+          <label>Category</label>
+          <select id="ledgerCatSelect">
+            <option value="Medication">💊 Medication / Vaccine</option>
+            <option value="Sales">💰 Sales (Birds / Eggs)</option>
+            <option value="Feed">🌽 Feed / Supplements</option>
+            <option value="Maint">🔧 Maint / Farm Task</option>
+          </select>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Details &amp; Notes</label>
-        <textarea id="actDetails" rows="2" placeholder="e.g. Lasota vaccine in drinking water, or Sold 50 birds @ ₹350"></textarea>
+      <div style="margin-bottom:8px;">
+        <label>Details / Particulars</label>
+        <input type="text" id="ledgerNotes" placeholder="e.g. 4 birds @ 3550 or Lasota F1 eye drop">
       </div>
+      <button class="btn-submit" id="ledgerSubmitBtn" style="background:#7c3aed;" onclick="saveLedgerEntry()">Save to Activity Ledger</button>
+      <button class="btn-cancel" id="ledgerCancelBtn" onclick="resetLedgerForm()">Cancel</button>
     </div>
 
-    <button class="btn-submit-main" id="btnSaveRecord" onclick="handleRecordSave()">Save Record</button>
   </div>
 </div>
 
-<!-- HARVEST CHICKS MODAL -->
-<div class="sheet-backdrop" id="harvestModal" onclick="closeHarvestModal(event)">
-  <div class="sheet-modal" style="border-radius:24px;" onclick="event.stopPropagation()">
-    <div class="sheet-header">
-      <h3>🐥 Log Live Chicks Hatched</h3>
-      <button class="btn-close-sheet" onclick="closeHarvestModal()">✕</button>
-    </div>
-    <input type="hidden" id="harvestBatchId">
-    <p id="harvestBatchMeta" style="font-size:0.85rem; color:var(--text-secondary); margin-top:0; font-weight:700;"></p>
-    <div class="form-group">
-      <label>Number of Live Chicks Pulled</label>
-      <input type="number" id="harvestChickCount" min="0" placeholder="e.g. 85">
-    </div>
-    <button class="btn-submit-main" onclick="submitChickHarvest()">Confirm &amp; Update Hatch Rate</button>
-  </div>
-</div>
-
-<!-- CALENDAR DATE INSPECTOR MODAL -->
-<div class="sheet-backdrop" id="inspectorModal" onclick="closeInspectorModal(event)">
-  <div class="sheet-modal" style="border-radius:24px;" onclick="event.stopPropagation()">
-    <div class="sheet-header">
-      <h3 id="inspectorDateTitle">Date Breakdown</h3>
-      <button class="btn-close-sheet" onclick="closeInspectorModal()">✕</button>
-    </div>
+<!-- DATE DETAILS MODAL -->
+<div class="modal-overlay" id="dateModal" onclick="closeDateDetails(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3>
+      <span id="modalDateTitle">Date Details</span>
+      <button class="modal-close" onclick="closeDateDetails()">✕</button>
+    </h3>
     
-    <div id="inspectorContentBody"></div>
+    <div id="modalDetailsBody"></div>
 
-    <div style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--border-card);">
-      <button class="btn-submit-main" id="btnDateQuickActivity" style="margin:0; background:#7c3aed;">＋ Add Activity to this Date</button>
+    <div style="background:var(--row-alt); border:1px solid var(--card-border); border-radius:12px; padding:12px; margin-top:12px;">
+      <div style="font-size:0.82rem; font-weight:800; color:#7c3aed; margin-bottom:6px;">📝 Add Activity / Note on this Date</div>
+      <div class="form-row">
+        <div>
+          <label>Category</label>
+          <select id="calTaskCatSelect">
+            <option value="Medication">💊 Medication / Vaccine</option>
+            <option value="Sales">💰 Sales</option>
+            <option value="Feed">🌽 Feed</option>
+            <option value="Maint">🔧 Maint / Task</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:6px;">
+        <label>Details</label>
+        <input type="text" id="calTaskDescInput" placeholder="e.g. Deworming or 2 birds @ 2180">
+      </div>
+      <button class="btn-submit" style="background:#7c3aed; padding:8px; font-size:0.82rem;" onclick="saveDateTaskToLedger()">Save to Ledger</button>
     </div>
   </div>
 </div>
 
-<!-- REPORT DISPLAY SCREEN -->
-<div class="container" id="reportViewContainer" style="display:none;">
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-    <button class="btn-touch" style="padding:6px 12px; font-weight:800;" onclick="closeReportView()">◀ Back to App</button>
-    <b style="color:#0284c7; font-size:0.9rem; font-weight:900;">AD FARMS STATEMENT</b>
+<!-- DELETE CENTER MODAL -->
+<div class="modal-overlay" id="deleteCenterModal" onclick="closeDeleteCenterModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3>
+      <span style="color:#b91c1c;">🗑️ Delete Records</span>
+      <button class="modal-close" onclick="closeDeleteCenterModal()">✕</button>
+    </h3>
+    <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:12px; margin-bottom:10px;">
+      <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:#991b1b;">Delete Accidental Batch</h4>
+      <select id="delBatchSelect" style="margin-bottom:6px;"></select>
+      <button class="btn-submit" style="background:#b91c1c; padding:7px; font-size:0.78rem;" onclick="confirmDeleteBatch()">Delete Batch</button>
+    </div>
+    <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:12px; margin-bottom:10px;">
+      <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:#991b1b;">Delete Egg Collection Log</h4>
+      <select id="delColSelect" style="margin-bottom:6px;"></select>
+      <button class="btn-submit" style="background:#b91c1c; padding:7px; font-size:0.78rem;" onclick="confirmDeleteCollection()">Delete Egg Log</button>
+    </div>
+    <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:12px;">
+      <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:#991b1b;">Delete Mortality Log</h4>
+      <select id="delMortSelect" style="margin-bottom:6px;"></select>
+      <button class="btn-submit" style="background:#b91c1c; padding:7px; font-size:0.78rem;" onclick="confirmDeleteMortality()">Delete Mortality</button>
+    </div>
   </div>
-  <div id="reportContentArea"></div>
 </div>
 
-<!-- REPORT CONFIG MODAL -->
-<div class="sheet-backdrop" id="reportModal" onclick="closeReportModal(event)">
-  <div class="sheet-modal" style="border-radius:24px;" onclick="event.stopPropagation()">
-    <div class="sheet-header">
-      <h3>📊 Export Farm Reports</h3>
-      <button class="btn-close-sheet" onclick="closeReportModal()">✕</button>
-    </div>
-    
-    <div style="background:var(--nav-bar-bg); border:1px solid var(--border-card); border-radius:14px; padding:12px; margin-bottom:10px;">
-      <b style="font-size:0.85rem; color:#059669;">🥚 1. Egg Collection Audit</b>
-      <div class="form-row" style="margin-top:8px;">
+<!-- EXPORT FARM REPORTS MODAL -->
+<div class="modal-overlay" id="dataModal" onclick="closeDataModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3>
+      <span style="color:var(--text-primary); font-weight:800;">📊 Export Farm Reports</span>
+      <button class="modal-close" onclick="closeDataModal()">✕</button>
+    </h3>
+
+    <!-- 1. Egg Collection Audit -->
+    <div class="audit-section-box">
+      <div class="audit-title" style="color:#059669;">
+        <span>🥚</span> 1. Egg Collection Audit
+      </div>
+      <div class="audit-select-row">
         <div>
-          <label>From</label>
-          <input type="date" id="repEggFrom">
+          <span class="audit-lbl">FROM</span>
+          <select id="reportColFrom"></select>
         </div>
         <div>
-          <label>To</label>
-          <input type="date" id="repEggTo">
+          <span class="audit-lbl">TO</span>
+          <select id="reportColTo"></select>
         </div>
       </div>
-      <button class="btn-submit-main" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); padding:10px;" onclick="buildEggReport()">View Egg Audit</button>
+      <button class="btn-submit" style="background:#059669; padding:9px; font-size:0.85rem;" onclick="displayEggDataReport()">View Egg Audit</button>
     </div>
 
-    <div style="background:var(--nav-bar-bg); border:1px solid var(--border-card); border-radius:14px; padding:12px; margin-bottom:10px;">
-      <b style="font-size:0.85rem; color:#0284c7;">🐥 2. Incubation Batches Audit</b>
-      <div class="form-row" style="margin-top:8px;">
+    <!-- 2. Incubation Batches Audit -->
+    <div class="audit-section-box">
+      <div class="audit-title" style="color:#0284c7;">
+        <span>🐥</span> 2. Incubation Batches Audit
+      </div>
+      <div class="audit-select-row">
         <div>
-          <label>From Tray</label>
-          <select id="repBatchFrom"></select>
+          <span class="audit-lbl">FROM TRAY</span>
+          <select id="reportBatchFrom"></select>
         </div>
         <div>
-          <label>To Tray</label>
-          <select id="repBatchTo"></select>
+          <span class="audit-lbl">TO TRAY</span>
+          <select id="reportBatchTo"></select>
         </div>
       </div>
-      <button class="btn-submit-main" style="padding:10px;" onclick="buildIncubationReport()">View Batch Audit</button>
+      <button class="btn-submit" style="background:#0284c7; padding:9px; font-size:0.85rem;" onclick="displayIncubationDataReport()">View Batch Audit</button>
     </div>
 
-    <div style="background:var(--nav-bar-bg); border:1px solid var(--border-card); border-radius:14px; padding:12px;">
-      <b style="font-size:0.85rem; color:#7c3aed;">📝 3. Farm Activities &amp; Ledger Audit</b>
-      <div class="form-row" style="margin-top:8px;">
+    <!-- 3. Farm Activities & Ledger Audit -->
+    <div class="audit-section-box">
+      <div class="audit-title" style="color:#7c3aed;">
+        <span>📝</span> 3. Farm Activities &amp; Ledger Audit
+      </div>
+      <div class="audit-select-row">
         <div>
-          <label>From</label>
-          <input type="date" id="repActFrom">
+          <span class="audit-lbl">FROM</span>
+          <select id="reportActivityFrom"></select>
         </div>
         <div>
-          <label>To</label>
-          <input type="date" id="repActTo">
+          <span class="audit-lbl">TO</span>
+          <select id="reportActivityTo"></select>
         </div>
       </div>
-      <button class="btn-submit-main" style="background:#7c3aed; padding:10px;" onclick="buildActivityReport()">View Activity Audit</button>
+      <button class="btn-submit" style="background:#7c3aed; padding:9px; font-size:0.85rem;" onclick="displayActivityDataReport()">View Activity Audit</button>
     </div>
+
   </div>
+</div>
+
+<!-- AUDIT REPORT VIEW -->
+<div class="container" id="dataDisplayView">
+  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--text-primary); padding-bottom:10px; margin-bottom:14px;">
+    <button class="btn-neutral" style="padding:6px 14px; font-weight:800; border-radius:8px;" onclick="closeDataDisplay()">◀ Back to App</button>
+    <div style="font-size:0.88rem; font-weight:900; color:#0284c7;">AD FARMS AUDIT REPORT</div>
+  </div>
+  <div id="dataReportContent"></div>
 </div>
 
 <script>
-  // --- DARK / LIGHT THEME TOGGLE ENGINE ---
-  function initTheme() {
-    const savedTheme = localStorage.getItem("ad_farms_theme") || "light";
-    if (savedTheme === "dark") {
-      document.body.classList.add("dark-mode");
-      document.getElementById("themeToggleBtn").textContent = "☀️";
-    } else {
-      document.body.classList.remove("dark-mode");
-      document.getElementById("themeToggleBtn").textContent = "🌙";
-    }
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function dateToISO(dateObj) {
+    if (!dateObj || isNaN(dateObj.getTime())) return "";
+    return `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}`;
   }
 
-  function toggleThemeMode() {
-    const isDark = document.body.classList.toggle("dark-mode");
-    localStorage.setItem("ad_farms_theme", isDark ? "dark" : "light");
-    document.getElementById("themeToggleBtn").textContent = isDark ? "☀️" : "🌙";
+  function getTodayISO() {
+    return dateToISO(new Date());
   }
 
-  // --- DATE MATH UTILITIES ---
-  const padZero = (n) => String(n).padStart(2, '0');
-  function toISODate(d) {
-    if (!d || isNaN(d.getTime())) return "";
-    return `${d.getFullYear()}-${padZero(d.getMonth() + 1)}-${padZero(d.getDate())}`;
+  function getLiveTimeString() {
+    const d = new Date();
+    let hours = d.getHours();
+    const minutes = d.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    return `${hours}:${pad(minutes)} ${ampm}`;
   }
-  function todayISO() { return toISODate(new Date()); }
 
-  function normalizeToISO(input) {
+  function toNormalizedISO(input) {
     if (!input) return "";
-    if (typeof input === 'object' && input.seconds) return toISODate(new Date(input.seconds * 1000));
+    if (typeof input === 'object' && input.seconds) {
+      return dateToISO(new Date(input.seconds * 1000));
+    }
     let s = String(input).trim();
     if (s.includes('-')) {
-      const p = s.split('-');
-      if (p.length === 3 && p[0].length === 4) return `${p[0]}-${padZero(p[1])}-${padZero(p[2])}`;
-    }
-    if (s.includes('/')) {
-      const p = s.split('/');
-      if (p.length === 3) {
-        const y = p[2].length === 4 ? p[2] : ('20' + p[2]);
-        return `${y}-${padZero(p[1])}-${padZero(p[0])}`;
+      const parts = s.split('-');
+      if (parts.length === 3 && parts[0].length === 4) {
+        return `${parts[0]}-${pad(parts[1])}-${pad(parts[2])}`;
       }
     }
-    const d = new Date(s);
-    return isNaN(d.getTime()) ? "" : toISODate(d);
+    if (s.includes('/')) {
+      const parts = s.split('/');
+      if (parts.length === 3) {
+        const y = parts[2].length === 4 ? parts[2] : ('20' + parts[2]);
+        return `${y}-${pad(parts[1])}-${pad(parts[0])}`;
+      }
+    }
+    const parsed = new Date(s);
+    return isNaN(parsed.getTime()) ? "" : dateToISO(parsed);
   }
 
-  function displayFormatDate(iso) {
-    const s = normalizeToISO(iso);
-    if (!s) return iso || "-";
-    const p = s.split('-');
-    return `${p[2]}/${p[1]}/${p[0]}`;
+  function formatDisplayDate(isoStr) {
+    const norm = toNormalizedISO(isoStr);
+    if (!norm) return isoStr || "-";
+    const parts = norm.split('-');
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
   }
 
-  function calcBatchCycles(startDateISO) {
-    const p = startDateISO.split('-');
-    const base = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
-    const d18 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 17);
-    const d21 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 20);
-    return { d1: startDateISO, d18: toISODate(d18), d21: toISODate(d21) };
+  // --- THEME ENGINE ---
+  function toggleThemeMode() {
+    const isDark = document.body.classList.toggle('dark-theme');
+    localStorage.setItem('ad_farms_theme', isDark ? 'dark' : 'light');
+    const btn = document.querySelector('.btn-theme');
+    if (btn) btn.innerText = isDark ? '☀️' : '🌙';
   }
 
-  // --- STATE STORAGE ---
+  function initSavedTheme() {
+    const saved = localStorage.getItem('ad_farms_theme');
+    const isDark = saved === 'dark';
+    if (isDark) document.body.classList.add('dark-theme');
+    const btn = document.querySelector('.btn-theme');
+    if (btn) btn.innerText = isDark ? '☀️' : '🌙';
+  }
+  initSavedTheme();
+
+  // --- STORAGE & INITIAL DATA ---
   let collections = JSON.parse(localStorage.getItem("ad_farms_local_collections") || "[]");
   let batches = JSON.parse(localStorage.getItem("ad_farms_local_batches") || "[]");
   let mortality = JSON.parse(localStorage.getItem("ad_farms_local_mortality") || "[]");
-  let activities = JSON.parse(localStorage.getItem("ad_farms_local_activities") || "[]");
+  
+  let ledger = JSON.parse(localStorage.getItem("ad_farms_local_ledger") || "[]");
+  if (ledger.length === 0) {
+    ledger = [
+      { id: "ledg_init_1", date: "2026-09-11", category: "Sales", notes: "4 birds @ 3550" },
+      { id: "ledg_init_2", date: "2026-09-10", category: "Sales", notes: "2 birds @ 2180" }
+    ];
+  }
 
-  let currentTabIndex = 0;
-  let currentActivityFilter = 'All';
-  let activeCalYear = new Date().getFullYear();
-  let activeCalMonth = new Date().getMonth();
+  let showArchived = false;
+  let currentMortalitySection = 'All';
+  let currentLedgerFilter = 'All';
+  let activeModalSelectedDateISO = "";
 
-  function commitState() {
+  const todayDateObj = new Date();
+  let curYear = todayDateObj.getFullYear();
+  let curMonth = todayDateObj.getMonth();
+
+  function initTodayInputs() {
+    const todayISO = getTodayISO();
+    document.getElementById('colDate').value = todayISO;
+    document.getElementById('sdate').value = todayISO;
+    document.getElementById('mortDate').value = todayISO;
+    document.getElementById('ledgerDate').value = todayISO;
+  }
+  initTodayInputs();
+
+  function syncToLocalStorage() {
     localStorage.setItem("ad_farms_local_collections", JSON.stringify(collections));
     localStorage.setItem("ad_farms_local_batches", JSON.stringify(batches));
     localStorage.setItem("ad_farms_local_mortality", JSON.stringify(mortality));
-    localStorage.setItem("ad_farms_local_activities", JSON.stringify(activities));
-    updateOverviewStats();
+    localStorage.setItem("ad_farms_local_ledger", JSON.stringify(ledger));
   }
 
-  // --- SWIPE TOUCH ENGINE ---
-  const swipeTrack = document.getElementById('swipeTrack');
-  const navButtons = document.querySelectorAll('.nav-tab-item');
-  const swipeContainer = document.getElementById('swipeContainer');
-
-  let startX = 0, startY = 0, currentDeltaX = 0, isSwiping = false, isHorizontalGesture = null;
-
-  function slideToIndex(index, animate = true) {
-    currentTabIndex = Math.max(0, Math.min(index, 4));
-    swipeTrack.style.transition = animate ? 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1)' : 'none';
-    swipeTrack.style.transform = `translateX(-${currentTabIndex * 20}%)`;
-
-    navButtons.forEach((btn, i) => {
-      btn.classList.toggle('active', i === currentTabIndex);
-      if (i === currentTabIndex) {
-        btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-      }
-    });
-
-    if (currentTabIndex === 3) renderActivitiesLedger();
-    if (currentTabIndex === 4) renderCalendar();
-  }
-
-  swipeContainer.addEventListener('touchstart', (e) => {
-    if (e.target.closest('.table-responsive') || e.target.closest('.sheet-backdrop')) return;
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-    currentDeltaX = 0;
-    isSwiping = true;
-    isHorizontalGesture = null;
-    swipeTrack.style.transition = 'none';
-  }, { passive: true });
-
-  swipeContainer.addEventListener('touchmove', (e) => {
-    if (!isSwiping) return;
-    const diffX = e.touches[0].clientX - startX;
-    const diffY = e.touches[0].clientY - startY;
-
-    if (isHorizontalGesture === null) {
-      if (Math.abs(diffX) > 8 || Math.abs(diffY) > 8) {
-        isHorizontalGesture = Math.abs(diffX) > Math.abs(diffY);
-      }
-    }
-
-    if (!isHorizontalGesture) return;
-
-    currentDeltaX = diffX;
-    const containerWidth = swipeContainer.offsetWidth;
-    const baseOffsetPercent = -(currentTabIndex * 20);
-    const dragOffsetPercent = (currentDeltaX / containerWidth) * 20;
-    
-    let finalOffset = baseOffsetPercent + dragOffsetPercent;
-    if ((currentTabIndex === 0 && currentDeltaX > 0) || (currentTabIndex === 4 && currentDeltaX < 0)) {
-      finalOffset = baseOffsetPercent + (dragOffsetPercent * 0.3);
-    }
-
-    swipeTrack.style.transform = `translateX(${finalOffset}%)`;
-  }, { passive: true });
-
-  swipeContainer.addEventListener('touchend', () => {
-    if (!isSwiping) return;
-    isSwiping = false;
-
-    if (isHorizontalGesture) {
-      const containerWidth = swipeContainer.offsetWidth;
-      const swipeThreshold = containerWidth * 0.18;
-
-      if (currentDeltaX < -swipeThreshold && currentTabIndex < 4) {
-        slideToIndex(currentTabIndex + 1);
-      } else if (currentDeltaX > swipeThreshold && currentTabIndex > 0) {
-        slideToIndex(currentTabIndex - 1);
-      } else {
-        slideToIndex(currentTabIndex);
-      }
-    }
-    isHorizontalGesture = null;
-  });
-
-  // --- FIREBASE CLOUD LINK ---
+  // Firebase Real-Time Setup
   const firebaseConfig = {
     apiKey: "AIzaSyC0fvccTExFtjDF5jijNVExvdXvyAq54DY",
     authDomain: "poultry-a6902.firebaseapp.com",
@@ -962,787 +998,1057 @@
     measurementId: "G-X6YB06QW7S"
   };
 
-  let firestoreDb = null;
+  let db = null;
   try {
     firebase.initializeApp(firebaseConfig);
-    firestoreDb = firebase.firestore();
+    db = firebase.firestore();
 
-    firestoreDb.collection("collections").onSnapshot(snap => {
-      let remote = [];
-      snap.forEach(d => remote.push({ id: d.id, ...d.data() }));
-      if (remote.length > 0) {
-        collections = remote;
-        commitState();
-        renderCollectionsTable();
-        renderCalendar();
-      }
-      document.getElementById('cloudBadge').textContent = "● Cloud";
-      document.getElementById('cloudBadge').classList.add('online');
+    db.collection("collections").onSnapshot(snapshot => {
+      let cloudCols = [];
+      snapshot.forEach(doc => cloudCols.push({ id: doc.id, ...doc.data() }));
+      if (cloudCols.length > 0) { collections = cloudCols; syncToLocalStorage(); renderCollections(); renderCalendar(); }
+      document.getElementById('cloudStatus').textContent = "🟢 Cloud";
     }, err => console.warn(err));
 
-    firestoreDb.collection("batches").onSnapshot(snap => {
-      let remote = [];
-      snap.forEach(d => remote.push({ id: d.id, ...d.data() }));
-      if (remote.length > 0) {
-        batches = remote;
-        commitState();
-        renderRackView();
-        renderCalendar();
-      }
+    db.collection("batches").onSnapshot(snapshot => {
+      let cloudBatches = [];
+      snapshot.forEach(doc => cloudBatches.push({ id: doc.id, ...doc.data() }));
+      if (cloudBatches.length > 0) { batches = cloudBatches; syncToLocalStorage(); renderBatches(); renderMortality(); renderLiveMetrics(); renderCalendar(); }
     }, err => console.warn(err));
 
-    firestoreDb.collection("mortality").onSnapshot(snap => {
-      let remote = [];
-      snap.forEach(d => remote.push({ id: d.id, ...d.data() }));
-      if (remote.length > 0) {
-        mortality = remote;
-        commitState();
-        renderMortalityTable();
-      }
+    db.collection("mortality").onSnapshot(snapshot => {
+      let cloudMort = [];
+      snapshot.forEach(doc => cloudMort.push({ id: doc.id, ...doc.data() }));
+      if (cloudMort.length > 0) { mortality = cloudMort; syncToLocalStorage(); renderMortality(); renderLiveMetrics(); }
     }, err => console.warn(err));
 
-    firestoreDb.collection("activities").onSnapshot(snap => {
-      let remote = [];
-      snap.forEach(d => remote.push({ id: d.id, ...d.data() }));
-      if (remote.length > 0) {
-        activities = remote;
-        commitState();
-        renderActivitiesLedger();
-        renderCalendar();
-      }
+    db.collection("ledger").onSnapshot(snapshot => {
+      let cloudLedger = [];
+      snapshot.forEach(doc => cloudLedger.push({ id: doc.id, ...doc.data() }));
+      if (cloudLedger.length > 0) { ledger = cloudLedger; syncToLocalStorage(); renderLedger(); renderCalendar(); }
     }, err => console.warn(err));
-  } catch(e) {
-    document.getElementById('cloudBadge').textContent = "Offline";
-    document.getElementById('cloudBadge').classList.remove('online');
+
+  } catch(e) { console.warn("Offline mode active", e); }
+
+  // --- TOUCH SWIPE (5 SLIDES) ---
+  let currentSlideIndex = 0;
+  const swipeTrack = document.getElementById('swipeTrack');
+  const tabButtons = document.querySelectorAll('.tab-btn');
+
+  function goToSlide(index) {
+    if (index < 0) index = 0;
+    if (index > 4) index = 4;
+    currentSlideIndex = index;
+    swipeTrack.style.transform = `translateX(-${index * 20}%)`;
+    tabButtons.forEach((btn, idx) => {
+      btn.classList.toggle('active', idx === index);
+    });
+    if (index === 4) renderCalendar();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // --- STATS RECALCULATION ---
-  function updateOverviewStats() {
-    let totalHatched = 0, totalSet = 0, hatchedBatchesCount = 0, rateSum = 0;
+  let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
+  const viewport = document.getElementById('swipeViewport');
+  viewport.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  }, { passive: true });
+  viewport.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    const diffX = touchStartX - touchEndX;
+    const diffY = touchStartY - touchEndY;
+    if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+      if (diffX > 0) goToSlide(currentSlideIndex + 1);
+      else goToSlide(currentSlideIndex - 1);
+    }
+  }, { passive: true });
+
+  // --- LOGO LOCK ---
+  function checkAndLockLogo() {
+    const saved = localStorage.getItem("ad_farms_logo");
+    if (saved) {
+      document.getElementById('logoDisplay').src = saved;
+      document.getElementById('logoDisplay').style.display = "block";
+      document.getElementById('placeholderText').style.display = "none";
+      return true;
+    }
+    return false;
+  }
+  function triggerUploadOnce() { if (!checkAndLockLogo()) document.getElementById('logoInput').click(); }
+  function handleLogoUpload(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) { localStorage.setItem("ad_farms_logo", e.target.result); checkAndLockLogo(); input.value = ""; };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+  checkAndLockLogo();
+
+  // --- BATCH MILESTONES ---
+  function computeBatchDates(startDateISO) {
+    const parts = startDateISO.split('-');
+    const base = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    const d7 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 6);
+    const d14 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 13);
+    const d18 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 17);
+    const d21 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 20);
+    return {
+      d1ISO: startDateISO,
+      d7ISO: dateToISO(d7),
+      d14ISO: dateToISO(d14),
+      d18ISO: dateToISO(d18),
+      d21ISO: dateToISO(d21),
+      d21EndTimestamp: new Date(base.getFullYear(), base.getMonth(), base.getDate() + 21, 23, 59, 59).getTime()
+    };
+  }
+
+  function isBatchActive(b) {
+    if (b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "") return false;
+    const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
+    if (!sISO) return false;
+    const calc = computeBatchDates(sISO);
+    return Date.now() <= calc.d21EndTimestamp;
+  }
+
+  // --- ACCURATE METRICS & STRICT CHICK ISOLATION ---
+  function renderLiveMetrics() {
+    let currentIncubatorEggs = 0;
+    let completedInitialEggs = 0;
+    let completedChicksHatched = 0;
+
     batches.forEach(b => {
-      totalSet += (b.eggs || 0);
-      if (b.chicksHatched !== null && b.chicksHatched !== undefined) {
-        totalHatched += b.chicksHatched;
-        if (b.hatchRate) {
-          rateSum += parseFloat(b.hatchRate);
-          hatchedBatchesCount++;
+      const initialEggs = parseInt(b.eggs, 10) || 0;
+      const c7 = parseInt(b.candlingD7Cleared, 10) || 0;
+      const c14 = parseInt(b.candlingD14Cleared, 10) || 0;
+
+      if (isBatchActive(b)) {
+        currentIncubatorEggs += Math.max(0, initialEggs - c7 - c14);
+      }
+
+      const hasHatched = b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "";
+      if (!isBatchActive(b) || hasHatched) {
+        if (hasHatched) {
+          completedInitialEggs += initialEggs;
+          completedChicksHatched += parseInt(b.chicksHatched, 10) || 0;
         }
       }
     });
-    let totalDead = mortality.reduce((acc, m) => acc + (m.dead || 0), 0);
-    const liveFlock = Math.max(0, totalHatched - totalDead);
 
-    document.getElementById('kpiLiveFlock').textContent = liveFlock;
-    document.getElementById('kpiIncubating').textContent = totalSet;
-    document.getElementById('kpiHatchRate').textContent = hatchedBatchesCount > 0 ? ((rateSum / hatchedBatchesCount).toFixed(1) + "%") : "0%";
+    document.getElementById('inIncubatorDisplay').innerText = currentIncubatorEggs;
+
+    if (completedInitialEggs > 0) {
+      const trueRate = ((completedChicksHatched / completedInitialEggs) * 100).toFixed(1);
+      document.getElementById('hatchRateDisplay').innerText = `${trueRate}%`;
+    } else {
+      document.getElementById('hatchRateDisplay').innerText = "--";
+    }
+
+    let chicksDeadTotal = 0;
+    mortality.forEach(m => {
+      if ((m.category || "Chicks") === "Chicks") {
+        chicksDeadTotal += (parseInt(m.dead, 10) || 0);
+      }
+    });
+
+    let liveChicks = Math.max(0, completedChicksHatched - chicksDeadTotal);
+    document.getElementById('liveChicksTopDisplay').innerText = liveChicks;
+    document.getElementById('liveChicksBalance').innerText = liveChicks;
+    document.getElementById('totalChicksDeadSub').innerText = `${chicksDeadTotal} dead`;
   }
 
-  // --- RACK VIEW ---
-  function renderRackView() {
-    const grid = document.getElementById('rackGridContainer');
-    grid.innerHTML = "";
-    document.getElementById('noBatchesMsg').style.display = batches.length === 0 ? "block" : "none";
+  // --- QUICK LOG MODAL ---
+  function openQuickLogModal(tab = 'quickBatch') {
+    initTodayInputs();
+    document.getElementById('quickLogModal').style.display = "flex";
+    const buttons = document.querySelectorAll('#quickLogModal .sub-tab-btn');
+    if (tab === 'quickBatch') switchQuickLogTab('quickBatch', buttons[0]);
+    else if (tab === 'quickEgg') switchQuickLogTab('quickEgg', buttons[1]);
+    else if (tab === 'quickMort') switchQuickLogTab('quickMort', buttons[2]);
+    else if (tab === 'quickLedger') switchQuickLogTab('quickLedger', buttons[3]);
+  }
 
-    const sorted = [...batches].sort((a,b) => normalizeToISO(b.startDate || b.rawDate).localeCompare(normalizeToISO(a.startDate || a.rawDate)));
-    const today = new Date();
+  function closeQuickLogModal(e) {
+    if (!e || e.target.id === "quickLogModal" || e.target.classList.contains("modal-close")) {
+      document.getElementById('quickLogModal').style.display = "none";
+      resetBatchForm(); resetEggForm(); resetMortForm(); resetLedgerForm();
+    }
+  }
 
-    sorted.forEach(b => {
-      const sISO = normalizeToISO(b.startDate || b.rawDate);
-      const cycle = calcBatchCycles(sISO);
-      const p = sISO.split('-');
-      const bDate = new Date(parseInt(p[0], 10), parseInt(p[1], 10)-1, parseInt(p[2], 10));
+  function switchQuickLogTab(panelId, btn) {
+    document.querySelectorAll('.quick-form-panel').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('#quickLogModal .sub-tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(panelId + 'Form').style.display = 'block';
+  }
 
-      const elapsedDays = Math.max(1, Math.floor((today - bDate) / (1000 * 60 * 60 * 24)) + 1);
-      const progressPercent = Math.min(100, Math.max(0, (elapsedDays / 21) * 100));
+  // --- BATCHES ---
+  function saveBatch() {
+    const name = document.getElementById('bname').value.trim() || "Tray";
+    const eggs = parseInt(document.getElementById('eggsSet').value, 10) || 102;
+    const dateInput = document.getElementById('sdate').value || getTodayISO();
+    const editDocId = document.getElementById('editDocId').value;
+    const startDateISO = toNormalizedISO(dateInput);
+    const liveTime = getLiveTimeString();
 
-      let stageClass = "stage-set";
-      let stageLabel = `Day ${elapsedDays} · Setter`;
-      let barColor = "#0284c7";
-      let badgeStyle = "background:#e0f2fe; color:#0369a1;";
+    const calc = computeBatchDates(startDateISO);
+    const id = editDocId || ("batch_" + Date.now());
+    const data = { 
+      id, name, eggs, startDate: calc.d1ISO, d7Date: calc.d7ISO, d14Date: calc.d14ISO, d18Date: calc.d18ISO, d21Date: calc.d21ISO, rawDate: calc.d1ISO
+    };
 
-      if (elapsedDays >= 18 && elapsedDays < 21) {
-        stageClass = "stage-hatch";
-        stageLabel = `Day ${elapsedDays} · Hatcher`;
-        barColor = "#ea580c";
-        badgeStyle = "background:#ffedd5; color:#9a3412;";
-      } else if (elapsedDays >= 21) {
-        stageClass = "stage-pull";
-        stageLabel = `Day ${elapsedDays} · Ready Pull`;
-        barColor = "#16a34a";
-        badgeStyle = "background:#dcfce7; color:#166534;";
+    if (editDocId) {
+      const idx = batches.findIndex(b => b.id === editDocId);
+      if (idx !== -1) {
+        data.setTime = batches[idx].setTime || liveTime;
+        data.candlingD7Cleared = batches[idx].candlingD7Cleared || 0;
+        data.candlingD14Cleared = batches[idx].candlingD14Cleared || 0;
+        data.chicksHatched = batches[idx].chicksHatched !== undefined ? batches[idx].chicksHatched : null;
+        data.hatchRate = batches[idx].hatchRate !== undefined ? batches[idx].hatchRate : null;
+        batches[idx] = data;
       }
+    } else {
+      data.setTime = liveTime;
+      data.candlingD7Cleared = 0; data.candlingD14Cleared = 0; data.chicksHatched = null; data.hatchRate = null;
+      batches.unshift(data);
+    }
 
-      const card = document.createElement('div');
-      card.className = `rack-slot-card ${stageClass}`;
-      card.onclick = () => openTrayPopup(b.id);
+    syncToLocalStorage();
+    renderBatches(); renderLiveMetrics(); renderCalendar();
+    closeQuickLogModal();
+    if (db) db.collection("batches").doc(id).set(data).catch(e => console.warn(e));
+  }
 
-      card.innerHTML = `
-        <div class="slot-header">
-          <div class="slot-name">${b.name}</div>
-          <span class="slot-eggs">${b.eggs}</span>
+  function recordCandling(docId, dayNum) {
+    const b = batches.find(item => item.id === docId);
+    if (!b) return;
+    const current = dayNum === 7 ? (b.candlingD7Cleared || 0) : (b.candlingD14Cleared || 0);
+    const val = prompt(`Day ${dayNum} Candling for "${b.name}":\nEnter eggs to remove:`, current);
+    if (val === null) return;
+    const num = parseInt(val, 10);
+    if (isNaN(num) || num < 0) return alert("Enter valid egg count.");
+    if (dayNum === 7) b.candlingD7Cleared = num;
+    else b.candlingD14Cleared = num;
+    syncToLocalStorage();
+    renderBatches(); renderLiveMetrics();
+    if (db) db.collection("batches").doc(docId).update(dayNum === 7 ? { candlingD7Cleared: num } : { candlingD14Cleared: num }).catch(e => console.warn(e));
+  }
+
+  function recordHatchResult(docId) {
+    const b = batches.find(item => item.id === docId);
+    const val = prompt(`AD Farms: "${b.name}"\nEnter live chicks pulled:`, b.chicksHatched !== null ? b.chicksHatched : "");
+    if (val === null) return;
+    const count = parseInt(val, 10);
+    if (isNaN(count) || count < 0) return alert("Enter valid chick count");
+    b.chicksHatched = count;
+    b.hatchRate = ((count / b.eggs) * 100).toFixed(1);
+    b.pullTime = getLiveTimeString();
+    syncToLocalStorage();
+    renderBatches(); renderMortality(); renderLiveMetrics();
+    if (db) db.collection("batches").doc(docId).update({ chicksHatched: count, hatchRate: b.hatchRate, pullTime: b.pullTime }).catch(e => console.warn(e));
+  }
+
+  function buildBatchCardHtml(b, isArchived) {
+    const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
+    const calc = sISO ? computeBatchDates(sISO) : null;
+    const initialEggs = parseInt(b.eggs, 10) || 0;
+    const c7 = parseInt(b.candlingD7Cleared, 10) || 0;
+    const c14 = parseInt(b.candlingD14Cleared, 10) || 0;
+    const currentLiveInTray = Math.max(0, initialEggs - c7 - c14);
+    const rateText = b.hatchRate !== null && b.hatchRate !== undefined ? `<b style="color:#16a34a;">${b.hatchRate}%</b>` : `<span style="color:#0284c7; font-weight:bold;">Running</span>`;
+    const chickCount = b.chicksHatched !== null && b.chicksHatched !== undefined ? `<b>${b.chicksHatched}</b> chicks` : `<span style="color:var(--text-muted);">${currentLiveInTray} in Rack</span>`;
+
+    return `
+      <div class="batch-card ${isArchived ? 'archived' : ''}">
+        <div class="batch-card-header">
+          <div>
+            <span class="batch-title">${b.name} ${isArchived ? '<span style="font-size:0.65rem; color:var(--text-muted);">(ARCHIVED)</span>' : '🟢'}</span>
+            <div class="batch-time-tag" style="font-size:0.68rem; color:var(--text-muted); font-weight:700;">Set at: <b>${b.setTime || 'Evening'}</b></div>
+          </div>
+          <span class="batch-eggs">${currentLiveInTray} / ${initialEggs} eggs</span>
         </div>
-        <div class="slot-progress-wrap">
-          <div class="slot-progress-bar" style="width:${progressPercent}%; background:${barColor};"></div>
+        <div class="batch-dates-grid">
+          <div class="date-pill d1"><span class="pill-lbl">Set (D1)</span><span class="pill-val">${formatDisplayDate(calc ? calc.d1ISO : sISO)}</span></div>
+          <div class="date-pill d7"><span class="pill-lbl">Candle 1</span><span class="pill-val">${formatDisplayDate(calc ? calc.d7ISO : '')}</span></div>
+          <div class="date-pill d14"><span class="pill-lbl">Candle 2</span><span class="pill-val">${formatDisplayDate(calc ? calc.d14ISO : '')}</span></div>
+          <div class="date-pill d18"><span class="pill-lbl">Lock (D18)</span><span class="pill-val">${formatDisplayDate(calc ? calc.d18ISO : '')}</span></div>
         </div>
-        <div class="slot-footer">
-          <span class="slot-badge-pill" style="${badgeStyle}">${stageLabel}</span>
-          <span>${b.chicksHatched !== null && b.chicksHatched !== undefined ? b.chicksHatched + ' chicks' : 'Running'}</span>
+        <div class="batch-results-bar">
+          <div>Candled: <b>-${c7 + c14}</b></div>
+          <div>Harvest: ${chickCount} (${rateText})</div>
         </div>
+        <div class="batch-actions">
+          <button class="btn-neutral" style="color:#6b21a8;" onclick="recordCandling('${b.id}', 7)">🔍 D7</button>
+          <button class="btn-neutral" style="color:#854d0e;" onclick="recordCandling('${b.id}', 14)">🔍 D14</button>
+          <button class="btn-neutral" style="color:#16a34a;" onclick="recordHatchResult('${b.id}')">🐥 Chicks</button>
+          <button class="btn-neutral" onclick="startEditBatch('${b.id}')">✎ Edit</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderBatches() {
+    const container = document.getElementById('batchContainer');
+    const archivedContainer = document.getElementById('archivedContainer');
+    container.innerHTML = ""; archivedContainer.innerHTML = "";
+    const activeList = [], archivedList = [];
+
+    batches.forEach(b => {
+      if (isBatchActive(b)) activeList.push(b);
+      else archivedList.push(b);
+    });
+
+    document.getElementById('noBatches').style.display = activeList.length === 0 ? "block" : "none";
+    activeList.sort((a, b) => toNormalizedISO(a.startDate || a.rawDate).localeCompare(toNormalizedISO(b.startDate || b.rawDate)));
+    activeList.forEach(b => container.insertAdjacentHTML('beforeend', buildBatchCardHtml(b, false)));
+
+    archivedList.sort((a, b) => toNormalizedISO(b.startDate || b.rawDate).localeCompare(toNormalizedISO(a.startDate || a.rawDate)));
+    archivedList.forEach(b => archivedContainer.insertAdjacentHTML('beforeend', buildBatchCardHtml(b, true)));
+    document.getElementById('toggleArchiveBtn').style.display = archivedList.length > 0 ? "inline-block" : "none";
+  }
+
+  function toggleArchivedBatches() {
+    showArchived = !showArchived;
+    document.getElementById('archivedContainer').style.display = showArchived ? "block" : "none";
+    document.getElementById('toggleArchiveBtn').innerText = showArchived ? "🙈 Hide Archived Batches" : "👁️ Show Archived Batches";
+  }
+
+  function startEditBatch(docId) {
+    const b = batches.find(item => item.id === docId);
+    document.getElementById('bname').value = b.name;
+    document.getElementById('eggsSet').value = b.eggs;
+    document.getElementById('sdate').value = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
+    document.getElementById('editDocId').value = docId;
+    document.getElementById('submitBtn').innerText = "Update Batch";
+    document.getElementById('cancelBtn').style.display = "block";
+    openQuickLogModal('quickBatch');
+  }
+
+  function resetBatchForm() {
+    document.getElementById('bname').value = "";
+    document.getElementById('eggsSet').value = "102";
+    document.getElementById('sdate').value = getTodayISO();
+    document.getElementById('editDocId').value = "";
+    document.getElementById('submitBtn').innerText = "Set Batch (AM/PM Auto-Stamped)";
+    document.getElementById('cancelBtn').style.display = "none";
+  }
+
+  // --- EGG COLLECTIONS ---
+  let editingColId = null;
+  function saveCollection() {
+    const dateVal = document.getElementById('colDate').value || getTodayISO();
+    const slot = document.getElementById('colSlot').value;
+    const count = parseInt(document.getElementById('colCount').value, 10) || 0;
+    const broken = parseInt(document.getElementById('colBroken').value, 10) || 0;
+    if (count === 0 && broken === 0 && !editingColId) return alert("Enter intact or broken eggs.");
+
+    const isoDate = toNormalizedISO(dateVal);
+    let existing = collections.find(c => toNormalizedISO(c.date) === isoDate);
+    let m = existing ? (existing.morning || 0) : 0, a = existing ? (existing.afternoon || 0) : 0;
+    let e = existing ? (existing.evening || 0) : 0, b = existing ? (existing.broken || 0) : 0;
+
+    if (slot === "Morning") m = count;
+    if (slot === "Afternoon") a = count;
+    if (slot === "Evening") e = count;
+    b = broken;
+
+    const entry = { id: "col_" + isoDate.replace(/-/g, ''), date: isoDate, morning: m, afternoon: a, evening: e, broken: b, total: (m + a + e) };
+    if (existing) Object.assign(existing, entry); else collections.push(entry);
+
+    syncToLocalStorage();
+    renderCollections(); renderCalendar();
+    closeQuickLogModal();
+    if (db) db.collection("collections").doc(entry.id).set(entry).catch(err => console.warn(err));
+  }
+
+  function renderCollections() {
+    const tbody = document.getElementById('collectionBody');
+    tbody.innerHTML = "";
+    document.getElementById('noCollections').style.display = collections.length === 0 ? "block" : "none";
+    const sorted = [...collections].sort((a, b) => toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date)));
+    sorted.forEach(c => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><b>${formatDisplayDate(c.date)}</b></td>
+        <td>${c.morning || '-'}</td>
+        <td>${c.afternoon || '-'}</td>
+        <td>${c.evening || '-'}</td>
+        <td style="color:#b91c1c; font-weight:bold;">${c.broken || '-'}</td>
+        <td style="color:#0284c7; font-weight:bold;">${c.total}</td>
+        <td><button class="btn-neutral" style="padding:3px 8px; font-weight:bold; color:#0284c7;" onclick="startEditCollection('${c.id}')">✎ Edit</button></td>
       `;
-      grid.appendChild(card);
+      tbody.appendChild(tr);
     });
   }
 
-  // --- TRAY DETAIL POPUP MODAL ---
-  function openTrayPopup(batchId) {
-    const b = batches.find(x => x.id === batchId);
-    if (!b) return;
-
-    const sISO = normalizeToISO(b.startDate || b.rawDate);
-    const cycle = calcBatchCycles(sISO);
-
-    document.getElementById('popTrayName').textContent = b.name;
-    document.getElementById('popTraySub').textContent = `Placed on: ${displayFormatDate(cycle.d1)}`;
-    document.getElementById('popDay1Date').textContent = displayFormatDate(cycle.d1);
-    document.getElementById('popDay18Date').textContent = displayFormatDate(cycle.d18);
-    document.getElementById('popDay21Date').textContent = displayFormatDate(cycle.d21);
-
-    document.getElementById('popEggsCount').textContent = `${b.eggs} Eggs Set`;
-    document.getElementById('popChicksHarvested').textContent = b.chicksHatched !== null && b.chicksHatched !== undefined ? `${b.chicksHatched} Live Chicks` : `Pending Entry`;
-    document.getElementById('popHatchSuccess').textContent = b.hatchRate ? `${b.hatchRate}% Success` : `In Progress`;
-
-    document.getElementById('btnPopHarvest').onclick = () => {
-      closeTrayDetails();
-      openHarvestDialog(b.id);
-    };
-    document.getElementById('btnPopEdit').onclick = () => {
-      closeTrayDetails();
-      editBatchItem(b.id);
-    };
-
-    document.getElementById('trayDetailModal').style.display = 'flex';
+  function startEditCollection(docId) {
+    const c = collections.find(item => item.id === docId);
+    if (!c) return;
+    document.getElementById('colDate').value = toNormalizedISO(c.date);
+    document.getElementById('colSlot').value = "Morning";
+    document.getElementById('colCount').value = c.morning || 0;
+    document.getElementById('colBroken').value = c.broken || 0;
+    editingColId = docId;
+    document.getElementById('colSubmitBtn').innerText = "Update Slot";
+    document.getElementById('colCancelBtn').style.display = "block";
+    openQuickLogModal('quickEgg');
   }
 
-  function closeTrayDetails(e) {
-    if (!e || e.target.id === 'trayDetailModal' || e.target.classList.contains('btn-close-sheet')) {
-      document.getElementById('trayDetailModal').style.display = 'none';
+  function resetEggForm() {
+    document.getElementById('colCount').value = "";
+    document.getElementById('colBroken').value = "0";
+    document.getElementById('colDate').value = getTodayISO();
+    editingColId = null;
+    document.getElementById('colSubmitBtn').innerText = "Save Collection";
+    document.getElementById('colCancelBtn').style.display = "none";
+  }
+
+  // --- MORTALITY ---
+  let editingMortId = null;
+  function saveMortality() {
+    const dateVal = document.getElementById('mortDate').value || getTodayISO();
+    const category = document.getElementById('mortCategory').value;
+    const count = parseInt(document.getElementById('mortCount').value, 10);
+    if (isNaN(count) || count <= 0) return alert("Enter valid dead count.");
+    const isoDate = toNormalizedISO(dateVal);
+
+    if (editingMortId) {
+      const idx = mortality.findIndex(m => m.id === editingMortId);
+      if (idx !== -1) { mortality[idx].date = isoDate; mortality[idx].category = category; mortality[idx].dead = count; }
+    } else {
+      mortality.unshift({ id: "mort_" + Date.now(), date: isoDate, category: category, dead: count });
+    }
+
+    syncToLocalStorage();
+    renderMortality(); renderLiveMetrics();
+    closeQuickLogModal();
+    if (db) {
+      const entry = editingMortId ? mortality.find(m => m.id === editingMortId) : mortality[0];
+      db.collection("mortality").doc(entry.id).set(entry).catch(e => console.warn(e));
     }
   }
 
-  // --- ACTIVITIES LEDGER ---
-  function filterActivities(category, btn) {
-    currentActivityFilter = category;
-    document.querySelectorAll('#activityFilterBar .filter-pill').forEach(p => p.classList.remove('active'));
+  function startEditMortality(docId) {
+    const m = mortality.find(item => item.id === docId);
+    if (!m) return;
+    document.getElementById('mortDate').value = toNormalizedISO(m.date);
+    document.getElementById('mortCategory').value = m.category || "Chicks";
+    document.getElementById('mortCount').value = m.dead;
+    editingMortId = docId;
+    document.getElementById('mortSubmitBtn').innerText = "Update Mortality";
+    document.getElementById('mortCancelBtn').style.display = "block";
+    openQuickLogModal('quickMort');
+  }
+
+  function resetMortForm() {
+    document.getElementById('mortCount').value = "";
+    document.getElementById('mortDate').value = getTodayISO();
+    editingMortId = null;
+    document.getElementById('mortSubmitBtn').innerText = "Log Mortality";
+    document.getElementById('mortCancelBtn').style.display = "none";
+  }
+
+  function switchMortalityView(section, btn) {
+    currentMortalitySection = section;
+    document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    renderActivitiesLedger();
+    renderMortality();
   }
 
-  function renderActivitiesLedger() {
-    const container = document.getElementById('activitiesListContainer');
+  function renderMortality() {
+    const tbody = document.getElementById('mortalityBody');
+    tbody.innerHTML = "";
+
+    let growers30D = 0, growers7D = 0, breeders30D = 0, breeders7D = 0;
+    const now = new Date();
+    const d7Ago = new Date(); d7Ago.setDate(now.getDate() - 7);
+    const d30Ago = new Date(); d30Ago.setDate(now.getDate() - 30);
+    const sorted = [...mortality].sort((a, b) => toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date)));
+
+    sorted.forEach(m => {
+      const cat = m.category || "Chicks";
+      const mDate = new Date(toNormalizedISO(m.date));
+      if (cat === "Growers") { if (mDate >= d30Ago) growers30D += m.dead; if (mDate >= d7Ago) growers7D += m.dead; }
+      if (cat === "Breeders") { if (mDate >= d30Ago) breeders30D += m.dead; if (mDate >= d7Ago) breeders7D += m.dead; }
+    });
+
+    document.getElementById('growersLoss30D').innerText = growers30D;
+    document.getElementById('growersLoss7DSub').innerText = `${growers7D} last 7 days`;
+    document.getElementById('breedersLoss30D').innerText = breeders30D;
+    document.getElementById('breedersLoss7DSub').innerText = `${breeders7D} last 7 days`;
+
+    const filtered = sorted.filter(m => currentMortalitySection === 'All' || (m.category || "Chicks") === currentMortalitySection);
+    document.getElementById('noMortality').style.display = filtered.length === 0 ? "block" : "none";
+    filtered.forEach(m => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><b>${formatDisplayDate(m.date)}</b></td>
+        <td><span style="font-size:0.75rem; font-weight:bold; color:var(--text-muted);">${m.category||'Chicks'}</span></td>
+        <td style="color:#b91c1c; font-weight:bold;">${m.dead}</td>
+        <td><button class="btn-neutral" style="padding:3px 8px; font-weight:bold; color:#0284c7;" onclick="startEditMortality('${m.id}')">✎ Edit</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // --- ACTIVITY & TASK LEDGER ---
+  function getCategoryIcon(cat) {
+    if (cat === "Medication") return "💊";
+    if (cat === "Sales") return "💰";
+    if (cat === "Feed") return "🌽";
+    return "🔧";
+  }
+
+  function renderLedger() {
+    const container = document.getElementById('ledgerCardList');
     container.innerHTML = "";
-    
-    let filtered = activities;
-    if (currentActivityFilter !== 'All') {
-      filtered = activities.filter(a => a.category === currentActivityFilter);
-    }
 
-    document.getElementById('noActivitiesMsg').style.display = filtered.length === 0 ? "block" : "none";
+    const sorted = [...ledger].sort((a, b) => toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date)));
+    const filtered = sorted.filter(l => currentLedgerFilter === 'All' || l.category === currentLedgerFilter);
 
-    const sorted = [...filtered].sort((a,b) => normalizeToISO(b.date).localeCompare(normalizeToISO(a.date)));
+    document.getElementById('noLedgerCards').style.display = filtered.length === 0 ? "block" : "none";
 
-    sorted.forEach(act => {
-      let icon = "📝";
-      if (act.category === "Vaccination") icon = "💉";
-      if (act.category === "Medication") icon = "💊";
-      if (act.category === "Sales") icon = "💰";
-      if (act.category === "Feed") icon = "🌾";
-      if (act.category === "Maintenance") icon = "🔧";
-
+    filtered.forEach(l => {
+      const icon = getCategoryIcon(l.category);
       const card = document.createElement('div');
-      card.style.cssText = "background:var(--nav-bar-bg); border:1px solid var(--border-card); border-radius:12px; padding:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:flex-start;";
+      card.className = 'ledger-item-card';
       card.innerHTML = `
-        <div>
-          <div style="font-size:0.68rem; font-weight:800; color:var(--text-secondary);">${displayFormatDate(act.date)}</div>
-          <div style="font-size:0.85rem; font-weight:900; color:var(--text-primary); margin-top:2px;">${icon} ${act.category}</div>
-          <div style="font-size:0.78rem; font-weight:600; color:var(--text-secondary); margin-top:4px;">${act.details}</div>
-        </div>
-        <button onclick="deleteActivity('${act.id}')" style="background:transparent; border:none; color:#ef4444; font-size:0.75rem; font-weight:800; cursor:pointer; padding:4px;">✕</button>
+        <button class="btn-item-delete" onclick="deleteLedgerItem('${l.id}')">✕</button>
+        <div class="ledger-item-date">${formatDisplayDate(l.date)}</div>
+        <div class="ledger-item-type">${icon} ${l.category}</div>
+        <div class="ledger-item-notes">${l.notes || '-'}</div>
       `;
       container.appendChild(card);
     });
   }
 
-  // --- QUICK ENTRY DRAWER ---
-  function openQuickDrawer(type = "batch", prefillDate = null) {
-    document.getElementById('editEntryId').value = "";
-    document.getElementById('quickTypeSelect').value = type;
-    document.getElementById('quickTypeSelect').disabled = false;
-    document.getElementById('recordDate').value = prefillDate || todayISO();
-    document.getElementById('drawerTitle').textContent = "Quick Farm Log";
-    document.getElementById('btnSaveRecord').textContent = "Save Record";
-    switchDrawerFormType();
-    document.getElementById('entryDrawer').style.display = "flex";
+  function filterLedgerView(category, btn) {
+    currentLedgerFilter = category;
+    document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderLedger();
   }
 
-  function closeDrawer() { document.getElementById('entryDrawer').style.display = "none"; }
-  function handleDrawerBackdrop(e) { if (e.target.id === 'entryDrawer') closeDrawer(); }
+  function saveLedgerEntry() {
+    const dateVal = document.getElementById('ledgerDate').value || getTodayISO();
+    const category = document.getElementById('ledgerCatSelect').value;
+    const notes = document.getElementById('ledgerNotes').value.trim();
+    if (!notes) return alert("Please enter particulars or notes.");
 
-  function switchDrawerFormType() {
-    const t = document.getElementById('quickTypeSelect').value;
-    document.getElementById('formSectionBatch').style.display = t === 'batch' ? 'block' : 'none';
-    document.getElementById('formSectionEggs').style.display = t === 'egg' ? 'block' : 'none';
-    document.getElementById('formSectionMort').style.display = t === 'mortality' ? 'block' : 'none';
-    document.getElementById('formSectionActivity').style.display = t === 'activity' ? 'block' : 'none';
-  }
-
-  function incrementInput(id, delta) {
-    const el = document.getElementById(id);
-    el.value = Math.max(0, (parseInt(el.value || 0, 10) + delta));
-  }
-
-  function handleRecordSave() {
-    const type = document.getElementById('quickTypeSelect').value;
-    const editId = document.getElementById('editEntryId').value;
-    const dateStr = normalizeToISO(document.getElementById('recordDate').value || todayISO());
-
-    if (type === 'batch') {
-      const name = document.getElementById('batchNameInput').value.trim() || "Tray Batch";
-      const eggs = parseInt(document.getElementById('batchEggCount').value, 10) || 102;
-      const cycle = calcBatchCycles(dateStr);
-      const id = editId || ("batch_" + Date.now());
-
-      const data = {
-        id, name, eggs,
-        startDate: cycle.d1,
-        d18Date: cycle.d18,
-        d21Date: cycle.d21,
-        rawDate: cycle.d1
-      };
-
-      if (editId) {
-        const idx = batches.findIndex(b => b.id === editId);
-        if (idx !== -1) {
-          data.chicksHatched = batches[idx].chicksHatched !== undefined ? batches[idx].chicksHatched : null;
-          data.hatchRate = batches[idx].hatchRate !== undefined ? batches[idx].hatchRate : null;
-          batches[idx] = data;
-        }
-      } else {
-        data.chicksHatched = null;
-        data.hatchRate = null;
-        batches.unshift(data);
-      }
-
-      if (firestoreDb) firestoreDb.collection("batches").doc(id).set(data, { merge: true }).catch(console.warn);
-      renderRackView();
-    } 
-    else if (type === 'egg') {
-      const slot = document.getElementById('eggSlotSelect').value;
-      const count = parseInt(document.getElementById('eggCountInput').value, 10) || 0;
-      const broken = parseInt(document.getElementById('eggBrokenInput').value, 10) || 0;
-      const id = editId || ("col_" + dateStr.replace(/-/g, ''));
-
-      let existing = collections.find(c => c.id === id || normalizeToISO(c.date) === dateStr);
-      let m = existing ? (existing.morning || 0) : 0;
-      let a = existing ? (existing.afternoon || 0) : 0;
-      let e = existing ? (existing.evening || 0) : 0;
-
-      if (slot === "Morning") m = count;
-      if (slot === "Afternoon") a = count;
-      if (slot === "Evening") e = count;
-
-      const record = { id, date: dateStr, morning: m, afternoon: a, evening: e, broken: broken, total: (m + a + e) };
-      if (existing) Object.assign(existing, record); else collections.push(record);
-
-      if (firestoreDb) firestoreDb.collection("collections").doc(id).set(record, { merge: true }).catch(console.warn);
-      renderCollectionsTable();
-    }
-    else if (type === 'mortality') {
-      const count = parseInt(document.getElementById('mortCountInput').value, 10) || 0;
-      if (count <= 0 && !editId) return alert("Enter dead bird count");
-      const id = editId || ("mort_" + dateStr.replace(/-/g, ''));
-
-      let existing = mortality.find(m => m.id === id || normalizeToISO(m.date) === dateStr);
-      let deadVal = editId ? count : (existing ? (existing.dead + count) : count);
-
-      const record = { id, date: dateStr, dead: deadVal };
-      if (existing) Object.assign(existing, record); else mortality.push(record);
-
-      if (firestoreDb) firestoreDb.collection("mortality").doc(id).set(record, { merge: true }).catch(console.warn);
-      renderMortalityTable();
-    }
-    else if (type === 'activity') {
-      const cat = document.getElementById('actCategory').value;
-      const details = document.getElementById('actDetails').value.trim();
-      if (!details) return alert("Enter details for the activity");
-      const id = editId || ("act_" + Date.now());
-
-      const actRecord = { id, date: dateStr, category: cat, details: details };
-      if (editId) {
-        const idx = activities.findIndex(a => a.id === editId);
-        if (idx !== -1) activities[idx] = actRecord;
-      } else {
-        activities.unshift(actRecord);
-      }
-
-      if (firestoreDb) firestoreDb.collection("activities").doc(id).set(actRecord, { merge: true }).catch(console.warn);
-      document.getElementById('actDetails').value = "";
-      renderActivitiesLedger();
-    }
-
-    commitState();
-    renderCalendar();
-    closeDrawer();
-  }
-
-  function editBatchItem(id) {
-    const b = batches.find(x => x.id === id);
-    if (!b) return;
-    document.getElementById('editEntryId').value = b.id;
-    document.getElementById('quickTypeSelect').value = 'batch';
-    document.getElementById('quickTypeSelect').disabled = true;
-    document.getElementById('recordDate').value = normalizeToISO(b.startDate || b.rawDate);
-    document.getElementById('batchNameInput').value = b.name;
-    document.getElementById('batchEggCount').value = b.eggs;
-    document.getElementById('drawerTitle').textContent = "Edit Incubator Tray";
-    document.getElementById('btnSaveRecord').textContent = "Update Tray";
-    switchDrawerFormType();
-    document.getElementById('entryDrawer').style.display = "flex";
-  }
-
-  // --- HARVEST MODAL ---
-  function openHarvestDialog(batchId) {
-    const b = batches.find(x => x.id === batchId);
-    if (!b) return;
-    document.getElementById('harvestBatchId').value = batchId;
-    document.getElementById('harvestBatchMeta').textContent = `${b.name} (${b.eggs} Eggs Set)`;
-    document.getElementById('harvestChickCount').value = b.chicksHatched !== null ? b.chicksHatched : "";
-    document.getElementById('harvestModal').style.display = "flex";
-  }
-  function closeHarvestModal(e) {
-    if (!e || e.target.id === 'harvestModal' || e.target.classList.contains('btn-close-sheet')) {
-      document.getElementById('harvestModal').style.display = "none";
-    }
-  }
-  function submitChickHarvest() {
-    const id = document.getElementById('harvestBatchId').value;
-    const count = parseInt(document.getElementById('harvestChickCount').value, 10);
-    if (isNaN(count) || count < 0) return alert("Enter chick count");
-    const b = batches.find(x => x.id === id);
-    b.chicksHatched = count;
-    b.hatchRate = ((count / b.eggs) * 100).toFixed(1);
-
-    commitState();
-    renderRackView();
-    closeHarvestModal();
-    if (firestoreDb) firestoreDb.collection("batches").doc(id).update({ chicksHatched: b.chicksHatched, hatchRate: b.hatchRate }).catch(console.warn);
-  }
-
-  // --- TABLES ---
-  function renderCollectionsTable() {
-    const tbody = document.getElementById('eggsTableBody');
-    tbody.innerHTML = "";
-    document.getElementById('noEggsMsg').style.display = collections.length === 0 ? "block" : "none";
-    const sorted = [...collections].sort((a,b) => normalizeToISO(b.date).localeCompare(normalizeToISO(a.date)));
-
-    sorted.forEach(c => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><b>${displayFormatDate(c.date)}</b></td>
-        <td>${c.morning || '-'}</td>
-        <td>${c.afternoon || '-'}</td>
-        <td>${c.evening || '-'}</td>
-        <td style="color:#ef4444; font-weight:800;">${c.broken || '-'}</td>
-        <td style="color:#0284c7; font-weight:900;">${c.total}</td>
-        <td><button class="btn-touch" onclick="editEggItem('${c.id}')">✎</button></td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-
-  function editEggItem(id) {
-    const c = collections.find(x => x.id === id);
-    if (!c) return;
-    document.getElementById('editEntryId').value = c.id;
-    document.getElementById('quickTypeSelect').value = 'egg';
-    document.getElementById('quickTypeSelect').disabled = true;
-    document.getElementById('recordDate').value = normalizeToISO(c.date);
-    document.getElementById('eggSlotSelect').value = 'Morning';
-    document.getElementById('eggCountInput').value = c.morning || 0;
-    document.getElementById('eggBrokenInput').value = c.broken || 0;
-    document.getElementById('drawerTitle').textContent = "Edit Egg Log";
-    document.getElementById('btnSaveRecord').textContent = "Update Entry";
-    switchDrawerFormType();
-    document.getElementById('entryDrawer').style.display = "flex";
-  }
-
-  function renderMortalityTable() {
-    const tbody = document.getElementById('mortalityTableBody');
-    tbody.innerHTML = "";
-    document.getElementById('noMortMsg').style.display = mortality.length === 0 ? "block" : "none";
-    const sorted = [...mortality].sort((a,b) => normalizeToISO(b.date).localeCompare(normalizeToISO(a.date)));
-
-    sorted.forEach(m => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><b>${displayFormatDate(m.date)}</b></td>
-        <td style="color:#ef4444; font-weight:900;">${m.dead}</td>
-        <td><button class="btn-touch" onclick="editMortItem('${m.id}')">✎</button></td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-
-  function editMortItem(id) {
-    const m = mortality.find(x => x.id === id);
-    if (!m) return;
-    document.getElementById('editEntryId').value = m.id;
-    document.getElementById('quickTypeSelect').value = 'mortality';
-    document.getElementById('quickTypeSelect').disabled = true;
-    document.getElementById('recordDate').value = normalizeToISO(m.date);
-    document.getElementById('mortCountInput').value = m.dead;
-    document.getElementById('drawerTitle').textContent = "Edit Mortality Record";
-    document.getElementById('btnSaveRecord').textContent = "Update Entry";
-    switchDrawerFormType();
-    document.getElementById('entryDrawer').style.display = "flex";
-  }
-
-  // --- CALENDAR ENGINE ---
-  function renderCalendar() {
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    document.getElementById('calLabel').textContent = `${months[activeCalMonth]} ${activeCalYear}`;
-
-    const grid = document.getElementById('calCellsGrid');
-    grid.innerHTML = "";
-
-    const firstDay = new Date(activeCalYear, activeCalMonth, 1).getDay();
-    const daysInMonth = new Date(activeCalYear, activeCalMonth + 1, 0).getDate();
-
-    for (let i = 0; i < firstDay; i++) {
-      const empty = document.createElement('div');
-      empty.className = 'cal-cell empty';
-      grid.appendChild(empty);
-    }
-
-    for (let day = 1; day <= daysInMonth; day++) {
-      const dateObj = new Date(activeCalYear, activeCalMonth, day);
-      const iso = toISODate(dateObj);
-      const cell = document.createElement('div');
-      cell.className = 'cal-cell';
-      cell.onclick = () => openInspectorDate(iso);
-
-      let badgesHtml = `<span style="font-size:0.76rem; line-height:1; font-weight:900;">${day}</span>`;
-      let hasSet = false, hasHatch = false, hasPull = false;
-
-      batches.forEach(b => {
-        const cycle = calcBatchCycles(normalizeToISO(b.startDate || b.rawDate));
-        const shortName = b.name.length > 6 ? b.name.substring(0, 5) + '…' : b.name;
-
-        if (iso === cycle.d1) {
-          hasSet = true;
-          badgesHtml += `<span class="cal-badge" style="background:#0284c7; color:#fff;">S: ${shortName}</span>`;
-        }
-        if (iso === cycle.d18) {
-          hasHatch = true;
-          badgesHtml += `<span class="cal-badge" style="background:#ea580c; color:#fff;">H: ${shortName}</span>`;
-        }
-        if (iso === cycle.d21) {
-          hasPull = true;
-          badgesHtml += `<span class="cal-badge" style="background:#16a34a; color:#fff;">P: ${shortName}</span>`;
-        }
-      });
-
-      const eggRec = collections.find(c => normalizeToISO(c.date) === iso);
-      if (eggRec && eggRec.total > 0) {
-        badgesHtml += `<span class="cal-egg-pill">+${eggRec.total}🥚</span>`;
-      }
-
-      const dayActs = activities.filter(a => normalizeToISO(a.date) === iso);
-      if (dayActs.length > 0) {
-        badgesHtml += `<span class="cal-activity-pill">📌 ${dayActs[0].category.substring(0,6)}..</span>`;
-      }
-
-      if (hasSet) cell.classList.add('has-set');
-      if (hasHatch) cell.classList.add('has-hatch');
-      if (hasPull) cell.classList.add('has-pull');
-
-      cell.innerHTML = badgesHtml;
-      grid.appendChild(cell);
-    }
-  }
-
-  function shiftCalMonth(delta) {
-    activeCalMonth += delta;
-    if (activeCalMonth < 0) { activeCalMonth = 11; activeCalYear -= 1; }
-    else if (activeCalMonth > 11) { activeCalMonth = 0; activeCalYear += 1; }
-    renderCalendar();
-  }
-
-  function openInspectorDate(iso) {
-    const modal = document.getElementById('inspectorModal');
-    document.getElementById('inspectorDateTitle').textContent = displayFormatDate(iso);
-    const body = document.getElementById('inspectorContentBody');
-    let html = "";
-
-    document.getElementById('btnDateQuickActivity').onclick = () => {
-      closeInspectorModal();
-      openQuickDrawer('activity', iso);
+    const entry = {
+      id: "ledg_" + Date.now(),
+      date: toNormalizedISO(dateVal),
+      category: category,
+      notes: notes
     };
 
+    ledger.unshift(entry);
+    syncToLocalStorage();
+    renderLedger();
+    renderCalendar();
+    closeQuickLogModal();
+    if (db) db.collection("ledger").doc(entry.id).set(entry).catch(e => console.warn(e));
+  }
+
+  function saveDateTaskToLedger() {
+    const desc = document.getElementById('calTaskDescInput').value.trim();
+    if (!desc) return alert("Please enter description or particulars.");
+    const cat = document.getElementById('calTaskCatSelect').value;
+
+    const entry = {
+      id: "ledg_" + Date.now(),
+      date: activeModalSelectedDateISO,
+      category: cat,
+      notes: desc
+    };
+
+    ledger.unshift(entry);
+    syncToLocalStorage();
+    renderLedger();
+    renderCalendar();
+    showDateDetailsStrict(activeModalSelectedDateISO);
+    document.getElementById('calTaskDescInput').value = "";
+    if (db) db.collection("ledger").doc(entry.id).set(entry).catch(e => console.warn(e));
+  }
+
+  function deleteLedgerItem(itemId) {
+    if (!confirm("Delete this log from Activity Ledger?")) return;
+    ledger = ledger.filter(l => l.id !== itemId);
+    syncToLocalStorage();
+    renderLedger();
+    renderCalendar();
+    if (activeModalSelectedDateISO) showDateDetailsStrict(activeModalSelectedDateISO);
+    if (db) db.collection("ledger").doc(itemId).delete().catch(e => console.warn(e));
+  }
+
+  function resetLedgerForm() {
+    document.getElementById('ledgerNotes').value = "";
+    document.getElementById('ledgerDate').value = getTodayISO();
+  }
+
+  // --- CALENDAR WITH STRICT 7-COLUMN ALIGNMENT ---
+  function renderCalendar() {
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    document.getElementById('calMonthYear').innerText = `${monthNames[curMonth]} ${curYear}`;
+    
+    const firstDayIndex = new Date(curYear, curMonth, 1).getDay();
+    const lastDateOfMonth = new Date(curYear, curMonth + 1, 0).getDate();
+    const gridBody = document.getElementById('calGridBody');
+    gridBody.innerHTML = "";
+
+    for (let i = 0; i < firstDayIndex; i++) {
+      const emptyDiv = document.createElement('div');
+      emptyDiv.className = 'cal-cell empty';
+      gridBody.appendChild(emptyDiv);
+    }
+
+    for (let d = 1; d <= lastDateOfMonth; d++) {
+      const cellDateObj = new Date(curYear, curMonth, d);
+      const cellISO = dateToISO(cellDateObj);
+      const cell = document.createElement('div');
+      cell.className = 'cal-cell';
+      cell.onclick = () => showDateDetailsStrict(cellISO);
+
+      let dayEvents = [];
+      batches.forEach(b => {
+        const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
+        if (!sISO) return;
+        const calc = computeBatchDates(sISO);
+        if (cellISO === calc.d1ISO) dayEvents.push({ type: 'set', name: b.name });
+        if (cellISO === calc.d7ISO) dayEvents.push({ type: 'd7', name: b.name });
+        if (cellISO === calc.d14ISO) dayEvents.push({ type: 'd14', name: b.name });
+        if (cellISO === calc.d18ISO) dayEvents.push({ type: 'hatch', name: b.name });
+        if (cellISO === calc.d21ISO) dayEvents.push({ type: 'remove', name: b.name });
+      });
+
+      const colRecord = collections.find(c => toNormalizedISO(c.date) === cellISO);
+      const ledgerOnDate = ledger.filter(l => toNormalizedISO(l.date) === cellISO);
+
+      if (dayEvents.some(e => e.type === 'set')) cell.classList.add('stage-set');
+      else if (dayEvents.some(e => e.type === 'd7')) cell.classList.add('stage-d7');
+      else if (dayEvents.some(e => e.type === 'd14')) cell.classList.add('stage-d14');
+      else if (dayEvents.some(e => e.type === 'hatch')) cell.classList.add('stage-hatch');
+      else if (dayEvents.some(e => e.type === 'remove')) cell.classList.add('stage-remove');
+
+      let content = `<span style="font-size:0.75rem; margin-bottom:1px;">${d}</span>`;
+      
+      dayEvents.forEach(ev => {
+        if (ev.type === 'set') content += `<span class="stage-tag" style="background:#0284c7; color:#ffffff;">SET: ${ev.name}</span>`;
+        else if (ev.type === 'd7') content += `<span class="stage-tag" style="background:#9333ea; color:#ffffff;">D7: ${ev.name}</span>`;
+        else if (ev.type === 'd14') content += `<span class="stage-tag" style="background:#ca8a04; color:#ffffff;">D14: ${ev.name}</span>`;
+        else if (ev.type === 'hatch') content += `<span class="stage-tag" style="background:#ea580c; color:#ffffff;">D18: ${ev.name}</span>`;
+        else if (ev.type === 'remove') content += `<span class="stage-tag" style="background:#16a34a; color:#ffffff;">PULL: ${ev.name}</span>`;
+      });
+
+      if (colRecord && colRecord.total > 0) content += `<span class="egg-badge">+${colRecord.total}🥚</span>`;
+      if (ledgerOnDate.length > 0) content += `<span class="task-cal-badge">📝 ${ledgerOnDate.length} Log</span>`;
+
+      cell.innerHTML = content;
+      gridBody.appendChild(cell);
+    }
+  }
+
+  function changeMonth(delta) {
+    curMonth += delta;
+    if (curMonth < 0) { curMonth = 11; curYear -= 1; }
+    else if (curMonth > 11) { curMonth = 0; curYear += 1; }
+    renderCalendar();
+  }
+
+  function showDateDetailsStrict(dateISO) {
+    activeModalSelectedDateISO = dateISO;
+    const modal = document.getElementById('dateModal');
+    const title = document.getElementById('modalDateTitle');
+    const body = document.getElementById('modalDetailsBody');
+    title.innerText = formatDisplayDate(dateISO);
+    let html = "";
+
     batches.forEach(b => {
-      const cycle = calcBatchCycles(normalizeToISO(b.startDate || b.rawDate));
-      if (iso === cycle.d1) {
-        html += `<div style="background:var(--grad-set); border-left:4px solid #0284c7; padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:0.82rem;">
-          <b style="color:#0284c7;">🥚 DAY 1: SET IN INCUBATOR</b><br>
-          <b>Batch:</b> ${b.name} (${b.eggs} eggs)<br>
-          <span style="font-size:0.72rem; color:var(--text-secondary);">Setter operating at 99.5°F–100°F with turning mechanism active.</span>
-        </div>`;
-      }
-      if (iso === cycle.d18) {
-        html += `<div style="background:var(--grad-hatch); border-left:4px solid #ea580c; padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:0.82rem;">
-          <b style="color:#ea580c;">🐣 DAY 18: LOCKDOWN / HATCHER</b><br>
-          <b>Batch:</b> ${b.name} (${b.eggs} eggs)<br>
-          <span style="font-size:0.72rem; color:var(--text-secondary);">Lockdown: stop turning and increase wet bulb humidity.</span>
-        </div>`;
-      }
-      if (iso === cycle.d21) {
-        html += `<div style="background:var(--grad-pull); border-left:4px solid #16a34a; padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:0.82rem;">
-          <b style="color:#16a34a;">🐥 DAY 21: PULL CHICKS</b><br>
-          <b>Batch:</b> ${b.name}<br>
-          <b>Harvest:</b> ${b.chicksHatched !== null ? (b.chicksHatched + ' chicks pulled (' + b.hatchRate + '%)') : 'Harvest count pending'}<br>
-        </div>`;
-      }
+      const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
+      if (!sISO) return;
+      const calc = computeBatchDates(sISO);
+      if (dateISO === calc.d1ISO) html += `<div class="event-item" style="border-left: 5px solid #0284c7;"><b>🥚 DAY 1 SET:</b> ${b.name} (${b.eggs} eggs)</div>`;
+      if (dateISO === calc.d7ISO) html += `<div class="event-item" style="border-left: 5px solid #9333ea;"><b>🔍 DAY 7 CANDLING:</b> ${b.name}</div>`;
+      if (dateISO === calc.d14ISO) html += `<div class="event-item" style="border-left: 5px solid #ca8a04;"><b>🔍 DAY 14 CANDLING:</b> ${b.name}</div>`;
+      if (dateISO === calc.d18ISO) html += `<div class="event-item" style="border-left: 5px solid #ea580c;"><b>🐣 DAY 18 LOCKDOWN:</b> ${b.name}</div>`;
+      if (dateISO === calc.d21ISO) html += `<div class="event-item" style="border-left: 5px solid #16a34a;"><b>🐥 DAY 21 PULL:</b> ${b.name}</div>`;
     });
 
-    const egg = collections.find(c => normalizeToISO(c.date) === iso);
-    if (egg) {
-      html += `<div style="background:var(--nav-bar-bg); border-left:4px solid var(--border-card); padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:0.82rem;">
-        <b>🥚 Daily Egg Pickings:</b><br>
-        Morn: ${egg.morning||0} | Aftn: ${egg.afternoon||0} | Eve: ${egg.evening||0}<br>
-        Broken: <span style="color:#ef4444; font-weight:800;">${egg.broken||0}</span> | <b>Total Intact: ${egg.total}</b>
-      </div>`;
+    const col = collections.find(c => toNormalizedISO(c.date) === dateISO);
+    if (col && (col.total > 0 || (col.broken || 0) > 0)) {
+      html += `<div class="event-item" style="border-left: 5px solid #64748b;"><b>🥚 Eggs:</b> Intact: ${col.total} | Broken: ${col.broken||0}</div>`;
     }
 
-    const mort = mortality.find(m => normalizeToISO(m.date) === iso);
-    if (mort) {
-      html += `<div style="background:#fef2f2; border-left:4px solid #ef4444; padding:10px 12px; border-radius:10px; margin-bottom:8px; font-size:0.82rem;">
-        <b style="color:#ef4444;">☠️ Bird Losses:</b> ${mort.dead}
-      </div>`;
+    const morts = mortality.filter(m => toNormalizedISO(m.date) === dateISO);
+    if (morts.length > 0) {
+      let list = morts.map(m => `<b>${m.category||'Chicks'}:</b> ${m.dead} dead`).join(' | ');
+      html += `<div class="event-item" style="border-left: 5px solid #b91c1c;"><b>☠️ Mortality:</b> ${list}</div>`;
     }
 
-    const dayActs = activities.filter(a => normalizeToISO(a.date) === iso);
-    if (dayActs.length > 0) {
-      html += `<div style="margin-top:10px; font-weight:900; font-size:0.82rem; color:#7c3aed;">📝 FARM ACTIVITIES &amp; TASKS</div>`;
-      dayActs.forEach(act => {
-        html += `<div style="background:var(--nav-bar-bg); border-left:4px solid #7c3aed; padding:8px 10px; border-radius:8px; margin-top:6px; font-size:0.8rem;">
-          <b>${act.category}:</b> ${act.details}
-          <div style="text-align:right; margin-top:4px;">
-            <button onclick="deleteActivity('${act.id}')" style="background:transparent; border:none; color:#ef4444; font-size:0.7rem; font-weight:800; cursor:pointer;">✕ Remove</button>
+    const logs = ledger.filter(l => toNormalizedISO(l.date) === dateISO);
+    if (logs.length > 0) {
+      logs.forEach(l => {
+        const icon = getCategoryIcon(l.category);
+        html += `
+          <div class="event-item" style="border-left: 5px solid #7c3aed; display:flex; justify-content:space-between; align-items:center;">
+            <div><b>${icon} ${l.category}:</b> ${l.notes}</div>
+            <button style="background:#fee2e2; color:#b91c1c; border:none; border-radius:4px; padding:3px 6px; font-weight:bold; cursor:pointer;" onclick="deleteLedgerItem('${l.id}')">✕</button>
           </div>
-        </div>`;
+        `;
       });
     }
 
-    if (!html) html = `<div style="text-align:center; color:var(--text-secondary); padding:20px; font-size:0.85rem;">No farm records or tasks logged for this date.</div>`;
+    if (!html) html = `<div style="text-align:center; padding:10px; color:var(--text-muted); font-size:0.8rem;">No activity on this date.</div>`;
     body.innerHTML = html;
     modal.style.display = "flex";
   }
 
-  function deleteActivity(actId) {
-    if (!confirm("Remove this activity note?")) return;
-    activities = activities.filter(a => a.id !== actId);
-    commitState();
-    renderActivitiesLedger();
-    renderCalendar();
-    closeInspectorModal();
-    if (firestoreDb) firestoreDb.collection("activities").doc(actId).delete().catch(console.warn);
-  }
-
-  function closeInspectorModal(e) {
-    if (!e || e.target.id === 'inspectorModal' || e.target.classList.contains('btn-close-sheet')) {
-      document.getElementById('inspectorModal').style.display = "none";
+  function closeDateDetails(e) {
+    if (!e || e.target.id === "dateModal" || e.target.classList.contains("modal-close")) {
+      document.getElementById('dateModal').style.display = "none";
     }
   }
 
-  // --- REPORT EXPORTS ---
-  function openReportModal() {
-    const sFrom = document.getElementById('repBatchFrom'), sTo = document.getElementById('repBatchTo');
-    sFrom.innerHTML = ""; sTo.innerHTML = "";
-    const sorted = [...batches].sort((a,b) => normalizeToISO(a.startDate||a.rawDate).localeCompare(normalizeToISO(b.startDate||b.rawDate)));
+  // --- DELETE CENTER ---
+  function openDeleteCenterModal() {
+    const bSel = document.getElementById('delBatchSelect');
+    bSel.innerHTML = "";
+    batches.forEach(b => bSel.add(new Option(`${b.name} (${b.eggs} eggs)`, b.id)));
 
-    sorted.forEach((b, idx) => {
-      sFrom.add(new Option(`${b.name} (${displayFormatDate(b.startDate||b.rawDate)})`, idx));
-      sTo.add(new Option(`${b.name} (${displayFormatDate(b.startDate||b.rawDate)})`, idx));
+    const cSel = document.getElementById('delColSelect');
+    cSel.innerHTML = "";
+    collections.forEach(c => cSel.add(new Option(`${formatDisplayDate(c.date)} (${c.total} eggs)`, c.id)));
+
+    const mSel = document.getElementById('delMortSelect');
+    mSel.innerHTML = "";
+    mortality.forEach(m => mSel.add(new Option(`${formatDisplayDate(m.date)} - ${m.category||'Chicks'}: ${m.dead} dead`, m.id)));
+
+    document.getElementById('deleteCenterModal').style.display = "flex";
+  }
+
+  function closeDeleteCenterModal(e) {
+    if (!e || e.target.id === "deleteCenterModal" || e.target.classList.contains("modal-close")) {
+      document.getElementById('deleteCenterModal').style.display = "none";
+    }
+  }
+
+  function confirmDeleteBatch() {
+    const id = document.getElementById('delBatchSelect').value;
+    if (!id || !confirm("Delete this batch permanently?")) return;
+    batches = batches.filter(b => b.id !== id);
+    syncToLocalStorage(); renderBatches(); renderLiveMetrics(); renderCalendar();
+    if (db) db.collection("batches").doc(id).delete().catch(e => console.warn(e));
+    openDeleteCenterModal();
+  }
+
+  function confirmDeleteCollection() {
+    const id = document.getElementById('delColSelect').value;
+    if (!id || !confirm("Delete this egg record?")) return;
+    collections = collections.filter(c => c.id !== id);
+    syncToLocalStorage(); renderCollections(); renderCalendar();
+    if (db) db.collection("collections").doc(id).delete().catch(e => console.warn(e));
+    openDeleteCenterModal();
+  }
+
+  function confirmDeleteMortality() {
+    const id = document.getElementById('delMortSelect').value;
+    if (!id || !confirm("Delete this mortality log?")) return;
+    mortality = mortality.filter(m => m.id !== id);
+    syncToLocalStorage(); renderMortality(); renderLiveMetrics();
+    if (db) db.collection("mortality").doc(id).delete().catch(e => console.warn(e));
+    openDeleteCenterModal();
+  }
+
+  // --- EXPORT FARM REPORTS ENGINE ---
+  function populateReportDropdowns() {
+    const colFrom = document.getElementById('reportColFrom');
+    const colTo = document.getElementById('reportColTo');
+    colFrom.innerHTML = ""; colTo.innerHTML = "";
+
+    const actFrom = document.getElementById('reportActivityFrom');
+    const actTo = document.getElementById('reportActivityTo');
+    actFrom.innerHTML = ""; actTo.innerHTML = "";
+
+    const dNow = new Date();
+    const defaultFromDate = new Date();
+    defaultFromDate.setDate(dNow.getDate() - 30);
+    const defaultFromISO = dateToISO(defaultFromDate);
+    const defaultToISO = dateToISO(dNow);
+
+    for (let i = 0; i <= 60; i++) {
+      const dt = new Date();
+      dt.setDate(dt.getDate() - i);
+      const iso = dateToISO(dt);
+      const display = formatDisplayDate(iso);
+
+      colFrom.add(new Option(display, iso));
+      colTo.add(new Option(display, iso));
+      actFrom.add(new Option(display, iso));
+      actTo.add(new Option(display, iso));
+    }
+
+    colFrom.value = defaultFromISO;
+    colTo.value = defaultToISO;
+    actFrom.value = defaultFromISO;
+    actTo.value = defaultToISO;
+
+    const bFrom = document.getElementById('reportBatchFrom');
+    const bTo = document.getElementById('reportBatchTo');
+    bFrom.innerHTML = ""; bTo.innerHTML = "";
+
+    const sortedBatches = [...batches].sort((a, b) => {
+      return toNormalizedISO(a.startDate || a.rawDate).localeCompare(toNormalizedISO(b.startDate || b.rawDate));
     });
-    if (sorted.length > 0) { sFrom.selectedIndex = 0; sTo.selectedIndex = sorted.length - 1; }
 
-    const end = new Date();
-    const start = new Date(); start.setDate(end.getDate() - 30);
-    document.getElementById('repEggTo').value = toISODate(end);
-    document.getElementById('repEggFrom').value = toISODate(start);
-    document.getElementById('repActTo').value = toISODate(end);
-    document.getElementById('repActFrom').value = toISODate(start);
-    document.getElementById('reportModal').style.display = "flex";
-  }
-  function closeReportModal(e) {
-    if (!e || e.target.id === 'reportModal' || e.target.classList.contains('btn-close-sheet')) {
-      document.getElementById('reportModal').style.display = "none";
+    sortedBatches.forEach((b, idx) => {
+      const dt = formatDisplayDate(b.startDate || b.rawDate);
+      bFrom.add(new Option(`${b.name} (${dt})`, idx));
+      bTo.add(new Option(`${b.name} (${dt})`, idx));
+    });
+
+    if (sortedBatches.length > 0) {
+      bFrom.selectedIndex = 0;
+      bTo.selectedIndex = sortedBatches.length - 1;
     }
   }
-  function closeReportView() {
-    document.getElementById('reportViewContainer').style.display = 'none';
-    document.getElementById('mainAppSection').style.display = 'block';
+
+  function openDataModal() {
+    populateReportDropdowns();
+    document.getElementById('dataModal').style.display = "flex";
   }
 
-  function buildEggReport() {
-    const f = document.getElementById('repEggFrom').value;
-    const t = document.getElementById('repEggTo').value;
-    if (!f || !t || f > t) return alert("Select valid dates");
+  function closeDataModal(e) {
+    if (!e || e.target.id === "dataModal" || e.target.classList.contains("modal-close")) {
+      document.getElementById('dataModal').style.display = "none";
+    }
+  }
+
+  function closeDataDisplay() {
+    document.getElementById('dataDisplayView').style.display = "none";
+    document.getElementById('mainDashboard').style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // 1. Egg Collection Audit
+  function displayEggDataReport() {
+    const fromISO = document.getElementById('reportColFrom').value;
+    const toISO = document.getElementById('reportColTo').value;
+    if (fromISO > toISO) return alert("FROM date cannot be after TO date.");
 
     const filtered = collections.filter(c => {
-      const d = normalizeToISO(c.date);
-      return d && d >= f && d <= t;
-    }).sort((a,b) => normalizeToISO(a.date).localeCompare(normalizeToISO(b.date)));
+      const cd = toNormalizedISO(c.date);
+      return cd >= fromISO && cd <= toISO;
+    }).sort((a, b) => toNormalizedISO(a.date).localeCompare(toNormalizedISO(b.date)));
 
-    if (filtered.length === 0) return alert("No egg entries in this date window");
+    if (filtered.length === 0) return alert("No egg collections recorded in this date range.");
 
-    let totM = 0, totA = 0, totE = 0, totB = 0, grand = 0;
-    let rows = "";
+    let totalMorn = 0, totalAftn = 0, totalEve = 0, totalBroken = 0, grandTotal = 0;
+    let rowsHtml = "";
+
     filtered.forEach(c => {
-      totM += (c.morning||0); totA += (c.afternoon||0); totE += (c.evening||0); totB += (c.broken||0); grand += (c.total||0);
-      rows += `<tr><td><b>${displayFormatDate(c.date)}</b></td><td>${c.morning||0}</td><td>${c.afternoon||0}</td><td>${c.evening||0}</td><td style="color:#ef4444;">${c.broken||0}</td><td style="color:#0284c7; font-weight:800;">${c.total||0}</td></tr>`;
+      const m = c.morning || 0, a = c.afternoon || 0, e = c.evening || 0, b = c.broken || 0, t = c.total || 0;
+      totalMorn += m; totalAftn += a; totalEve += e; totalBroken += b; grandTotal += t;
+      rowsHtml += `
+        <tr>
+          <td><b>${formatDisplayDate(c.date)}</b></td>
+          <td>${m}</td>
+          <td>${a}</td>
+          <td>${e}</td>
+          <td style="color:#b91c1c; font-weight:bold;">${b}</td>
+          <td style="color:#0284c7; font-weight:bold;">${t}</td>
+        </tr>
+      `;
     });
 
     const reportHtml = `
-      <div class="surface-card">
-        <h3 style="margin:0 0 4px 0; text-align:center; font-weight:900;">AD FARMS · EGG COLLECTION AUDIT</h3>
-        <p style="text-align:center; font-size:0.75rem; color:var(--text-secondary); margin:0 0 12px 0;">${displayFormatDate(f)} — ${displayFormatDate(t)}</p>
-        <div class="table-responsive">
-          <table>
-            <thead><tr><th>Date</th><th>Morn</th><th>Aftn</th><th>Eve</th><th>Broken</th><th>Total Intact</th></tr></thead>
-            <tbody>${rows}
-              <tr style="font-weight:900; background:var(--nav-bar-bg);">
-                <td>TOTALS</td><td>${totM}</td><td>${totA}</td><td>${totE}</td><td style="color:#ef4444;">${totB}</td><td style="color:#0284c7;">${grand}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div style="text-align:center; margin-bottom:14px;">
+        <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary);">AD FARMS ; HERD &amp; HARVEST</h2>
+        <div style="font-size:0.85rem; font-weight:bold; color:#059669; margin-top:3px;">Egg Collection Audit Report</div>
+        <div style="font-size:0.75rem; color:var(--text-muted);">Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b></div>
+      </div>
+      <div class="table-wrap">
+        <table style="min-width: 480px;">
+          <thead>
+            <tr>
+              <th style="background:#059669; color:#fff;">Date</th>
+              <th>Morn</th>
+              <th>Aftn</th>
+              <th>Eve</th>
+              <th>Broken</th>
+              <th>Total Intact</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+            <tr style="font-weight:bold; background:var(--tab-bar-bg);">
+              <td>TOTALS</td>
+              <td>${totalMorn}</td>
+              <td>${totalAftn}</td>
+              <td>${totalEve}</td>
+              <td style="color:#b91c1c;">${totalBroken}</td>
+              <td style="color:#0284c7;">${grandTotal}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     `;
-    document.getElementById('reportContentArea').innerHTML = reportHtml;
-    document.getElementById('reportModal').style.display = 'none';
-    document.getElementById('mainAppSection').style.display = 'none';
-    document.getElementById('reportViewContainer').style.display = 'block';
+
+    document.getElementById('dataReportContent').innerHTML = reportHtml;
+    document.getElementById('dataModal').style.display = "none";
+    document.getElementById('mainDashboard').style.display = "none";
+    document.getElementById('dataDisplayView').style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function buildIncubationReport() {
-    const sorted = [...batches].sort((a,b) => normalizeToISO(a.startDate||a.rawDate).localeCompare(normalizeToISO(b.startDate||b.rawDate)));
-    if (sorted.length === 0) return alert("No batches available");
-    let fromIdx = parseInt(document.getElementById('repBatchFrom').value, 10);
-    let toIdx = parseInt(document.getElementById('repBatchTo').value, 10);
-    if (fromIdx > toIdx) { const tmp = fromIdx; fromIdx = toIdx; toIdx = tmp; }
-
-    const subset = sorted.slice(fromIdx, toIdx + 1);
-    let totalEggs = 0, totalChicks = 0, rows = "";
-
-    subset.forEach(b => {
-      const cycle = calcBatchCycles(normalizeToISO(b.startDate||b.rawDate));
-      totalEggs += b.eggs;
-      if (b.chicksHatched) totalChicks += b.chicksHatched;
-      rows += `<tr>
-        <td><b>${b.name}</b></td><td>${b.eggs}</td><td>${displayFormatDate(cycle.d1)}</td><td>${displayFormatDate(cycle.d18)}</td><td>${displayFormatDate(cycle.d21)}</td>
-        <td>${b.chicksHatched || '-'}</td><td style="color:#059669; font-weight:900;">${b.hatchRate ? b.hatchRate + '%' : '-'}</td>
-      </tr>`;
+  // 2. Incubation Batches Audit
+  function displayIncubationDataReport() {
+    const sorted = [...batches].sort((a, b) => {
+      return toNormalizedISO(a.startDate || a.rawDate).localeCompare(toNormalizedISO(b.startDate || b.rawDate));
     });
 
-    const netRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + "%" : "-";
+    if (sorted.length === 0) return alert("No batches recorded.");
+
+    let idxFrom = parseInt(document.getElementById('reportBatchFrom').value, 10);
+    let idxTo = parseInt(document.getElementById('reportBatchTo').value, 10);
+    if (idxFrom > idxTo) { const temp = idxFrom; idxFrom = idxTo; idxTo = temp; }
+
+    const selectedBatches = sorted.slice(idxFrom, idxTo + 1);
+    let totalEggs = 0, totalChicks = 0, totalD7 = 0, totalD14 = 0;
+    let rowsHtml = "";
+
+    selectedBatches.forEach(b => {
+      const sISO = toNormalizedISO(b.startDate || b.rawDate);
+      const calc = sISO ? computeBatchDates(sISO) : { d1ISO: '', d7ISO: '', d14ISO: '', d18ISO: '', d21ISO: '' };
+      const eggs = parseInt(b.eggs, 10) || 0;
+      const c7 = parseInt(b.candlingD7Cleared, 10) || 0;
+      const c14 = parseInt(b.candlingD14Cleared, 10) || 0;
+      totalEggs += eggs; totalD7 += c7; totalD14 += c14;
+
+      const hasChicks = b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "";
+      if (hasChicks) totalChicks += parseInt(b.chicksHatched, 10) || 0;
+
+      rowsHtml += `
+        <tr>
+          <td><b>${b.name}</b><br><small style="color:var(--text-muted);">${b.setTime || 'Evening'}</small></td>
+          <td>${eggs}</td>
+          <td>${formatDisplayDate(calc.d1ISO)}</td>
+          <td style="color:#6b21a8; font-weight:bold;">${c7}</td>
+          <td style="color:#854d0e; font-weight:bold;">${c14}</td>
+          <td>${formatDisplayDate(calc.d21ISO)}</td>
+          <td><b>${hasChicks ? b.chicksHatched : '-'}</b></td>
+          <td style="color:#16a34a; font-weight:bold;">${b.hatchRate ? b.hatchRate + '%' : '-'}</td>
+        </tr>
+      `;
+    });
+
+    const overallRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + "%" : "-";
 
     const reportHtml = `
-      <div class="surface-card">
-        <h3 style="margin:0 0 4px 0; text-align:center; font-weight:900;">AD FARMS · INCUBATION REPORT</h3>
-        <p style="text-align:center; font-size:0.75rem; color:var(--text-secondary); margin:0 0 12px 0;">Batches: ${subset[0].name} to ${subset[subset.length - 1].name}</p>
-        <div class="table-responsive">
-          <table>
-            <thead><tr><th>Batch</th><th>Eggs</th><th>Day 1</th><th>Day 18</th><th>Day 21</th><th>Chicks</th><th>Hatch %</th></tr></thead>
-            <tbody>${rows}
-              <tr style="font-weight:900; background:var(--nav-bar-bg);">
-                <td>SUMMARY</td><td>${totalEggs}</td><td colspan="3">-</td><td>${totalChicks||'-'}</td><td style="color:#059669;">${netRate}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div style="text-align:center; margin-bottom:14px;">
+        <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary);">AD FARMS ; HERD &amp; HARVEST</h2>
+        <div style="font-size:0.85rem; font-weight:bold; color:#0284c7; margin-top:3px;">Incubation Batches Audit Report</div>
+        <div style="font-size:0.75rem; color:var(--text-muted);">Range: <b>${selectedBatches[0].name}</b> to <b>${selectedBatches[selectedBatches.length - 1].name}</b></div>
+      </div>
+      <div class="table-wrap">
+        <table style="min-width: 620px;">
+          <thead>
+            <tr>
+              <th style="background:#0284c7; color:#fff;">Batch</th>
+              <th>Eggs</th>
+              <th>Set Date</th>
+              <th>D7 Candled</th>
+              <th>D14 Candled</th>
+              <th>Pull Date</th>
+              <th>Chicks</th>
+              <th>Hatch Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+            <tr style="font-weight:bold; background:var(--tab-bar-bg);">
+              <td>TOTALS</td>
+              <td>${totalEggs}</td>
+              <td>-</td>
+              <td style="color:#6b21a8;">${totalD7}</td>
+              <td style="color:#854d0e;">${totalD14}</td>
+              <td>-</td>
+              <td>${totalChicks > 0 ? totalChicks : '-'}</td>
+              <td style="color:#16a34a;">${overallRate}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     `;
-    document.getElementById('reportContentArea').innerHTML = reportHtml;
-    document.getElementById('reportModal').style.display = 'none';
-    document.getElementById('mainAppSection').style.display = 'none';
-    document.getElementById('reportViewContainer').style.display = 'block';
+
+    document.getElementById('dataReportContent').innerHTML = reportHtml;
+    document.getElementById('dataModal').style.display = "none";
+    document.getElementById('mainDashboard').style.display = "none";
+    document.getElementById('dataDisplayView').style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function buildActivityReport() {
-    const f = document.getElementById('repActFrom').value;
-    const t = document.getElementById('repActTo').value;
-    if (!f || !t || f > t) return alert("Select valid dates");
+  // 3. Farm Activities & Ledger Audit
+  function displayActivityDataReport() {
+    const fromISO = document.getElementById('reportActivityFrom').value;
+    const toISO = document.getElementById('reportActivityTo').value;
+    if (fromISO > toISO) return alert("FROM date cannot be after TO date.");
 
-    const filtered = activities.filter(a => {
-      const d = normalizeToISO(a.date);
-      return d && d >= f && d <= t;
-    }).sort((a,b) => normalizeToISO(a.date).localeCompare(normalizeToISO(b.date)));
+    const filtered = ledger.filter(l => {
+      const ld = toNormalizedISO(l.date);
+      return ld >= fromISO && ld <= toISO;
+    }).sort((a, b) => toNormalizedISO(a.date).localeCompare(toNormalizedISO(b.date)));
 
-    if (filtered.length === 0) return alert("No activities recorded in this date window");
+    if (filtered.length === 0) return alert("No activities or tasks logged in this date range.");
 
-    let rows = "";
-    filtered.forEach(a => {
-      rows += `<tr><td><b>${displayFormatDate(a.date)}</b></td><td><b>${a.category}</b></td><td style="text-align:left;">${a.details}</td></tr>`;
+    let rowsHtml = "";
+    filtered.forEach(l => {
+      const icon = getCategoryIcon(l.category);
+      rowsHtml += `
+        <tr>
+          <td><b>${formatDisplayDate(l.date)}</b></td>
+          <td style="font-weight:bold; color:#7c3aed;">${icon} ${l.category}</td>
+          <td style="text-align:left;">${l.notes || '-'}</td>
+        </tr>
+      `;
     });
 
     const reportHtml = `
-      <div class="surface-card">
-        <h3 style="margin:0 0 4px 0; text-align:center; font-weight:900; color:#7c3aed;">AD FARMS · ACTIVITIES &amp; HEALTH AUDIT</h3>
-        <p style="text-align:center; font-size:0.75rem; color:var(--text-secondary); margin:0 0 12px 0;">${displayFormatDate(f)} — ${displayFormatDate(t)}</p>
-        <div class="table-responsive">
-          <table>
-            <thead><tr><th>Date</th><th>Category</th><th style="text-align:left;">Details &amp; Notes</th></tr></thead>
-            <tbody>${rows}</tbody>
-          </table>
-        </div>
+      <div style="text-align:center; margin-bottom:14px;">
+        <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary);">AD FARMS ; HERD &amp; HARVEST</h2>
+        <div style="font-size:0.85rem; font-weight:bold; color:#7c3aed; margin-top:3px;">Farm Activities &amp; Ledger Audit</div>
+        <div style="font-size:0.75rem; color:var(--text-muted);">Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b></div>
+      </div>
+      <div class="table-wrap">
+        <table style="min-width: 480px;">
+          <thead>
+            <tr>
+              <th style="background:#7c3aed; color:#fff;">Date</th>
+              <th>Category</th>
+              <th style="text-align:left;">Particulars / Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
       </div>
     `;
-    document.getElementById('reportContentArea').innerHTML = reportHtml;
-    document.getElementById('reportModal').style.display = 'none';
-    document.getElementById('mainAppSection').style.display = 'none';
-    document.getElementById('reportViewContainer').style.display = 'block';
+
+    document.getElementById('dataReportContent').innerHTML = reportHtml;
+    document.getElementById('dataModal').style.display = "none";
+    document.getElementById('mainDashboard').style.display = "none";
+    document.getElementById('dataDisplayView').style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // --- LOGO PERSISTENCE ---
-  function initLogo() {
-    const saved = localStorage.getItem("ad_farms_logo");
-    if (saved) {
-      document.getElementById('logoImg').src = saved;
-      document.getElementById('logoImg').style.display = "block";
-      document.getElementById('logoLetters').style.display = "none";
-    }
-  }
-  function handleLogoUpdate(input) {
-    if (input.files && input.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        localStorage.setItem("ad_farms_logo", e.target.result);
-        initLogo();
-      };
-      reader.readAsDataURL(input.files[0]);
-    }
-  }
-
-  // --- BOOTSTRAP ---
-  initTheme();
-  initLogo();
-  renderRackView();
-  renderCollectionsTable();
-  renderMortalityTable();
-  renderActivitiesLedger();
+  // Initial draw
+  renderCollections();
+  renderBatches();
+  renderMortality();
+  renderLedger();
+  renderLiveMetrics();
   renderCalendar();
-  updateOverviewStats();
-  slideToIndex(0, false);
 </script>
+
 </body>
 </html>
