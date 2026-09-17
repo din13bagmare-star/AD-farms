@@ -70,7 +70,11 @@
     background-color: var(--bg-canvas);
     color: var(--text-primary);
     margin: 0;
-    padding: 14px 12px 105px 12px;
+    /* Respects device system status bar (notch/clock/battery) and bottom navigation pill */
+    padding-top: max(14px, env(safe-area-inset-top, 28px));
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -82,23 +86,24 @@
     position: relative;
   }
 
-  /* TOP BAR WITH METALLIC BEVEL GRADIENT */
+  /* TOP BAR WITH CLEAR STATUS BAR MARGIN & METALLIC BEVEL GRADIENT */
   .top-bar {
-    background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
-    border: 1px solid #cbd5e1;
+    background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%) !important;
+    border: 1.5px solid #cbd5e1 !important;
     border-radius: 22px;
     padding: 12px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-top: 10px;
     margin-bottom: 14px;
-    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
   }
 
   body.dark-theme .top-bar {
-    background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
-    border: 1px solid #475569;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    background: linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 100%) !important;
+    border: 1.5px solid #94a3b8 !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.9);
   }
 
   .brand-group { display: flex; align-items: center; gap: 12px; }
@@ -106,8 +111,8 @@
   .logo-box {
     width: 44px;
     height: 44px;
-    background: var(--card-surface);
-    border: 1px solid var(--border-hairline);
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
     border-radius: 12px;
     overflow: hidden;
     display: flex;
@@ -115,31 +120,30 @@
     justify-content: center;
     flex-shrink: 0;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   }
   .logo-box img { width: 100%; height: 100%; object-fit: contain; }
 
   .brand-text h1 {
     margin: 0;
-    font-size: 1.05rem;
-    color: var(--text-primary);
+    font-size: 1.10rem;
+    color: #090d16 !important;
     line-height: 1.1;
     font-weight: 800;
   }
   .brand-text .sub-title {
     margin: 0;
     font-size: 0.65rem;
-    color: #0284c7;
-    font-weight: 700;
+    color: #0284c7 !important;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.6px;
   }
-  body.dark-theme .brand-text .sub-title { color: #38bdf8; }
 
   .btn-settings {
-    background: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(148, 163, 184, 0.4);
-    color: var(--text-primary);
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+    color: #090d16 !important;
     border-radius: 14px;
     width: 42px;
     height: 42px;
@@ -148,14 +152,10 @@
     justify-content: center;
     font-size: 1.25rem;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: transform 0.15s ease;
   }
   .btn-settings:active { transform: scale(0.92); }
-  body.dark-theme .btn-settings {
-    background: rgba(30, 41, 59, 0.7);
-    border-color: rgba(148, 163, 184, 0.3);
-  }
 
   /* TELEMETRY STRIP */
   .metrics-strip {
@@ -476,7 +476,7 @@
   }
   .btn-neutral:active { transform: scale(0.96); }
 
-  /* PRECISION TABLES & TOUCH ISOLATION */
+  /* TABLE WRAPPERS & TOUCH-ISOLATION */
   .table-wrap {
     width: 100%;
     overflow-x: auto;
@@ -596,20 +596,20 @@
     cursor: pointer;
   }
 
-  /* QUICK LOG BUTTON */
+  /* ELEVATED QUICK LOG BUTTON (CLEARS ANDROID BOTTOM BAR) */
   .fab-quick-log {
     position: fixed;
-    bottom: 22px;
+    bottom: calc(34px + env(safe-area-inset-bottom, 16px));
     right: 20px;
     background: linear-gradient(135deg, var(--brand) 0%, #0369a1 100%);
     color: #ffffff;
     border: none;
     border-radius: 30px;
-    padding: 14px 24px;
-    min-height: 50px;
-    font-size: 0.96rem;
+    padding: 14px 26px;
+    min-height: 52px;
+    font-size: 0.98rem;
     font-weight: 800;
-    box-shadow: var(--shadow-float);
+    box-shadow: 0 14px 34px -2px rgba(2, 132, 199, 0.45);
     cursor: pointer;
     z-index: 900;
     display: flex;
@@ -617,7 +617,7 @@
     gap: 6px;
     transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
-  .fab-quick-log:active { transform: scale(0.95); }
+  .fab-quick-log:active { transform: scale(0.94); }
 
   /* 7-COLUMN CALENDAR GRID */
   .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -849,7 +849,7 @@
     <div class="brand-group">
       <div class="logo-box" id="logoContainer" onclick="triggerUploadOnce()">
         <img id="logoDisplay" alt="AD Farms" style="display:none;">
-        <span id="placeholderText" style="font-size:0.6rem; font-weight:bold;">AD<br>FARMS</span>
+        <span id="placeholderText" style="font-size:0.6rem; font-weight:bold; color:#090d16;">AD<br>FARMS</span>
       </div>
       <input type="file" id="logoInput" accept="image/*" style="display: none;" onchange="handleLogoUpload(this)">
       <div class="brand-text">
@@ -1058,7 +1058,7 @@
 
 </div>
 
-<!-- QUICK LOG BUTTON -->
+<!-- ELEVATED QUICK LOG BUTTON -->
 <button class="fab-quick-log" onclick="openQuickLogModal()">
   <span>+ Quick Log</span>
 </button>
@@ -1325,7 +1325,7 @@
       <select id="delColSelect" style="margin-bottom:6px;"></select>
       <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.8rem; min-height:38px;" onclick="confirmDeleteCollection()">Delete Egg Log</button>
     </div>
-    <div style="background:var(--crimson-glow); border:1px solid var(--crimson); border-radius:14px; padding:12px;">
+    <div style="background:var(--crimson-glow); border:1px solid var(--crimson); border-radius:14px; padding:12px; margin-bottom:10px;">
       <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:var(--crimson);">Delete Mortality Log</h4>
       <select id="delMortSelect" style="margin-bottom:6px;"></select>
       <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.8rem; min-height:38px;" onclick="confirmDeleteMortality()">Delete Mortality</button>
@@ -1614,7 +1614,6 @@
     touchStartX = e.changedTouches[0].screenX;
     touchStartY = e.changedTouches[0].screenY;
 
-    // Detect if touch originated inside an overflowed horizontal table
     const targetTableWrap = e.target.closest('.table-wrap');
     if (targetTableWrap && targetTableWrap.scrollWidth > targetTableWrap.clientWidth) {
       isTouchInsideScrollableTable = true;
@@ -1627,7 +1626,6 @@
     touchEndX = e.changedTouches[0].screenX;
     touchEndY = e.changedTouches[0].screenY;
 
-    // Disallow window switching if the gesture happened within a scrolling table
     if (isTouchInsideScrollableTable) {
       isTouchInsideScrollableTable = false;
       return;
