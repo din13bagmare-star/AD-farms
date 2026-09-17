@@ -2,100 +2,164 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>AD Farms ; Herd & Harvest</title>
 <style>
   :root {
-    --bg-main: #f4f7fb;
-    --card-bg: #ffffff;
-    --card-border: #e2e8f0;
-    --text-primary: #0f172a;
-    --text-muted: #64748b;
-    --cell-bg: #ffffff;
-    --cell-border: #cbd5e1;
-    --row-alt: #f8fafc;
-    --tab-bar-bg: #e9eef5;
-    --tab-active-bg: #ffffff;
-    --tab-text: #64748b;
-    --tab-active-text: #0284c7;
+    --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
+    
+    --bg-canvas: #f8fafc;
+    --card-surface: rgba(255, 255, 255, 0.96);
+    --card-surface-subtle: #f1f5f9;
+    --border-hairline: rgba(148, 163, 184, 0.28);
+    --border-strong: rgba(100, 116, 139, 0.45);
+    
+    --text-primary: #090d16;
+    --text-secondary: #475569;
+    --text-tertiary: #94a3b8;
+    
+    --brand: #0284c7;
+    --brand-glow: rgba(2, 132, 199, 0.18);
+    --emerald: #059669;
+    --emerald-glow: rgba(5, 150, 105, 0.18);
+    --amber: #d97706;
+    --amber-glow: rgba(217, 119, 6, 0.18);
+    --crimson: #dc2626;
+    --crimson-glow: rgba(220, 38, 38, 0.18);
+    --violet: #7c3aed;
+    --violet-glow: rgba(124, 58, 237, 0.18);
+
+    --shadow-plate: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+    --shadow-float: 0 12px 32px -4px rgba(2, 132, 199, 0.35);
   }
 
   body.dark-theme {
-    --bg-main: #0b1120;
-    --card-bg: #1e293b;
-    --card-border: #334155;
+    --bg-canvas: #060911;
+    --card-surface: rgba(15, 23, 42, 0.92);
+    --card-surface-subtle: rgba(30, 41, 59, 0.7);
+    --border-hairline: rgba(71, 85, 105, 0.4);
+    --border-strong: rgba(148, 163, 184, 0.35);
+    
     --text-primary: #f8fafc;
-    --text-muted: #94a3b8;
-    --cell-bg: #1e293b;
-    --cell-border: #475569;
-    --row-alt: #0f172a;
-    --tab-bar-bg: #0f172a;
-    --tab-active-bg: #334155;
-    --tab-text: #94a3b8;
-    --tab-active-text: #38bdf8;
+    --text-secondary: #94a3b8;
+    --text-tertiary: #64748b;
+    
+    --brand: #38bdf8;
+    --brand-glow: rgba(56, 189, 248, 0.22);
+    --emerald: #10b981;
+    --emerald-glow: rgba(16, 185, 129, 0.22);
+    --amber: #f59e0b;
+    --amber-glow: rgba(245, 158, 11, 0.22);
+    --crimson: #ef4444;
+    --crimson-glow: rgba(239, 68, 68, 0.22);
+    --violet: #a855f7;
+    --violet-glow: rgba(168, 85, 247, 0.22);
+
+    --shadow-plate: 0 8px 24px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    --shadow-float: 0 12px 36px -4px rgba(0, 0, 0, 0.7);
   }
 
-  * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--bg-main); color: var(--text-primary); margin: 0; padding: 10px; padding-bottom: 85px; overflow-x: hidden; transition: background 0.2s ease, color 0.2s ease; }
-  .container { max-width: 600px; margin: auto; position: relative; }
+  * {
+    box-sizing: border-box;
+    font-family: var(--font-stack);
+    -webkit-tap-highlight-color: transparent;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
 
-  /* TOP HEADER */
+  body {
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 14px 12px 105px 12px;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .container {
+    max-width: 580px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* LUMINOUS LIGHT GRAY TOP BAR */
   .top-bar {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 16px;
-    padding: 10px 12px;
+    background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
+    border: 1px solid #cbd5e1;
+    border-radius: 22px;
+    padding: 12px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-    margin-bottom: 10px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
   }
-  .brand-group { display: flex; align-items: center; gap: 8px; }
+
+  body.dark-theme .top-bar {
+    background: linear-gradient(180deg, #334155 0%, #1e293b 100%);
+    border: 1px solid #475569;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+
+  .brand-group { display: flex; align-items: center; gap: 12px; }
+
   .logo-box {
-    width: 42px;
-    height: 42px;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 10px;
+    width: 44px;
+    height: 44px;
+    background: var(--card-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: 12px;
     overflow: hidden;
-    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
   }
   .logo-box img { width: 100%; height: 100%; object-fit: contain; }
-  .brand-text h1 { margin: 0; font-size: 1rem; color: var(--text-primary); line-height: 1.1; font-weight: 800; }
-  .brand-text .sub-title { margin: 0; font-size: 0.65rem; color: #0284c7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-  
-  .header-actions { display: flex; align-items: center; gap: 5px; }
-  .btn-theme {
-    background: var(--tab-bar-bg);
-    border: 1px solid var(--card-border);
+
+  .brand-text h1 {
+    margin: 0;
+    font-size: 1.05rem;
     color: var(--text-primary);
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
+    line-height: 1.1;
+    font-weight: 800;
+  }
+  .brand-text .sub-title {
+    margin: 0;
+    font-size: 0.65rem;
+    color: #0284c7;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+  body.dark-theme .brand-text .sub-title {
+    color: #38bdf8;
+  }
+
+  .btn-settings {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    color: var(--text-primary);
+    border-radius: 14px;
+    width: 42px;
+    height: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.85rem;
+    font-size: 1.25rem;
     cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: transform 0.15s ease;
   }
-  .status-badge { font-size: 0.65rem; padding: 4px 6px; border-radius: 10px; font-weight: bold; background: #e0f2fe; color: #0284c7; }
-  .btn-header {
-    border: none;
-    border-radius: 8px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 6px 9px;
-    cursor: pointer;
+  .btn-settings:active { transform: scale(0.92); }
+  body.dark-theme .btn-settings {
+    background: rgba(30, 41, 59, 0.7);
+    border-color: rgba(148, 163, 184, 0.3);
   }
-  .btn-header.primary { background: #e2e8f0; color: #334155; }
-  .btn-header.danger { background: #fee2e2; color: #b91c1c; }
 
-  /* TOP METRICS SUMMARY */
+  /* TELEMETRY STRIP */
   .metrics-strip {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -103,64 +167,124 @@
     margin-bottom: 8px;
   }
   .metric-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 14px;
-    padding: 10px 6px;
+    background: var(--card-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: 18px;
+    padding: 12px 6px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    box-shadow: var(--shadow-plate);
+    backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
   }
-  .metric-lbl { font-size: 0.60rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 2px; }
-  .metric-val { font-size: 1.35rem; font-weight: 900; line-height: 1.1; }
+  .metric-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    right: 20%;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    opacity: 0.4;
+  }
+  .metric-lbl {
+    font-size: 0.60rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    letter-spacing: 0.6px;
+    margin-bottom: 5px;
+  }
+  .metric-val {
+    font-size: 1.45rem;
+    font-weight: 900;
+    line-height: 1;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.5px;
+  }
 
-  /* READY FOR SETTER BANNER */
+  /* SETTER RESERVOIR */
   .setter-progress-card {
-    background: var(--card-bg);
-    border: 1.5px solid #86efac;
-    border-radius: 14px;
-    padding: 9px 12px;
+    background: var(--card-surface);
+    border: 1.5px solid var(--emerald);
+    border-radius: 18px;
+    padding: 12px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 5px rgba(22, 163, 74, 0.05);
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-plate);
+    position: relative;
+    overflow: hidden;
   }
-  .setter-progress-card.dark-theme {
-    border-color: #166534;
+  .setter-progress-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--progress-pct, 0%);
+    background: var(--emerald-glow);
+    transition: width 0.4s ease;
+    z-index: 0;
   }
-  .setter-left { display: flex; flex-direction: column; }
-  .setter-tag { font-size: 0.64rem; font-weight: 800; text-transform: uppercase; color: #15803d; letter-spacing: 0.5px; }
-  .setter-sub { font-size: 0.76rem; font-weight: 700; color: var(--text-muted); margin-top: 1px; }
-  .setter-val { font-size: 1.45rem; font-weight: 900; color: #16a34a; line-height: 1; }
+  .setter-left { display: flex; flex-direction: column; z-index: 1; }
+  .setter-tag {
+    font-size: 0.64rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--emerald);
+    letter-spacing: 0.6px;
+  }
+  .setter-sub {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+  .setter-val {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--emerald);
+    line-height: 1;
+    font-feature-settings: "tnum";
+    z-index: 1;
+  }
 
-  /* TABS */
+  /* NAVIGATION TABS */
   .tab-bar {
     display: flex;
-    background: var(--tab-bar-bg);
-    border-radius: 14px;
+    background: var(--card-surface-subtle);
+    border: 1px solid var(--border-hairline);
+    border-radius: 26px;
     padding: 4px;
-    gap: 2px;
-    margin-bottom: 12px;
+    gap: 3px;
+    margin-bottom: 14px;
     overflow-x: auto;
+    scrollbar-width: none;
   }
+  .tab-bar::-webkit-scrollbar { display: none; }
   .tab-btn {
     flex: 1;
     min-width: fit-content;
     border: none;
     background: transparent;
-    padding: 9px 8px;
-    font-size: 0.74rem;
+    padding: 10px 12px;
+    min-height: 44px;
+    font-size: 0.78rem;
     font-weight: 700;
-    color: var(--tab-text);
-    border-radius: 10px;
+    color: var(--text-secondary);
+    border-radius: 22px;
     cursor: pointer;
     text-align: center;
     white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .tab-btn.active {
-    background: var(--tab-active-bg);
-    color: var(--tab-active-text);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+    background: var(--card-surface);
+    color: var(--brand);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
 
   /* SLIDING VIEWPORT */
@@ -168,7 +292,7 @@
     width: 100%;
     overflow: hidden;
     position: relative;
-    border-radius: 14px;
+    border-radius: 18px;
   }
   .swipe-track {
     display: flex;
@@ -183,115 +307,225 @@
     padding-bottom: 10px;
   }
 
-  /* CARDS */
+  /* CARDS & CONTROLS */
   .card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 16px;
+    background: var(--card-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: 20px;
     padding: 16px;
     margin-bottom: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    box-shadow: var(--shadow-plate);
   }
-  .card h2 { margin: 0 0 12px 0; font-size: 0.95rem; color: var(--text-primary); font-weight: 800; }
-  .form-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .card h2 {
+    margin: 0 0 14px 0;
+    font-size: 1rem;
+    color: var(--text-primary);
+    font-weight: 800;
+    letter-spacing: -0.3px;
+  }
+  .form-row { display: flex; gap: 10px; margin-bottom: 10px; }
   .form-row > div { flex: 1; }
-  label { font-size: 0.74rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 3px; }
+  label {
+    font-size: 0.70rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
   input, select, textarea {
     width: 100%;
-    padding: 9px;
-    border: 1px solid var(--cell-border);
-    border-radius: 8px;
-    font-size: 0.88rem;
-    background: var(--cell-bg);
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    font-size: 0.90rem;
+    background: var(--card-surface);
     color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
-  .btn-submit { width: 100%; background: #0284c7; color: #ffffff; border: none; padding: 11px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; cursor: pointer; margin-top: 4px; }
-  .btn-cancel { width: 100%; background: #64748b; color: #ffffff; border: none; padding: 8px; border-radius: 8px; font-weight: bold; font-size: 0.8rem; margin-top: 6px; display: none; }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px var(--brand-glow);
+  }
+  .btn-submit {
+    width: 100%;
+    min-height: 48px;
+    background: var(--brand);
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 0.94rem;
+    cursor: pointer;
+    margin-top: 6px;
+    box-shadow: 0 4px 14px var(--brand-glow);
+    transition: transform 0.12s ease;
+  }
+  .btn-submit:active { transform: scale(0.98); }
+  .btn-cancel {
+    width: 100%;
+    min-height: 44px;
+    background: var(--card-surface-subtle);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-hairline);
+    padding: 10px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.86rem;
+    margin-top: 8px;
+    display: none;
+    cursor: pointer;
+  }
 
   /* BATCH CARDS */
-  .batch-card { background: var(--card-bg); border: 1.5px solid #0284c7; border-radius: 12px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(2, 132, 199, 0.08); }
-  .batch-card.archived { border-color: var(--card-border); opacity: 0.75; }
-  .batch-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 6px; margin-bottom: 8px; }
-  .batch-title { font-size: 0.98rem; font-weight: 800; color: var(--text-primary); }
-  .batch-eggs { font-size: 0.78rem; background: #e0f2fe; color: #0284c7; font-weight: 800; padding: 2px 8px; border-radius: 12px; }
-  .batch-dates-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; text-align: center; margin-bottom: 8px; }
-  .date-pill { padding: 5px 2px; border-radius: 6px; }
-  .date-pill.d1 { background: #bae6fd; color: #0369a1; }
-  .date-pill.d7 { background: #f3e8ff; color: #6b21a8; }
-  .date-pill.d14 { background: #fef08a; color: #854d0e; }
-  .date-pill.d18 { background: #fed7aa; color: #9a3412; }
-  .pill-lbl { font-size: 0.58rem; font-weight: 800; text-transform: uppercase; display: block; }
-  .pill-val { font-size: 0.72rem; font-weight: 800; margin-top: 2px; display: block; }
-  .batch-results-bar { display: flex; justify-content: space-between; align-items: center; background: var(--row-alt); padding: 7px 10px; border-radius: 6px; font-size: 0.78rem; margin-bottom: 8px; }
-  .batch-actions { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 4px; }
-  .btn-neutral { padding: 7px 3px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; color: var(--text-primary); background: var(--card-bg); border: 1px solid var(--card-border); cursor: pointer; text-align: center; }
+  .batch-card {
+    background: var(--card-surface);
+    border: 1px solid var(--border-hairline);
+    border-left: 5px solid var(--brand);
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-plate);
+  }
+  .batch-card.archived {
+    border-color: var(--border-hairline);
+    border-left: 5px solid var(--text-tertiary);
+    opacity: 0.78;
+  }
+  .batch-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-hairline);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+  }
+  .batch-title { font-size: 1.05rem; font-weight: 800; color: var(--text-primary); }
+  .batch-eggs {
+    font-size: 0.78rem;
+    background: var(--brand-glow);
+    color: var(--brand);
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-feature-settings: "tnum";
+  }
+  .batch-dates-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .date-pill { padding: 6px 4px; border-radius: 10px; }
+  .date-pill.d1 { background: var(--brand-glow); color: var(--brand); }
+  .date-pill.d7 { background: var(--violet-glow); color: var(--violet); }
+  .date-pill.d14 { background: var(--amber-glow); color: var(--amber); }
+  .date-pill.d18 { background: var(--crimson-glow); color: var(--crimson); }
+  .pill-lbl { font-size: 0.60rem; font-weight: 800; text-transform: uppercase; display: block; }
+  .pill-val { font-size: 0.76rem; font-weight: 800; margin-top: 2px; display: block; font-feature-settings: "tnum"; }
+  .batch-results-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-surface-subtle);
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 0.80rem;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-hairline);
+    font-feature-settings: "tnum";
+  }
+  .batch-actions { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
+  .btn-neutral {
+    min-height: 40px;
+    padding: 8px 4px;
+    border-radius: 10px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    background: var(--card-surface);
+    border: 1px solid var(--border-hairline);
+    cursor: pointer;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.12s ease;
+  }
+  .btn-neutral:active { transform: scale(0.96); }
 
-  /* RIGID TABLE SYSTEM WITH HIGH-CONTRAST BORDERS */
+  /* PRECISION TABLES */
   .table-wrap {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    border-radius: 8px;
-    border: 1px solid var(--cell-border);
-    background: var(--card-bg);
+    border-radius: 14px;
+    border: 1px solid var(--border-hairline);
+    background: var(--card-surface);
+    box-shadow: var(--shadow-plate);
   }
   table {
     width: 100%;
-    border-collapse: collapse;
-    font-size: 0.82rem;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.84rem;
     text-align: center;
   }
   th {
-    background: var(--tab-bar-bg);
-    color: var(--text-primary);
+    background: var(--card-surface-subtle);
+    color: var(--text-secondary);
     font-weight: 800;
-    padding: 8px 6px;
-    border: 1px solid var(--cell-border);
+    font-size: 0.70rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 11px 8px;
+    border-bottom: 1px solid var(--border-strong);
+    border-right: 1px solid var(--border-hairline);
     white-space: nowrap;
   }
+  th:last-child { border-right: none; }
   td {
-    padding: 8px 5px;
-    border: 1px solid var(--cell-border);
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--border-hairline);
+    border-right: 1px solid var(--border-hairline);
     color: var(--text-primary);
-    background: var(--cell-bg);
+    background: var(--card-surface);
     white-space: nowrap;
+    font-feature-settings: "tnum";
   }
-  tr:nth-child(even) td {
-    background: var(--row-alt);
-  }
+  td:last-child { border-right: none; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--card-surface-subtle); }
 
   /* ACTIVITY & TASK LEDGER */
   .ledger-main-card {
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 18px;
+    background: var(--card-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: 20px;
     padding: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    box-shadow: var(--shadow-plate);
   }
-  .ledger-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-  }
-  .ledger-title-text {
-    font-size: 1.05rem;
-    font-weight: 900;
-    color: #7c3aed;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+  .ledger-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .ledger-title-text { font-size: 1.05rem; font-weight: 800; color: var(--violet); display: flex; align-items: center; gap: 6px; }
   .btn-new-log {
-    background: var(--card-bg);
-    border: 1.5px solid #7c3aed;
-    color: #7c3aed;
+    background: var(--card-surface);
+    border: 1.5px solid var(--violet);
+    color: var(--violet);
     font-size: 0.78rem;
     font-weight: 800;
-    padding: 6px 14px;
-    border-radius: 10px;
+    padding: 8px 16px;
+    min-height: 40px;
+    border-radius: 12px;
     cursor: pointer;
+    transition: transform 0.12s ease;
   }
+  .btn-new-log:active { transform: scale(0.95); }
+
   .ledger-pills-row {
     display: flex;
     gap: 8px;
@@ -302,68 +536,91 @@
   }
   .ledger-pills-row::-webkit-scrollbar { display: none; }
   .filter-pill {
-    padding: 7px 14px;
+    padding: 8px 16px;
+    min-height: 38px;
     border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 800;
-    background: var(--tab-bar-bg);
-    color: var(--text-muted);
-    border: none;
+    font-size: 0.76rem;
+    font-weight: 700;
+    background: var(--card-surface-subtle);
+    border: 1px solid var(--border-hairline);
+    color: var(--text-secondary);
     cursor: pointer;
     white-space: nowrap;
+    transition: all 0.15s ease;
   }
   .filter-pill.active {
-    background: #7c3aed;
+    background: var(--violet);
     color: #ffffff;
+    border-color: var(--violet);
+    box-shadow: 0 2px 10px var(--violet-glow);
   }
   .ledger-item-card {
-    background: var(--row-alt);
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
+    background: var(--card-surface-subtle);
+    border: 1px solid var(--border-hairline);
+    border-radius: 14px;
     padding: 12px 14px;
     margin-bottom: 10px;
     position: relative;
   }
-  .ledger-item-date { font-size: 0.74rem; color: var(--text-muted); font-weight: 700; margin-bottom: 3px; }
-  .ledger-item-type { font-size: 0.96rem; font-weight: 900; color: var(--text-primary); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-  .ledger-item-notes { font-size: 0.84rem; color: var(--text-muted); font-weight: 600; }
-  .btn-item-delete { position: absolute; top: 10px; right: 12px; background: transparent; border: none; color: #ef4444; font-size: 1rem; font-weight: bold; cursor: pointer; }
+  .ledger-item-date { font-size: 0.74rem; color: var(--text-secondary); font-weight: 700; margin-bottom: 2px; }
+  .ledger-item-type { font-size: 0.95rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .ledger-item-notes { font-size: 0.86rem; color: var(--text-secondary); font-weight: 500; }
+  .btn-item-delete {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: var(--crimson);
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+  }
 
-  /* FLOATING QUICK LOG BUTTON */
+  /* QUICK LOG BUTTON */
   .fab-quick-log {
     position: fixed;
-    bottom: 20px;
+    bottom: 22px;
     right: 20px;
-    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    background: linear-gradient(135deg, var(--brand) 0%, #0369a1 100%);
     color: #ffffff;
     border: none;
     border-radius: 30px;
-    padding: 12px 22px;
-    font-size: 0.95rem;
+    padding: 14px 24px;
+    min-height: 50px;
+    font-size: 0.96rem;
     font-weight: 800;
-    box-shadow: 0 8px 20px rgba(2, 132, 199, 0.4);
+    box-shadow: var(--shadow-float);
     cursor: pointer;
     z-index: 900;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
+  .fab-quick-log:active { transform: scale(0.95); }
 
-  /* 7-COLUMN CALENDAR */
-  .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  .cal-header button { padding: 5px 14px; background: var(--tab-bar-bg); color: var(--text-primary); border: 1px solid var(--card-border); border-radius: 8px; font-weight: bold; cursor: pointer; }
+  /* 7-COLUMN CALENDAR GRID */
+  .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .cal-header button {
+    padding: 8px 16px;
+    min-height: 40px;
+    background: var(--card-surface-subtle);
+    color: var(--text-primary);
+    border: 1px solid var(--border-hairline);
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+  }
   .cal-grid-header {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 3px;
     text-align: center;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     width: 100%;
   }
-  .cal-day-name {
-    font-size: 0.68rem;
-    font-weight: 800;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    padding-bottom: 4px;
-  }
+  .cal-day-name { font-size: 0.68rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; padding-bottom: 4px; }
   .cal-grid-body {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -371,84 +628,195 @@
     width: 100%;
   }
   .cal-cell {
-    min-height: 66px;
+    min-height: 68px;
     width: 100%;
-    border-radius: 8px;
-    border: 1px solid var(--cell-border);
-    background: var(--cell-bg);
+    border-radius: 10px;
+    border: 1px solid var(--border-hairline);
+    background: var(--card-surface);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 3px 1px;
+    padding: 4px 2px;
     font-size: 0.78rem;
     font-weight: 800;
     cursor: pointer;
     overflow: hidden;
+    transition: transform 0.1s ease;
+    color: var(--text-primary);
   }
+  .cal-cell:active { transform: scale(0.96); }
   .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; }
 
-  .stage-set { background: #bae6fd !important; border: 1.5px solid #0284c7 !important; color: #0369a1 !important; }
-  .stage-d7 { background: #f3e8ff !important; border: 1.5px solid #9333ea !important; color: #6b21a8 !important; }
-  .stage-d14 { background: #fef08a !important; border: 1.5px solid #ca8a04 !important; color: #854d0e !important; }
-  .stage-hatch { background: #fed7aa !important; border: 1.5px solid #ea580c !important; color: #9a3412 !important; }
-  .stage-remove { background: #bbf7d0 !important; border: 1.5px solid #16a34a !important; color: #166534 !important; }
+  /* 3 PRIORITY COLOR CODES & OVERLAP BLACK CODE */
+  .stage-set {
+    background: var(--brand-glow) !important;
+    border: 1.5px solid var(--brand) !important;
+    color: var(--brand) !important;
+  }
+  .stage-d18 {
+    background: var(--amber-glow) !important;
+    border: 1.5px solid var(--amber) !important;
+    color: var(--amber) !important;
+  }
+  .stage-pull {
+    background: var(--emerald-glow) !important;
+    border: 1.5px solid var(--emerald) !important;
+    color: var(--emerald) !important;
+  }
+  .stage-overlap-black {
+    background: #000000 !important;
+    border: 1.5px solid #000000 !important;
+    color: #ffffff !important;
+  }
+  .stage-overlap-black span {
+    color: #ffffff !important;
+  }
+
+  /* CHIPS & BADGES */
   .stage-tag {
-    font-size: 0.48rem;
+    font-size: 0.50rem;
     font-weight: 900;
     line-height: 1.1;
     text-transform: uppercase;
-    margin-top: 1px;
-    padding: 1px 2px;
-    border-radius: 3px;
+    margin-top: 2px;
+    padding: 2px 3px;
+    border-radius: 4px;
     white-space: nowrap;
     max-width: 96%;
     overflow: hidden;
     text-overflow: ellipsis;
     display: block;
   }
-  .egg-badge { background: #0284c7; color: #ffffff; border-radius: 6px; font-size: 0.52rem; padding: 1px 3px; margin-top: 1px; font-weight: 800; max-width: 96%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; }
-  .task-cal-badge { background: #7c3aed; color: #ffffff; border-radius: 6px; font-size: 0.50rem; padding: 1px 3px; margin-top: 1px; font-weight: 800; max-width: 96%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; display: block; }
+  .neutral-pill {
+    background: var(--card-surface-subtle);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-hairline);
+  }
+  body.dark-theme .neutral-pill {
+    background: rgba(255, 255, 255, 0.08);
+    color: #cbd5e1;
+  }
 
-  /* AUDIT MODAL */
-  .audit-section-box {
-    background: var(--row-alt);
-    border: 1px solid var(--card-border);
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 14px;
-  }
-  .audit-title {
-    font-size: 0.88rem;
+  .egg-badge {
+    background: var(--card-surface-subtle);
+    color: var(--text-primary);
+    border: 1px solid var(--border-hairline);
+    border-radius: 6px;
+    font-size: 0.52rem;
+    padding: 1px 4px;
+    margin-top: 2px;
     font-weight: 800;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    max-width: 96%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
   }
-  .audit-select-row { display: flex; gap: 8px; margin-bottom: 10px; }
-  .audit-select-row > div { flex: 1; }
-  .audit-lbl { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 3px; display: block; }
+  .task-cal-badge {
+    background: var(--card-surface-subtle);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-hairline);
+    border-radius: 6px;
+    font-size: 0.50rem;
+    padding: 1px 4px;
+    margin-top: 2px;
+    font-weight: 800;
+    max-width: 96%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block;
+  }
 
   /* MODALS */
-  .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 999; align-items: center; justify-content: center; padding: 16px; }
-  .modal-box { background: var(--card-bg); border: 1px solid var(--card-border); width: 100%; max-width: 440px; border-radius: 16px; padding: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto; color: var(--text-primary); }
-  .modal-box h3 { margin: 0 0 12px 0; color: #0284c7; font-size: 1.05rem; display: flex; justify-content: space-between; align-items: center; }
-  .modal-close { background: var(--tab-bar-bg); color: var(--text-primary); border: 1px solid var(--card-border); border-radius: 50%; width: 28px; height: 28px; font-weight: bold; cursor: pointer; }
-  .event-item { background: var(--row-alt); border: 1px solid var(--card-border); border-radius: 8px; padding: 10px; margin-bottom: 8px; font-size: 0.85rem; }
-  .sub-tab-bar { display: flex; gap: 4px; margin-bottom: 12px; background: var(--tab-bar-bg); padding: 3px; border-radius: 8px; }
-  .sub-tab-btn { flex: 1; border: none; background: transparent; padding: 7px 2px; font-size: 0.72rem; font-weight: bold; color: var(--text-muted); border-radius: 6px; cursor: pointer; }
-  .sub-tab-btn.active { background: var(--tab-active-bg); color: var(--text-primary); }
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(6, 9, 17, 0.7);
+    backdrop-filter: blur(10px);
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .modal-box {
+    background: var(--card-surface);
+    border: 1px solid var(--border-hairline);
+    width: 100%;
+    max-width: 440px;
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: var(--shadow-plate);
+    max-height: 90vh;
+    overflow-y: auto;
+    color: var(--text-primary);
+  }
+  .modal-box h3 {
+    margin: 0 0 14px 0;
+    color: var(--brand);
+    font-size: 1.1rem;
+    font-weight: 900;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-close {
+    background: var(--card-surface-subtle);
+    color: var(--text-primary);
+    border: 1px solid var(--border-hairline);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .event-item {
+    background: var(--card-surface-subtle);
+    border: 1px solid var(--border-hairline);
+    border-radius: 12px;
+    padding: 11px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+  }
+  .sub-tab-bar {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 14px;
+    background: var(--card-surface-subtle);
+    border: 1px solid var(--border-hairline);
+    padding: 3px;
+    border-radius: 12px;
+  }
+  .sub-tab-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 8px 2px;
+    min-height: 38px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    border-radius: 9px;
+    cursor: pointer;
+  }
+  .sub-tab-btn.active { background: var(--card-surface); color: var(--text-primary); box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
 
-  /* REPORT SCREEN DISPLAY */
   #dataDisplayView {
     display: none;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 14px;
+    background: var(--card-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: 20px;
     padding: 16px;
     margin-top: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    box-shadow: var(--shadow-plate);
   }
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -472,31 +840,28 @@
       </div>
     </div>
     <div class="header-actions">
-      <button class="btn-theme" onclick="toggleThemeMode()" title="Toggle Dark/Light Mode">🌙</button>
-      <button class="btn-header danger" onclick="openDeleteCenterModal()">🗑️ Delete</button>
-      <button class="btn-header primary" onclick="openDataModal()">📊 Reports</button>
-      <div id="cloudStatus" class="status-badge">🟢 Cloud</div>
+      <button class="btn-settings" onclick="openSettingsModal()" title="Settings & Options">⚙️</button>
     </div>
   </div>
 
-  <!-- TOP METRICS (PRIMARY STRIP) -->
+  <!-- TELEMETRY STRIP -->
   <div class="metrics-strip">
-    <div class="metric-card">
+    <div class="metric-card" style="color: var(--emerald);">
       <div class="metric-lbl">CHICKS ALIVE</div>
-      <div class="metric-val" id="liveChicksTopDisplay" style="color: #059669;">0</div>
+      <div class="metric-val" id="liveChicksTopDisplay">0</div>
     </div>
-    <div class="metric-card">
+    <div class="metric-card" style="color: var(--brand);">
       <div class="metric-lbl">IN INCUBATOR</div>
-      <div class="metric-val" id="inIncubatorDisplay" style="color: #0284c7;">0</div>
+      <div class="metric-val" id="inIncubatorDisplay">0</div>
     </div>
-    <div class="metric-card">
+    <div class="metric-card" style="color: var(--amber);">
       <div class="metric-lbl">HATCH RATE</div>
-      <div class="metric-val" id="hatchRateDisplay" style="color: #ea580c;">--</div>
+      <div class="metric-val" id="hatchRateDisplay">--</div>
     </div>
   </div>
 
-  <!-- FULL-WIDTH READY FOR SETTER BANNER -->
-  <div class="setter-progress-card">
+  <!-- RESERVOIR GAUGING CARD -->
+  <div class="setter-progress-card" id="setterCard">
     <div class="setter-left">
       <span class="setter-tag">🥚 READY FOR SETTER</span>
       <span class="setter-sub" id="trayProgressSub">0 / 102 Tray Filled</span>
@@ -513,15 +878,15 @@
     <button class="tab-btn" onclick="goToSlide(4)">📅 Timeline</button>
   </div>
 
-  <!-- SLIDING CAROUSEL -->
+  <!-- SLIDING MATRIX VIEWPORT -->
   <div class="swipe-viewport" id="swipeViewport">
     <div class="swipe-track" id="swipeTrack">
 
       <!-- SLIDE 0: RACK VIEW -->
       <div class="swipe-slide" id="slide0">
-        <div style="font-size:0.75rem; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin:4px 2px 8px 2px;">Incubator Tray Matrix</div>
+        <div style="font-size:0.75rem; font-weight:800; color:var(--text-secondary); text-transform:uppercase; margin:4px 2px 8px 2px; letter-spacing:0.5px;">Incubator Tray Matrix</div>
         <div id="batchContainer"></div>
-        <div id="noBatches" style="text-align:center; color:var(--text-muted); padding:30px 20px; font-size:0.85rem;">No active batches inside incubator.<br><br>Tap <b>+ Quick Log</b> below to set a new batch.</div>
+        <div id="noBatches" style="text-align:center; color:var(--text-secondary); padding:30px 20px; font-size:0.85rem;">No active batches inside incubator.<br><br>Tap <b>+ Quick Log</b> below to set a new batch.</div>
         <div class="archive-toggle-bar" style="text-align:center; margin:10px 0;">
           <button class="btn-neutral" style="border-radius:20px; padding:6px 14px;" onclick="toggleArchivedBatches()" id="toggleArchiveBtn">👁️ Show Archived Batches</button>
         </div>
@@ -547,29 +912,29 @@
               </thead>
               <tbody id="collectionBody"></tbody>
             </table>
-            <div id="noCollections" style="text-align:center; color:var(--text-muted); padding:15px; font-size:0.8rem;">No collections entered yet.</div>
+            <div id="noCollections" style="text-align:center; color:var(--text-secondary); padding:15px; font-size:0.8rem;">No collections entered yet.</div>
           </div>
         </div>
       </div>
 
-      <!-- SLIDE 2: MORTALITY -->
+      <!-- SLIDE 2: MORTALITY (WITH REASON) -->
       <div class="swipe-slide" id="slide2">
         <div class="card" style="padding: 10px;">
           <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px; text-align:center;">
-            <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:8px; padding:8px 4px;">
-              <div id="liveChicksBalance" style="font-size:1.3rem; font-weight:900; color:#059669;">0</div>
-              <div style="font-size:0.60rem; font-weight:bold; color:var(--text-muted);">CHICKS ALIVE</div>
-              <div style="font-size:0.60rem; color:#b91c1c; font-weight:bold;" id="totalChicksDeadSub">0 dead</div>
+            <div style="background:var(--card-surface); border:1px solid var(--border-hairline); border-radius:14px; padding:10px 4px;">
+              <div id="liveChicksBalance" style="font-size:1.35rem; font-weight:900; color:var(--emerald);">0</div>
+              <div style="font-size:0.62rem; font-weight:bold; color:var(--text-secondary);">CHICKS ALIVE</div>
+              <div style="font-size:0.62rem; color:var(--crimson); font-weight:bold;" id="totalChicksDeadSub">0 dead</div>
             </div>
-            <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:8px; padding:8px 4px;">
-              <div id="growersLoss30D" style="font-size:1.3rem; font-weight:900; color:#dc2626;">0</div>
-              <div style="font-size:0.60rem; font-weight:bold; color:var(--text-muted);">GROWER LOSS</div>
-              <div style="font-size:0.60rem; color:var(--text-muted); font-weight:bold;" id="growersLoss7DSub">0 last 7 days</div>
+            <div style="background:var(--card-surface); border:1px solid var(--border-hairline); border-radius:14px; padding:10px 4px;">
+              <div id="growersLoss30D" style="font-size:1.35rem; font-weight:900; color:var(--crimson);">0</div>
+              <div style="font-size:0.62rem; font-weight:bold; color:var(--text-secondary);">GROWER LOSS</div>
+              <div style="font-size:0.62rem; color:var(--text-secondary); font-weight:bold;" id="growersLoss7DSub">0 last 7 days</div>
             </div>
-            <div style="background:var(--card-bg); border:1px solid var(--card-border); border-radius:8px; padding:8px 4px;">
-              <div id="breedersLoss30D" style="font-size:1.3rem; font-weight:900; color:#dc2626;">0</div>
-              <div style="font-size:0.60rem; font-weight:bold; color:var(--text-muted);">BREEDER LOSS</div>
-              <div style="font-size:0.60rem; color:var(--text-muted); font-weight:bold;" id="breedersLoss7DSub">0 last 7 days</div>
+            <div style="background:var(--card-surface); border:1px solid var(--border-hairline); border-radius:14px; padding:10px 4px;">
+              <div id="breedersLoss30D" style="font-size:1.35rem; font-weight:900; color:var(--crimson);">0</div>
+              <div style="font-size:0.62rem; font-weight:bold; color:var(--text-secondary);">BREEDER LOSS</div>
+              <div style="font-size:0.62rem; color:var(--text-secondary); font-weight:bold;" id="breedersLoss7DSub">0 last 7 days</div>
             </div>
           </div>
         </div>
@@ -588,12 +953,13 @@
                   <th>Date</th>
                   <th>Section</th>
                   <th>Dead</th>
+                  <th style="text-align:left;">Reason / Symptoms</th>
                   <th>Edit</th>
                 </tr>
               </thead>
               <tbody id="mortalityBody"></tbody>
             </table>
-            <div id="noMortality" style="text-align:center; color:var(--text-muted); padding:15px; font-size:0.8rem;">No mortality recorded.</div>
+            <div id="noMortality" style="text-align:center; color:var(--text-secondary); padding:15px; font-size:0.8rem;">No mortality recorded.</div>
           </div>
         </div>
       </div>
@@ -617,11 +983,11 @@
           </div>
 
           <div id="ledgerCardList"></div>
-          <div id="noLedgerCards" style="text-align:center; color:var(--text-muted); padding:30px 10px; font-size:0.85rem;">No activity logged yet.<br><br>Tap <b>+ New Log</b> to record tasks, medicines, or sales.</div>
+          <div id="noLedgerCards" style="text-align:center; color:var(--text-secondary); padding:30px 10px; font-size:0.85rem;">No activity logged yet.<br><br>Tap <b>+ New Log</b> to record tasks, medicines, or sales.</div>
         </div>
       </div>
 
-      <!-- SLIDE 4: TIMELINE (ALIGNED CALENDAR) -->
+      <!-- SLIDE 4: TIMELINE (3-COLOR PRIORITY CALENDAR) -->
       <div class="swipe-slide" id="slide4">
         <div class="card" style="padding: 12px 10px;">
           <div class="cal-header">
@@ -642,7 +1008,7 @@
 
           <div class="cal-grid-body" id="calGridBody"></div>
 
-          <div style="font-size:0.72rem; text-align:center; color:var(--text-muted); margin-top:10px;">💡 Tap any date to add a note or view scheduled events.</div>
+          <div style="font-size:0.72rem; text-align:center; color:var(--text-secondary); margin-top:10px;">💡 Tap any date to add notes or review details.</div>
         </div>
       </div>
 
@@ -651,12 +1017,66 @@
 
 </div>
 
-<!-- FLOATING QUICK LOG BUTTON -->
+<!-- QUICK LOG BUTTON -->
 <button class="fab-quick-log" onclick="openQuickLogModal()">
   <span>+ Quick Log</span>
 </button>
 
-<!-- QUICK LOG MODAL -->
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settingsModal" onclick="closeSettingsModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3>
+      <span>⚙️ Control Matrix</span>
+      <button class="modal-close" onclick="closeSettingsModal()">✕</button>
+    </h3>
+
+    <div class="settings-option" onclick="toggleThemeMode()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1px solid var(--border-hairline); padding:14px 16px; border-radius:16px; margin-bottom:10px; cursor:pointer;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span id="themeMenuIcon" style="font-size:1.3rem;">🌙</span>
+        <div>
+          <div style="font-weight:800; font-size:0.9rem;">Appearance Theme</div>
+          <div id="themeMenuStatus" style="font-size:0.75rem; color:var(--text-secondary); font-weight:500;">Light Theme</div>
+        </div>
+      </div>
+      <span style="color:var(--brand); font-size:0.8rem; font-weight:800;">Switch</span>
+    </div>
+
+    <div class="settings-option" onclick="openReportFromSettings()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1px solid var(--border-hairline); padding:14px 16px; border-radius:16px; margin-bottom:10px; cursor:pointer;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-size:1.3rem;">📊</span>
+        <div>
+          <div style="font-weight:800; font-size:0.9rem;">Export Farm Reports</div>
+          <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:500;">Audits for Eggs, Trays &amp; Ledger</div>
+        </div>
+      </div>
+      <span style="color:var(--brand); font-size:1rem;">▶</span>
+    </div>
+
+    <div class="settings-option" onclick="openDeleteFromSettings()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1px solid var(--border-hairline); padding:14px 16px; border-radius:16px; margin-bottom:10px; cursor:pointer;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-size:1.3rem;">🗑️</span>
+        <div>
+          <div style="color:var(--crimson); font-weight:800; font-size:0.9rem;">Delete Center</div>
+          <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:500;">Purge erroneous entries safely</div>
+        </div>
+      </div>
+      <span style="color:var(--crimson); font-size:1rem;">▶</span>
+    </div>
+
+    <div style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1px solid var(--border-hairline); padding:14px 16px; border-radius:16px; cursor:default;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-size:1.3rem;">☁️</span>
+        <div>
+          <div style="font-weight:800; font-size:0.9rem;">Cloud Persistence</div>
+          <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:500;">Encrypted Firestore Pipeline</div>
+        </div>
+      </div>
+      <span id="cloudStatusSetting" style="font-size:0.68rem; padding:4px 8px; border-radius:10px; font-weight:800; background:var(--brand-glow); color:var(--brand);">🟢 Synced</span>
+    </div>
+  </div>
+</div>
+
+<!-- UNIVERSAL QUICK LOG DRAWER -->
 <div class="modal-overlay" id="quickLogModal" onclick="closeQuickLogModal(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <h3>
@@ -665,7 +1085,7 @@
     </h3>
 
     <div class="sub-tab-bar">
-      <button class="sub-tab-btn active" onclick="switchQuickLogTab('quickBatch', this)">🐥 Batch</button>
+      <button class="sub-tab-btn active" onclick="switchQuickLogTab('quickBatch', this)">🐥 Tray</button>
       <button class="sub-tab-btn" onclick="switchQuickLogTab('quickEgg', this)">🥚 Eggs</button>
       <button class="sub-tab-btn" onclick="switchQuickLogTab('quickMort', this)">☠️ Loss</button>
       <button class="sub-tab-btn" onclick="switchQuickLogTab('quickLedger', this)">📝 Ledger</button>
@@ -676,11 +1096,11 @@
       <input type="hidden" id="editDocId" value="">
       <div class="form-row">
         <div>
-          <label>Tray Name</label>
+          <label>Tray Designation</label>
           <input type="text" id="bname" placeholder="e.g. B7T4">
         </div>
         <div style="flex: 0.6;">
-          <label>Egg Count</label>
+          <label>Count</label>
           <input type="number" id="eggsSet" value="102" min="1" max="102">
         </div>
       </div>
@@ -690,7 +1110,7 @@
           <input type="date" id="sdate">
         </div>
       </div>
-      <button class="btn-submit" id="submitBtn" onclick="saveBatch()">Set Batch (AM/PM Auto-Stamped)</button>
+      <button class="btn-submit" id="submitBtn" onclick="saveBatch()">Set Batch (Auto-Stamped)</button>
       <button class="btn-cancel" id="cancelBtn" onclick="resetBatchForm()">Cancel</button>
     </div>
 
@@ -698,7 +1118,7 @@
     <div id="quickEggForm" class="quick-form-panel" style="display:none;">
       <div class="form-row">
         <div>
-          <label>Date</label>
+          <label>Collection Date</label>
           <input type="date" id="colDate">
         </div>
         <div>
@@ -712,7 +1132,7 @@
       </div>
       <div class="form-row">
         <div>
-          <label>Good Eggs</label>
+          <label>Good Intact</label>
           <input type="number" id="colCount" placeholder="e.g. 35" min="0">
         </div>
         <div>
@@ -720,7 +1140,7 @@
           <input type="number" id="colBroken" placeholder="e.g. 2" min="0" value="0">
         </div>
       </div>
-      <button class="btn-submit" id="colSubmitBtn" onclick="saveCollection()">Save Collection</button>
+      <button class="btn-submit" id="colSubmitBtn" onclick="saveCollection()">Log Pickings</button>
       <button class="btn-cancel" id="colCancelBtn" onclick="resetEggForm()">Cancel</button>
     </div>
 
@@ -742,11 +1162,15 @@
       </div>
       <div class="form-row">
         <div>
-          <label>Dead Count</label>
+          <label>Loss Count</label>
           <input type="number" id="mortCount" placeholder="e.g. 2" min="1">
         </div>
       </div>
-      <button class="btn-submit" id="mortSubmitBtn" style="background:#b91c1c;" onclick="saveMortality()">Log Mortality</button>
+      <div style="margin-bottom:8px;">
+        <label>Reason of Death / Cause / Symptoms</label>
+        <input type="text" id="mortReason" placeholder="e.g. Cold stress, predator, weak chick">
+      </div>
+      <button class="btn-submit" id="mortSubmitBtn" style="background:var(--crimson);" onclick="saveMortality()">Log Loss</button>
       <button class="btn-cancel" id="mortCancelBtn" onclick="resetMortForm()">Cancel</button>
     </div>
 
@@ -763,15 +1187,15 @@
             <option value="Medication">💊 Medication / Vaccine</option>
             <option value="Sales">💰 Sales (Birds / Eggs)</option>
             <option value="Feed">🌽 Feed / Supplements</option>
-            <option value="Maint">🔧 Maint / Farm Task</option>
+            <option value="Maint">🔧 Maintenance / Task</option>
           </select>
         </div>
       </div>
       <div style="margin-bottom:8px;">
-        <label>Details / Particulars</label>
+        <label>Particulars &amp; Details</label>
         <input type="text" id="ledgerNotes" placeholder="e.g. 4 birds @ 3550 or Lasota F1 eye drop">
       </div>
-      <button class="btn-submit" id="ledgerSubmitBtn" style="background:#7c3aed;" onclick="saveLedgerEntry()">Save to Activity Ledger</button>
+      <button class="btn-submit" id="ledgerSubmitBtn" style="background:var(--violet);" onclick="saveLedgerEntry()">Save to Activity Ledger</button>
       <button class="btn-cancel" id="ledgerCancelBtn" onclick="resetLedgerForm()">Cancel</button>
     </div>
 
@@ -788,8 +1212,8 @@
     
     <div id="modalDetailsBody"></div>
 
-    <div style="background:var(--row-alt); border:1px solid var(--card-border); border-radius:12px; padding:12px; margin-top:12px;">
-      <div style="font-size:0.82rem; font-weight:800; color:#7c3aed; margin-bottom:6px;">📝 Add Activity / Note on this Date</div>
+    <div style="background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:14px; padding:12px; margin-top:12px;">
+      <div style="font-size:0.82rem; font-weight:800; color:var(--violet); margin-bottom:6px;">📝 Append Entry on this Date</div>
       <div class="form-row">
         <div>
           <label>Category</label>
@@ -805,7 +1229,7 @@
         <label>Details</label>
         <input type="text" id="calTaskDescInput" placeholder="e.g. Deworming or 2 birds @ 2180">
       </div>
-      <button class="btn-submit" style="background:#7c3aed; padding:8px; font-size:0.82rem;" onclick="saveDateTaskToLedger()">Save to Ledger</button>
+      <button class="btn-submit" style="background:var(--violet); padding:10px; font-size:0.85rem;" onclick="saveDateTaskToLedger()">Save to Ledger</button>
     </div>
   </div>
 </div>
@@ -814,23 +1238,23 @@
 <div class="modal-overlay" id="deleteCenterModal" onclick="closeDeleteCenterModal(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <h3>
-      <span style="color:#b91c1c;">🗑️ Delete Records</span>
+      <span style="color:var(--crimson);">🗑️ Record Purge Center</span>
       <button class="modal-close" onclick="closeDeleteCenterModal()">✕</button>
     </h3>
-    <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:12px; margin-bottom:10px;">
-      <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:#991b1b;">Delete Accidental Batch</h4>
+    <div style="background:var(--crimson-glow); border:1px solid var(--crimson); border-radius:14px; padding:12px; margin-bottom:10px;">
+      <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:var(--crimson);">Delete Accidental Batch</h4>
       <select id="delBatchSelect" style="margin-bottom:6px;"></select>
-      <button class="btn-submit" style="background:#b91c1c; padding:7px; font-size:0.78rem;" onclick="confirmDeleteBatch()">Delete Batch</button>
+      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.8rem; min-height:38px;" onclick="confirmDeleteBatch()">Delete Batch</button>
     </div>
-    <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:12px; margin-bottom:10px;">
-      <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:#991b1b;">Delete Egg Collection Log</h4>
+    <div style="background:var(--crimson-glow); border:1px solid var(--crimson); border-radius:14px; padding:12px; margin-bottom:10px;">
+      <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:var(--crimson);">Delete Egg Collection Log</h4>
       <select id="delColSelect" style="margin-bottom:6px;"></select>
-      <button class="btn-submit" style="background:#b91c1c; padding:7px; font-size:0.78rem;" onclick="confirmDeleteCollection()">Delete Egg Log</button>
+      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.8rem; min-height:38px;" onclick="confirmDeleteCollection()">Delete Egg Log</button>
     </div>
-    <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:12px;">
-      <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:#991b1b;">Delete Mortality Log</h4>
+    <div style="background:var(--crimson-glow); border:1px solid var(--crimson); border-radius:14px; padding:12px;">
+      <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:var(--crimson);">Delete Mortality Log</h4>
       <select id="delMortSelect" style="margin-bottom:6px;"></select>
-      <button class="btn-submit" style="background:#b91c1c; padding:7px; font-size:0.78rem;" onclick="confirmDeleteMortality()">Delete Mortality</button>
+      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.8rem; min-height:38px;" onclick="confirmDeleteMortality()">Delete Mortality</button>
     </div>
   </div>
 </div>
@@ -839,86 +1263,57 @@
 <div class="modal-overlay" id="dataModal" onclick="closeDataModal(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <h3>
-      <span style="color:var(--text-primary); font-weight:800;">📊 Export Farm Reports</span>
+      <span style="color:var(--text-primary); font-weight:800;">📊 Export Audits</span>
       <button class="modal-close" onclick="closeDataModal()">✕</button>
     </h3>
 
-    <!-- 1. Egg Collection Audit -->
-    <div class="audit-section-box">
-      <div class="audit-title" style="color:#059669;">
-        <span>🥚</span> 1. Egg Collection Audit
+    <div style="background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:16px; padding:14px; margin-bottom:12px;">
+      <div style="font-size:0.88rem; font-weight:800; color:var(--emerald); margin-bottom:8px;">🥚 1. Egg Collection Audit</div>
+      <div class="form-row">
+        <div><label>From</label><select id="reportColFrom"></select></div>
+        <div><label>To</label><select id="reportColTo"></select></div>
       </div>
-      <div class="audit-select-row">
-        <div>
-          <span class="audit-lbl">FROM</span>
-          <select id="reportColFrom"></select>
-        </div>
-        <div>
-          <span class="audit-lbl">TO</span>
-          <select id="reportColTo"></select>
-        </div>
-      </div>
-      <button class="btn-submit" style="background:#059669; padding:9px; font-size:0.85rem;" onclick="displayEggDataReport()">View Egg Audit</button>
+      <button class="btn-submit" style="background:var(--emerald); padding:10px; font-size:0.86rem;" onclick="displayEggDataReport()">Generate Egg Audit</button>
     </div>
 
-    <!-- 2. Incubation Batches Audit -->
-    <div class="audit-section-box">
-      <div class="audit-title" style="color:#0284c7;">
-        <span>🐥</span> 2. Incubation Batches Audit
+    <div style="background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:16px; padding:14px; margin-bottom:12px;">
+      <div style="font-size:0.88rem; font-weight:800; color:var(--brand); margin-bottom:8px;">🐥 2. Incubation Batches Audit</div>
+      <div class="form-row">
+        <div><label>From Tray</label><select id="reportBatchFrom"></select></div>
+        <div><label>To Tray</label><select id="reportBatchTo"></select></div>
       </div>
-      <div class="audit-select-row">
-        <div>
-          <span class="audit-lbl">FROM TRAY</span>
-          <select id="reportBatchFrom"></select>
-        </div>
-        <div>
-          <span class="audit-lbl">TO TRAY</span>
-          <select id="reportBatchTo"></select>
-        </div>
-      </div>
-      <button class="btn-submit" style="background:#0284c7; padding:9px; font-size:0.85rem;" onclick="displayIncubationDataReport()">View Batch Audit</button>
+      <button class="btn-submit" style="background:var(--brand); padding:10px; font-size:0.86rem;" onclick="displayIncubationDataReport()">Generate Tray Audit</button>
     </div>
 
-    <!-- 3. Farm Activities & Ledger Audit -->
-    <div class="audit-section-box">
-      <div class="audit-title" style="color:#7c3aed;">
-        <span>📝</span> 3. Farm Activities &amp; Ledger Audit
+    <div style="background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:16px; padding:14px;">
+      <div style="font-size:0.88rem; font-weight:800; color:var(--violet); margin-bottom:8px;">📝 3. Farm Activities &amp; Ledger Audit</div>
+      <div class="form-row">
+        <div><label>From</label><select id="reportActivityFrom"></select></div>
+        <div><label>To</label><select id="reportActivityTo"></select></div>
       </div>
-      <div class="audit-select-row">
-        <div>
-          <span class="audit-lbl">FROM</span>
-          <select id="reportActivityFrom"></select>
-        </div>
-        <div>
-          <span class="audit-lbl">TO</span>
-          <select id="reportActivityTo"></select>
-        </div>
-      </div>
-      <button class="btn-submit" style="background:#7c3aed; padding:9px; font-size:0.85rem;" onclick="displayActivityDataReport()">View Activity Audit</button>
+      <button class="btn-submit" style="background:var(--violet); padding:10px; font-size:0.86rem;" onclick="displayActivityDataReport()">Generate Ledger Audit</button>
     </div>
-
   </div>
 </div>
 
 <!-- AUDIT REPORT VIEW -->
 <div class="container" id="dataDisplayView">
-  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--text-primary); padding-bottom:10px; margin-bottom:14px;">
-    <button class="btn-neutral" style="padding:6px 14px; font-weight:800; border-radius:8px;" onclick="closeDataDisplay()">◀ Back to App</button>
-    <div style="font-size:0.88rem; font-weight:900; color:#0284c7;">AD FARMS AUDIT REPORT</div>
+  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--border-strong); padding-bottom:10px; margin-bottom:14px;">
+    <button class="btn-neutral" style="padding:8px 16px; font-weight:800; border-radius:12px;" onclick="closeDataDisplay()">◀ Return to Dashboard</button>
+    <div style="font-size:0.9rem; font-weight:900; color:var(--brand);">AD FARMS TELEMETRY REPORT</div>
   </div>
   <div id="dataReportContent"></div>
 </div>
 
 <script>
-  // --- BASE INVENTORY ANCHOR (12th Sept Evening setting with 18 leftover eggs) ---
-  const INITIAL_ANCHOR_DATE = "2026-09-12"; 
+  const INITIAL_ANCHOR_DATE = "2026-09-12";
   const INITIAL_ANCHOR_LEFTOVER = 18;
 
   function pad(n) { return String(n).padStart(2, '0'); }
 
   function dateToISO(dateObj) {
     if (!dateObj || isNaN(dateObj.getTime())) return "";
-    return `${dateObj.getFullYear()}-${pad(dateObj.getMonth() + 1)}-${pad(dateObj.getDate())}`;
+    return dateObj.getFullYear() + "-" + pad(dateObj.getMonth() + 1) + "-" + pad(dateObj.getDate());
   }
 
   function getTodayISO() {
@@ -932,7 +1327,7 @@
     const ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12;
     hours = hours ? hours : 12;
-    return `${hours}:${pad(minutes)} ${ampm}`;
+    return hours + ":" + pad(minutes) + " " + ampm;
   }
 
   function toNormalizedISO(input) {
@@ -944,14 +1339,14 @@
     if (s.includes('-')) {
       const parts = s.split('-');
       if (parts.length === 3 && parts[0].length === 4) {
-        return `${parts[0]}-${pad(parts[1])}-${pad(parts[2])}`;
+        return parts[0] + "-" + pad(parts[1]) + "-" + pad(parts[2]);
       }
     }
     if (s.includes('/')) {
       const parts = s.split('/');
       if (parts.length === 3) {
         const y = parts[2].length === 4 ? parts[2] : ('20' + parts[2]);
-        return `${y}-${pad(parts[1])}-${pad(parts[0])}`;
+        return y + "-" + pad(parts[1]) + "-" + pad(parts[0]);
       }
     }
     const parsed = new Date(s);
@@ -962,7 +1357,7 @@
     const norm = toNormalizedISO(isoStr);
     if (!norm) return isoStr || "-";
     const parts = norm.split('-');
-    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    return parts[2] + "/" + parts[1] + "/" + parts[0];
   }
 
   function getNextDayISO(isoStr) {
@@ -972,24 +1367,46 @@
     return dateToISO(d);
   }
 
-  // --- THEME ENGINE ---
+  function openSettingsModal() {
+    updateSettingsDisplay();
+    document.getElementById('settingsModal').style.display = "flex";
+  }
+
+  function closeSettingsModal(e) {
+    if (!e || e.target.id === "settingsModal" || e.target.classList.contains("modal-close")) {
+      document.getElementById('settingsModal').style.display = "none";
+    }
+  }
+
+  function updateSettingsDisplay() {
+    const isDark = document.body.classList.contains('dark-theme');
+    document.getElementById('themeMenuIcon').innerText = isDark ? '☀️' : '🌙';
+    document.getElementById('themeMenuStatus').innerText = isDark ? 'Dark Theme' : 'Light Theme';
+  }
+
   function toggleThemeMode() {
     const isDark = document.body.classList.toggle('dark-theme');
     localStorage.setItem('ad_farms_theme', isDark ? 'dark' : 'light');
-    const btn = document.querySelector('.btn-theme');
-    if (btn) btn.innerText = isDark ? '☀️' : '🌙';
+    updateSettingsDisplay();
   }
 
   function initSavedTheme() {
     const saved = localStorage.getItem('ad_farms_theme');
     const isDark = saved === 'dark';
     if (isDark) document.body.classList.add('dark-theme');
-    const btn = document.querySelector('.btn-theme');
-    if (btn) btn.innerText = isDark ? '☀️' : '🌙';
+    updateSettingsDisplay();
   }
-  initSavedTheme();
 
-  // --- STORAGE & INITIAL DATA ---
+  function openReportFromSettings() {
+    closeSettingsModal();
+    openDataModal();
+  }
+
+  function openDeleteFromSettings() {
+    closeSettingsModal();
+    openDeleteCenterModal();
+  }
+
   let collections = JSON.parse(localStorage.getItem("ad_farms_local_collections") || "[]");
   let batches = JSON.parse(localStorage.getItem("ad_farms_local_batches") || "[]");
   let mortality = JSON.parse(localStorage.getItem("ad_farms_local_mortality") || "[]");
@@ -1017,6 +1434,8 @@
     document.getElementById('sdate').value = todayISO;
     document.getElementById('mortDate').value = todayISO;
     document.getElementById('ledgerDate').value = todayISO;
+    const mr = document.getElementById('mortReason');
+    if (mr) mr.value = "";
   }
   initTodayInputs();
 
@@ -1027,7 +1446,6 @@
     localStorage.setItem("ad_farms_local_ledger", JSON.stringify(ledger));
   }
 
-  // Firebase Real-Time Setup
   const firebaseConfig = {
     apiKey: "AIzaSyC0fvccTExFtjDF5jijNVExvdXvyAq54DY",
     authDomain: "poultry-a6902.firebaseapp.com",
@@ -1047,7 +1465,8 @@
       let cloudCols = [];
       snapshot.forEach(doc => cloudCols.push({ id: doc.id, ...doc.data() }));
       if (cloudCols.length > 0) { collections = cloudCols; syncToLocalStorage(); renderCollections(); renderLiveMetrics(); renderCalendar(); }
-      document.getElementById('cloudStatus').textContent = "🟢 Cloud";
+      const stat = document.getElementById('cloudStatusSetting');
+      if (stat) stat.innerText = "🟢 Synced";
     }, err => console.warn(err));
 
     db.collection("batches").onSnapshot(snapshot => {
@@ -1068,9 +1487,8 @@
       if (cloudLedger.length > 0) { ledger = cloudLedger; syncToLocalStorage(); renderLedger(); renderCalendar(); }
     }, err => console.warn(err));
 
-  } catch(e) { console.warn("Offline mode active", e); }
+  } catch(e) { console.warn("Offline fallback active", e); }
 
-  // --- TOUCH SWIPE (5 SLIDES) ---
   let currentSlideIndex = 0;
   const swipeTrack = document.getElementById('swipeTrack');
   const tabButtons = document.querySelectorAll('.tab-btn');
@@ -1079,7 +1497,7 @@
     if (index < 0) index = 0;
     if (index > 4) index = 4;
     currentSlideIndex = index;
-    swipeTrack.style.transform = `translateX(-${index * 20}%)`;
+    swipeTrack.style.transform = "translateX(-" + (index * 20) + "%)";
     tabButtons.forEach((btn, idx) => {
       btn.classList.toggle('active', idx === index);
     });
@@ -1104,7 +1522,6 @@
     }
   }, { passive: true });
 
-  // --- LOGO LOCK ---
   function checkAndLockLogo() {
     const saved = localStorage.getItem("ad_farms_logo");
     if (saved) {
@@ -1125,7 +1542,6 @@
   }
   checkAndLockLogo();
 
-  // --- BATCH MILESTONES ---
   function computeBatchDates(startDateISO) {
     const parts = startDateISO.split('-');
     const base = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
@@ -1151,7 +1567,6 @@
     return Date.now() <= calc.d21EndTimestamp;
   }
 
-  // --- SLIDING WINDOW INVENTORY CALCULATION ---
   function calculateSlidingWindowInventory() {
     const chronologicalBatches = [...batches]
       .map(b => ({
@@ -1188,7 +1603,6 @@
     return Math.max(0, currentStock);
   }
 
-  // --- ACCURATE METRICS, READY FOR SETTER, & STRICT CHICK ISOLATION ---
   function renderLiveMetrics() {
     let currentIncubatorEggs = 0;
     let completedInitialEggs = 0;
@@ -1216,7 +1630,7 @@
 
     if (completedInitialEggs > 0) {
       const trueRate = ((completedChicksHatched / completedInitialEggs) * 100).toFixed(1);
-      document.getElementById('hatchRateDisplay').innerText = `${trueRate}%`;
+      document.getElementById('hatchRateDisplay').innerText = trueRate + "%";
     } else {
       document.getElementById('hatchRateDisplay').innerText = "--";
     }
@@ -1231,28 +1645,29 @@
     let liveChicks = Math.max(0, completedChicksHatched - chicksDeadTotal);
     document.getElementById('liveChicksTopDisplay').innerText = liveChicks;
     document.getElementById('liveChicksBalance').innerText = liveChicks;
-    document.getElementById('totalChicksDeadSub').innerText = `${chicksDeadTotal} dead`;
+    document.getElementById('totalChicksDeadSub').innerText = chicksDeadTotal + " dead";
 
-    // Render Ready for Setter Progress
     const eggsAvailable = calculateSlidingWindowInventory();
     document.getElementById('inventoryEggsDisplay').innerText = eggsAvailable;
+
+    const fillRatio = Math.min(100, Math.round((eggsAvailable / 102) * 100));
+    document.getElementById('setterCard').style.setProperty('--progress-pct', fillRatio + '%');
 
     if (eggsAvailable >= 102) {
       const fullTrays = Math.floor(eggsAvailable / 102);
       const remainder = eggsAvailable % 102;
-      document.getElementById('trayProgressSub').innerText = `✅ ${fullTrays} Full Tray${fullTrays > 1 ? 's' : ''} Ready (${remainder} rem)`;
+      document.getElementById('trayProgressSub').innerText = "✅ " + fullTrays + " Full Tray" + (fullTrays > 1 ? "s" : "") + " Ready (" + remainder + " rem)";
     } else {
       const needed = 102 - eggsAvailable;
-      document.getElementById('trayProgressSub').innerText = `${eggsAvailable} / 102 Tray Filled (${needed} needed)`;
+      document.getElementById('trayProgressSub').innerText = eggsAvailable + " / 102 Tray Filled (" + needed + " needed)";
     }
   }
 
-  // --- QUICK LOG MODAL ---
-  function openQuickLogModal(tab = 'quickBatch') {
+  function openQuickLogModal(tab) {
     initTodayInputs();
     document.getElementById('quickLogModal').style.display = "flex";
     const buttons = document.querySelectorAll('#quickLogModal .sub-tab-btn');
-    if (tab === 'quickBatch') switchQuickLogTab('quickBatch', buttons[0]);
+    if (tab === 'quickBatch' || !tab) switchQuickLogTab('quickBatch', buttons[0]);
     else if (tab === 'quickEgg') switchQuickLogTab('quickEgg', buttons[1]);
     else if (tab === 'quickMort') switchQuickLogTab('quickMort', buttons[2]);
     else if (tab === 'quickLedger') switchQuickLogTab('quickLedger', buttons[3]);
@@ -1272,7 +1687,6 @@
     document.getElementById(panelId + 'Form').style.display = 'block';
   }
 
-  // --- BATCHES ---
   function saveBatch() {
     const name = document.getElementById('bname').value.trim() || "Tray";
     const eggs = parseInt(document.getElementById('eggsSet').value, 10) || 102;
@@ -1284,7 +1698,7 @@
     const calc = computeBatchDates(startDateISO);
     const id = editDocId || ("batch_" + Date.now());
     const data = { 
-      id, name, eggs, startDate: calc.d1ISO, d7Date: calc.d7ISO, d14Date: calc.d14ISO, d18Date: calc.d18ISO, d21Date: calc.d21ISO, rawDate: calc.d1ISO
+      id: id, name: name, eggs: eggs, startDate: calc.d1ISO, d7Date: calc.d7ISO, d14Date: calc.d14ISO, d18Date: calc.d18ISO, d21Date: calc.d21ISO, rawDate: calc.d1ISO
     };
 
     if (editDocId) {
@@ -1313,7 +1727,7 @@
     const b = batches.find(item => item.id === docId);
     if (!b) return;
     const current = dayNum === 7 ? (b.candlingD7Cleared || 0) : (b.candlingD14Cleared || 0);
-    const val = prompt(`Day ${dayNum} Candling for "${b.name}":\nEnter eggs to remove:`, current);
+    const val = prompt("Day " + dayNum + " Candling for \"" + b.name + "\":\nEnter eggs to remove:", current);
     if (val === null) return;
     const num = parseInt(val, 10);
     if (isNaN(num) || num < 0) return alert("Enter valid egg count.");
@@ -1326,7 +1740,7 @@
 
   function recordHatchResult(docId) {
     const b = batches.find(item => item.id === docId);
-    const val = prompt(`AD Farms: "${b.name}"\nEnter live chicks pulled:`, b.chicksHatched !== null ? b.chicksHatched : "");
+    const val = prompt("AD Farms: \"" + b.name + "\"\nEnter live chicks pulled:", b.chicksHatched !== null ? b.chicksHatched : "");
     if (val === null) return;
     const count = parseInt(val, 10);
     if (isNaN(count) || count < 0) return alert("Enter valid chick count");
@@ -1345,15 +1759,15 @@
     const c7 = parseInt(b.candlingD7Cleared, 10) || 0;
     const c14 = parseInt(b.candlingD14Cleared, 10) || 0;
     const currentLiveInTray = Math.max(0, initialEggs - c7 - c14);
-    const rateText = b.hatchRate !== null && b.hatchRate !== undefined ? `<b style="color:#16a34a;">${b.hatchRate}%</b>` : `<span style="color:#0284c7; font-weight:bold;">Running</span>`;
-    const chickCount = b.chicksHatched !== null && b.chicksHatched !== undefined ? `<b>${b.chicksHatched}</b> chicks` : `<span style="color:var(--text-muted);">${currentLiveInTray} in Rack</span>`;
+    const rateText = b.hatchRate !== null && b.hatchRate !== undefined ? "<b style=\"color:var(--emerald);\">" + b.hatchRate + "%</b>" : "<span style=\"color:var(--brand); font-weight:bold;\">Running</span>";
+    const chickCount = b.chicksHatched !== null && b.chicksHatched !== undefined ? "<b>" + b.chicksHatched + "</b> chicks" : "<span style=\"color:var(--text-secondary);\">" + currentLiveInTray + " in Rack</span>";
 
     return `
       <div class="batch-card ${isArchived ? 'archived' : ''}">
         <div class="batch-card-header">
           <div>
-            <span class="batch-title">${b.name} ${isArchived ? '<span style="font-size:0.65rem; color:var(--text-muted);">(ARCHIVED)</span>' : '🟢'}</span>
-            <div class="batch-time-tag" style="font-size:0.68rem; color:var(--text-muted); font-weight:700;">Set at: <b>${b.setTime || 'Evening'}</b></div>
+            <span class="batch-title">${b.name} ${isArchived ? '<span style="font-size:0.65rem; color:var(--text-secondary);">(ARCHIVED)</span>' : '🟢'}</span>
+            <div class="batch-time-tag" style="font-size:0.68rem; color:var(--text-secondary); font-weight:700;">Set at: <b>${b.setTime || 'Evening'}</b></div>
           </div>
           <span class="batch-eggs">${currentLiveInTray} / ${initialEggs} eggs</span>
         </div>
@@ -1368,9 +1782,9 @@
           <div>Harvest: ${chickCount} (${rateText})</div>
         </div>
         <div class="batch-actions">
-          <button class="btn-neutral" style="color:#6b21a8;" onclick="recordCandling('${b.id}', 7)">🔍 D7</button>
-          <button class="btn-neutral" style="color:#854d0e;" onclick="recordCandling('${b.id}', 14)">🔍 D14</button>
-          <button class="btn-neutral" style="color:#16a34a;" onclick="recordHatchResult('${b.id}')">🐥 Chicks</button>
+          <button class="btn-neutral" style="color:var(--violet);" onclick="recordCandling('${b.id}', 7)">🔍 D7</button>
+          <button class="btn-neutral" style="color:var(--amber);" onclick="recordCandling('${b.id}', 14)">🔍 D14</button>
+          <button class="btn-neutral" style="color:var(--emerald);" onclick="recordHatchResult('${b.id}')">🐥 Chicks</button>
           <button class="btn-neutral" onclick="startEditBatch('${b.id}')">✎ Edit</button>
         </div>
       </div>
@@ -1419,11 +1833,10 @@
     document.getElementById('eggsSet').value = "102";
     document.getElementById('sdate').value = getTodayISO();
     document.getElementById('editDocId').value = "";
-    document.getElementById('submitBtn').innerText = "Set Batch (AM/PM Auto-Stamped)";
+    document.getElementById('submitBtn').innerText = "Set Batch (Auto-Stamped)";
     document.getElementById('cancelBtn').style.display = "none";
   }
 
-  // --- EGG COLLECTIONS ---
   let editingColId = null;
   function saveCollection() {
     const dateVal = document.getElementById('colDate').value || getTodayISO();
@@ -1463,9 +1876,9 @@
         <td>${c.morning || '-'}</td>
         <td>${c.afternoon || '-'}</td>
         <td>${c.evening || '-'}</td>
-        <td style="color:#b91c1c; font-weight:bold;">${c.broken || '-'}</td>
-        <td style="color:#0284c7; font-weight:bold;">${c.total}</td>
-        <td><button class="btn-neutral" style="padding:3px 8px; font-weight:bold; color:#0284c7;" onclick="startEditCollection('${c.id}')">✎ Edit</button></td>
+        <td style="color:var(--crimson); font-weight:bold;">${c.broken || '-'}</td>
+        <td style="color:var(--brand); font-weight:bold;">${c.total}</td>
+        <td><button class="btn-neutral" style="padding:4px 10px; font-weight:bold; color:var(--brand);" onclick="startEditCollection('${c.id}')">✎ Edit</button></td>
       `;
       tbody.appendChild(tr);
     });
@@ -1489,24 +1902,29 @@
     document.getElementById('colBroken').value = "0";
     document.getElementById('colDate').value = getTodayISO();
     editingColId = null;
-    document.getElementById('colSubmitBtn').innerText = "Save Collection";
+    document.getElementById('colSubmitBtn').innerText = "Log Pickings";
     document.getElementById('colCancelBtn').style.display = "none";
   }
 
-  // --- MORTALITY ---
   let editingMortId = null;
   function saveMortality() {
     const dateVal = document.getElementById('mortDate').value || getTodayISO();
     const category = document.getElementById('mortCategory').value;
     const count = parseInt(document.getElementById('mortCount').value, 10);
+    const reason = document.getElementById('mortReason').value.trim() || "-";
     if (isNaN(count) || count <= 0) return alert("Enter valid dead count.");
     const isoDate = toNormalizedISO(dateVal);
 
     if (editingMortId) {
       const idx = mortality.findIndex(m => m.id === editingMortId);
-      if (idx !== -1) { mortality[idx].date = isoDate; mortality[idx].category = category; mortality[idx].dead = count; }
+      if (idx !== -1) {
+        mortality[idx].date = isoDate;
+        mortality[idx].category = category;
+        mortality[idx].dead = count;
+        mortality[idx].reason = reason;
+      }
     } else {
-      mortality.unshift({ id: "mort_" + Date.now(), date: isoDate, category: category, dead: count });
+      mortality.unshift({ id: "mort_" + Date.now(), date: isoDate, category: category, dead: count, reason: reason });
     }
 
     syncToLocalStorage();
@@ -1524,17 +1942,19 @@
     document.getElementById('mortDate').value = toNormalizedISO(m.date);
     document.getElementById('mortCategory').value = m.category || "Chicks";
     document.getElementById('mortCount').value = m.dead;
+    document.getElementById('mortReason').value = m.reason || "";
     editingMortId = docId;
-    document.getElementById('mortSubmitBtn').innerText = "Update Mortality";
+    document.getElementById('mortSubmitBtn').innerText = "Update Loss";
     document.getElementById('mortCancelBtn').style.display = "block";
     openQuickLogModal('quickMort');
   }
 
   function resetMortForm() {
     document.getElementById('mortCount').value = "";
+    document.getElementById('mortReason').value = "";
     document.getElementById('mortDate').value = getTodayISO();
     editingMortId = null;
-    document.getElementById('mortSubmitBtn').innerText = "Log Mortality";
+    document.getElementById('mortSubmitBtn').innerText = "Log Loss";
     document.getElementById('mortCancelBtn').style.display = "none";
   }
 
@@ -1563,9 +1983,9 @@
     });
 
     document.getElementById('growersLoss30D').innerText = growers30D;
-    document.getElementById('growersLoss7DSub').innerText = `${growers7D} last 7 days`;
+    document.getElementById('growersLoss7DSub').innerText = growers7D + " last 7 days";
     document.getElementById('breedersLoss30D').innerText = breeders30D;
-    document.getElementById('breedersLoss7DSub').innerText = `${breeders7D} last 7 days`;
+    document.getElementById('breedersLoss7DSub').innerText = breeders7D + " last 7 days";
 
     const filtered = sorted.filter(m => currentMortalitySection === 'All' || (m.category || "Chicks") === currentMortalitySection);
     document.getElementById('noMortality').style.display = filtered.length === 0 ? "block" : "none";
@@ -1573,15 +1993,15 @@
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><b>${formatDisplayDate(m.date)}</b></td>
-        <td><span style="font-size:0.75rem; font-weight:bold; color:var(--text-muted);">${m.category||'Chicks'}</span></td>
-        <td style="color:#b91c1c; font-weight:bold;">${m.dead}</td>
-        <td><button class="btn-neutral" style="padding:3px 8px; font-weight:bold; color:#0284c7;" onclick="startEditMortality('${m.id}')">✎ Edit</button></td>
+        <td><span style="font-size:0.75rem; font-weight:bold; color:var(--text-secondary);">${m.category||'Chicks'}</span></td>
+        <td style="color:var(--crimson); font-weight:bold;">${m.dead}</td>
+        <td style="text-align:left; font-size:0.8rem; color:var(--text-primary);">${m.reason || '-'}</td>
+        <td><button class="btn-neutral" style="padding:4px 10px; font-weight:bold; color:var(--brand);" onclick="startEditMortality('${m.id}')">✎ Edit</button></td>
       `;
       tbody.appendChild(tr);
     });
   }
 
-  // --- ACTIVITY & TASK LEDGER ---
   function getCategoryIcon(cat) {
     if (cat === "Medication") return "💊";
     if (cat === "Sales") return "💰";
@@ -1676,10 +2096,10 @@
     document.getElementById('ledgerDate').value = getTodayISO();
   }
 
-  // --- CALENDAR WITH STRICT 7-COLUMN ALIGNMENT ---
+  // --- CALENDAR LOGIC: 3 PRIORITY COLORS + BLACK OVERLAP + CLEAN WHITE BACKGROUND ---
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    document.getElementById('calMonthYear').innerText = `${monthNames[curMonth]} ${curYear}`;
+    document.getElementById('calMonthYear').innerText = monthNames[curMonth] + " " + curYear;
     
     const firstDayIndex = new Date(curYear, curMonth, 1).getDay();
     const lastDateOfMonth = new Date(curYear, curMonth + 1, 0).getDate();
@@ -1707,31 +2127,55 @@
         if (cellISO === calc.d1ISO) dayEvents.push({ type: 'set', name: b.name });
         if (cellISO === calc.d7ISO) dayEvents.push({ type: 'd7', name: b.name });
         if (cellISO === calc.d14ISO) dayEvents.push({ type: 'd14', name: b.name });
-        if (cellISO === calc.d18ISO) dayEvents.push({ type: 'hatch', name: b.name });
-        if (cellISO === calc.d21ISO) dayEvents.push({ type: 'remove', name: b.name });
+        if (cellISO === calc.d18ISO) dayEvents.push({ type: 'd18', name: b.name });
+        if (cellISO === calc.d21ISO) dayEvents.push({ type: 'pull', name: b.name });
       });
 
       const colRecord = collections.find(c => toNormalizedISO(c.date) === cellISO);
       const ledgerOnDate = ledger.filter(l => toNormalizedISO(l.date) === cellISO);
 
-      if (dayEvents.some(e => e.type === 'set')) cell.classList.add('stage-set');
-      else if (dayEvents.some(e => e.type === 'd7')) cell.classList.add('stage-d7');
-      else if (dayEvents.some(e => e.type === 'd14')) cell.classList.add('stage-d14');
-      else if (dayEvents.some(e => e.type === 'hatch')) cell.classList.add('stage-hatch');
-      else if (dayEvents.some(e => e.type === 'remove')) cell.classList.add('stage-remove');
+      // Track the 3 main priority types
+      const hasSet = dayEvents.some(e => e.type === 'set');
+      const hasD18 = dayEvents.some(e => e.type === 'd18');
+      const hasPull = dayEvents.some(e => e.type === 'pull');
 
-      let content = `<span style="font-size:0.75rem; margin-bottom:1px;">${d}</span>`;
+      const priorityEventCount = (hasSet ? 1 : 0) + (hasD18 ? 1 : 0) + (hasPull ? 1 : 0);
+
+      if (priorityEventCount > 1) {
+        // More than one of (Setting, D18, Pull) fall on same day -> BLACK COLOR
+        cell.classList.add('stage-overlap-black');
+      } else if (hasSet) {
+        // Color Code 1: Setting Day
+        cell.classList.add('stage-set');
+      } else if (hasD18) {
+        // Color Code 2: Day 18 Lockdown
+        cell.classList.add('stage-d18');
+      } else if (hasPull) {
+        // Color Code 3: Day 21 Pull
+        cell.classList.add('stage-pull');
+      }
+      // Day 7, Day 14, Notes, and Pickings stay on the default clean white/neutral background
+
+      let content = "<span style=\"font-size:0.75rem; margin-bottom:1px;\">" + d + "</span>";
       
       dayEvents.forEach(ev => {
-        if (ev.type === 'set') content += `<span class="stage-tag" style="background:#0284c7; color:#ffffff;">SET: ${ev.name}</span>`;
-        else if (ev.type === 'd7') content += `<span class="stage-tag" style="background:#9333ea; color:#ffffff;">D7: ${ev.name}</span>`;
-        else if (ev.type === 'd14') content += `<span class="stage-tag" style="background:#ca8a04; color:#ffffff;">D14: ${ev.name}</span>`;
-        else if (ev.type === 'hatch') content += `<span class="stage-tag" style="background:#ea580c; color:#ffffff;">D18: ${ev.name}</span>`;
-        else if (ev.type === 'remove') content += `<span class="stage-tag" style="background:#16a34a; color:#ffffff;">PULL: ${ev.name}</span>`;
+        if (priorityEventCount > 1) {
+          if (ev.type === 'set') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">SET: " + ev.name + "</span>";
+          else if (ev.type === 'd18') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">D18: " + ev.name + "</span>";
+          else if (ev.type === 'pull') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">PULL: " + ev.name + "</span>";
+          else if (ev.type === 'd7') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.1); color:#ffffff;\">D7: " + ev.name + "</span>";
+          else if (ev.type === 'd14') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.1); color:#ffffff;\">D14: " + ev.name + "</span>";
+        } else {
+          if (ev.type === 'set') content += "<span class=\"stage-tag\" style=\"background:var(--brand); color:#ffffff;\">SET: " + ev.name + "</span>";
+          else if (ev.type === 'd18') content += "<span class=\"stage-tag\" style=\"background:var(--amber); color:#ffffff;\">D18: " + ev.name + "</span>";
+          else if (ev.type === 'pull') content += "<span class=\"stage-tag\" style=\"background:var(--emerald); color:#ffffff;\">PULL: " + ev.name + "</span>";
+          else if (ev.type === 'd7') content += "<span class=\"stage-tag neutral-pill\">D7 Candling</span>";
+          else if (ev.type === 'd14') content += "<span class=\"stage-tag neutral-pill\">D14 Candling</span>";
+        }
       });
 
-      if (colRecord && colRecord.total > 0) content += `<span class="egg-badge">+${colRecord.total}🥚</span>`;
-      if (ledgerOnDate.length > 0) content += `<span class="task-cal-badge">📝 ${ledgerOnDate.length} Log</span>`;
+      if (colRecord && colRecord.total > 0) content += "<span class=\"egg-badge\">+" + colRecord.total + "🥚</span>";
+      if (ledgerOnDate.length > 0) content += "<span class=\"task-cal-badge\">📝 " + ledgerOnDate.length + " Log</span>";
 
       cell.innerHTML = content;
       gridBody.appendChild(cell);
@@ -1757,22 +2201,22 @@
       const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
       if (!sISO) return;
       const calc = computeBatchDates(sISO);
-      if (dateISO === calc.d1ISO) html += `<div class="event-item" style="border-left: 5px solid #0284c7;"><b>🥚 DAY 1 SET:</b> ${b.name} (${b.eggs} eggs)</div>`;
-      if (dateISO === calc.d7ISO) html += `<div class="event-item" style="border-left: 5px solid #9333ea;"><b>🔍 DAY 7 CANDLING:</b> ${b.name}</div>`;
-      if (dateISO === calc.d14ISO) html += `<div class="event-item" style="border-left: 5px solid #ca8a04;"><b>🔍 DAY 14 CANDLING:</b> ${b.name}</div>`;
-      if (dateISO === calc.d18ISO) html += `<div class="event-item" style="border-left: 5px solid #ea580c;"><b>🐣 DAY 18 LOCKDOWN:</b> ${b.name}</div>`;
-      if (dateISO === calc.d21ISO) html += `<div class="event-item" style="border-left: 5px solid #16a34a;"><b>🐥 DAY 21 PULL:</b> ${b.name}</div>`;
+      if (dateISO === calc.d1ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--brand);\"><b>🥚 SETTING DAY (DAY 1):</b> " + b.name + " (" + b.eggs + " eggs)</div>";
+      if (dateISO === calc.d7ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--text-secondary);\"><b>🔍 DAY 7 CANDLING:</b> " + b.name + "</div>";
+      if (dateISO === calc.d14ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--text-secondary);\"><b>🔍 DAY 14 CANDLING:</b> " + b.name + "</div>";
+      if (dateISO === calc.d18ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--amber);\"><b>🐣 DAY 18 LOCKDOWN:</b> " + b.name + "</div>";
+      if (dateISO === calc.d21ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--emerald);\"><b>🐥 DAY 21 PULL:</b> " + b.name + "</div>";
     });
 
     const col = collections.find(c => toNormalizedISO(c.date) === dateISO);
     if (col && (col.total > 0 || (col.broken || 0) > 0)) {
-      html += `<div class="event-item" style="border-left: 5px solid #64748b;"><b>🥚 Eggs:</b> Intact: ${col.total} | Broken: ${col.broken||0}</div>`;
+      html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--text-secondary);\"><b>🥚 Eggs:</b> Intact: " + col.total + " | Broken: " + (col.broken || 0) + "</div>";
     }
 
     const morts = mortality.filter(m => toNormalizedISO(m.date) === dateISO);
     if (morts.length > 0) {
-      let list = morts.map(m => `<b>${m.category||'Chicks'}:</b> ${m.dead} dead`).join(' | ');
-      html += `<div class="event-item" style="border-left: 5px solid #b91c1c;"><b>☠️ Mortality:</b> ${list}</div>`;
+      let list = morts.map(m => "<b>" + (m.category || 'Chicks') + ":</b> " + m.dead + " dead (" + (m.reason || 'No reason') + ")").join(' | ');
+      html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--crimson);\"><b>☠️ Mortality:</b> " + list + "</div>";
     }
 
     const logs = ledger.filter(l => toNormalizedISO(l.date) === dateISO);
@@ -1780,15 +2224,15 @@
       logs.forEach(l => {
         const icon = getCategoryIcon(l.category);
         html += `
-          <div class="event-item" style="border-left: 5px solid #7c3aed; display:flex; justify-content:space-between; align-items:center;">
+          <div class="event-item" style="border-left: 4px solid var(--violet); display:flex; justify-content:space-between; align-items:center;">
             <div><b>${icon} ${l.category}:</b> ${l.notes}</div>
-            <button style="background:#fee2e2; color:#b91c1c; border:none; border-radius:4px; padding:3px 6px; font-weight:bold; cursor:pointer;" onclick="deleteLedgerItem('${l.id}')">✕</button>
+            <button style="background:var(--crimson-glow); color:var(--crimson); border:none; border-radius:6px; padding:4px 8px; font-weight:bold; cursor:pointer;" onclick="deleteLedgerItem('${l.id}')">✕</button>
           </div>
         `;
       });
     }
 
-    if (!html) html = `<div style="text-align:center; padding:10px; color:var(--text-muted); font-size:0.8rem;">No activity on this date.</div>`;
+    if (!html) html = "<div style=\"text-align:center; padding:12px; color:var(--text-secondary); font-size:0.85rem;\">No activity on this date.</div>";
     body.innerHTML = html;
     modal.style.display = "flex";
   }
@@ -1799,19 +2243,18 @@
     }
   }
 
-  // --- DELETE CENTER ---
   function openDeleteCenterModal() {
     const bSel = document.getElementById('delBatchSelect');
     bSel.innerHTML = "";
-    batches.forEach(b => bSel.add(new Option(`${b.name} (${b.eggs} eggs)`, b.id)));
+    batches.forEach(b => bSel.add(new Option(b.name + " (" + b.eggs + " eggs)", b.id)));
 
     const cSel = document.getElementById('delColSelect');
     cSel.innerHTML = "";
-    collections.forEach(c => cSel.add(new Option(`${formatDisplayDate(c.date)} (${c.total} eggs)`, c.id)));
+    collections.forEach(c => cSel.add(new Option(formatDisplayDate(c.date) + " (" + c.total + " eggs)", c.id)));
 
     const mSel = document.getElementById('delMortSelect');
     mSel.innerHTML = "";
-    mortality.forEach(m => mSel.add(new Option(`${formatDisplayDate(m.date)} - ${m.category||'Chicks'}: ${m.dead} dead`, m.id)));
+    mortality.forEach(m => mSel.add(new Option(formatDisplayDate(m.date) + " - " + (m.category || 'Chicks') + ": " + m.dead + " dead [" + (m.reason || 'No reason') + "]", m.id)));
 
     document.getElementById('deleteCenterModal').style.display = "flex";
   }
@@ -1835,7 +2278,7 @@
     const id = document.getElementById('delColSelect').value;
     if (!id || !confirm("Delete this egg record?")) return;
     collections = collections.filter(c => c.id !== id);
-    syncToLocalStorage(); renderCollections(); renderCalendar();
+    syncToLocalStorage(); renderCollections(); renderLiveMetrics(); renderCalendar();
     if (db) db.collection("collections").doc(id).delete().catch(e => console.warn(e));
     openDeleteCenterModal();
   }
@@ -1849,7 +2292,6 @@
     openDeleteCenterModal();
   }
 
-  // --- EXPORT FARM REPORTS ENGINE ---
   function populateReportDropdowns() {
     const colFrom = document.getElementById('reportColFrom');
     const colTo = document.getElementById('reportColTo');
@@ -1892,8 +2334,8 @@
 
     sortedBatches.forEach((b, idx) => {
       const dt = formatDisplayDate(b.startDate || b.rawDate);
-      bFrom.add(new Option(`${b.name} (${dt})`, idx));
-      bTo.add(new Option(`${b.name} (${dt})`, idx));
+      bFrom.add(new Option(b.name + " (" + dt + ")", idx));
+      bTo.add(new Option(b.name + " (" + dt + ")", idx));
     });
 
     if (sortedBatches.length > 0) {
@@ -1919,7 +2361,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 1. Egg Collection Audit
   function displayEggDataReport() {
     const fromISO = document.getElementById('reportColFrom').value;
     const toISO = document.getElementById('reportColTo').value;
@@ -1944,23 +2385,23 @@
           <td>${m}</td>
           <td>${a}</td>
           <td>${e}</td>
-          <td style="color:#b91c1c; font-weight:bold;">${b}</td>
-          <td style="color:#0284c7; font-weight:bold;">${t}</td>
+          <td style="color:var(--crimson); font-weight:bold;">${b}</td>
+          <td style="color:var(--brand); font-weight:bold;">${t}</td>
         </tr>
       `;
     });
 
     const reportHtml = `
-      <div style="text-align:center; margin-bottom:14px;">
-        <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary);">AD FARMS ; HERD &amp; HARVEST</h2>
-        <div style="font-size:0.85rem; font-weight:bold; color:#059669; margin-top:3px;">Egg Collection Audit Report</div>
-        <div style="font-size:0.75rem; color:var(--text-muted);">Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b></div>
+      <div style="text-align:center; margin-bottom:16px;">
+        <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary); font-weight:800;">AD FARMS ; HERD &amp; HARVEST</h2>
+        <div style="font-size:0.86rem; font-weight:bold; color:var(--emerald); margin-top:4px;">Egg Collection Audit Report</div>
+        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b></div>
       </div>
       <div class="table-wrap">
-        <table style="min-width: 480px;">
+        <table style="min-width: 520px;">
           <thead>
             <tr>
-              <th style="background:#059669; color:#fff;">Date</th>
+              <th style="background:var(--emerald); color:#fff;">Date</th>
               <th>Morn</th>
               <th>Aftn</th>
               <th>Eve</th>
@@ -1970,13 +2411,13 @@
           </thead>
           <tbody>
             ${rowsHtml}
-            <tr style="font-weight:bold; background:var(--tab-bar-bg);">
+            <tr style="font-weight:bold; background:var(--card-surface-subtle);">
               <td>TOTALS</td>
               <td>${totalMorn}</td>
               <td>${totalAftn}</td>
               <td>${totalEve}</td>
-              <td style="color:#b91c1c;">${totalBroken}</td>
-              <td style="color:#0284c7;">${grandTotal}</td>
+              <td style="color:var(--crimson);">${totalBroken}</td>
+              <td style="color:var(--brand);">${grandTotal}</td>
             </tr>
           </tbody>
         </table>
@@ -1990,7 +2431,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 2. Incubation Batches Audit
   function displayIncubationDataReport() {
     const sorted = [...batches].sort((a, b) => {
       return toNormalizedISO(a.startDate || a.rawDate).localeCompare(toNormalizedISO(b.startDate || b.rawDate));
@@ -2019,14 +2459,14 @@
 
       rowsHtml += `
         <tr>
-          <td><b>${b.name}</b><br><small style="color:var(--text-muted);">${b.setTime || 'Evening'}</small></td>
+          <td><b>${b.name}</b><br><small style="color:var(--text-secondary);">${b.setTime || 'Evening'}</small></td>
           <td>${eggs}</td>
           <td>${formatDisplayDate(calc.d1ISO)}</td>
-          <td style="color:#6b21a8; font-weight:bold;">${c7}</td>
-          <td style="color:#854d0e; font-weight:bold;">${c14}</td>
+          <td style="color:var(--violet); font-weight:bold;">${c7}</td>
+          <td style="color:var(--amber); font-weight:bold;">${c14}</td>
           <td>${formatDisplayDate(calc.d21ISO)}</td>
           <td><b>${hasChicks ? b.chicksHatched : '-'}</b></td>
-          <td style="color:#16a34a; font-weight:bold;">${b.hatchRate ? b.hatchRate + '%' : '-'}</td>
+          <td style="color:var(--emerald); font-weight:bold;">${b.hatchRate ? b.hatchRate + '%' : '-'}</td>
         </tr>
       `;
     });
@@ -2034,16 +2474,16 @@
     const overallRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + "%" : "-";
 
     const reportHtml = `
-      <div style="text-align:center; margin-bottom:14px;">
-        <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary);">AD FARMS ; HERD &amp; HARVEST</h2>
-        <div style="font-size:0.85rem; font-weight:bold; color:#0284c7; margin-top:3px;">Incubation Batches Audit Report</div>
-        <div style="font-size:0.75rem; color:var(--text-muted);">Range: <b>${selectedBatches[0].name}</b> to <b>${selectedBatches[selectedBatches.length - 1].name}</b></div>
+      <div style="text-align:center; margin-bottom:16px;">
+        <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary); font-weight:800;">AD FARMS ; HERD &amp; HARVEST</h2>
+        <div style="font-size:0.86rem; font-weight:bold; color:var(--brand); margin-top:4px;">Incubation Batches Audit Report</div>
+        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Range: <b>${selectedBatches[0].name}</b> to <b>${selectedBatches[selectedBatches.length - 1].name}</b></div>
       </div>
       <div class="table-wrap">
-        <table style="min-width: 620px;">
+        <table style="min-width: 660px;">
           <thead>
             <tr>
-              <th style="background:#0284c7; color:#fff;">Batch</th>
+              <th style="background:var(--brand); color:#fff;">Batch</th>
               <th>Eggs</th>
               <th>Set Date</th>
               <th>D7 Candled</th>
@@ -2055,15 +2495,15 @@
           </thead>
           <tbody>
             ${rowsHtml}
-            <tr style="font-weight:bold; background:var(--tab-bar-bg);">
+            <tr style="font-weight:bold; background:var(--card-surface-subtle);">
               <td>TOTALS</td>
               <td>${totalEggs}</td>
               <td>-</td>
-              <td style="color:#6b21a8;">${totalD7}</td>
-              <td style="color:#854d0e;">${totalD14}</td>
+              <td style="color:var(--violet);">${totalD7}</td>
+              <td style="color:var(--amber);">${totalD14}</td>
               <td>-</td>
               <td>${totalChicks > 0 ? totalChicks : '-'}</td>
-              <td style="color:#16a34a;">${overallRate}</td>
+              <td style="color:var(--emerald);">${overallRate}</td>
             </tr>
           </tbody>
         </table>
@@ -2077,7 +2517,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 3. Farm Activities & Ledger Audit
   function displayActivityDataReport() {
     const fromISO = document.getElementById('reportActivityFrom').value;
     const toISO = document.getElementById('reportActivityTo').value;
@@ -2096,23 +2535,23 @@
       rowsHtml += `
         <tr>
           <td><b>${formatDisplayDate(l.date)}</b></td>
-          <td style="font-weight:bold; color:#7c3aed;">${icon} ${l.category}</td>
+          <td style="font-weight:bold; color:var(--violet);">${icon} ${l.category}</td>
           <td style="text-align:left;">${l.notes || '-'}</td>
         </tr>
       `;
     });
 
     const reportHtml = `
-      <div style="text-align:center; margin-bottom:14px;">
-        <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary);">AD FARMS ; HERD &amp; HARVEST</h2>
-        <div style="font-size:0.85rem; font-weight:bold; color:#7c3aed; margin-top:3px;">Farm Activities &amp; Ledger Audit</div>
-        <div style="font-size:0.75rem; color:var(--text-muted);">Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b></div>
+      <div style="text-align:center; margin-bottom:16px;">
+        <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary); font-weight:800;">AD FARMS ; HERD &amp; HARVEST</h2>
+        <div style="font-size:0.86rem; font-weight:bold; color:var(--violet); margin-top:4px;">Farm Activities &amp; Ledger Audit</div>
+        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b></div>
       </div>
       <div class="table-wrap">
-        <table style="min-width: 480px;">
+        <table style="min-width: 500px;">
           <thead>
             <tr>
-              <th style="background:#7c3aed; color:#fff;">Date</th>
+              <th style="background:var(--violet); color:#fff;">Date</th>
               <th>Category</th>
               <th style="text-align:left;">Particulars / Notes</th>
             </tr>
@@ -2131,13 +2570,14 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // Initial draw
+  // INITIAL RUNTIME STARTUP
   renderCollections();
   renderBatches();
   renderMortality();
   renderLedger();
   renderLiveMetrics();
   renderCalendar();
+  initSavedTheme();
 </script>
 
 </body>
