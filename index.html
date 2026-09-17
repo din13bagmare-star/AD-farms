@@ -476,11 +476,13 @@
   }
   .btn-neutral:active { transform: scale(0.96); }
 
-  /* PRECISION TABLES */
+  /* PRECISION TABLES & TOUCH ISOLATION */
   .table-wrap {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x pan-y;
     border-radius: 14px;
     border: 1px solid var(--border-hairline);
     background: var(--card-surface);
@@ -1213,7 +1215,7 @@
       <button class="btn-cancel" id="mortCancelBtn" onclick="resetMortForm()">Cancel</button>
     </div>
 
-    <!-- 4. LEDGER (INCLUDES DEDUCTIVE SALES & BREEDER INFLOW) -->
+    <!-- 4. LEDGER -->
     <div id="quickLedgerForm" class="quick-form-panel" style="display:none;">
       <div class="form-row">
         <div>
@@ -1232,7 +1234,6 @@
         </div>
       </div>
 
-      <!-- Inventory Sales Deduction Fields -->
       <div id="salesFieldsRow" class="form-row">
         <div>
           <label>Product Sold (Deducts Live Count)</label>
@@ -1249,7 +1250,6 @@
         </div>
       </div>
 
-      <!-- Breeder Manual Inflow / Transfer Fields -->
       <div id="breederFieldsRow" class="form-row" style="display:none;">
         <div>
           <label>Breeder Stock Source</label>
@@ -1325,7 +1325,7 @@
       <select id="delColSelect" style="margin-bottom:6px;"></select>
       <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.8rem; min-height:38px;" onclick="confirmDeleteCollection()">Delete Egg Log</button>
     </div>
-    <div style="background:var(--crimson-glow); border:1px solid var(--crimson); border-radius:14px; padding:12px; margin-bottom:10px;">
+    <div style="background:var(--crimson-glow); border:1px solid var(--crimson); border-radius:14px; padding:12px;">
       <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:var(--crimson);">Delete Mortality Log</h4>
       <select id="delMortSelect" style="margin-bottom:6px;"></select>
       <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.8rem; min-height:38px;" onclick="confirmDeleteMortality()">Delete Mortality</button>
@@ -1569,8 +1569,16 @@
 
     db.collection("mortality").onSnapshot(snapshot => {
       let cloudMort = [];
-      snapshot.forEach(doc => cloudMort.push({ id: doc.id, ...doc.data() }));
-      if (cloudMort.length > 0) { mortality = cloudMort; syncToLocalStorage(); renderMortality(); renderLiveMetrics(); }
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        cloudMort.push({ id: doc.id, ...d, reason: d.reason || "-" });
+      });
+      if (cloudMort.length > 0) { 
+        mortality = cloudMort; 
+        syncToLocalStorage(); 
+        renderMortality(); 
+        renderLiveMetrics(); 
+      }
     }, err => console.warn(err));
 
     db.collection("ledger").onSnapshot(snapshot => {
@@ -1597,15 +1605,34 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // TOUCH GESTURE ISOLATION ENGINE
   let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
+  let isTouchInsideScrollableTable = false;
   const viewport = document.getElementById('swipeViewport');
+
   viewport.addEventListener('touchstart', e => {
     touchStartX = e.changedTouches[0].screenX;
     touchStartY = e.changedTouches[0].screenY;
+
+    // Detect if touch originated inside an overflowed horizontal table
+    const targetTableWrap = e.target.closest('.table-wrap');
+    if (targetTableWrap && targetTableWrap.scrollWidth > targetTableWrap.clientWidth) {
+      isTouchInsideScrollableTable = true;
+    } else {
+      isTouchInsideScrollableTable = false;
+    }
   }, { passive: true });
+
   viewport.addEventListener('touchend', e => {
     touchEndX = e.changedTouches[0].screenX;
     touchEndY = e.changedTouches[0].screenY;
+
+    // Disallow window switching if the gesture happened within a scrolling table
+    if (isTouchInsideScrollableTable) {
+      isTouchInsideScrollableTable = false;
+      return;
+    }
+
     const diffX = touchStartX - touchEndX;
     const diffY = touchStartY - touchEndY;
     if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
@@ -2097,10 +2124,13 @@
     const dateVal = document.getElementById('mortDate').value || getTodayISO();
     const category = document.getElementById('mortCategory').value;
     const count = parseInt(document.getElementById('mortCount').value, 10);
-    const reason = document.getElementById('mortReason').value.trim() || "-";
+    const reasonInput = document.getElementById('mortReason').value.trim();
+    const reason = reasonInput !== "" ? reasonInput : "-";
+    
     if (isNaN(count) || count <= 0) return alert("Enter valid dead count.");
     const isoDate = toNormalizedISO(dateVal);
 
+    let entry = null;
     if (editingMortId) {
       const idx = mortality.findIndex(m => m.id === editingMortId);
       if (idx !== -1) {
@@ -2108,16 +2138,25 @@
         mortality[idx].category = category;
         mortality[idx].dead = count;
         mortality[idx].reason = reason;
+        entry = mortality[idx];
       }
     } else {
-      mortality.unshift({ id: "mort_" + Date.now(), date: isoDate, category: category, dead: count, reason: reason });
+      entry = {
+        id: "mort_" + Date.now(),
+        date: isoDate,
+        category: category,
+        dead: count,
+        reason: reason
+      };
+      mortality.unshift(entry);
     }
 
     syncToLocalStorage();
-    renderMortality(); renderLiveMetrics();
+    renderMortality();
+    renderLiveMetrics();
     closeQuickLogModal();
-    if (db) {
-      const entry = editingMortId ? mortality.find(m => m.id === editingMortId) : mortality[0];
+
+    if (db && entry) {
       db.collection("mortality").doc(entry.id).set(entry).catch(e => console.warn(e));
     }
   }
@@ -2128,7 +2167,7 @@
     document.getElementById('mortDate').value = toNormalizedISO(m.date);
     document.getElementById('mortCategory').value = m.category || "Chicks";
     document.getElementById('mortCount').value = m.dead;
-    document.getElementById('mortReason').value = m.reason || "";
+    document.getElementById('mortReason').value = (m.reason && m.reason !== "-") ? m.reason : "";
     editingMortId = docId;
     document.getElementById('mortSubmitBtn').innerText = "Update Loss";
     document.getElementById('mortCancelBtn').style.display = "block";
@@ -2165,7 +2204,7 @@
         <td><b>${formatDisplayDate(m.date)}</b></td>
         <td><span style="font-size:0.75rem; font-weight:bold; color:var(--text-secondary);">${m.category||'Chicks'}</span></td>
         <td style="color:var(--crimson); font-weight:bold;">${m.dead}</td>
-        <td style="text-align:left; font-size:0.8rem; color:var(--text-primary);">${m.reason || '-'}</td>
+        <td style="text-align:left; font-size:0.8rem; color:var(--text-primary); font-weight:600;">${m.reason || '-'}</td>
         <td><button class="btn-neutral" style="padding:4px 10px; font-weight:bold; color:var(--brand);" onclick="startEditMortality('${m.id}')">✎ Edit</button></td>
       `;
       tbody.appendChild(tr);
@@ -2417,7 +2456,7 @@
         if (l.category === "Sales" && l.target) {
           extra = ` <small style="color:var(--emerald); font-weight:800;">[${l.qty} ${l.target} deducted]</small>`;
         } else if (l.category === "Breeders") {
-          extra = ` <small style="color:var(--violet); font-weight:800;">[+${l.qty} Breeders added via ${l.source||'Stock'}]</small>`;
+          extra = ` <small style="color:var(--violet); font-weight:800;">[+${l.qty} Breeders via ${l.source||'Stock'}]</small>`;
         }
         html += `
           <div class="event-item" style="border-left: 4px solid var(--violet); display:flex; justify-content:space-between; align-items:center;">
