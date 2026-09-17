@@ -82,7 +82,7 @@
     position: relative;
   }
 
-  /* LUMINOUS LIGHT GRAY TOP BAR */
+  /* TOP BAR WITH METALLIC BEVEL GRADIENT */
   .top-bar {
     background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
     border: 1px solid #cbd5e1;
@@ -134,9 +134,7 @@
     text-transform: uppercase;
     letter-spacing: 0.6px;
   }
-  body.dark-theme .brand-text .sub-title {
-    color: #38bdf8;
-  }
+  body.dark-theme .brand-text .sub-title { color: #38bdf8; }
 
   .btn-settings {
     background: rgba(255, 255, 255, 0.7);
@@ -162,15 +160,15 @@
   /* TELEMETRY STRIP */
   .metrics-strip {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
     margin-bottom: 8px;
   }
   .metric-card {
     background: var(--card-surface);
     border: 1px solid var(--border-hairline);
-    border-radius: 18px;
-    padding: 12px 6px;
+    border-radius: 16px;
+    padding: 10px 4px;
     text-align: center;
     box-shadow: var(--shadow-plate);
     backdrop-filter: blur(12px);
@@ -181,28 +179,47 @@
     content: '';
     position: absolute;
     bottom: 0;
-    left: 20%;
-    right: 20%;
+    left: 15%;
+    right: 15%;
     height: 2px;
     border-radius: 2px;
     background: currentColor;
     opacity: 0.4;
   }
   .metric-lbl {
-    font-size: 0.60rem;
+    font-size: 0.54rem;
     font-weight: 800;
     text-transform: uppercase;
     color: var(--text-secondary);
-    letter-spacing: 0.6px;
-    margin-bottom: 5px;
+    letter-spacing: 0.4px;
+    margin-bottom: 4px;
   }
   .metric-val {
-    font-size: 1.45rem;
+    font-size: 1.25rem;
     font-weight: 900;
     line-height: 1;
     font-feature-settings: "tnum";
-    letter-spacing: -0.5px;
+    letter-spacing: -0.4px;
   }
+
+  /* LIFETIME PRODUCTION AUDIT COUNTERS */
+  .production-summary-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .production-card {
+    background: var(--card-surface-subtle);
+    border: 1px solid var(--border-hairline);
+    border-radius: 14px;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .prod-lbl { font-size: 0.60rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; }
+  .prod-val { font-size: 1.05rem; font-weight: 900; font-feature-settings: "tnum"; }
 
   /* SETTER RESERVOIR */
   .setter-progress-card {
@@ -648,7 +665,7 @@
   .cal-cell:active { transform: scale(0.96); }
   .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; }
 
-  /* 3 PRIORITY COLOR CODES & OVERLAP BLACK CODE */
+  /* 3 PRIORITY COLORS + BLACK OVERLAP */
   .stage-set {
     background: var(--brand-glow) !important;
     border: 1.5px solid var(--brand) !important;
@@ -673,7 +690,6 @@
     color: #ffffff !important;
   }
 
-  /* CHIPS & BADGES */
   .stage-tag {
     font-size: 0.50rem;
     font-weight: 900;
@@ -844,19 +860,41 @@
     </div>
   </div>
 
-  <!-- TELEMETRY STRIP -->
+  <!-- TELEMETRY STRIP: 4 LIVE OPERATIONAL HEADCOUNTS -->
   <div class="metrics-strip">
     <div class="metric-card" style="color: var(--emerald);">
-      <div class="metric-lbl">CHICKS ALIVE</div>
+      <div class="metric-lbl">CHICKS (&lt;45D)</div>
       <div class="metric-val" id="liveChicksTopDisplay">0</div>
     </div>
     <div class="metric-card" style="color: var(--brand);">
-      <div class="metric-lbl">IN INCUBATOR</div>
-      <div class="metric-val" id="inIncubatorDisplay">0</div>
+      <div class="metric-lbl">GROWERS (≥45D)</div>
+      <div class="metric-val" id="liveGrowersTopDisplay">0</div>
+    </div>
+    <div class="metric-card" style="color: var(--violet);">
+      <div class="metric-lbl">BREEDERS</div>
+      <div class="metric-val" id="liveBreedersTopDisplay">0</div>
     </div>
     <div class="metric-card" style="color: var(--amber);">
-      <div class="metric-lbl">HATCH RATE</div>
-      <div class="metric-val" id="hatchRateDisplay">--</div>
+      <div class="metric-lbl">INCUBATING</div>
+      <div class="metric-val" id="inIncubatorDisplay">0</div>
+    </div>
+  </div>
+
+  <!-- LIFETIME PERMANENT PRODUCTION AUDIT COUNTERS -->
+  <div class="production-summary-strip">
+    <div class="production-card">
+      <div>
+        <div class="prod-lbl">LIFETIME EGGS PRODUCED</div>
+        <div style="font-size:0.60rem; color:var(--text-secondary);">Intact Harvest Total</div>
+      </div>
+      <div class="prod-val" id="lifetimeEggsDisplay" style="color:var(--brand);">0</div>
+    </div>
+    <div class="production-card">
+      <div>
+        <div class="prod-lbl">LIFETIME CHICKS HATCHED</div>
+        <div style="font-size:0.60rem; color:var(--text-secondary);">Incubator Output</div>
+      </div>
+      <div class="prod-val" id="lifetimeChicksDisplay" style="color:var(--emerald);">0</div>
     </div>
   </div>
 
@@ -917,24 +955,24 @@
         </div>
       </div>
 
-      <!-- SLIDE 2: MORTALITY (WITH REASON) -->
+      <!-- SLIDE 2: MORTALITY -->
       <div class="swipe-slide" id="slide2">
         <div class="card" style="padding: 10px;">
           <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px; text-align:center;">
             <div style="background:var(--card-surface); border:1px solid var(--border-hairline); border-radius:14px; padding:10px 4px;">
-              <div id="liveChicksBalance" style="font-size:1.35rem; font-weight:900; color:var(--emerald);">0</div>
-              <div style="font-size:0.62rem; font-weight:bold; color:var(--text-secondary);">CHICKS ALIVE</div>
-              <div style="font-size:0.62rem; color:var(--crimson); font-weight:bold;" id="totalChicksDeadSub">0 dead</div>
+              <div id="liveChicksBalance" style="font-size:1.30rem; font-weight:900; color:var(--emerald);">0</div>
+              <div style="font-size:0.58rem; font-weight:bold; color:var(--text-secondary);">CHICKS ALIVE</div>
+              <div style="font-size:0.58rem; color:var(--crimson); font-weight:bold;" id="totalChicksDeadSub">0 dead</div>
             </div>
             <div style="background:var(--card-surface); border:1px solid var(--border-hairline); border-radius:14px; padding:10px 4px;">
-              <div id="growersLoss30D" style="font-size:1.35rem; font-weight:900; color:var(--crimson);">0</div>
-              <div style="font-size:0.62rem; font-weight:bold; color:var(--text-secondary);">GROWER LOSS</div>
-              <div style="font-size:0.62rem; color:var(--text-secondary); font-weight:bold;" id="growersLoss7DSub">0 last 7 days</div>
+              <div id="liveGrowersBalance" style="font-size:1.30rem; font-weight:900; color:var(--brand);">0</div>
+              <div style="font-size:0.58rem; font-weight:bold; color:var(--text-secondary);">GROWERS ALIVE</div>
+              <div style="font-size:0.58rem; color:var(--crimson); font-weight:bold;" id="totalGrowersDeadSub">0 dead</div>
             </div>
             <div style="background:var(--card-surface); border:1px solid var(--border-hairline); border-radius:14px; padding:10px 4px;">
-              <div id="breedersLoss30D" style="font-size:1.35rem; font-weight:900; color:var(--crimson);">0</div>
-              <div style="font-size:0.62rem; font-weight:bold; color:var(--text-secondary);">BREEDER LOSS</div>
-              <div style="font-size:0.62rem; color:var(--text-secondary); font-weight:bold;" id="breedersLoss7DSub">0 last 7 days</div>
+              <div id="liveBreedersBalance" style="font-size:1.30rem; font-weight:900; color:var(--violet);">0</div>
+              <div style="font-size:0.58rem; font-weight:bold; color:var(--text-secondary);">BREEDERS ALIVE</div>
+              <div style="font-size:0.58rem; color:var(--crimson); font-weight:bold;" id="totalBreedersDeadSub">0 dead</div>
             </div>
           </div>
         </div>
@@ -976,14 +1014,15 @@
 
           <div class="ledger-pills-row">
             <button class="filter-pill active" onclick="filterLedgerView('All', this)">All</button>
-            <button class="filter-pill" onclick="filterLedgerView('Medication', this)">💊 Medication</button>
+            <button class="filter-pill" onclick="filterLedgerView('Breeders', this)">🥚 Breeders</button>
             <button class="filter-pill" onclick="filterLedgerView('Sales', this)">💰 Sales</button>
+            <button class="filter-pill" onclick="filterLedgerView('Medication', this)">💊 Meds</button>
             <button class="filter-pill" onclick="filterLedgerView('Feed', this)">🌽 Feed</button>
             <button class="filter-pill" onclick="filterLedgerView('Maint', this)">🔧 Maint</button>
           </div>
 
           <div id="ledgerCardList"></div>
-          <div id="noLedgerCards" style="text-align:center; color:var(--text-secondary); padding:30px 10px; font-size:0.85rem;">No activity logged yet.<br><br>Tap <b>+ New Log</b> to record tasks, medicines, or sales.</div>
+          <div id="noLedgerCards" style="text-align:center; color:var(--text-secondary); padding:30px 10px; font-size:0.85rem;">No activity logged yet.<br><br>Tap <b>+ New Log</b> to record tasks, medicines, sales, or breeder additions.</div>
         </div>
       </div>
 
@@ -1046,7 +1085,7 @@
         <span style="font-size:1.3rem;">📊</span>
         <div>
           <div style="font-weight:800; font-size:0.9rem;">Export Farm Reports</div>
-          <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:500;">Audits for Eggs, Trays &amp; Ledger</div>
+          <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:500;">Audits for Eggs, Trays, Flock &amp; Sales</div>
         </div>
       </div>
       <span style="color:var(--brand); font-size:1rem;">▶</span>
@@ -1154,8 +1193,8 @@
         <div>
           <label>Section</label>
           <select id="mortCategory">
-            <option value="Chicks">Chicks (Brooder)</option>
-            <option value="Growers">Grower Stock</option>
+            <option value="Chicks">Chicks (Brooder &lt;45D)</option>
+            <option value="Growers">Grower Stock (≥45D)</option>
             <option value="Breeders">Breeder / Layers</option>
           </select>
         </div>
@@ -1174,7 +1213,7 @@
       <button class="btn-cancel" id="mortCancelBtn" onclick="resetMortForm()">Cancel</button>
     </div>
 
-    <!-- 4. LEDGER -->
+    <!-- 4. LEDGER (INCLUDES DEDUCTIVE SALES & BREEDER INFLOW) -->
     <div id="quickLedgerForm" class="quick-form-panel" style="display:none;">
       <div class="form-row">
         <div>
@@ -1183,17 +1222,51 @@
         </div>
         <div>
           <label>Category</label>
-          <select id="ledgerCatSelect">
-            <option value="Medication">💊 Medication / Vaccine</option>
+          <select id="ledgerCatSelect" onchange="toggleLedgerDynamicFields()">
             <option value="Sales">💰 Sales (Birds / Eggs)</option>
+            <option value="Breeders">🥚 Breeder Inflow / Transfer</option>
+            <option value="Medication">💊 Medication / Vaccine</option>
             <option value="Feed">🌽 Feed / Supplements</option>
             <option value="Maint">🔧 Maintenance / Task</option>
           </select>
         </div>
       </div>
+
+      <!-- Inventory Sales Deduction Fields -->
+      <div id="salesFieldsRow" class="form-row">
+        <div>
+          <label>Product Sold (Deducts Live Count)</label>
+          <select id="salesTargetSelect">
+            <option value="Chicks">🐥 Chicks (Deducts Live Chicks)</option>
+            <option value="Growers">🐓 Growers (Deducts Live Growers)</option>
+            <option value="Breeders">🥚 Breeders (Deducts Live Breeders)</option>
+            <option value="Eggs">🍳 Table Eggs (Revenue Only)</option>
+          </select>
+        </div>
+        <div style="flex:0.6;">
+          <label>Qty Sold</label>
+          <input type="number" id="salesQtyInput" placeholder="Qty" min="0" value="0">
+        </div>
+      </div>
+
+      <!-- Breeder Manual Inflow / Transfer Fields -->
+      <div id="breederFieldsRow" class="form-row" style="display:none;">
+        <div>
+          <label>Breeder Stock Source</label>
+          <select id="breederSourceSelect">
+            <option value="GrowerStock">Transferred from Grower Stock (Deducts Growers)</option>
+            <option value="OtherStock">External / Other Stock Purchase (Adds Direct)</option>
+          </select>
+        </div>
+        <div style="flex:0.6;">
+          <label>Bird Qty</label>
+          <input type="number" id="breederQtyInput" placeholder="Qty" min="0" value="0">
+        </div>
+      </div>
+
       <div style="margin-bottom:8px;">
         <label>Particulars &amp; Details</label>
-        <input type="text" id="ledgerNotes" placeholder="e.g. 4 birds @ 3550 or Lasota F1 eye drop">
+        <input type="text" id="ledgerNotes" placeholder="e.g. Selected 15 prime hens from grower batch or 4 birds @ 3550">
       </div>
       <button class="btn-submit" id="ledgerSubmitBtn" style="background:var(--violet);" onclick="saveLedgerEntry()">Save to Activity Ledger</button>
       <button class="btn-cancel" id="ledgerCancelBtn" onclick="resetLedgerForm()">Cancel</button>
@@ -1218,8 +1291,9 @@
         <div>
           <label>Category</label>
           <select id="calTaskCatSelect">
-            <option value="Medication">💊 Medication / Vaccine</option>
             <option value="Sales">💰 Sales</option>
+            <option value="Breeders">🥚 Breeder Inflow</option>
+            <option value="Medication">💊 Medication / Vaccine</option>
             <option value="Feed">🌽 Feed</option>
             <option value="Maint">🔧 Maint / Task</option>
           </select>
@@ -1251,10 +1325,15 @@
       <select id="delColSelect" style="margin-bottom:6px;"></select>
       <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.8rem; min-height:38px;" onclick="confirmDeleteCollection()">Delete Egg Log</button>
     </div>
-    <div style="background:var(--crimson-glow); border:1px solid var(--crimson); border-radius:14px; padding:12px;">
+    <div style="background:var(--crimson-glow); border:1px solid var(--crimson); border-radius:14px; padding:12px; margin-bottom:10px;">
       <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:var(--crimson);">Delete Mortality Log</h4>
       <select id="delMortSelect" style="margin-bottom:6px;"></select>
       <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.8rem; min-height:38px;" onclick="confirmDeleteMortality()">Delete Mortality</button>
+    </div>
+    <div style="background:var(--crimson-glow); border:1px solid var(--crimson); border-radius:14px; padding:12px;">
+      <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:var(--crimson);">Delete Sales / Activity Log</h4>
+      <select id="delLedgerSelect" style="margin-bottom:6px;"></select>
+      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.8rem; min-height:38px;" onclick="confirmDeleteLedger()">Delete Activity / Sale</button>
     </div>
   </div>
 </div>
@@ -1268,7 +1347,7 @@
     </h3>
 
     <div style="background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:16px; padding:14px; margin-bottom:12px;">
-      <div style="font-size:0.88rem; font-weight:800; color:var(--emerald); margin-bottom:8px;">🥚 1. Egg Collection Audit</div>
+      <div style="font-size:0.88rem; font-weight:800; color:var(--emerald); margin-bottom:8px;">🥚 1. Egg Production Audit (Lifetime &amp; Range)</div>
       <div class="form-row">
         <div><label>From</label><select id="reportColFrom"></select></div>
         <div><label>To</label><select id="reportColTo"></select></div>
@@ -1277,7 +1356,7 @@
     </div>
 
     <div style="background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:16px; padding:14px; margin-bottom:12px;">
-      <div style="font-size:0.88rem; font-weight:800; color:var(--brand); margin-bottom:8px;">🐥 2. Incubation Batches Audit</div>
+      <div style="font-size:0.88rem; font-weight:800; color:var(--brand); margin-bottom:8px;">🐥 2. Incubation Batches Audit (Lifetime &amp; Range)</div>
       <div class="form-row">
         <div><label>From Tray</label><select id="reportBatchFrom"></select></div>
         <div><label>To Tray</label><select id="reportBatchTo"></select></div>
@@ -1285,13 +1364,18 @@
       <button class="btn-submit" style="background:var(--brand); padding:10px; font-size:0.86rem;" onclick="displayIncubationDataReport()">Generate Tray Audit</button>
     </div>
 
-    <div style="background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:16px; padding:14px;">
+    <div style="background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:16px; padding:14px; margin-bottom:12px;">
       <div style="font-size:0.88rem; font-weight:800; color:var(--violet); margin-bottom:8px;">📝 3. Farm Activities &amp; Ledger Audit</div>
       <div class="form-row">
         <div><label>From</label><select id="reportActivityFrom"></select></div>
         <div><label>To</label><select id="reportActivityTo"></select></div>
       </div>
       <button class="btn-submit" style="background:var(--violet); padding:10px; font-size:0.86rem;" onclick="displayActivityDataReport()">Generate Ledger Audit</button>
+    </div>
+
+    <div style="background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:16px; padding:14px;">
+      <div style="font-size:0.88rem; font-weight:800; color:var(--amber); margin-bottom:8px;">🐓 4. Flock Balance &amp; Reconciliation Audit</div>
+      <button class="btn-submit" style="background:var(--amber); padding:10px; font-size:0.86rem;" onclick="displayFlockReconciliationReport()">Reconcile Active Flock &amp; 45D Aging</button>
     </div>
   </div>
 </div>
@@ -1367,6 +1451,13 @@
     return dateToISO(d);
   }
 
+  function addDaysToISO(isoStr, days) {
+    const p = isoStr.split('-');
+    const d = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+    d.setDate(d.getDate() + days);
+    return dateToISO(d);
+  }
+
   function openSettingsModal() {
     updateSettingsDisplay();
     document.getElementById('settingsModal').style.display = "flex";
@@ -1414,8 +1505,8 @@
   let ledger = JSON.parse(localStorage.getItem("ad_farms_local_ledger") || "[]");
   if (ledger.length === 0) {
     ledger = [
-      { id: "ledg_init_1", date: "2026-09-11", category: "Sales", notes: "4 birds @ 3550" },
-      { id: "ledg_init_2", date: "2026-09-10", category: "Sales", notes: "2 birds @ 2180" }
+      { id: "ledg_init_1", date: "2026-09-11", category: "Sales", notes: "4 birds @ 3550", target: "Growers", qty: 4 },
+      { id: "ledg_init_2", date: "2026-09-10", category: "Sales", notes: "2 birds @ 2180", target: "Growers", qty: 2 }
     ];
   }
 
@@ -1436,6 +1527,7 @@
     document.getElementById('ledgerDate').value = todayISO;
     const mr = document.getElementById('mortReason');
     if (mr) mr.value = "";
+    toggleLedgerDynamicFields();
   }
   initTodayInputs();
 
@@ -1484,7 +1576,7 @@
     db.collection("ledger").onSnapshot(snapshot => {
       let cloudLedger = [];
       snapshot.forEach(doc => cloudLedger.push({ id: doc.id, ...doc.data() }));
-      if (cloudLedger.length > 0) { ledger = cloudLedger; syncToLocalStorage(); renderLedger(); renderCalendar(); }
+      if (cloudLedger.length > 0) { ledger = cloudLedger; syncToLocalStorage(); renderLedger(); renderLiveMetrics(); renderCalendar(); }
     }, err => console.warn(err));
 
   } catch(e) { console.warn("Offline fallback active", e); }
@@ -1549,12 +1641,14 @@
     const d14 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 13);
     const d18 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 17);
     const d21 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 20);
+    const d66 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 20 + 45);
     return {
       d1ISO: startDateISO,
       d7ISO: dateToISO(d7),
       d14ISO: dateToISO(d14),
       d18ISO: dateToISO(d18),
       d21ISO: dateToISO(d21),
+      growerPromotionISO: dateToISO(d66),
       d21EndTimestamp: new Date(base.getFullYear(), base.getMonth(), base.getDate() + 21, 23, 59, 59).getTime()
     };
   }
@@ -1603,6 +1697,86 @@
     return Math.max(0, currentStock);
   }
 
+  // RECONCILIATION: 45D AGING, DEDUCTIVE SALES & BREEDER INFLOW
+  function calculateReconciledFlock() {
+    const todayISO = getTodayISO();
+    let lifetimeChicksTotal = 0;
+    let poolChicksActive = 0;
+    let poolGrowersFromAging = 0;
+
+    batches.forEach(b => {
+      const hasHatched = b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "";
+      if (hasHatched) {
+        const hatchedCount = parseInt(b.chicksHatched, 10) || 0;
+        lifetimeChicksTotal += hatchedCount;
+
+        const sISO = toNormalizedISO(b.startDate || b.rawDate);
+        if (sISO) {
+          const calc = computeBatchDates(sISO);
+          if (todayISO >= calc.growerPromotionISO) {
+            poolGrowersFromAging += hatchedCount;
+          } else {
+            poolChicksActive += hatchedCount;
+          }
+        } else {
+          poolChicksActive += hatchedCount;
+        }
+      }
+    });
+
+    let chicksDead = 0, growersDead = 0, breedersDead = 0;
+    mortality.forEach(m => {
+      const dead = parseInt(m.dead, 10) || 0;
+      const cat = m.category || "Chicks";
+      if (cat === "Chicks") chicksDead += dead;
+      else if (cat === "Growers") growersDead += dead;
+      else if (cat === "Breeders") breedersDead += dead;
+    });
+
+    let chicksSold = 0, growersSold = 0, breedersSold = 0;
+    let breedersAddedFromGrowers = 0;
+    let breedersAddedFromOther = 0;
+
+    ledger.forEach(l => {
+      if (l.category === "Sales") {
+        const qty = parseInt(l.qty, 10) || 0;
+        const target = l.target || "Growers";
+        if (target === "Chicks") chicksSold += qty;
+        else if (target === "Growers") growersSold += qty;
+        else if (target === "Breeders") breedersSold += qty;
+      } else if (l.category === "Breeders") {
+        const qty = parseInt(l.qty, 10) || 0;
+        const source = l.source || "GrowerStock";
+        if (source === "GrowerStock") {
+          breedersAddedFromGrowers += qty;
+        } else {
+          breedersAddedFromOther += qty;
+        }
+      }
+    });
+
+    const liveChicks = Math.max(0, poolChicksActive - chicksDead - chicksSold);
+    const liveGrowers = Math.max(0, poolGrowersFromAging - growersDead - growersSold - breedersAddedFromGrowers);
+    const liveBreeders = Math.max(0, breedersAddedFromGrowers + breedersAddedFromOther - breedersDead - breedersSold);
+
+    return {
+      lifetimeChicksTotal: lifetimeChicksTotal,
+      poolChicksActive: poolChicksActive,
+      poolGrowersFromAging: poolGrowersFromAging,
+      chicksDead: chicksDead,
+      growersDead: growersDead,
+      breedersDead: breedersDead,
+      chicksSold: chicksSold,
+      growersSold: growersSold,
+      breedersSold: breedersSold,
+      breedersAddedFromGrowers: breedersAddedFromGrowers,
+      breedersAddedFromOther: breedersAddedFromOther,
+      liveChicks: liveChicks,
+      liveGrowers: liveGrowers,
+      liveBreeders: liveBreeders
+    };
+  }
+
   function renderLiveMetrics() {
     let currentIncubatorEggs = 0;
     let completedInitialEggs = 0;
@@ -1628,24 +1802,25 @@
 
     document.getElementById('inIncubatorDisplay').innerText = currentIncubatorEggs;
 
-    if (completedInitialEggs > 0) {
-      const trueRate = ((completedChicksHatched / completedInitialEggs) * 100).toFixed(1);
-      document.getElementById('hatchRateDisplay').innerText = trueRate + "%";
-    } else {
-      document.getElementById('hatchRateDisplay').innerText = "--";
-    }
+    const recon = calculateReconciledFlock();
+    document.getElementById('liveChicksTopDisplay').innerText = recon.liveChicks;
+    document.getElementById('liveGrowersTopDisplay').innerText = recon.liveGrowers;
+    document.getElementById('liveBreedersTopDisplay').innerText = recon.liveBreeders;
 
-    let chicksDeadTotal = 0;
-    mortality.forEach(m => {
-      if ((m.category || "Chicks") === "Chicks") {
-        chicksDeadTotal += (parseInt(m.dead, 10) || 0);
-      }
+    document.getElementById('liveChicksBalance').innerText = recon.liveChicks;
+    document.getElementById('liveGrowersBalance').innerText = recon.liveGrowers;
+    document.getElementById('liveBreedersBalance').innerText = recon.liveBreeders;
+
+    document.getElementById('totalChicksDeadSub').innerText = recon.chicksDead + " dead";
+    document.getElementById('totalGrowersDeadSub').innerText = recon.growersDead + " dead";
+    document.getElementById('totalBreedersDeadSub').innerText = recon.breedersDead + " dead";
+
+    let lifetimeEggsTotal = 0;
+    collections.forEach(c => {
+      lifetimeEggsTotal += (parseInt(c.total, 10) || 0);
     });
-
-    let liveChicks = Math.max(0, completedChicksHatched - chicksDeadTotal);
-    document.getElementById('liveChicksTopDisplay').innerText = liveChicks;
-    document.getElementById('liveChicksBalance').innerText = liveChicks;
-    document.getElementById('totalChicksDeadSub').innerText = chicksDeadTotal + " dead";
+    document.getElementById('lifetimeEggsDisplay').innerText = lifetimeEggsTotal;
+    document.getElementById('lifetimeChicksDisplay').innerText = recon.lifetimeChicksTotal;
 
     const eggsAvailable = calculateSlidingWindowInventory();
     document.getElementById('inventoryEggsDisplay').innerText = eggsAvailable;
@@ -1661,6 +1836,15 @@
       const needed = 102 - eggsAvailable;
       document.getElementById('trayProgressSub').innerText = eggsAvailable + " / 102 Tray Filled (" + needed + " needed)";
     }
+  }
+
+  function toggleLedgerDynamicFields() {
+    const cat = document.getElementById('ledgerCatSelect').value;
+    const salesRow = document.getElementById('salesFieldsRow');
+    const breederRow = document.getElementById('breederFieldsRow');
+    
+    if (salesRow) salesRow.style.display = (cat === "Sales") ? "flex" : "none";
+    if (breederRow) breederRow.style.display = (cat === "Breeders") ? "flex" : "none";
   }
 
   function openQuickLogModal(tab) {
@@ -1698,7 +1882,7 @@
     const calc = computeBatchDates(startDateISO);
     const id = editDocId || ("batch_" + Date.now());
     const data = { 
-      id: id, name: name, eggs: eggs, startDate: calc.d1ISO, d7Date: calc.d7ISO, d14Date: calc.d14ISO, d18Date: calc.d18ISO, d21Date: calc.d21ISO, rawDate: calc.d1ISO
+      id: id, name: name, eggs: eggs, startDate: calc.d1ISO, d7Date: calc.d7ISO, d14Date: calc.d14ISO, d18Date: calc.d18ISO, d21Date: calc.d21ISO, growerPromotionDate: calc.growerPromotionISO, rawDate: calc.d1ISO
     };
 
     if (editDocId) {
@@ -1761,6 +1945,7 @@
     const currentLiveInTray = Math.max(0, initialEggs - c7 - c14);
     const rateText = b.hatchRate !== null && b.hatchRate !== undefined ? "<b style=\"color:var(--emerald);\">" + b.hatchRate + "%</b>" : "<span style=\"color:var(--brand); font-weight:bold;\">Running</span>";
     const chickCount = b.chicksHatched !== null && b.chicksHatched !== undefined ? "<b>" + b.chicksHatched + "</b> chicks" : "<span style=\"color:var(--text-secondary);\">" + currentLiveInTray + " in Rack</span>";
+    const agingTag = (calc && b.chicksHatched) ? `<div style="font-size:0.62rem; color:var(--text-secondary); margin-top:2px;">45D Grower Promotion: <b>${formatDisplayDate(calc.growerPromotionISO)}</b></div>` : "";
 
     return `
       <div class="batch-card ${isArchived ? 'archived' : ''}">
@@ -1768,6 +1953,7 @@
           <div>
             <span class="batch-title">${b.name} ${isArchived ? '<span style="font-size:0.65rem; color:var(--text-secondary);">(ARCHIVED)</span>' : '🟢'}</span>
             <div class="batch-time-tag" style="font-size:0.68rem; color:var(--text-secondary); font-weight:700;">Set at: <b>${b.setTime || 'Evening'}</b></div>
+            ${agingTag}
           </div>
           <span class="batch-eggs">${currentLiveInTray} / ${initialEggs} eggs</span>
         </div>
@@ -1969,25 +2155,9 @@
     const tbody = document.getElementById('mortalityBody');
     tbody.innerHTML = "";
 
-    let growers30D = 0, growers7D = 0, breeders30D = 0, breeders7D = 0;
-    const now = new Date();
-    const d7Ago = new Date(); d7Ago.setDate(now.getDate() - 7);
-    const d30Ago = new Date(); d30Ago.setDate(now.getDate() - 30);
     const sorted = [...mortality].sort((a, b) => toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date)));
-
-    sorted.forEach(m => {
-      const cat = m.category || "Chicks";
-      const mDate = new Date(toNormalizedISO(m.date));
-      if (cat === "Growers") { if (mDate >= d30Ago) growers30D += m.dead; if (mDate >= d7Ago) growers7D += m.dead; }
-      if (cat === "Breeders") { if (mDate >= d30Ago) breeders30D += m.dead; if (mDate >= d7Ago) breeders7D += m.dead; }
-    });
-
-    document.getElementById('growersLoss30D').innerText = growers30D;
-    document.getElementById('growersLoss7DSub').innerText = growers7D + " last 7 days";
-    document.getElementById('breedersLoss30D').innerText = breeders30D;
-    document.getElementById('breedersLoss7DSub').innerText = breeders7D + " last 7 days";
-
     const filtered = sorted.filter(m => currentMortalitySection === 'All' || (m.category || "Chicks") === currentMortalitySection);
+    
     document.getElementById('noMortality').style.display = filtered.length === 0 ? "block" : "none";
     filtered.forEach(m => {
       const tr = document.createElement('tr');
@@ -2003,8 +2173,9 @@
   }
 
   function getCategoryIcon(cat) {
-    if (cat === "Medication") return "💊";
+    if (cat === "Breeders") return "🥚";
     if (cat === "Sales") return "💰";
+    if (cat === "Medication") return "💊";
     if (cat === "Feed") return "🌽";
     return "🔧";
   }
@@ -2022,11 +2193,21 @@
       const icon = getCategoryIcon(l.category);
       const card = document.createElement('div');
       card.className = 'ledger-item-card';
+      
+      let badge = "";
+      if (l.category === "Sales" && l.target && l.qty > 0) {
+        badge = `<div style="font-size:0.75rem; font-weight:800; color:var(--emerald); margin-top:2px;">Deducted: ${l.qty} from ${l.target}</div>`;
+      } else if (l.category === "Breeders" && l.qty > 0) {
+        const srcText = (l.source === "GrowerStock") ? "Transferred from Growers" : "Direct External Stock";
+        badge = `<div style="font-size:0.75rem; font-weight:800; color:var(--violet); margin-top:2px;">Added: +${l.qty} Breeders (${srcText})</div>`;
+      }
+      
       card.innerHTML = `
         <button class="btn-item-delete" onclick="deleteLedgerItem('${l.id}')">✕</button>
         <div class="ledger-item-date">${formatDisplayDate(l.date)}</div>
         <div class="ledger-item-type">${icon} ${l.category}</div>
         <div class="ledger-item-notes">${l.notes || '-'}</div>
+        ${badge}
       `;
       container.appendChild(card);
     });
@@ -2052,9 +2233,19 @@
       notes: notes
     };
 
+    if (category === "Sales") {
+      entry.target = document.getElementById('salesTargetSelect').value;
+      entry.qty = parseInt(document.getElementById('salesQtyInput').value, 10) || 0;
+    } else if (category === "Breeders") {
+      entry.source = document.getElementById('breederSourceSelect').value;
+      entry.qty = parseInt(document.getElementById('breederQtyInput').value, 10) || 0;
+      if (entry.qty <= 0) return alert("Please specify the number of breeders being added or transferred.");
+    }
+
     ledger.unshift(entry);
     syncToLocalStorage();
     renderLedger();
+    renderLiveMetrics();
     renderCalendar();
     closeQuickLogModal();
     if (db) db.collection("ledger").doc(entry.id).set(entry).catch(e => console.warn(e));
@@ -2075,6 +2266,7 @@
     ledger.unshift(entry);
     syncToLocalStorage();
     renderLedger();
+    renderLiveMetrics();
     renderCalendar();
     showDateDetailsStrict(activeModalSelectedDateISO);
     document.getElementById('calTaskDescInput').value = "";
@@ -2082,10 +2274,11 @@
   }
 
   function deleteLedgerItem(itemId) {
-    if (!confirm("Delete this log from Activity Ledger?")) return;
+    if (!confirm("Delete this log from Activity Ledger? Any deducted or transferred flock headcounts will be returned.")) return;
     ledger = ledger.filter(l => l.id !== itemId);
     syncToLocalStorage();
     renderLedger();
+    renderLiveMetrics();
     renderCalendar();
     if (activeModalSelectedDateISO) showDateDetailsStrict(activeModalSelectedDateISO);
     if (db) db.collection("ledger").doc(itemId).delete().catch(e => console.warn(e));
@@ -2094,9 +2287,11 @@
   function resetLedgerForm() {
     document.getElementById('ledgerNotes').value = "";
     document.getElementById('ledgerDate').value = getTodayISO();
+    document.getElementById('salesQtyInput').value = "0";
+    document.getElementById('breederQtyInput').value = "0";
+    toggleLedgerDynamicFields();
   }
 
-  // --- CALENDAR LOGIC: 3 PRIORITY COLORS + BLACK OVERLAP + CLEAN WHITE BACKGROUND ---
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calMonthYear').innerText = monthNames[curMonth] + " " + curYear;
@@ -2134,7 +2329,6 @@
       const colRecord = collections.find(c => toNormalizedISO(c.date) === cellISO);
       const ledgerOnDate = ledger.filter(l => toNormalizedISO(l.date) === cellISO);
 
-      // Track the 3 main priority types
       const hasSet = dayEvents.some(e => e.type === 'set');
       const hasD18 = dayEvents.some(e => e.type === 'd18');
       const hasPull = dayEvents.some(e => e.type === 'pull');
@@ -2142,19 +2336,14 @@
       const priorityEventCount = (hasSet ? 1 : 0) + (hasD18 ? 1 : 0) + (hasPull ? 1 : 0);
 
       if (priorityEventCount > 1) {
-        // More than one of (Setting, D18, Pull) fall on same day -> BLACK COLOR
         cell.classList.add('stage-overlap-black');
       } else if (hasSet) {
-        // Color Code 1: Setting Day
         cell.classList.add('stage-set');
       } else if (hasD18) {
-        // Color Code 2: Day 18 Lockdown
         cell.classList.add('stage-d18');
       } else if (hasPull) {
-        // Color Code 3: Day 21 Pull
         cell.classList.add('stage-pull');
       }
-      // Day 7, Day 14, Notes, and Pickings stay on the default clean white/neutral background
 
       let content = "<span style=\"font-size:0.75rem; margin-bottom:1px;\">" + d + "</span>";
       
@@ -2206,6 +2395,7 @@
       if (dateISO === calc.d14ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--text-secondary);\"><b>🔍 DAY 14 CANDLING:</b> " + b.name + "</div>";
       if (dateISO === calc.d18ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--amber);\"><b>🐣 DAY 18 LOCKDOWN:</b> " + b.name + "</div>";
       if (dateISO === calc.d21ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--emerald);\"><b>🐥 DAY 21 PULL:</b> " + b.name + "</div>";
+      if (dateISO === calc.growerPromotionISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--brand);\"><b>🐓 45-DAY AGING:</b> " + b.name + " graduated from Chicks to Growers</div>";
     });
 
     const col = collections.find(c => toNormalizedISO(c.date) === dateISO);
@@ -2223,9 +2413,15 @@
     if (logs.length > 0) {
       logs.forEach(l => {
         const icon = getCategoryIcon(l.category);
+        let extra = "";
+        if (l.category === "Sales" && l.target) {
+          extra = ` <small style="color:var(--emerald); font-weight:800;">[${l.qty} ${l.target} deducted]</small>`;
+        } else if (l.category === "Breeders") {
+          extra = ` <small style="color:var(--violet); font-weight:800;">[+${l.qty} Breeders added via ${l.source||'Stock'}]</small>`;
+        }
         html += `
           <div class="event-item" style="border-left: 4px solid var(--violet); display:flex; justify-content:space-between; align-items:center;">
-            <div><b>${icon} ${l.category}:</b> ${l.notes}</div>
+            <div><b>${icon} ${l.category}:</b> ${l.notes}${extra}</div>
             <button style="background:var(--crimson-glow); color:var(--crimson); border:none; border-radius:6px; padding:4px 8px; font-weight:bold; cursor:pointer;" onclick="deleteLedgerItem('${l.id}')">✕</button>
           </div>
         `;
@@ -2255,6 +2451,10 @@
     const mSel = document.getElementById('delMortSelect');
     mSel.innerHTML = "";
     mortality.forEach(m => mSel.add(new Option(formatDisplayDate(m.date) + " - " + (m.category || 'Chicks') + ": " + m.dead + " dead [" + (m.reason || 'No reason') + "]", m.id)));
+
+    const lSel = document.getElementById('delLedgerSelect');
+    lSel.innerHTML = "";
+    ledger.forEach(l => lSel.add(new Option(formatDisplayDate(l.date) + " - " + l.category + ": " + l.notes, l.id)));
 
     document.getElementById('deleteCenterModal').style.display = "flex";
   }
@@ -2289,6 +2489,15 @@
     mortality = mortality.filter(m => m.id !== id);
     syncToLocalStorage(); renderMortality(); renderLiveMetrics();
     if (db) db.collection("mortality").doc(id).delete().catch(e => console.warn(e));
+    openDeleteCenterModal();
+  }
+
+  function confirmDeleteLedger() {
+    const id = document.getElementById('delLedgerSelect').value;
+    if (!id || !confirm("Delete this activity / sale log? Any deducted or transferred flock headcounts will be returned.")) return;
+    ledger = ledger.filter(l => l.id !== id);
+    syncToLocalStorage(); renderLedger(); renderLiveMetrics(); renderCalendar();
+    if (db) db.collection("ledger").doc(id).delete().catch(e => console.warn(e));
     openDeleteCenterModal();
   }
 
@@ -2361,6 +2570,7 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // 1. EGG PRODUCTION AUDIT
   function displayEggDataReport() {
     const fromISO = document.getElementById('reportColFrom').value;
     const toISO = document.getElementById('reportColTo').value;
@@ -2391,11 +2601,15 @@
       `;
     });
 
+    let allTimeEggs = 0;
+    collections.forEach(c => allTimeEggs += (parseInt(c.total, 10) || 0));
+
     const reportHtml = `
       <div style="text-align:center; margin-bottom:16px;">
         <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary); font-weight:800;">AD FARMS ; HERD &amp; HARVEST</h2>
-        <div style="font-size:0.86rem; font-weight:bold; color:var(--emerald); margin-top:4px;">Egg Collection Audit Report</div>
-        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b></div>
+        <div style="font-size:0.86rem; font-weight:bold; color:var(--emerald); margin-top:4px;">Egg Production Audit Report</div>
+        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Selected Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b></div>
+        <div style="font-size:0.85rem; font-weight:800; color:var(--brand); margin-top:6px;">Lifetime Permanent Total: ${allTimeEggs} Intact Eggs</div>
       </div>
       <div class="table-wrap">
         <table style="min-width: 520px;">
@@ -2406,13 +2620,13 @@
               <th>Aftn</th>
               <th>Eve</th>
               <th>Broken</th>
-              <th>Total Intact</th>
+              <th>Range Total</th>
             </tr>
           </thead>
           <tbody>
             ${rowsHtml}
             <tr style="font-weight:bold; background:var(--card-surface-subtle);">
-              <td>TOTALS</td>
+              <td>RANGE TOTALS</td>
               <td>${totalMorn}</td>
               <td>${totalAftn}</td>
               <td>${totalEve}</td>
@@ -2431,6 +2645,7 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // 2. INCUBATION BATCHES AUDIT
   function displayIncubationDataReport() {
     const sorted = [...batches].sort((a, b) => {
       return toNormalizedISO(a.startDate || a.rawDate).localeCompare(toNormalizedISO(b.startDate || b.rawDate));
@@ -2471,6 +2686,13 @@
       `;
     });
 
+    let lifetimeChicks = 0;
+    batches.forEach(b => {
+      if (b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "") {
+        lifetimeChicks += (parseInt(b.chicksHatched, 10) || 0);
+      }
+    });
+
     const overallRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + "%" : "-";
 
     const reportHtml = `
@@ -2478,6 +2700,7 @@
         <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary); font-weight:800;">AD FARMS ; HERD &amp; HARVEST</h2>
         <div style="font-size:0.86rem; font-weight:bold; color:var(--brand); margin-top:4px;">Incubation Batches Audit Report</div>
         <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Range: <b>${selectedBatches[0].name}</b> to <b>${selectedBatches[selectedBatches.length - 1].name}</b></div>
+        <div style="font-size:0.85rem; font-weight:800; color:var(--emerald); margin-top:6px;">Lifetime Chicks Produced All-Time: ${lifetimeChicks} Chicks</div>
       </div>
       <div class="table-wrap">
         <table style="min-width: 660px;">
@@ -2517,6 +2740,7 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // 3. ACTIVITIES & LEDGER AUDIT
   function displayActivityDataReport() {
     const fromISO = document.getElementById('reportActivityFrom').value;
     const toISO = document.getElementById('reportActivityTo').value;
@@ -2532,11 +2756,17 @@
     let rowsHtml = "";
     filtered.forEach(l => {
       const icon = getCategoryIcon(l.category);
+      let extra = "";
+      if (l.category === "Sales" && l.target) {
+        extra = ` <span style="color:var(--emerald); font-weight:bold;">[Deducted: ${l.qty} from ${l.target}]</span>`;
+      } else if (l.category === "Breeders") {
+        extra = ` <span style="color:var(--violet); font-weight:bold;">[+${l.qty} Breeders via ${l.source||'Stock'}]</span>`;
+      }
       rowsHtml += `
         <tr>
           <td><b>${formatDisplayDate(l.date)}</b></td>
           <td style="font-weight:bold; color:var(--violet);">${icon} ${l.category}</td>
-          <td style="text-align:left;">${l.notes || '-'}</td>
+          <td style="text-align:left;">${l.notes || '-'}${extra}</td>
         </tr>
       `;
     });
@@ -2553,13 +2783,81 @@
             <tr>
               <th style="background:var(--violet); color:#fff;">Date</th>
               <th>Category</th>
-              <th style="text-align:left;">Particulars / Notes</th>
+              <th style="text-align:left;">Particulars / Notes / Inventory Movements</th>
             </tr>
           </thead>
           <tbody>
             ${rowsHtml}
           </tbody>
         </table>
+      </div>
+    `;
+
+    document.getElementById('dataReportContent').innerHTML = reportHtml;
+    document.getElementById('dataModal').style.display = "none";
+    document.getElementById('mainDashboard').style.display = "none";
+    document.getElementById('dataDisplayView').style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // 4. FLOCK RECONCILIATION & 45-DAY AGING AUDIT
+  function displayFlockReconciliationReport() {
+    const recon = calculateReconciledFlock();
+    
+    const reportHtml = `
+      <div style="text-align:center; margin-bottom:16px;">
+        <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary); font-weight:800;">AD FARMS ; HERD &amp; HARVEST</h2>
+        <div style="font-size:0.86rem; font-weight:bold; color:var(--amber); margin-top:4px;">Flock Balance &amp; 45-Day Aging Reconciliation</div>
+        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">As of <b>${formatDisplayDate(getTodayISO())}</b></div>
+      </div>
+      
+      <div class="table-wrap" style="margin-bottom:14px;">
+        <table style="min-width: 480px;">
+          <thead>
+            <tr>
+              <th style="background:var(--amber); color:#fff;">Flock Stage</th>
+              <th>Gross Output</th>
+              <th>Aged (±)</th>
+              <th>Mortality</th>
+              <th>Sold / Moved</th>
+              <th style="background:var(--card-surface-subtle); color:var(--text-primary);">Current Live</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>🐥 Chicks (&lt;45D)</b></td>
+              <td>${recon.lifetimeChicksTotal}</td>
+              <td style="color:var(--brand); font-weight:bold;">-${recon.poolGrowersFromAging}</td>
+              <td style="color:var(--crimson); font-weight:bold;">-${recon.chicksDead}</td>
+              <td style="color:var(--emerald); font-weight:bold;">-${recon.chicksSold}</td>
+              <td style="font-weight:900; font-size:1.05rem; color:var(--emerald);">${recon.liveChicks}</td>
+            </tr>
+            <tr>
+              <td><b>🐓 Growers (≥45D)</b></td>
+              <td>-</td>
+              <td style="color:var(--brand); font-weight:bold;">+${recon.poolGrowersFromAging}</td>
+              <td style="color:var(--crimson); font-weight:bold;">-${recon.growersDead}</td>
+              <td style="color:var(--emerald); font-weight:bold;">-${recon.growersSold + recon.breedersAddedFromGrowers}</td>
+              <td style="font-weight:900; font-size:1.05rem; color:var(--brand);">${recon.liveGrowers}</td>
+            </tr>
+            <tr>
+              <td><b>🥚 Breeders / Layers</b></td>
+              <td style="color:var(--violet); font-weight:bold;">+${recon.breedersAddedFromOther} ext</td>
+              <td style="color:var(--brand); font-weight:bold;">+${recon.breedersAddedFromGrowers} grow</td>
+              <td style="color:var(--crimson); font-weight:bold;">-${recon.breedersDead}</td>
+              <td style="color:var(--emerald); font-weight:bold;">-${recon.breedersSold}</td>
+              <td style="font-weight:900; font-size:1.05rem; color:var(--violet);">${recon.liveBreeders}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="font-size:0.75rem; color:var(--text-secondary); background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:12px; padding:12px; line-height:1.4;">
+        <b>Operational Audit Notes:</b><br>
+        • Chicks automatically mature and graduate to <b>Growers</b> on Day 66 (Day 21 Hatch + 45 days).<br>
+        • Transferring breeders from grower stock automatically deducts from your live grower headcount.<br>
+        • External stock breeders are added directly without adjusting homegrown stock.<br>
+        • Bird sales deduct from active stock while preserving permanent lifetime incubation output.
       </div>
     `;
 
