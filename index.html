@@ -9,7 +9,7 @@
     --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
     
     --bg-canvas: #f8fafc;
-    --card-surface: rgba(255, 255, 255, 0.96);
+    --card-surface: #ffffff;
     --card-surface-subtle: #f1f5f9;
     --border-hairline: rgba(148, 163, 184, 0.28);
     --border-strong: rgba(100, 116, 139, 0.45);
@@ -85,7 +85,7 @@
     position: relative;
   }
 
-  /* TOP BAR WITH CLEAR STATUS BAR MARGIN & METALLIC BEVEL GRADIENT */
+  /* TOP TITLE BAR - REMAINS PARAMOUNT VISUAL ANCHOR */
   .top-bar {
     background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%) !important;
     border: 1.5px solid #cbd5e1 !important;
@@ -125,10 +125,11 @@
 
   .brand-text h1 {
     margin: 0;
-    font-size: 1.10rem;
+    font-size: 1.15rem;
     color: #090d16 !important;
     line-height: 1.1;
-    font-weight: 800;
+    font-weight: 900;
+    letter-spacing: -0.3px;
   }
   .brand-text .sub-title {
     margin: 0;
@@ -156,17 +157,77 @@
   }
   .btn-settings:active { transform: scale(0.92); }
 
-  /* SOBER MONOCHROME GLASS-MORPHISM TODAY'S OPERATION COMMAND BRIEFING */
-  .command-sober-banner {
+  /* BOLD, HIGH-CONTRAST COMMAND HERO BAR (CRYSTAL CLEAR IN LIGHT & DARK MODES) */
+  .command-hero-banner {
     background: var(--card-surface);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--border-hairline);
-    border-left: 3.5px solid var(--brand);
+    border: 2px solid var(--border-strong);
+    border-left: 6px solid var(--brand);
     border-radius: 18px;
-    padding: 14px 16px;
+    padding: 13px 15px;
     margin-bottom: 12px;
     box-shadow: var(--shadow-plate);
+    color: var(--text-primary);
+  }
+  .command-hero-banner.alert-active {
+    border-left-color: var(--crimson);
+  }
+  .hero-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .hero-title-group h2 {
+    margin: 0;
+    font-size: 0.90rem;
+    font-weight: 900;
+    letter-spacing: -0.2px;
+    text-transform: uppercase;
+    color: var(--text-primary);
+  }
+  .hero-date-pill {
+    font-size: 0.68rem;
+    font-weight: 800;
+    background: var(--card-surface-subtle);
+    color: var(--text-primary);
+    border: 1px solid var(--border-hairline);
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-feature-settings: "tnum";
+  }
+  .hero-action-feed {
+    font-size: 0.84rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+  .hardware-grid-hero {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    background: var(--card-surface-subtle);
+    border: 1px solid var(--border-hairline);
+    border-radius: 12px;
+    padding: 8px 12px;
+  }
+  .hw-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.74rem;
+    color: var(--text-primary);
+  }
+  .hw-label {
+    font-weight: 800;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-size: 0.60rem;
+    letter-spacing: 0.4px;
+  }
+  .hw-value {
+    font-weight: 900;
+    font-feature-settings: "tnum";
   }
 
   /* TELEMETRY STRIP */
@@ -601,22 +662,11 @@
   .ledger-item-date { font-size: 0.74rem; color: var(--text-secondary); font-weight: 700; margin-bottom: 2px; }
   .ledger-item-type { font-size: 0.95rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
   .ledger-item-notes { font-size: 0.86rem; color: var(--text-secondary); font-weight: 500; }
-  .btn-item-delete {
-    position: absolute;
-    top: 10px;
-    right: 12px;
-    background: transparent;
-    border: none;
-    color: var(--crimson);
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-  }
 
-  /* HIGHLY ELEVATED QUICK LOG BUTTON (CLEARS ANDROID BOTTOM BAR & TIMELINE) */
+  /* HIGHLY ELEVATED QUICK LOG BUTTON */
   .fab-quick-log {
     position: fixed;
-    bottom: calc(44px + env(safe-area-inset-bottom, 20px));
+    bottom: calc(75px + env(safe-area-inset-bottom, 20px));
     right: 20px;
     background: linear-gradient(135deg, var(--brand) 0%, #0369a1 100%);
     color: #ffffff;
@@ -853,6 +903,26 @@
     margin-top: 10px;
     box-shadow: var(--shadow-plate);
   }
+
+  /* STREAMLINED BACK BUTTON FOR AUDIT REPORT */
+  .btn-report-back {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--text-primary);
+    background: var(--card-surface);
+    border: 1px solid var(--border-hairline);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.12s ease;
+    flex-shrink: 0;
+  }
+  .btn-report-back:active { transform: scale(0.92); }
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -879,23 +949,27 @@
     </div>
   </div>
 
-  <!-- SOBER MONOCHROME GLASS-MORPHISM TODAY'S OPERATION COMMAND BRIEFING -->
-  <div class="command-sober-banner" id="commandSoberBanner">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <span style="font-size:0.62rem; font-weight:800; text-transform:uppercase; color:var(--text-secondary); letter-spacing:0.6px;">Today's Operation &amp; Hardware Map</span>
-      <span id="commandDateText" style="font-size:0.72rem; font-weight:700; color:var(--brand);">--</span>
-    </div>
-    <div id="commandTriggersFeed" style="font-size:0.80rem; font-weight:600; color:var(--text-primary); margin-bottom:10px; line-height:1.4;">
-      Scanning calendar &amp; tray status...
-    </div>
-    <div style="border-top:1px solid var(--border-hairline); padding-top:8px; display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.72rem;">
-      <div>
-        <span style="font-weight:800; color:var(--text-secondary); text-transform:uppercase; font-size:0.58rem; display:block;">Setters (T1–T5)</span>
-        <span id="commandSetterMap" style="font-weight:700;">Free: T1–T5</span>
+  <!-- COMMAND-FIRST HERO COMMAND BLOCK (PROPORTIONAL TO TITLE, LIGHT/DARK CONTRAST VERIFIED) -->
+  <div class="command-hero-banner" id="commandHeroBanner">
+    <div class="hero-top-row">
+      <div class="hero-title-group">
+        <h2>⚡ Today's Operation</h2>
       </div>
-      <div>
-        <span style="font-weight:800; color:var(--text-secondary); text-transform:uppercase; font-size:0.58rem; display:block;">Hatcher (H1)</span>
-        <span id="commandHatcherMap" style="font-weight:700; color:var(--emerald);">🟢 Standby</span>
+      <div id="heroDateText" class="hero-date-pill">--</div>
+    </div>
+    
+    <div id="heroTriggersFeed" class="hero-action-feed">
+      Scanning active tray matrix...
+    </div>
+
+    <div class="hardware-grid-hero">
+      <div class="hw-row">
+        <span class="hw-label">Setters (T1–T5)</span>
+        <span id="heroSetterMap" class="hw-value">Free: T1–T5</span>
+      </div>
+      <div class="hw-row">
+        <span class="hw-label">Hatcher (H1)</span>
+        <span id="heroHatcherMap" class="hw-value" style="color:var(--emerald);">🟢 Standby / Vacant</span>
       </div>
     </div>
   </div>
@@ -1340,7 +1414,7 @@
   </div>
 </div>
 
-<!-- DELETE CENTER MODAL -->
+<!-- DELETE CENTER MODAL (THE ONLY AUTHORIZED PLACE FOR DELETIONS) -->
 <div class="modal-overlay" id="deleteCenterModal" onclick="closeDeleteCenterModal(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <h3>
@@ -1412,11 +1486,11 @@
   </div>
 </div>
 
-<!-- AUDIT REPORT VIEW -->
+<!-- AUDIT REPORT VIEW WITH COMPACT BACK ARROW BUTTON -->
 <div class="container" id="dataDisplayView">
-  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--border-strong); padding-bottom:10px; margin-bottom:14px;">
-    <button class="btn-neutral" style="padding:8px 16px; font-weight:800; border-radius:12px;" onclick="closeDataDisplay()">◀ Return to Dashboard</button>
-    <div style="font-size:0.9rem; font-weight:900; color:var(--brand);">AD FARMS TELEMETRY REPORT</div>
+  <div style="display:flex; align-items:center; gap:12px; border-bottom:2px solid var(--border-strong); padding-bottom:10px; margin-bottom:14px;">
+    <button class="btn-report-back" onclick="closeDataDisplay()" title="Return">◀</button>
+    <div style="font-size:0.95rem; font-weight:900; color:var(--brand); letter-spacing:-0.2px;">AD FARMS TELEMETRY REPORT</div>
   </div>
   <div id="dataReportContent"></div>
 </div>
@@ -1478,8 +1552,8 @@
 
   function addDaysToISO(isoStr, days) {
     const norm = toNormalizedISO(isoStr) || getTodayISO();
-    const parts = norm.split('-');
-    const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    const parts = norm.split('-').map(Number);
+    const d = new Date(parts[0], parts[1] - 1, parts[2]);
     d.setDate(d.getDate() + days);
     return dateToISO(d);
   }
@@ -1688,8 +1762,8 @@
   // STRAIGHT INTEGER DATE ADDITION RULES (+18D LOCKDOWN, +21D PULL)
   function computeBatchDates(startDateISO) {
     const norm = toNormalizedISO(startDateISO) || getTodayISO();
-    const parts = norm.split('-');
-    const base = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+    const parts = norm.split('-').map(Number);
+    const base = new Date(parts[0], parts[1] - 1, parts[2]);
     return {
       d1ISO: norm,
       d7ISO: addDaysToISO(norm, 6),
@@ -1745,27 +1819,30 @@
     return Math.max(0, currentStock);
   }
 
-  // SPATIAL AWARENESS PARSER (5 SETTERS T1-T5 + 1 HATCHER H1)
+  // ROBUST HARDWARE SPATIAL OCCUPANCY PARSER (5 SETTERS T1-T5 + 1 HATCHER H1)
   function parseHardwareSpatialOccupancy() {
     const allSetters = ['T1', 'T2', 'T3', 'T4', 'T5'];
     const occupiedSetters = new Set();
     const hatcherOccupiedBy = [];
-
     const todayISO = getTodayISO();
 
     batches.forEach(b => {
+      const isPulled = (b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "");
+      if (isPulled) return;
+
       const nameUpper = (b.name || "").toUpperCase();
-      allSetters.forEach(t => {
-        if (nameUpper.includes(t)) occupiedSetters.add(t);
-      });
+      const matches = nameUpper.match(/T[1-5]/gi);
+      if (matches) {
+        matches.forEach(m => occupiedSetters.add(m.toUpperCase()));
+      }
 
       const sISO = toNormalizedISO(b.startDate || b.rawDate);
       if (sISO) {
         const calc = computeBatchDates(sISO);
-        const isNotPulled = (b.chicksHatched === null || b.chicksHatched === undefined || b.chicksHatched === "");
-        const isInHatcherWindow = (todayISO >= calc.d18ISO);
-        if (isInHatcherWindow && isNotPulled) {
-          const dayDiff = Math.max(18, Math.round((new Date(todayISO) - new Date(calc.d18ISO)) / (1000 * 60 * 60 * 24)) + 18);
+        if (todayISO >= calc.d18ISO) {
+          const partsT = todayISO.split('-').map(Number);
+          const partsC = calc.d18ISO.split('-').map(Number);
+          const dayDiff = Math.max(18, Math.round((new Date(partsT[0], partsT[1] - 1, partsT[2]) - new Date(partsC[0], partsC[1] - 1, partsC[2])) / (1000 * 60 * 60 * 24)) + 18);
           hatcherOccupiedBy.push({ name: b.name, day: dayDiff, isOverdue: todayISO > calc.d21ISO });
         }
       }
@@ -1779,54 +1856,69 @@
     };
   }
 
-  // RENDER SOBER COMMAND CENTER (TODAY'S OPERATION)
+  // RENDER BALANCED HERO COMMAND CENTER (TODAY'S OPERATION)
   function renderCommandCenter() {
     const todayISO = getTodayISO();
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const dObj = new Date();
-    document.getElementById('commandDateText').innerText = dayNames[dObj.getDay()] + ", " + dObj.getDate() + " " + monthNames[dObj.getMonth()];
+    document.getElementById('heroDateText').innerText = dayNames[dObj.getDay()] + ", " + dObj.getDate() + " " + monthNames[dObj.getMonth()];
 
     let actions = [];
+    let hasUrgentAlert = false;
     batches.forEach(b => {
       const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
       if (!sISO) return;
       const calc = computeBatchDates(sISO);
       const isNotPulled = (b.chicksHatched === null || b.chicksHatched === undefined || b.chicksHatched === "");
 
-      if (todayISO === calc.d7ISO) actions.push(`• 🔍 <b>${b.name}</b>: D7 Candling clearance`);
-      if (todayISO === calc.d14ISO) actions.push(`• 🔍 <b>${b.name}</b>: D14 Candling clearance`);
-      if (todayISO === calc.d18ISO) actions.push(`• 🐣 <b>${b.name}</b>: D18 Lockdown setup`);
-      if (todayISO === calc.d21ISO && isNotPulled) actions.push(`• 🐥 <b>${b.name}</b>: D21 Hatch Pull due today`);
-      if (todayISO > calc.d21ISO && isNotPulled) actions.push(`• 🔴 <b>${b.name}</b>: Overdue Hatcher Lock`);
-      if (todayISO === calc.growerPromotionISO) actions.push(`• 🐓 <b>${b.name}</b>: Graduate Chicks → Growers (45D)`);
+      if (todayISO === calc.d7ISO) actions.push(`• 🔍 <b>${b.name}</b>: D7 Candling`);
+      if (todayISO === calc.d14ISO) actions.push(`• 🔍 <b>${b.name}</b>: D14 Candling`);
+      if (todayISO === calc.d18ISO) actions.push(`• 🐣 <b>${b.name}</b>: D18 Lockdown`);
+      if (todayISO === calc.d21ISO && isNotPulled) actions.push(`• 🐥 <b>${b.name}</b>: D21 Pull Due`);
+      if (todayISO > calc.d21ISO && isNotPulled) {
+        actions.push(`• 🔴 <b>${b.name}</b>: Overdue Hatcher Lock`);
+        hasUrgentAlert = true;
+      }
+      if (todayISO === calc.growerPromotionISO) actions.push(`• 🐓 <b>${b.name}</b>: Graduate 45D`);
     });
 
-    const feedEl = document.getElementById('commandTriggersFeed');
+    const heroBanner = document.getElementById('commandHeroBanner');
+    if (heroBanner) {
+      heroBanner.classList.toggle('alert-active', hasUrgentAlert);
+    }
+
+    const feedEl = document.getElementById('heroTriggersFeed');
     if (actions.length > 0) {
       feedEl.innerHTML = actions.join('<br>');
     } else {
-      feedEl.innerHTML = '✨ Zero mandatory incubator triggers today. Routine feeding & observation.';
+      feedEl.innerHTML = '✨ Zero mandatory incubator triggers today. Routine observation.';
     }
 
     const spatial = parseHardwareSpatialOccupancy();
-    const setterMapEl = document.getElementById('commandSetterMap');
-    if (spatial.freeSetters.length === 5) {
-      setterMapEl.innerHTML = `<span style="color:var(--emerald);">All 5 Free (T1–T5)</span>`;
-    } else {
-      setterMapEl.innerHTML = `Free: <b>${spatial.freeSetters.join(', ') || 'None'}</b>`;
+    const setterMapEl = document.getElementById('heroSetterMap');
+    if (setterMapEl) {
+      if (spatial.freeSetters.length === 5 && spatial.occupiedSetters.length === 0) {
+        setterMapEl.innerHTML = `<span style="color:var(--emerald);">All 5 Free (T1–T5)</span>`;
+      } else if (spatial.freeSetters.length === 0) {
+        setterMapEl.innerHTML = `<span style="color:var(--amber);">All Occupied</span>`;
+      } else {
+        setterMapEl.innerHTML = `Free: <b>${spatial.freeSetters.join(', ')}</b> | Occ: ${spatial.occupiedSetters.join(', ')}`;
+      }
     }
 
-    const hatcherMapEl = document.getElementById('commandHatcherMap');
-    if (spatial.hatcherOccupiedBy.length > 0) {
-      const h = spatial.hatcherOccupiedBy[0];
-      if (h.isOverdue) {
-        hatcherMapEl.innerHTML = `<span style="color:var(--crimson);">🔴 H1 Locked Overdue (${h.name})</span>`;
+    const hatcherMapEl = document.getElementById('heroHatcherMap');
+    if (hatcherMapEl) {
+      if (spatial.hatcherOccupiedBy.length > 0) {
+        const h = spatial.hatcherOccupiedBy[0];
+        if (h.isOverdue) {
+          hatcherMapEl.innerHTML = `<span style="color:var(--crimson);">🔴 H1 Locked Overdue (${h.name})</span>`;
+        } else {
+          hatcherMapEl.innerHTML = `<span style="color:var(--amber);">🟡 H1 Lockdown: ${h.name}</span>`;
+        }
       } else {
-        hatcherMapEl.innerHTML = `<span style="color:var(--amber);">🟡 H1 Lockdown: ${h.name}</span>`;
+        hatcherMapEl.innerHTML = `<span style="color:var(--emerald);">🟢 H1 Standby / Vacant</span>`;
       }
-    } else {
-      hatcherMapEl.innerHTML = `<span style="color:var(--emerald);">🟢 H1 Standby / Vacant</span>`;
     }
   }
 
@@ -2347,8 +2439,8 @@
         badge = `<div style="font-size:0.75rem; font-weight:800; color:var(--violet); margin-top:2px;">Added: +${l.qty} Breeders (${srcText})</div>`;
       }
       
+      // SCRAPPED SINGLE-CLICK DELETE CROSS (REMOVED ACCIDENTAL REMOVAL RISK)
       card.innerHTML = `
-        <button class="btn-item-delete" onclick="deleteLedgerItem('${l.id}')">✕</button>
         <div class="ledger-item-date">${formatDisplayDate(l.date)}</div>
         <div class="ledger-item-type">${icon} ${l.category}</div>
         <div class="ledger-item-notes">${l.notes || '-'}</div>
@@ -2416,17 +2508,6 @@
     showDateDetailsStrict(activeModalSelectedDateISO);
     document.getElementById('calTaskDescInput').value = "";
     if (db) db.collection("ledger").doc(entry.id).set(entry).catch(e => console.warn(e));
-  }
-
-  function deleteLedgerItem(itemId) {
-    if (!confirm("Delete this log from Activity Ledger? Any deducted or transferred flock headcounts will be returned.")) return;
-    ledger = ledger.filter(l => l.id !== itemId);
-    syncToLocalStorage();
-    renderLedger();
-    renderLiveMetrics();
-    renderCalendar();
-    if (activeModalSelectedDateISO) showDateDetailsStrict(activeModalSelectedDateISO);
-    if (db) db.collection("ledger").doc(itemId).delete().catch(e => console.warn(e));
   }
 
   function resetLedgerForm() {
@@ -2564,10 +2645,10 @@
         } else if (l.category === "Breeders") {
           extra = ` <small style="color:var(--violet); font-weight:800;">[+${l.qty} Breeders via ${l.source||'Stock'}]</small>`;
         }
+        // SCRAPPED SINGLE-CLICK DELETE CROSS (REMOVED ACCIDENTAL REMOVAL RISK)
         html += `
-          <div class="event-item" style="border-left: 4px solid var(--violet); display:flex; justify-content:space-between; align-items:center;">
+          <div class="event-item" style="border-left: 4px solid var(--violet);">
             <div><b>${icon} ${l.category}:</b> ${l.notes}${extra}</div>
-            <button style="background:var(--crimson-glow); color:var(--crimson); border:none; border-radius:6px; padding:4px 8px; font-weight:bold; cursor:pointer;" onclick="deleteLedgerItem('${l.id}')">✕</button>
           </div>
         `;
       });
