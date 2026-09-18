@@ -30,7 +30,7 @@
     --violet-glow: rgba(124, 58, 237, 0.18);
 
     --shadow-plate: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
-    --shadow-float: 0 12px 32px -4px rgba(2, 132, 199, 0.35);
+    --shadow-float: 0 14px 34px -2px rgba(2, 132, 199, 0.45);
   }
 
   body.dark-theme {
@@ -70,11 +70,10 @@
     background-color: var(--bg-canvas);
     color: var(--text-primary);
     margin: 0;
-    /* Respects device system status bar (notch/clock/battery) and bottom navigation pill */
     padding-top: max(14px, env(safe-area-inset-top, 28px));
     padding-left: 12px;
     padding-right: 12px;
-    padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px));
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -95,8 +94,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 10px;
-    margin-bottom: 14px;
+    margin-top: 6px;
+    margin-bottom: 12px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
   }
 
@@ -157,6 +156,19 @@
   }
   .btn-settings:active { transform: scale(0.92); }
 
+  /* SOBER MONOCHROME GLASS-MORPHISM TODAY'S OPERATION COMMAND BRIEFING */
+  .command-sober-banner {
+    background: var(--card-surface);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-hairline);
+    border-left: 3.5px solid var(--brand);
+    border-radius: 18px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-plate);
+  }
+
   /* TELEMETRY STRIP */
   .metrics-strip {
     display: grid;
@@ -202,7 +214,7 @@
     letter-spacing: -0.4px;
   }
 
-  /* LIFETIME PRODUCTION AUDIT COUNTERS */
+  /* VERTICAL STACKED SCALING LIFETIME PRODUCTION AUDIT COUNTERS (5+ DIGIT SAFE) */
   .production-summary-strip {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -213,13 +225,18 @@
     background: var(--card-surface-subtle);
     border: 1px solid var(--border-hairline);
     border-radius: 14px;
-    padding: 8px 12px;
+    padding: 10px 12px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: 2px;
   }
-  .prod-lbl { font-size: 0.60rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; }
-  .prod-val { font-size: 1.05rem; font-weight: 900; font-feature-settings: "tnum"; }
+  .prod-lbl { font-size: 0.60rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; }
+  .prod-val {
+    font-size: clamp(1.2rem, 5vw, 1.5rem);
+    font-weight: 900;
+    font-feature-settings: "tnum";
+    line-height: 1.1;
+  }
 
   /* SETTER RESERVOIR */
   .setter-progress-card {
@@ -596,10 +613,10 @@
     cursor: pointer;
   }
 
-  /* ELEVATED QUICK LOG BUTTON (CLEARS ANDROID BOTTOM BAR) */
+  /* HIGHLY ELEVATED QUICK LOG BUTTON (CLEARS ANDROID BOTTOM BAR & TIMELINE) */
   .fab-quick-log {
     position: fixed;
-    bottom: calc(34px + env(safe-area-inset-bottom, 16px));
+    bottom: calc(44px + env(safe-area-inset-bottom, 20px));
     right: 20px;
     background: linear-gradient(135deg, var(--brand) 0%, #0369a1 100%);
     color: #ffffff;
@@ -844,7 +861,7 @@
 
 <div class="container" id="mainDashboard">
 
-  <!-- TOP HEADER -->
+  <!-- TOP HEADER WITH SAFE-AREA PADDING CLEARANCE -->
   <div class="top-bar">
     <div class="brand-group">
       <div class="logo-box" id="logoContainer" onclick="triggerUploadOnce()">
@@ -859,6 +876,27 @@
     </div>
     <div class="header-actions">
       <button class="btn-settings" onclick="openSettingsModal()" title="Settings & Options">⚙️</button>
+    </div>
+  </div>
+
+  <!-- SOBER MONOCHROME GLASS-MORPHISM TODAY'S OPERATION COMMAND BRIEFING -->
+  <div class="command-sober-banner" id="commandSoberBanner">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <span style="font-size:0.62rem; font-weight:800; text-transform:uppercase; color:var(--text-secondary); letter-spacing:0.6px;">Today's Operation &amp; Hardware Map</span>
+      <span id="commandDateText" style="font-size:0.72rem; font-weight:700; color:var(--brand);">--</span>
+    </div>
+    <div id="commandTriggersFeed" style="font-size:0.80rem; font-weight:600; color:var(--text-primary); margin-bottom:10px; line-height:1.4;">
+      Scanning calendar &amp; tray status...
+    </div>
+    <div style="border-top:1px solid var(--border-hairline); padding-top:8px; display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:0.72rem;">
+      <div>
+        <span style="font-weight:800; color:var(--text-secondary); text-transform:uppercase; font-size:0.58rem; display:block;">Setters (T1–T5)</span>
+        <span id="commandSetterMap" style="font-weight:700;">Free: T1–T5</span>
+      </div>
+      <div>
+        <span style="font-weight:800; color:var(--text-secondary); text-transform:uppercase; font-size:0.58rem; display:block;">Hatcher (H1)</span>
+        <span id="commandHatcherMap" style="font-weight:700; color:var(--emerald);">🟢 Standby</span>
+      </div>
     </div>
   </div>
 
@@ -882,21 +920,15 @@
     </div>
   </div>
 
-  <!-- LIFETIME PERMANENT PRODUCTION AUDIT COUNTERS -->
+  <!-- VERTICAL STACKED SCALING LIFETIME PRODUCTION AUDIT COUNTERS (5+ DIGIT SAFE) -->
   <div class="production-summary-strip">
     <div class="production-card">
-      <div>
-        <div class="prod-lbl">LIFETIME EGGS PRODUCED</div>
-        <div style="font-size:0.60rem; color:var(--text-secondary);">Intact Harvest Total</div>
-      </div>
-      <div class="prod-val" id="lifetimeEggsDisplay" style="color:var(--brand);">0</div>
+      <span class="prod-lbl">LIFETIME EGGS PRODUCED</span>
+      <span class="prod-val" id="lifetimeEggsDisplay" style="color:var(--brand);">0</span>
     </div>
     <div class="production-card">
-      <div>
-        <div class="prod-lbl">LIFETIME CHICKS HATCHED</div>
-        <div style="font-size:0.60rem; color:var(--text-secondary);">Incubator Output</div>
-      </div>
-      <div class="prod-val" id="lifetimeChicksDisplay" style="color:var(--emerald);">0</div>
+      <span class="prod-lbl">LIFETIME CHICKS HATCHED</span>
+      <span class="prod-val" id="lifetimeChicksDisplay" style="color:var(--emerald);">0</span>
     </div>
   </div>
 
@@ -924,7 +956,7 @@
 
       <!-- SLIDE 0: RACK VIEW -->
       <div class="swipe-slide" id="slide0">
-        <div style="font-size:0.75rem; font-weight:800; color:var(--text-secondary); text-transform:uppercase; margin:4px 2px 8px 2px; letter-spacing:0.5px;">Incubator Tray Matrix</div>
+        <div style="font-size:0.75rem; font-weight:800; color:var(--text-secondary); text-transform:uppercase; margin:4px 2px 8px 2px; letter-spacing:0.5px;">Incubator Tray Matrix (5 Setters T1–T5 + Hatcher H1)</div>
         <div id="batchContainer"></div>
         <div id="noBatches" style="text-align:center; color:var(--text-secondary); padding:30px 20px; font-size:0.85rem;">No active batches inside incubator.<br><br>Tap <b>+ Quick Log</b> below to set a new batch.</div>
         <div class="archive-toggle-bar" style="text-align:center; margin:10px 0;">
@@ -1058,7 +1090,7 @@
 
 </div>
 
-<!-- ELEVATED QUICK LOG BUTTON -->
+<!-- HIGHLY ELEVATED QUICK LOG BUTTON -->
 <button class="fab-quick-log" onclick="openQuickLogModal()">
   <span>+ Quick Log</span>
 </button>
@@ -1138,7 +1170,7 @@
       <div class="form-row">
         <div>
           <label>Tray Designation</label>
-          <input type="text" id="bname" placeholder="e.g. B7T4">
+          <input type="text" id="bname" placeholder="e.g. B1T3 or B2(T4T5)">
         </div>
         <div style="flex: 0.6;">
           <label>Count</label>
@@ -1423,14 +1455,14 @@
     if (s.includes('-')) {
       const parts = s.split('-');
       if (parts.length === 3 && parts[0].length === 4) {
-        return parts[0] + "-" + pad(parts[1]) + "-" + pad(parts[2]);
+        return parts[0] + "-" + pad(parseInt(parts[1], 10)) + "-" + pad(parseInt(parts[2], 10));
       }
     }
     if (s.includes('/')) {
       const parts = s.split('/');
       if (parts.length === 3) {
         const y = parts[2].length === 4 ? parts[2] : ('20' + parts[2]);
-        return y + "-" + pad(parts[1]) + "-" + pad(parts[0]);
+        return y + "-" + pad(parseInt(parts[1], 10)) + "-" + pad(parseInt(parts[0], 10));
       }
     }
     const parsed = new Date(s);
@@ -1444,16 +1476,10 @@
     return parts[2] + "/" + parts[1] + "/" + parts[0];
   }
 
-  function getNextDayISO(isoStr) {
-    const p = isoStr.split('-');
-    const d = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
-    d.setDate(d.getDate() + 1);
-    return dateToISO(d);
-  }
-
   function addDaysToISO(isoStr, days) {
-    const p = isoStr.split('-');
-    const d = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+    const norm = toNormalizedISO(isoStr) || getTodayISO();
+    const parts = norm.split('-');
+    const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
     d.setDate(d.getDate() + days);
     return dateToISO(d);
   }
@@ -1556,7 +1582,7 @@
     db.collection("collections").onSnapshot(snapshot => {
       let cloudCols = [];
       snapshot.forEach(doc => cloudCols.push({ id: doc.id, ...doc.data() }));
-      if (cloudCols.length > 0) { collections = cloudCols; syncToLocalStorage(); renderCollections(); renderLiveMetrics(); renderCalendar(); }
+      if (cloudCols.length > 0) { collections = cloudCols; syncToLocalStorage(); renderCollections(); renderLiveMetrics(); renderCalendar(); renderCommandCenter(); }
       const stat = document.getElementById('cloudStatusSetting');
       if (stat) stat.innerText = "🟢 Synced";
     }, err => console.warn(err));
@@ -1564,7 +1590,7 @@
     db.collection("batches").onSnapshot(snapshot => {
       let cloudBatches = [];
       snapshot.forEach(doc => cloudBatches.push({ id: doc.id, ...doc.data() }));
-      if (cloudBatches.length > 0) { batches = cloudBatches; syncToLocalStorage(); renderBatches(); renderMortality(); renderLiveMetrics(); renderCalendar(); }
+      if (cloudBatches.length > 0) { batches = cloudBatches; syncToLocalStorage(); renderBatches(); renderMortality(); renderLiveMetrics(); renderCalendar(); renderCommandCenter(); }
     }, err => console.warn(err));
 
     db.collection("mortality").onSnapshot(snapshot => {
@@ -1659,21 +1685,18 @@
   }
   checkAndLockLogo();
 
+  // STRAIGHT INTEGER DATE ADDITION RULES (+18D LOCKDOWN, +21D PULL)
   function computeBatchDates(startDateISO) {
-    const parts = startDateISO.split('-');
+    const norm = toNormalizedISO(startDateISO) || getTodayISO();
+    const parts = norm.split('-');
     const base = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-    const d7 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 6);
-    const d14 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 13);
-    const d18 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 17);
-    const d21 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 20);
-    const d66 = new Date(base.getFullYear(), base.getMonth(), base.getDate() + 20 + 45);
     return {
-      d1ISO: startDateISO,
-      d7ISO: dateToISO(d7),
-      d14ISO: dateToISO(d14),
-      d18ISO: dateToISO(d18),
-      d21ISO: dateToISO(d21),
-      growerPromotionISO: dateToISO(d66),
+      d1ISO: norm,
+      d7ISO: addDaysToISO(norm, 6),
+      d14ISO: addDaysToISO(norm, 13),
+      d18ISO: addDaysToISO(norm, 18),
+      d21ISO: addDaysToISO(norm, 21),
+      growerPromotionISO: addDaysToISO(norm, 66),
       d21EndTimestamp: new Date(base.getFullYear(), base.getMonth(), base.getDate() + 21, 23, 59, 59).getTime()
     };
   }
@@ -1697,7 +1720,7 @@
       .sort((a, b) => a.normalizedDate.localeCompare(b.normalizedDate));
 
     let currentStock = INITIAL_ANCHOR_LEFTOVER;
-    let windowStart = getNextDayISO(INITIAL_ANCHOR_DATE);
+    let windowStart = addDaysToISO(INITIAL_ANCHOR_DATE, 1);
 
     chronologicalBatches.forEach(b => {
       if (b.normalizedDate > INITIAL_ANCHOR_DATE) {
@@ -1708,7 +1731,7 @@
           }
         });
         currentStock = Math.max(0, currentStock - b.eggCount);
-        windowStart = getNextDayISO(b.normalizedDate);
+        windowStart = addDaysToISO(b.normalizedDate, 1);
       }
     });
 
@@ -1720,6 +1743,91 @@
     });
 
     return Math.max(0, currentStock);
+  }
+
+  // SPATIAL AWARENESS PARSER (5 SETTERS T1-T5 + 1 HATCHER H1)
+  function parseHardwareSpatialOccupancy() {
+    const allSetters = ['T1', 'T2', 'T3', 'T4', 'T5'];
+    const occupiedSetters = new Set();
+    const hatcherOccupiedBy = [];
+
+    const todayISO = getTodayISO();
+
+    batches.forEach(b => {
+      const nameUpper = (b.name || "").toUpperCase();
+      allSetters.forEach(t => {
+        if (nameUpper.includes(t)) occupiedSetters.add(t);
+      });
+
+      const sISO = toNormalizedISO(b.startDate || b.rawDate);
+      if (sISO) {
+        const calc = computeBatchDates(sISO);
+        const isNotPulled = (b.chicksHatched === null || b.chicksHatched === undefined || b.chicksHatched === "");
+        const isInHatcherWindow = (todayISO >= calc.d18ISO);
+        if (isInHatcherWindow && isNotPulled) {
+          const dayDiff = Math.max(18, Math.round((new Date(todayISO) - new Date(calc.d18ISO)) / (1000 * 60 * 60 * 24)) + 18);
+          hatcherOccupiedBy.push({ name: b.name, day: dayDiff, isOverdue: todayISO > calc.d21ISO });
+        }
+      }
+    });
+
+    const freeSetters = allSetters.filter(t => !occupiedSetters.has(t));
+    return {
+      occupiedSetters: Array.from(occupiedSetters),
+      freeSetters: freeSetters,
+      hatcherOccupiedBy: hatcherOccupiedBy
+    };
+  }
+
+  // RENDER SOBER COMMAND CENTER (TODAY'S OPERATION)
+  function renderCommandCenter() {
+    const todayISO = getTodayISO();
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const dObj = new Date();
+    document.getElementById('commandDateText').innerText = dayNames[dObj.getDay()] + ", " + dObj.getDate() + " " + monthNames[dObj.getMonth()];
+
+    let actions = [];
+    batches.forEach(b => {
+      const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
+      if (!sISO) return;
+      const calc = computeBatchDates(sISO);
+      const isNotPulled = (b.chicksHatched === null || b.chicksHatched === undefined || b.chicksHatched === "");
+
+      if (todayISO === calc.d7ISO) actions.push(`• 🔍 <b>${b.name}</b>: D7 Candling clearance`);
+      if (todayISO === calc.d14ISO) actions.push(`• 🔍 <b>${b.name}</b>: D14 Candling clearance`);
+      if (todayISO === calc.d18ISO) actions.push(`• 🐣 <b>${b.name}</b>: D18 Lockdown setup`);
+      if (todayISO === calc.d21ISO && isNotPulled) actions.push(`• 🐥 <b>${b.name}</b>: D21 Hatch Pull due today`);
+      if (todayISO > calc.d21ISO && isNotPulled) actions.push(`• 🔴 <b>${b.name}</b>: Overdue Hatcher Lock`);
+      if (todayISO === calc.growerPromotionISO) actions.push(`• 🐓 <b>${b.name}</b>: Graduate Chicks → Growers (45D)`);
+    });
+
+    const feedEl = document.getElementById('commandTriggersFeed');
+    if (actions.length > 0) {
+      feedEl.innerHTML = actions.join('<br>');
+    } else {
+      feedEl.innerHTML = '✨ Zero mandatory incubator triggers today. Routine feeding & observation.';
+    }
+
+    const spatial = parseHardwareSpatialOccupancy();
+    const setterMapEl = document.getElementById('commandSetterMap');
+    if (spatial.freeSetters.length === 5) {
+      setterMapEl.innerHTML = `<span style="color:var(--emerald);">All 5 Free (T1–T5)</span>`;
+    } else {
+      setterMapEl.innerHTML = `Free: <b>${spatial.freeSetters.join(', ') || 'None'}</b>`;
+    }
+
+    const hatcherMapEl = document.getElementById('commandHatcherMap');
+    if (spatial.hatcherOccupiedBy.length > 0) {
+      const h = spatial.hatcherOccupiedBy[0];
+      if (h.isOverdue) {
+        hatcherMapEl.innerHTML = `<span style="color:var(--crimson);">🔴 H1 Locked Overdue (${h.name})</span>`;
+      } else {
+        hatcherMapEl.innerHTML = `<span style="color:var(--amber);">🟡 H1 Lockdown: ${h.name}</span>`;
+      }
+    } else {
+      hatcherMapEl.innerHTML = `<span style="color:var(--emerald);">🟢 H1 Standby / Vacant</span>`;
+    }
   }
 
   // RECONCILIATION: 45D AGING, DEDUCTIVE SALES & BREEDER INFLOW
@@ -1844,8 +1952,8 @@
     collections.forEach(c => {
       lifetimeEggsTotal += (parseInt(c.total, 10) || 0);
     });
-    document.getElementById('lifetimeEggsDisplay').innerText = lifetimeEggsTotal;
-    document.getElementById('lifetimeChicksDisplay').innerText = recon.lifetimeChicksTotal;
+    document.getElementById('lifetimeEggsDisplay').innerText = lifetimeEggsTotal.toLocaleString();
+    document.getElementById('lifetimeChicksDisplay').innerText = recon.lifetimeChicksTotal.toLocaleString();
 
     const eggsAvailable = calculateSlidingWindowInventory();
     document.getElementById('inventoryEggsDisplay').innerText = eggsAvailable;
@@ -1927,7 +2035,7 @@
     }
 
     syncToLocalStorage();
-    renderBatches(); renderLiveMetrics(); renderCalendar();
+    renderBatches(); renderLiveMetrics(); renderCalendar(); renderCommandCenter();
     closeQuickLogModal();
     if (db) db.collection("batches").doc(id).set(data).catch(e => console.warn(e));
   }
@@ -1957,7 +2065,7 @@
     b.hatchRate = ((count / b.eggs) * 100).toFixed(1);
     b.pullTime = getLiveTimeString();
     syncToLocalStorage();
-    renderBatches(); renderMortality(); renderLiveMetrics();
+    renderBatches(); renderMortality(); renderLiveMetrics(); renderCommandCenter();
     if (db) db.collection("batches").doc(docId).update({ chicksHatched: count, hatchRate: b.hatchRate, pullTime: b.pullTime }).catch(e => console.warn(e));
   }
 
@@ -2506,7 +2614,7 @@
     const id = document.getElementById('delBatchSelect').value;
     if (!id || !confirm("Delete this batch permanently?")) return;
     batches = batches.filter(b => b.id !== id);
-    syncToLocalStorage(); renderBatches(); renderLiveMetrics(); renderCalendar();
+    syncToLocalStorage(); renderBatches(); renderLiveMetrics(); renderCalendar(); renderCommandCenter();
     if (db) db.collection("batches").doc(id).delete().catch(e => console.warn(e));
     openDeleteCenterModal();
   }
@@ -2646,7 +2754,7 @@
         <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary); font-weight:800;">AD FARMS ; HERD &amp; HARVEST</h2>
         <div style="font-size:0.86rem; font-weight:bold; color:var(--emerald); margin-top:4px;">Egg Production Audit Report</div>
         <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Selected Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b></div>
-        <div style="font-size:0.85rem; font-weight:800; color:var(--brand); margin-top:6px;">Lifetime Permanent Total: ${allTimeEggs} Intact Eggs</div>
+        <div style="font-size:0.85rem; font-weight:800; color:var(--brand); margin-top:6px;">Lifetime Permanent Total: ${allTimeEggs.toLocaleString()} Intact Eggs</div>
       </div>
       <div class="table-wrap">
         <table style="min-width: 520px;">
@@ -2737,7 +2845,7 @@
         <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary); font-weight:800;">AD FARMS ; HERD &amp; HARVEST</h2>
         <div style="font-size:0.86rem; font-weight:bold; color:var(--brand); margin-top:4px;">Incubation Batches Audit Report</div>
         <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Range: <b>${selectedBatches[0].name}</b> to <b>${selectedBatches[selectedBatches.length - 1].name}</b></div>
-        <div style="font-size:0.85rem; font-weight:800; color:var(--emerald); margin-top:6px;">Lifetime Chicks Produced All-Time: ${lifetimeChicks} Chicks</div>
+        <div style="font-size:0.85rem; font-weight:800; color:var(--emerald); margin-top:6px;">Lifetime Chicks Produced All-Time: ${lifetimeChicks.toLocaleString()} Chicks</div>
       </div>
       <div class="table-wrap">
         <table style="min-width: 660px;">
@@ -2863,7 +2971,7 @@
           <tbody>
             <tr>
               <td><b>🐥 Chicks (&lt;45D)</b></td>
-              <td>${recon.lifetimeChicksTotal}</td>
+              <td>${recon.lifetimeChicksTotal.toLocaleString()}</td>
               <td style="color:var(--brand); font-weight:bold;">-${recon.poolGrowersFromAging}</td>
               <td style="color:var(--crimson); font-weight:bold;">-${recon.chicksDead}</td>
               <td style="color:var(--emerald); font-weight:bold;">-${recon.chicksSold}</td>
@@ -2912,6 +3020,7 @@
   renderLedger();
   renderLiveMetrics();
   renderCalendar();
+  renderCommandCenter();
   initSavedTheme();
 </script>
 
