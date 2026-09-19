@@ -1856,12 +1856,15 @@
     };
   }
 
-  // RENDER BALANCED HERO COMMAND CENTER (TODAY'S OPERATION)
+  // RENDER BALANCED HERO COMMAND CENTER (SYNCHRONIZED DATE WITH ACTIVE TIMELINE CALENDAR)
   function renderCommandCenter() {
     const todayISO = getTodayISO();
+    const targetISO = activeModalSelectedDateISO || todayISO;
+    const parts = targetISO.split('-').map(Number);
+    const dObj = new Date(parts[0], parts[1] - 1, parts[2]);
+
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const dObj = new Date();
     document.getElementById('heroDateText').innerText = dayNames[dObj.getDay()] + ", " + dObj.getDate() + " " + monthNames[dObj.getMonth()];
 
     let actions = [];
@@ -1872,15 +1875,15 @@
       const calc = computeBatchDates(sISO);
       const isNotPulled = (b.chicksHatched === null || b.chicksHatched === undefined || b.chicksHatched === "");
 
-      if (todayISO === calc.d7ISO) actions.push(`• 🔍 <b>${b.name}</b>: D7 Candling`);
-      if (todayISO === calc.d14ISO) actions.push(`• 🔍 <b>${b.name}</b>: D14 Candling`);
-      if (todayISO === calc.d18ISO) actions.push(`• 🐣 <b>${b.name}</b>: D18 Lockdown`);
-      if (todayISO === calc.d21ISO && isNotPulled) actions.push(`• 🐥 <b>${b.name}</b>: D21 Pull Due`);
-      if (todayISO > calc.d21ISO && isNotPulled) {
+      if (targetISO === calc.d7ISO) actions.push(`• 🔍 <b>${b.name}</b>: D7 Candling`);
+      if (targetISO === calc.d14ISO) actions.push(`• 🔍 <b>${b.name}</b>: D14 Candling`);
+      if (targetISO === calc.d18ISO) actions.push(`• 🐣 <b>${b.name}</b>: D18 Lockdown`);
+      if (targetISO === calc.d21ISO && isNotPulled) actions.push(`• 🐥 <b>${b.name}</b>: D21 Pull Due`);
+      if (targetISO > calc.d21ISO && isNotPulled) {
         actions.push(`• 🔴 <b>${b.name}</b>: Overdue Hatcher Lock`);
         hasUrgentAlert = true;
       }
-      if (todayISO === calc.growerPromotionISO) actions.push(`• 🐓 <b>${b.name}</b>: Graduate 45D`);
+      if (targetISO === calc.growerPromotionISO) actions.push(`• 🐓 <b>${b.name}</b>: Graduate 45D`);
     });
 
     const heroBanner = document.getElementById('commandHeroBanner');
@@ -2439,7 +2442,6 @@
         badge = `<div style="font-size:0.75rem; font-weight:800; color:var(--violet); margin-top:2px;">Added: +${l.qty} Breeders (${srcText})</div>`;
       }
       
-      // SCRAPPED SINGLE-CLICK DELETE CROSS (REMOVED ACCIDENTAL REMOVAL RISK)
       card.innerHTML = `
         <div class="ledger-item-date">${formatDisplayDate(l.date)}</div>
         <div class="ledger-item-type">${icon} ${l.category}</div>
@@ -2606,6 +2608,7 @@
 
   function showDateDetailsStrict(dateISO) {
     activeModalSelectedDateISO = dateISO;
+    renderCommandCenter();
     const modal = document.getElementById('dateModal');
     const title = document.getElementById('modalDateTitle');
     const body = document.getElementById('modalDetailsBody');
@@ -2645,7 +2648,6 @@
         } else if (l.category === "Breeders") {
           extra = ` <small style="color:var(--violet); font-weight:800;">[+${l.qty} Breeders via ${l.source||'Stock'}]</small>`;
         }
-        // SCRAPPED SINGLE-CLICK DELETE CROSS (REMOVED ACCIDENTAL REMOVAL RISK)
         html += `
           <div class="event-item" style="border-left: 4px solid var(--violet);">
             <div><b>${icon} ${l.category}:</b> ${l.notes}${extra}</div>
