@@ -85,7 +85,7 @@
     position: relative;
   }
 
-  /* TOP TITLE BAR - REMAINS PARAMOUNT VISUAL ANCHOR */
+  /* TOP TITLE BAR */
   .top-bar {
     background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%) !important;
     border: 1.5px solid #cbd5e1 !important;
@@ -157,7 +157,7 @@
   }
   .btn-settings:active { transform: scale(0.92); }
 
-  /* BOLD, HIGH-CONTRAST COMMAND HERO BAR (CRYSTAL CLEAR IN LIGHT & DARK MODES) */
+  /* BOLD, HIGH-CONTRAST COMMAND HERO BAR */
   .command-hero-banner {
     background: var(--card-surface);
     border: 2px solid var(--border-strong);
@@ -275,7 +275,7 @@
     letter-spacing: -0.4px;
   }
 
-  /* VERTICAL STACKED SCALING LIFETIME PRODUCTION AUDIT COUNTERS (5+ DIGIT SAFE) */
+  /* VERTICAL STACKED SCALING LIFETIME PRODUCTION AUDIT COUNTERS */
   .production-summary-strip {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -535,7 +535,11 @@
     border: 1px solid var(--border-hairline);
     font-feature-settings: "tnum";
   }
-  .batch-actions { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
+  .batch-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+    gap: 6px;
+  }
   .btn-neutral {
     min-height: 40px;
     padding: 8px 4px;
@@ -949,7 +953,7 @@
     </div>
   </div>
 
-  <!-- COMMAND-FIRST HERO COMMAND BLOCK (PROPORTIONAL TO TITLE, LIGHT/DARK CONTRAST VERIFIED) -->
+  <!-- COMMAND-FIRST HERO COMMAND BLOCK -->
   <div class="command-hero-banner" id="commandHeroBanner">
     <div class="hero-top-row">
       <div class="hero-title-group">
@@ -994,7 +998,7 @@
     </div>
   </div>
 
-  <!-- VERTICAL STACKED SCALING LIFETIME PRODUCTION AUDIT COUNTERS (5+ DIGIT SAFE) -->
+  <!-- VERTICAL STACKED SCALING LIFETIME PRODUCTION AUDIT COUNTERS -->
   <div class="production-summary-strip">
     <div class="production-card">
       <span class="prod-lbl">LIFETIME EGGS PRODUCED</span>
@@ -1831,19 +1835,23 @@
       if (isPulled) return;
 
       const nameUpper = (b.name || "").toUpperCase();
-      const matches = nameUpper.match(/T[1-5]/gi);
-      if (matches) {
-        matches.forEach(m => occupiedSetters.add(m.toUpperCase()));
-      }
-
       const sISO = toNormalizedISO(b.startDate || b.rawDate);
-      if (sISO) {
-        const calc = computeBatchDates(sISO);
-        if (todayISO >= calc.d18ISO) {
-          const partsT = todayISO.split('-').map(Number);
-          const partsC = calc.d18ISO.split('-').map(Number);
-          const dayDiff = Math.max(18, Math.round((new Date(partsT[0], partsT[1] - 1, partsT[2]) - new Date(partsC[0], partsC[1] - 1, partsC[2])) / (1000 * 60 * 60 * 24)) + 18);
-          hatcherOccupiedBy.push({ name: b.name, day: dayDiff, isOverdue: todayISO > calc.d21ISO });
+      const calc = sISO ? computeBatchDates(sISO) : null;
+      const isOverdue = calc ? (todayISO > calc.d21ISO) : false;
+
+      // If user confirmed eggs moved to Hatcher H1:
+      if (b.inHatcher) {
+        hatcherOccupiedBy.push({ name: b.name, isOverdue: isOverdue });
+        // Setters T1-T5 are NOT occupied by this batch anymore!
+      } else {
+        // Eggs still in Setters:
+        const matches = nameUpper.match(/T[1-5]/gi);
+        if (matches) {
+          matches.forEach(m => occupiedSetters.add(m.toUpperCase()));
+        }
+        // If batch reached Day 18+ but user hasn't yet clicked "Move to H1", flag impending lockdown
+        if (calc && todayISO >= calc.d18ISO) {
+          hatcherOccupiedBy.push({ name: b.name + " (Pending Shift)", isOverdue: isOverdue });
         }
       }
     });
@@ -1856,11 +1864,10 @@
     };
   }
 
-  // RENDER BALANCED HERO COMMAND CENTER (SYNCHRONIZED DATE WITH ACTIVE TIMELINE CALENDAR)
+  // RENDER BALANCED HERO COMMAND CENTER - STRICTLY TIED TO ACTUAL REAL-TIME TODAY DATE
   function renderCommandCenter() {
     const todayISO = getTodayISO();
-    const targetISO = activeModalSelectedDateISO || todayISO;
-    const parts = targetISO.split('-').map(Number);
+    const parts = todayISO.split('-').map(Number);
     const dObj = new Date(parts[0], parts[1] - 1, parts[2]);
 
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -1875,15 +1882,15 @@
       const calc = computeBatchDates(sISO);
       const isNotPulled = (b.chicksHatched === null || b.chicksHatched === undefined || b.chicksHatched === "");
 
-      if (targetISO === calc.d7ISO) actions.push(`• 🔍 <b>${b.name}</b>: D7 Candling`);
-      if (targetISO === calc.d14ISO) actions.push(`• 🔍 <b>${b.name}</b>: D14 Candling`);
-      if (targetISO === calc.d18ISO) actions.push(`• 🐣 <b>${b.name}</b>: D18 Lockdown`);
-      if (targetISO === calc.d21ISO && isNotPulled) actions.push(`• 🐥 <b>${b.name}</b>: D21 Pull Due`);
-      if (targetISO > calc.d21ISO && isNotPulled) {
+      if (todayISO === calc.d7ISO) actions.push(`• 🔍 <b>${b.name}</b>: D7 Candling`);
+      if (todayISO === calc.d14ISO) actions.push(`• 🔍 <b>${b.name}</b>: D14 Candling`);
+      if (todayISO === calc.d18ISO && !b.inHatcher) actions.push(`• 🐣 <b>${b.name}</b>: D18 Lockdown - Move to H1`);
+      if (todayISO === calc.d21ISO && isNotPulled) actions.push(`• 🐥 <b>${b.name}</b>: D21 Pull Due`);
+      if (todayISO > calc.d21ISO && isNotPulled) {
         actions.push(`• 🔴 <b>${b.name}</b>: Overdue Hatcher Lock`);
         hasUrgentAlert = true;
       }
-      if (targetISO === calc.growerPromotionISO) actions.push(`• 🐓 <b>${b.name}</b>: Graduate 45D`);
+      if (todayISO === calc.growerPromotionISO) actions.push(`• 🐓 <b>${b.name}</b>: Graduate 45D`);
     });
 
     const heroBanner = document.getElementById('commandHeroBanner');
@@ -1917,7 +1924,7 @@
         if (h.isOverdue) {
           hatcherMapEl.innerHTML = `<span style="color:var(--crimson);">🔴 H1 Locked Overdue (${h.name})</span>`;
         } else {
-          hatcherMapEl.innerHTML = `<span style="color:var(--amber);">🟡 H1 Lockdown: ${h.name}</span>`;
+          hatcherMapEl.innerHTML = `<span style="color:var(--amber);">🟡 In H1: ${h.name}</span>`;
         }
       } else {
         hatcherMapEl.innerHTML = `<span style="color:var(--emerald);">🟢 H1 Standby / Vacant</span>`;
@@ -2110,7 +2117,7 @@
     const calc = computeBatchDates(startDateISO);
     const id = editDocId || ("batch_" + Date.now());
     const data = { 
-      id: id, name: name, eggs: eggs, startDate: calc.d1ISO, d7Date: calc.d7ISO, d14Date: calc.d14ISO, d18Date: calc.d18ISO, d21Date: calc.d21ISO, growerPromotionDate: calc.growerPromotionISO, rawDate: calc.d1ISO
+      id: id, name: name, eggs: eggs, startDate: calc.d1ISO, d7Date: calc.d7ISO, d14Date: calc.d14ISO, d18Date: calc.d18ISO, d21Date: calc.d21ISO, growerPromotionDate: calc.growerPromotionISO, rawDate: calc.d1ISO, inHatcher: false
     };
 
     if (editDocId) {
@@ -2121,6 +2128,7 @@
         data.candlingD14Cleared = batches[idx].candlingD14Cleared || 0;
         data.chicksHatched = batches[idx].chicksHatched !== undefined ? batches[idx].chicksHatched : null;
         data.hatchRate = batches[idx].hatchRate !== undefined ? batches[idx].hatchRate : null;
+        data.inHatcher = batches[idx].inHatcher || false;
         batches[idx] = data;
       }
     } else {
@@ -2150,6 +2158,25 @@
     if (db) db.collection("batches").doc(docId).update(dayNum === 7 ? { candlingD7Cleared: num } : { candlingD14Cleared: num }).catch(e => console.warn(e));
   }
 
+  // DEDICATED LOCKDOWN SWITCH: TRANSFERS EGGS TO H1 & FREES ORIGINAL SETTER TRAYS
+  function toggleHatcherShift(docId) {
+    const b = batches.find(item => item.id === docId);
+    if (!b) return;
+
+    if (!b.inHatcher) {
+      if (!confirm("Confirm shifting " + b.name + " to Hatcher basket (H1)?\n\nThis will immediately FREE its setting trays for new batches!")) return;
+      b.inHatcher = true;
+    } else {
+      if (!confirm("Move " + b.name + " back to Setters?")) return;
+      b.inHatcher = false;
+    }
+
+    syncToLocalStorage();
+    renderBatches();
+    renderCommandCenter();
+    if (db) db.collection("batches").doc(docId).update({ inHatcher: b.inHatcher }).catch(e => console.warn(e));
+  }
+
   function recordHatchResult(docId) {
     const b = batches.find(item => item.id === docId);
     const val = prompt("AD Farms: \"" + b.name + "\"\nEnter live chicks pulled:", b.chicksHatched !== null ? b.chicksHatched : "");
@@ -2175,11 +2202,24 @@
     const chickCount = b.chicksHatched !== null && b.chicksHatched !== undefined ? "<b>" + b.chicksHatched + "</b> chicks" : "<span style=\"color:var(--text-secondary);\">" + currentLiveInTray + " in Rack</span>";
     const agingTag = (calc && b.chicksHatched) ? `<div style="font-size:0.62rem; color:var(--text-secondary); margin-top:2px;">45D Grower Promotion: <b>${formatDisplayDate(calc.growerPromotionISO)}</b></div>` : "";
 
+    const locationBadge = b.inHatcher
+      ? `<span style="font-size:0.68rem; font-weight:800; background:var(--amber-glow); color:var(--amber); padding:2px 8px; border-radius:8px;">🟡 In Hatcher H1 (Setters Free)</span>`
+      : `<span style="font-size:0.68rem; font-weight:800; background:var(--brand-glow); color:var(--brand); padding:2px 8px; border-radius:8px;">🔵 In Setters</span>`;
+
+    const hatcherButtonHtml = !isArchived ? (
+      b.inHatcher
+        ? `<button class="btn-neutral" style="color:var(--text-secondary);" onclick="toggleHatcherShift('${b.id}')">↩ Setters</button>`
+        : `<button class="btn-neutral" style="color:var(--amber); font-weight:900;" onclick="toggleHatcherShift('${b.id}')">🐣 To H1</button>`
+    ) : "";
+
     return `
       <div class="batch-card ${isArchived ? 'archived' : ''}">
         <div class="batch-card-header">
           <div>
-            <span class="batch-title">${b.name} ${isArchived ? '<span style="font-size:0.65rem; color:var(--text-secondary);">(ARCHIVED)</span>' : '🟢'}</span>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:3px;">
+              <span class="batch-title">${b.name} ${isArchived ? '<span style="font-size:0.65rem; color:var(--text-secondary);">(ARCHIVED)</span>' : '🟢'}</span>
+              ${!isArchived ? locationBadge : ''}
+            </div>
             <div class="batch-time-tag" style="font-size:0.68rem; color:var(--text-secondary); font-weight:700;">Set at: <b>${b.setTime || 'Evening'}</b></div>
             ${agingTag}
           </div>
@@ -2198,8 +2238,8 @@
         <div class="batch-actions">
           <button class="btn-neutral" style="color:var(--violet);" onclick="recordCandling('${b.id}', 7)">🔍 D7</button>
           <button class="btn-neutral" style="color:var(--amber);" onclick="recordCandling('${b.id}', 14)">🔍 D14</button>
+          ${hatcherButtonHtml}
           <button class="btn-neutral" style="color:var(--emerald);" onclick="recordHatchResult('${b.id}')">🐥 Chicks</button>
-          <button class="btn-neutral" onclick="startEditBatch('${b.id}')">✎ Edit</button>
         </div>
       </div>
     `;
@@ -2231,17 +2271,6 @@
     document.getElementById('toggleArchiveBtn').innerText = showArchived ? "🙈 Hide Archived Batches" : "👁️ Show Archived Batches";
   }
 
-  function startEditBatch(docId) {
-    const b = batches.find(item => item.id === docId);
-    document.getElementById('bname').value = b.name;
-    document.getElementById('eggsSet').value = b.eggs;
-    document.getElementById('sdate').value = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
-    document.getElementById('editDocId').value = docId;
-    document.getElementById('submitBtn').innerText = "Update Batch";
-    document.getElementById('cancelBtn').style.display = "block";
-    openQuickLogModal('quickBatch');
-  }
-
   function resetBatchForm() {
     document.getElementById('bname').value = "";
     document.getElementById('eggsSet').value = "102";
@@ -2251,6 +2280,7 @@
     document.getElementById('cancelBtn').style.display = "none";
   }
 
+  // CUMULATIVE EGG LOG ENGINE WITH DIRECT-OVERWRITE EDIT SUPPORT
   let editingColId = null;
   function saveCollection() {
     const dateVal = document.getElementById('colDate').value || getTodayISO();
@@ -2261,19 +2291,41 @@
 
     const isoDate = toNormalizedISO(dateVal);
     let existing = collections.find(c => toNormalizedISO(c.date) === isoDate);
-    let m = existing ? (existing.morning || 0) : 0, a = existing ? (existing.afternoon || 0) : 0;
-    let e = existing ? (existing.evening || 0) : 0, b = existing ? (existing.broken || 0) : 0;
 
-    if (slot === "Morning") m = count;
-    if (slot === "Afternoon") a = count;
-    if (slot === "Evening") e = count;
-    b = broken;
+    let m = existing ? (parseInt(existing.morning, 10) || 0) : 0;
+    let a = existing ? (parseInt(existing.afternoon, 10) || 0) : 0;
+    let e = existing ? (parseInt(existing.evening, 10) || 0) : 0;
+    let b = existing ? (parseInt(existing.broken, 10) || 0) : 0;
 
-    const entry = { id: "col_" + isoDate.replace(/-/g, ''), date: isoDate, morning: m, afternoon: a, evening: e, broken: b, total: (m + a + e) };
-    if (existing) Object.assign(existing, entry); else collections.push(entry);
+    if (editingColId) {
+      if (slot === "Morning") m = count;
+      if (slot === "Afternoon") a = count;
+      if (slot === "Evening") e = count;
+      b = broken;
+    } else {
+      if (slot === "Morning") m += count;
+      if (slot === "Afternoon") a += count;
+      if (slot === "Evening") e += count;
+      b += broken;
+    }
+
+    const entry = {
+      id: existing ? existing.id : ("col_" + isoDate.replace(/-/g, '')),
+      date: isoDate,
+      morning: m,
+      afternoon: a,
+      evening: e,
+      broken: b,
+      total: (m + a + e)
+    };
+
+    if (existing) Object.assign(existing, entry);
+    else collections.push(entry);
 
     syncToLocalStorage();
-    renderCollections(); renderLiveMetrics(); renderCalendar();
+    renderCollections();
+    renderLiveMetrics();
+    renderCalendar();
     closeQuickLogModal();
     if (db) db.collection("collections").doc(entry.id).set(entry).catch(err => console.warn(err));
   }
@@ -2606,9 +2658,9 @@
     renderCalendar();
   }
 
+  // INSPECT DATE DETAILS (NEVER ALTERS TODAY'S OPERATION TOP BAR)
   function showDateDetailsStrict(dateISO) {
     activeModalSelectedDateISO = dateISO;
-    renderCommandCenter();
     const modal = document.getElementById('dateModal');
     const title = document.getElementById('modalDateTitle');
     const body = document.getElementById('modalDetailsBody');
@@ -2667,6 +2719,7 @@
     }
   }
 
+  // DEDICATED DELETE CENTER
   function openDeleteCenterModal() {
     const bSel = document.getElementById('delBatchSelect');
     bSel.innerHTML = "";
