@@ -85,7 +85,6 @@
     position: relative;
   }
 
-  /* TOP TITLE BAR */
   .top-bar {
     background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%) !important;
     border: 1.5px solid #cbd5e1 !important;
@@ -157,7 +156,6 @@
   }
   .btn-settings:active { transform: scale(0.92); }
 
-  /* BOLD, HIGH-CONTRAST COMMAND HERO BAR */
   .command-hero-banner {
     background: var(--card-surface);
     border: 2px solid var(--border-strong);
@@ -230,7 +228,6 @@
     font-feature-settings: "tnum";
   }
 
-  /* TELEMETRY STRIP */
   .metrics-strip {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -275,7 +272,6 @@
     letter-spacing: -0.4px;
   }
 
-  /* VERTICAL STACKED SCALING LIFETIME PRODUCTION AUDIT COUNTERS */
   .production-summary-strip {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -299,7 +295,6 @@
     line-height: 1.1;
   }
 
-  /* SETTER RESERVOIR */
   .setter-progress-card {
     background: var(--card-surface);
     border: 1.5px solid var(--emerald);
@@ -347,7 +342,6 @@
     z-index: 1;
   }
 
-  /* NAVIGATION TABS */
   .tab-bar {
     display: flex;
     background: var(--card-surface-subtle);
@@ -382,7 +376,6 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
 
-  /* SLIDING VIEWPORT */
   .swipe-viewport {
     width: 100%;
     overflow: hidden;
@@ -402,7 +395,6 @@
     padding-bottom: 10px;
   }
 
-  /* CARDS & CONTROLS */
   .card {
     background: var(--card-surface);
     border: 1px solid var(--border-hairline);
@@ -476,7 +468,6 @@
     cursor: pointer;
   }
 
-  /* BATCH CARDS */
   .batch-card {
     background: var(--card-surface);
     border: 1px solid var(--border-hairline);
@@ -558,7 +549,6 @@
   }
   .btn-neutral:active { transform: scale(0.96); }
 
-  /* TABLE WRAPPERS & TOUCH-ISOLATION */
   .table-wrap {
     width: 100%;
     overflow-x: auto;
@@ -603,7 +593,6 @@
   tr:last-child td { border-bottom: none; }
   tr:nth-child(even) td { background: var(--card-surface-subtle); }
 
-  /* ACTIVITY & TASK LEDGER */
   .ledger-main-card {
     background: var(--card-surface);
     border: 1px solid var(--border-hairline);
@@ -667,7 +656,6 @@
   .ledger-item-type { font-size: 0.95rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
   .ledger-item-notes { font-size: 0.86rem; color: var(--text-secondary); font-weight: 500; }
 
-  /* HIGHLY ELEVATED QUICK LOG BUTTON */
   .fab-quick-log {
     position: fixed;
     bottom: calc(75px + env(safe-area-inset-bottom, 20px));
@@ -690,7 +678,6 @@
   }
   .fab-quick-log:active { transform: scale(0.94); }
 
-  /* 7-COLUMN CALENDAR GRID */
   .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
   .cal-header button {
     padding: 8px 16px;
@@ -738,7 +725,6 @@
   .cal-cell:active { transform: scale(0.96); }
   .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; }
 
-  /* 3 PRIORITY COLORS + BLACK OVERLAP */
   .stage-set {
     background: var(--brand-glow) !important;
     border: 1.5px solid var(--brand) !important;
@@ -818,7 +804,6 @@
     display: block;
   }
 
-  /* MODALS */
   .modal-overlay {
     display: none;
     position: fixed;
@@ -908,7 +893,6 @@
     box-shadow: var(--shadow-plate);
   }
 
-  /* STREAMLINED BACK BUTTON FOR AUDIT REPORT */
   .btn-report-back {
     width: 40px;
     height: 40px;
@@ -935,7 +919,6 @@
 
 <div class="container" id="mainDashboard">
 
-  <!-- TOP HEADER WITH SAFE-AREA PADDING CLEARANCE -->
   <div class="top-bar">
     <div class="brand-group">
       <div class="logo-box" id="logoContainer" onclick="triggerUploadOnce()">
@@ -953,7 +936,6 @@
     </div>
   </div>
 
-  <!-- COMMAND-FIRST HERO COMMAND BLOCK -->
   <div class="command-hero-banner" id="commandHeroBanner">
     <div class="hero-top-row">
       <div class="hero-title-group">
@@ -978,7 +960,6 @@
     </div>
   </div>
 
-  <!-- TELEMETRY STRIP: 4 LIVE OPERATIONAL HEADCOUNTS -->
   <div class="metrics-strip">
     <div class="metric-card" style="color: var(--emerald);">
       <div class="metric-lbl">CHICKS (&lt;45D)</div>
@@ -998,7 +979,6 @@
     </div>
   </div>
 
-  <!-- VERTICAL STACKED SCALING LIFETIME PRODUCTION AUDIT COUNTERS -->
   <div class="production-summary-strip">
     <div class="production-card">
       <span class="prod-lbl">LIFETIME EGGS PRODUCED</span>
@@ -1010,7 +990,6 @@
     </div>
   </div>
 
-  <!-- RESERVOIR GAUGING CARD -->
   <div class="setter-progress-card" id="setterCard">
     <div class="setter-left">
       <span class="setter-tag">🥚 READY FOR SETTER</span>
@@ -1019,7 +998,6 @@
     <div class="setter-val" id="inventoryEggsDisplay">0</div>
   </div>
 
-  <!-- NAVIGATION TABS -->
   <div class="tab-bar">
     <button class="tab-btn active" onclick="goToSlide(0)">🗄️ Rack View</button>
     <button class="tab-btn" onclick="goToSlide(1)">🥚 Daily Eggs</button>
@@ -1028,7 +1006,6 @@
     <button class="tab-btn" onclick="goToSlide(4)">📅 Timeline</button>
   </div>
 
-  <!-- SLIDING MATRIX VIEWPORT -->
   <div class="swipe-viewport" id="swipeViewport">
     <div class="swipe-track" id="swipeTrack">
 
@@ -1839,17 +1816,14 @@
       const calc = sISO ? computeBatchDates(sISO) : null;
       const isOverdue = calc ? (todayISO > calc.d21ISO) : false;
 
-      // If user confirmed eggs moved to Hatcher H1:
+      // If shifted to Hatcher H1:
       if (b.inHatcher) {
         hatcherOccupiedBy.push({ name: b.name, isOverdue: isOverdue });
-        // Setters T1-T5 are NOT occupied by this batch anymore!
       } else {
-        // Eggs still in Setters:
         const matches = nameUpper.match(/T[1-5]/gi);
         if (matches) {
           matches.forEach(m => occupiedSetters.add(m.toUpperCase()));
         }
-        // If batch reached Day 18+ but user hasn't yet clicked "Move to H1", flag impending lockdown
         if (calc && todayISO >= calc.d18ISO) {
           hatcherOccupiedBy.push({ name: b.name + " (Pending Shift)", isOverdue: isOverdue });
         }
@@ -1864,7 +1838,7 @@
     };
   }
 
-  // RENDER BALANCED HERO COMMAND CENTER - STRICTLY TIED TO ACTUAL REAL-TIME TODAY DATE
+  // RENDER COMMAND CENTER - STRICTLY TIED TO CURRENT DEVICE CALENDAR DATE
   function renderCommandCenter() {
     const todayISO = getTodayISO();
     const parts = todayISO.split('-').map(Number);
@@ -2158,7 +2132,6 @@
     if (db) db.collection("batches").doc(docId).update(dayNum === 7 ? { candlingD7Cleared: num } : { candlingD14Cleared: num }).catch(e => console.warn(e));
   }
 
-  // DEDICATED LOCKDOWN SWITCH: TRANSFERS EGGS TO H1 & FREES ORIGINAL SETTER TRAYS
   function toggleHatcherShift(docId) {
     const b = batches.find(item => item.id === docId);
     if (!b) return;
@@ -2280,7 +2253,6 @@
     document.getElementById('cancelBtn').style.display = "none";
   }
 
-  // CUMULATIVE EGG LOG ENGINE WITH DIRECT-OVERWRITE EDIT SUPPORT
   let editingColId = null;
   function saveCollection() {
     const dateVal = document.getElementById('colDate').value || getTodayISO();
@@ -2658,7 +2630,6 @@
     renderCalendar();
   }
 
-  // INSPECT DATE DETAILS (NEVER ALTERS TODAY'S OPERATION TOP BAR)
   function showDateDetailsStrict(dateISO) {
     activeModalSelectedDateISO = dateISO;
     const modal = document.getElementById('dateModal');
@@ -2719,7 +2690,6 @@
     }
   }
 
-  // DEDICATED DELETE CENTER
   function openDeleteCenterModal() {
     const bSel = document.getElementById('delBatchSelect');
     bSel.innerHTML = "";
@@ -2926,7 +2896,7 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 2. INCUBATION BATCHES AUDIT
+  // 2. INCUBATION BATCHES AUDIT (EXACT HATCH RATE TALLY)
   function displayIncubationDataReport() {
     const sorted = [...batches].sort((a, b) => {
       return toNormalizedISO(a.startDate || a.rawDate).localeCompare(toNormalizedISO(b.startDate || b.rawDate));
@@ -2940,6 +2910,7 @@
 
     const selectedBatches = sorted.slice(idxFrom, idxTo + 1);
     let totalEggs = 0, totalChicks = 0, totalD7 = 0, totalD14 = 0;
+    let eggsInCompletedBatches = 0;
     let rowsHtml = "";
 
     selectedBatches.forEach(b => {
@@ -2948,10 +2919,16 @@
       const eggs = parseInt(b.eggs, 10) || 0;
       const c7 = parseInt(b.candlingD7Cleared, 10) || 0;
       const c14 = parseInt(b.candlingD14Cleared, 10) || 0;
-      totalEggs += eggs; totalD7 += c7; totalD14 += c14;
+      totalEggs += eggs;
+      totalD7 += c7;
+      totalD14 += c14;
 
-      const hasChicks = b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "";
-      if (hasChicks) totalChicks += parseInt(b.chicksHatched, 10) || 0;
+      const hasChicks = (b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "");
+      if (hasChicks) {
+        const hatched = parseInt(b.chicksHatched, 10) || 0;
+        totalChicks += hatched;
+        eggsInCompletedBatches += eggs;
+      }
 
       rowsHtml += `
         <tr>
@@ -2961,8 +2938,8 @@
           <td style="color:var(--violet); font-weight:bold;">${c7}</td>
           <td style="color:var(--amber); font-weight:bold;">${c14}</td>
           <td>${formatDisplayDate(calc.d21ISO)}</td>
-          <td><b>${hasChicks ? b.chicksHatched : '-'}</b></td>
-          <td style="color:var(--emerald); font-weight:bold;">${b.hatchRate ? b.hatchRate + '%' : '-'}</td>
+          <td><b>${hasChicks ? b.chicksHatched : '<span style="color:var(--text-secondary);">Running</span>'}</b></td>
+          <td style="color:var(--emerald); font-weight:bold;">${b.hatchRate ? b.hatchRate + '%' : '<span style="color:var(--brand);">Running</span>'}</td>
         </tr>
       `;
     });
@@ -2974,7 +2951,9 @@
       }
     });
 
-    const overallRate = totalEggs > 0 && totalChicks > 0 ? ((totalChicks / totalEggs) * 100).toFixed(1) + "%" : "-";
+    const overallRate = eggsInCompletedBatches > 0 && totalChicks > 0
+      ? ((totalChicks / eggsInCompletedBatches) * 100).toFixed(1) + "%"
+      : "-";
 
     const reportHtml = `
       <div style="text-align:center; margin-bottom:16px;">
@@ -3011,6 +2990,9 @@
             </tr>
           </tbody>
         </table>
+      </div>
+      <div style="font-size:0.70rem; color:var(--text-secondary); text-align:center; margin-top:8px;">
+        * Overall hatch rate tally is calculated strictly from hatched batches (${totalChicks} chicks / ${eggsInCompletedBatches} eggs set). Running trays are excluded from denominator.
       </div>
     `;
 
@@ -3148,6 +3130,25 @@
     document.getElementById('dataDisplayView').style.display = "block";
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
+  // AUTOMATIC CALENDAR & DATE WATCHDOG
+  let lastCheckedDateISO = getTodayISO();
+  function checkAndAutoRefreshDate() {
+    const currentToday = getTodayISO();
+    if (currentToday !== lastCheckedDateISO) {
+      lastCheckedDateISO = currentToday;
+      initTodayInputs();
+      renderCommandCenter();
+      renderLiveMetrics();
+      renderCalendar();
+    }
+  }
+
+  window.addEventListener('focus', checkAndAutoRefreshDate);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') checkAndAutoRefreshDate();
+  });
+  setInterval(checkAndAutoRefreshDate, 60000);
 
   // INITIAL RUNTIME STARTUP
   renderCollections();
