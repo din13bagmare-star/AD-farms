@@ -918,7 +918,6 @@
 
 <div class="container" id="mainDashboard">
 
-  <!-- TOP HEADER WITH SAFE-AREA PADDING CLEARANCE -->
   <div class="top-bar">
     <div class="brand-group">
       <div class="logo-box" id="logoContainer" onclick="triggerUploadOnce()">
@@ -936,7 +935,6 @@
     </div>
   </div>
 
-  <!-- COMMAND-FIRST HERO COMMAND BLOCK -->
   <div class="command-hero-banner" id="commandHeroBanner">
     <div class="hero-top-row">
       <div class="hero-title-group">
@@ -961,7 +959,6 @@
     </div>
   </div>
 
-  <!-- TELEMETRY STRIP: 4 LIVE OPERATIONAL HEADCOUNTS -->
   <div class="metrics-strip">
     <div class="metric-card" style="color: var(--emerald);">
       <div class="metric-lbl">CHICKS (&lt;45D)</div>
@@ -981,7 +978,6 @@
     </div>
   </div>
 
-  <!-- VERTICAL STACKED SCALING LIFETIME PRODUCTION AUDIT COUNTERS -->
   <div class="production-summary-strip">
     <div class="production-card">
       <span class="prod-lbl">LIFETIME EGGS PRODUCED</span>
@@ -993,7 +989,6 @@
     </div>
   </div>
 
-  <!-- RESERVOIR GAUGING CARD -->
   <div class="setter-progress-card" id="setterCard">
     <div class="setter-left">
       <span class="setter-tag">🥚 READY FOR SETTER</span>
@@ -1002,7 +997,6 @@
     <div class="setter-val" id="inventoryEggsDisplay">0</div>
   </div>
 
-  <!-- NAVIGATION TABS -->
   <div class="tab-bar">
     <button class="tab-btn active" onclick="goToSlide(0)">🗄️ Rack View</button>
     <button class="tab-btn" onclick="goToSlide(1)">🥚 Daily Eggs</button>
@@ -1011,7 +1005,6 @@
     <button class="tab-btn" onclick="goToSlide(4)">📅 Timeline</button>
   </div>
 
-  <!-- SLIDING MATRIX VIEWPORT -->
   <div class="swipe-viewport" id="swipeViewport">
     <div class="swipe-track" id="swipeTrack">
 
@@ -1199,7 +1192,7 @@
 
     <div style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1px solid var(--border-hairline); padding:14px 16px; border-radius:16px; cursor:default;">
       <div style="display:flex; align-items:center; gap:12px;">
-        <span style="font-size:1.3rem;">☁️️</span>
+        <span style="font-size:1.3rem;">☁</span>
         <div>
           <div style="font-weight:800; font-size:0.9rem;">Cloud Persistence</div>
           <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:500;">Encrypted Firestore Pipeline</div>
@@ -1692,7 +1685,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // TOUCH GESTURE ISOLATION ENGINE
   let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
   let isTouchInsideScrollableTable = false;
   const viewport = document.getElementById('swipeViewport');
@@ -1746,7 +1738,6 @@
   }
   checkAndLockLogo();
 
-  // STRAIGHT INTEGER DATE ADDITION RULES (D14 CANDLING, D18 LOCKDOWN, D21 PULL)
   function computeBatchDates(startDateISO) {
     const norm = toNormalizedISO(startDateISO) || getTodayISO();
     const parts = norm.split('-').map(Number);
@@ -1805,7 +1796,6 @@
     return Math.max(0, currentStock);
   }
 
-  // ROBUST HARDWARE SPATIAL OCCUPANCY PARSER (5 SETTERS T1-T5 + 1 HATCHER H1)
   function parseHardwareSpatialOccupancy() {
     const allSetters = ['T1', 'T2', 'T3', 'T4', 'T5'];
     const occupiedSetters = new Set();
@@ -1842,7 +1832,6 @@
     };
   }
 
-  // RENDER COMMAND CENTER - STRICTLY TIED TO CURRENT DEVICE CALENDAR DATE
   function renderCommandCenter() {
     const todayISO = getTodayISO();
     const parts = todayISO.split('-').map(Number);
@@ -1909,7 +1898,6 @@
     }
   }
 
-  // RECONCILIATION: 45D AGING, DEDUCTIVE SALES & BREEDER INFLOW
   function calculateReconciledFlock() {
     const todayISO = getTodayISO();
     let lifetimeChicksTotal = 0;
@@ -2090,6 +2078,24 @@
     const startDateISO = toNormalizedISO(dateInput);
     const liveTime = getLiveTimeString();
 
+    // 3-DAY SETTING GAP ENFORCEMENT
+    const newDateObj = new Date(startDateISO + "T00:00:00");
+    for (let b of batches) {
+      if (editDocId && b.id === editDocId) continue;
+      if (isBatchActive(b)) {
+        const existingDateISO = toNormalizedISO(b.startDate || b.rawDate);
+        if (existingDateISO) {
+          const exDateObj = new Date(existingDateISO + "T00:00:00");
+          const diffDays = Math.round(Math.abs(newDateObj - exDateObj) / (1000 * 60 * 60 * 24));
+          if (diffDays < 3) {
+            const conflictMsg = `⚠️️ Hatcher (H1) Collision Warning!\n\nBatch "${b.name}" is set on ${formatDisplayDate(existingDateISO)} (Lockdown D18: ${formatDisplayDate(addDaysToISO(existingDateISO, 18))}).\n\nSetting a batch on ${formatDisplayDate(startDateISO)} breaches the mandatory 3-day gap and will cause both batches to conflict in Hatcher H1!\n\nDo you still want to force override this warning?`;
+            if (!confirm(conflictMsg)) return;
+            break;
+          }
+        }
+      }
+    }
+
     const calc = computeBatchDates(startDateISO);
     const id = editDocId || ("batch_" + Date.now());
     const data = { 
@@ -2250,7 +2256,6 @@
     document.getElementById('cancelBtn').style.display = "none";
   }
 
-  // CUMULATIVE EGG LOG ENGINE WITH DIRECT-OVERWRITE EDIT SUPPORT
   let editingColId = null;
   function saveCollection() {
     const dateVal = document.getElementById('colDate').value || getTodayISO();
@@ -2815,7 +2820,7 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 1. EGG PRODUCTION AUDIT
+  // 1. EGG PRODUCTION AUDIT (OPTION A: PURE RECORDED DAYS AVERAGE CALCULATION)
   function displayEggDataReport() {
     const fromISO = document.getElementById('reportColFrom').value;
     const toISO = document.getElementById('reportColTo').value;
@@ -2828,12 +2833,15 @@
 
     if (filtered.length === 0) return alert("No egg collections recorded in this date range.");
 
+    const loggedDaysCount = filtered.length;
+
     let totalMorn = 0, totalAftn = 0, totalEve = 0, totalBroken = 0, grandTotal = 0;
     let rowsHtml = "";
 
     filtered.forEach(c => {
       const m = c.morning || 0, a = c.afternoon || 0, e = c.evening || 0, b = c.broken || 0, t = c.total || 0;
       totalMorn += m; totalAftn += a; totalEve += e; totalBroken += b; grandTotal += t;
+
       rowsHtml += `
         <tr>
           <td><b>${formatDisplayDate(c.date)}</b></td>
@@ -2849,15 +2857,25 @@
     let allTimeEggs = 0;
     collections.forEach(c => allTimeEggs += (parseInt(c.total, 10) || 0));
 
+    // Option A Math: Divided strictly by the number of recorded laying days
+    const avgMorn = (totalMorn / loggedDaysCount).toFixed(1);
+    const avgAftn = (totalAftn / loggedDaysCount).toFixed(1);
+    const avgEve = (totalEve / loggedDaysCount).toFixed(1);
+    const avgBroken = (totalBroken / loggedDaysCount).toFixed(1);
+    const overallDailyAvg = (grandTotal / loggedDaysCount).toFixed(1);
+
     const reportHtml = `
       <div style="text-align:center; margin-bottom:16px;">
         <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary); font-weight:800;">AD FARMS ; HERD &amp; HARVEST</h2>
         <div style="font-size:0.86rem; font-weight:bold; color:var(--emerald); margin-top:4px;">Egg Production Audit Report</div>
-        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Selected Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b></div>
-        <div style="font-size:0.85rem; font-weight:800; color:var(--brand); margin-top:6px;">Lifetime Permanent Total: ${allTimeEggs.toLocaleString()} Intact Eggs</div>
+        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Selected Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b> (${loggedDaysCount} Active Laying Days)</div>
+        <div style="font-size:0.85rem; font-weight:800; color:var(--brand); margin-top:6px;">
+          Range Intact: <b>${grandTotal.toLocaleString()}</b> | Daily Lay Yield: <b style="color:var(--emerald);">${overallDailyAvg} Eggs/Day</b>
+        </div>
+        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">All-Time Lifetime Production: <b>${allTimeEggs.toLocaleString()}</b> Intact Eggs</div>
       </div>
       <div class="table-wrap">
-        <table style="min-width: 520px;">
+        <table>
           <thead>
             <tr>
               <th style="background:var(--emerald); color:#fff;">Date</th>
@@ -2870,13 +2888,21 @@
           </thead>
           <tbody>
             ${rowsHtml}
-            <tr style="font-weight:bold; background:var(--card-surface-subtle);">
+            <tr style="font-weight:900; background:var(--card-surface-subtle); border-top:2px solid var(--border-strong);">
               <td>RANGE TOTALS</td>
               <td>${totalMorn}</td>
               <td>${totalAftn}</td>
               <td>${totalEve}</td>
               <td style="color:var(--crimson);">${totalBroken}</td>
               <td style="color:var(--brand);">${grandTotal}</td>
+            </tr>
+            <tr style="font-weight:900; background:var(--emerald-glow); color:var(--emerald);">
+              <td>DAILY AVERAGE</td>
+              <td>${avgMorn} / d</td>
+              <td>${avgAftn} / d</td>
+              <td>${avgEve} / d</td>
+              <td style="color:var(--crimson);">${avgBroken} / d</td>
+              <td style="color:var(--brand); font-size:0.95rem;">${overallDailyAvg} / d</td>
             </tr>
           </tbody>
         </table>
@@ -2890,7 +2916,7 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 2. INCUBATION BATCHES AUDIT (EXCLUSIVELY D14 CANDLING + HATCHED BATCHES TALLY)
+  // 2. INCUBATION BATCHES AUDIT
   function displayIncubationDataReport() {
     const sorted = [...batches].sort((a, b) => {
       return toNormalizedISO(a.startDate || a.rawDate).localeCompare(toNormalizedISO(b.startDate || b.rawDate));
