@@ -502,14 +502,13 @@
   }
   .batch-dates-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 6px;
     text-align: center;
     margin-bottom: 10px;
   }
   .date-pill { padding: 6px 4px; border-radius: 10px; }
   .date-pill.d1 { background: var(--brand-glow); color: var(--brand); }
-  .date-pill.d7 { background: var(--violet-glow); color: var(--violet); }
   .date-pill.d14 { background: var(--amber-glow); color: var(--amber); }
   .date-pill.d18 { background: var(--crimson-glow); color: var(--crimson); }
   .pill-lbl { font-size: 0.60rem; font-weight: 800; text-transform: uppercase; display: block; }
@@ -528,7 +527,7 @@
   }
   .batch-actions {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
     gap: 6px;
   }
   .btn-neutral {
@@ -919,6 +918,7 @@
 
 <div class="container" id="mainDashboard">
 
+  <!-- TOP HEADER WITH SAFE-AREA PADDING CLEARANCE -->
   <div class="top-bar">
     <div class="brand-group">
       <div class="logo-box" id="logoContainer" onclick="triggerUploadOnce()">
@@ -936,6 +936,7 @@
     </div>
   </div>
 
+  <!-- COMMAND-FIRST HERO COMMAND BLOCK -->
   <div class="command-hero-banner" id="commandHeroBanner">
     <div class="hero-top-row">
       <div class="hero-title-group">
@@ -960,6 +961,7 @@
     </div>
   </div>
 
+  <!-- TELEMETRY STRIP: 4 LIVE OPERATIONAL HEADCOUNTS -->
   <div class="metrics-strip">
     <div class="metric-card" style="color: var(--emerald);">
       <div class="metric-lbl">CHICKS (&lt;45D)</div>
@@ -979,6 +981,7 @@
     </div>
   </div>
 
+  <!-- VERTICAL STACKED SCALING LIFETIME PRODUCTION AUDIT COUNTERS -->
   <div class="production-summary-strip">
     <div class="production-card">
       <span class="prod-lbl">LIFETIME EGGS PRODUCED</span>
@@ -990,6 +993,7 @@
     </div>
   </div>
 
+  <!-- RESERVOIR GAUGING CARD -->
   <div class="setter-progress-card" id="setterCard">
     <div class="setter-left">
       <span class="setter-tag">🥚 READY FOR SETTER</span>
@@ -998,6 +1002,7 @@
     <div class="setter-val" id="inventoryEggsDisplay">0</div>
   </div>
 
+  <!-- NAVIGATION TABS -->
   <div class="tab-bar">
     <button class="tab-btn active" onclick="goToSlide(0)">🗄️ Rack View</button>
     <button class="tab-btn" onclick="goToSlide(1)">🥚 Daily Eggs</button>
@@ -1006,6 +1011,7 @@
     <button class="tab-btn" onclick="goToSlide(4)">📅 Timeline</button>
   </div>
 
+  <!-- SLIDING MATRIX VIEWPORT -->
   <div class="swipe-viewport" id="swipeViewport">
     <div class="swipe-track" id="swipeTrack">
 
@@ -1193,7 +1199,7 @@
 
     <div style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1px solid var(--border-hairline); padding:14px 16px; border-radius:16px; cursor:default;">
       <div style="display:flex; align-items:center; gap:12px;">
-        <span style="font-size:1.3rem;">☁️</span>
+        <span style="font-size:1.3rem;">☁️️</span>
         <div>
           <div style="font-weight:800; font-size:0.9rem;">Cloud Persistence</div>
           <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:500;">Encrypted Firestore Pipeline</div>
@@ -1740,14 +1746,13 @@
   }
   checkAndLockLogo();
 
-  // STRAIGHT INTEGER DATE ADDITION RULES (+18D LOCKDOWN, +21D PULL)
+  // STRAIGHT INTEGER DATE ADDITION RULES (D14 CANDLING, D18 LOCKDOWN, D21 PULL)
   function computeBatchDates(startDateISO) {
     const norm = toNormalizedISO(startDateISO) || getTodayISO();
     const parts = norm.split('-').map(Number);
     const base = new Date(parts[0], parts[1] - 1, parts[2]);
     return {
       d1ISO: norm,
-      d7ISO: addDaysToISO(norm, 6),
       d14ISO: addDaysToISO(norm, 13),
       d18ISO: addDaysToISO(norm, 18),
       d21ISO: addDaysToISO(norm, 21),
@@ -1816,7 +1821,6 @@
       const calc = sISO ? computeBatchDates(sISO) : null;
       const isOverdue = calc ? (todayISO > calc.d21ISO) : false;
 
-      // If shifted to Hatcher H1:
       if (b.inHatcher) {
         hatcherOccupiedBy.push({ name: b.name, isOverdue: isOverdue });
       } else {
@@ -1856,7 +1860,6 @@
       const calc = computeBatchDates(sISO);
       const isNotPulled = (b.chicksHatched === null || b.chicksHatched === undefined || b.chicksHatched === "");
 
-      if (todayISO === calc.d7ISO) actions.push(`• 🔍 <b>${b.name}</b>: D7 Candling`);
       if (todayISO === calc.d14ISO) actions.push(`• 🔍 <b>${b.name}</b>: D14 Candling`);
       if (todayISO === calc.d18ISO && !b.inHatcher) actions.push(`• 🐣 <b>${b.name}</b>: D18 Lockdown - Move to H1`);
       if (todayISO === calc.d21ISO && isNotPulled) actions.push(`• 🐥 <b>${b.name}</b>: D21 Pull Due`);
@@ -1993,11 +1996,10 @@
 
     batches.forEach(b => {
       const initialEggs = parseInt(b.eggs, 10) || 0;
-      const c7 = parseInt(b.candlingD7Cleared, 10) || 0;
       const c14 = parseInt(b.candlingD14Cleared, 10) || 0;
 
       if (isBatchActive(b)) {
-        currentIncubatorEggs += Math.max(0, initialEggs - c7 - c14);
+        currentIncubatorEggs += Math.max(0, initialEggs - c14);
       }
 
       const hasHatched = b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "";
@@ -2091,14 +2093,13 @@
     const calc = computeBatchDates(startDateISO);
     const id = editDocId || ("batch_" + Date.now());
     const data = { 
-      id: id, name: name, eggs: eggs, startDate: calc.d1ISO, d7Date: calc.d7ISO, d14Date: calc.d14ISO, d18Date: calc.d18ISO, d21Date: calc.d21ISO, growerPromotionDate: calc.growerPromotionISO, rawDate: calc.d1ISO, inHatcher: false
+      id: id, name: name, eggs: eggs, startDate: calc.d1ISO, d14Date: calc.d14ISO, d18Date: calc.d18ISO, d21Date: calc.d21ISO, growerPromotionDate: calc.growerPromotionISO, rawDate: calc.d1ISO, inHatcher: false
     };
 
     if (editDocId) {
       const idx = batches.findIndex(b => b.id === editDocId);
       if (idx !== -1) {
         data.setTime = batches[idx].setTime || liveTime;
-        data.candlingD7Cleared = batches[idx].candlingD7Cleared || 0;
         data.candlingD14Cleared = batches[idx].candlingD14Cleared || 0;
         data.chicksHatched = batches[idx].chicksHatched !== undefined ? batches[idx].chicksHatched : null;
         data.hatchRate = batches[idx].hatchRate !== undefined ? batches[idx].hatchRate : null;
@@ -2107,7 +2108,7 @@
       }
     } else {
       data.setTime = liveTime;
-      data.candlingD7Cleared = 0; data.candlingD14Cleared = 0; data.chicksHatched = null; data.hatchRate = null;
+      data.candlingD14Cleared = 0; data.chicksHatched = null; data.hatchRate = null;
       batches.unshift(data);
     }
 
@@ -2117,19 +2118,18 @@
     if (db) db.collection("batches").doc(id).set(data).catch(e => console.warn(e));
   }
 
-  function recordCandling(docId, dayNum) {
+  function recordCandlingD14(docId) {
     const b = batches.find(item => item.id === docId);
     if (!b) return;
-    const current = dayNum === 7 ? (b.candlingD7Cleared || 0) : (b.candlingD14Cleared || 0);
-    const val = prompt("Day " + dayNum + " Candling for \"" + b.name + "\":\nEnter eggs to remove:", current);
+    const current = (b.candlingD14Cleared || 0);
+    const val = prompt("Day 14 Candling for \"" + b.name + "\":\nEnter unfertilized/cleared eggs to remove:", current);
     if (val === null) return;
     const num = parseInt(val, 10);
     if (isNaN(num) || num < 0) return alert("Enter valid egg count.");
-    if (dayNum === 7) b.candlingD7Cleared = num;
-    else b.candlingD14Cleared = num;
+    b.candlingD14Cleared = num;
     syncToLocalStorage();
     renderBatches(); renderLiveMetrics();
-    if (db) db.collection("batches").doc(docId).update(dayNum === 7 ? { candlingD7Cleared: num } : { candlingD14Cleared: num }).catch(e => console.warn(e));
+    if (db) db.collection("batches").doc(docId).update({ candlingD14Cleared: num }).catch(e => console.warn(e));
   }
 
   function toggleHatcherShift(docId) {
@@ -2168,9 +2168,8 @@
     const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
     const calc = sISO ? computeBatchDates(sISO) : null;
     const initialEggs = parseInt(b.eggs, 10) || 0;
-    const c7 = parseInt(b.candlingD7Cleared, 10) || 0;
     const c14 = parseInt(b.candlingD14Cleared, 10) || 0;
-    const currentLiveInTray = Math.max(0, initialEggs - c7 - c14);
+    const currentLiveInTray = Math.max(0, initialEggs - c14);
     const rateText = b.hatchRate !== null && b.hatchRate !== undefined ? "<b style=\"color:var(--emerald);\">" + b.hatchRate + "%</b>" : "<span style=\"color:var(--brand); font-weight:bold;\">Running</span>";
     const chickCount = b.chicksHatched !== null && b.chicksHatched !== undefined ? "<b>" + b.chicksHatched + "</b> chicks" : "<span style=\"color:var(--text-secondary);\">" + currentLiveInTray + " in Rack</span>";
     const agingTag = (calc && b.chicksHatched) ? `<div style="font-size:0.62rem; color:var(--text-secondary); margin-top:2px;">45D Grower Promotion: <b>${formatDisplayDate(calc.growerPromotionISO)}</b></div>` : "";
@@ -2200,17 +2199,15 @@
         </div>
         <div class="batch-dates-grid">
           <div class="date-pill d1"><span class="pill-lbl">Set (D1)</span><span class="pill-val">${formatDisplayDate(calc ? calc.d1ISO : sISO)}</span></div>
-          <div class="date-pill d7"><span class="pill-lbl">Candle 1</span><span class="pill-val">${formatDisplayDate(calc ? calc.d7ISO : '')}</span></div>
-          <div class="date-pill d14"><span class="pill-lbl">Candle 2</span><span class="pill-val">${formatDisplayDate(calc ? calc.d14ISO : '')}</span></div>
+          <div class="date-pill d14"><span class="pill-lbl">Candle (D14)</span><span class="pill-val">${formatDisplayDate(calc ? calc.d14ISO : '')}</span></div>
           <div class="date-pill d18"><span class="pill-lbl">Lock (D18)</span><span class="pill-val">${formatDisplayDate(calc ? calc.d18ISO : '')}</span></div>
         </div>
         <div class="batch-results-bar">
-          <div>Candled: <b>-${c7 + c14}</b></div>
+          <div>Candled (D14): <b>-${c14}</b></div>
           <div>Harvest: ${chickCount} (${rateText})</div>
         </div>
         <div class="batch-actions">
-          <button class="btn-neutral" style="color:var(--violet);" onclick="recordCandling('${b.id}', 7)">🔍 D7</button>
-          <button class="btn-neutral" style="color:var(--amber);" onclick="recordCandling('${b.id}', 14)">🔍 D14</button>
+          <button class="btn-neutral" style="color:var(--amber);" onclick="recordCandlingD14('${b.id}')">🔍 D14</button>
           ${hatcherButtonHtml}
           <button class="btn-neutral" style="color:var(--emerald);" onclick="recordHatchResult('${b.id}')">🐥 Chicks</button>
         </div>
@@ -2253,6 +2250,7 @@
     document.getElementById('cancelBtn').style.display = "none";
   }
 
+  // CUMULATIVE EGG LOG ENGINE WITH DIRECT-OVERWRITE EDIT SUPPORT
   let editingColId = null;
   function saveCollection() {
     const dateVal = document.getElementById('colDate').value || getTodayISO();
@@ -2572,7 +2570,6 @@
         if (!sISO) return;
         const calc = computeBatchDates(sISO);
         if (cellISO === calc.d1ISO) dayEvents.push({ type: 'set', name: b.name });
-        if (cellISO === calc.d7ISO) dayEvents.push({ type: 'd7', name: b.name });
         if (cellISO === calc.d14ISO) dayEvents.push({ type: 'd14', name: b.name });
         if (cellISO === calc.d18ISO) dayEvents.push({ type: 'd18', name: b.name });
         if (cellISO === calc.d21ISO) dayEvents.push({ type: 'pull', name: b.name });
@@ -2604,13 +2601,11 @@
           if (ev.type === 'set') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">SET: " + ev.name + "</span>";
           else if (ev.type === 'd18') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">D18: " + ev.name + "</span>";
           else if (ev.type === 'pull') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">PULL: " + ev.name + "</span>";
-          else if (ev.type === 'd7') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.1); color:#ffffff;\">D7: " + ev.name + "</span>";
           else if (ev.type === 'd14') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.1); color:#ffffff;\">D14: " + ev.name + "</span>";
         } else {
           if (ev.type === 'set') content += "<span class=\"stage-tag\" style=\"background:var(--brand); color:#ffffff;\">SET: " + ev.name + "</span>";
           else if (ev.type === 'd18') content += "<span class=\"stage-tag\" style=\"background:var(--amber); color:#ffffff;\">D18: " + ev.name + "</span>";
           else if (ev.type === 'pull') content += "<span class=\"stage-tag\" style=\"background:var(--emerald); color:#ffffff;\">PULL: " + ev.name + "</span>";
-          else if (ev.type === 'd7') content += "<span class=\"stage-tag neutral-pill\">D7 Candling</span>";
           else if (ev.type === 'd14') content += "<span class=\"stage-tag neutral-pill\">D14 Candling</span>";
         }
       });
@@ -2643,7 +2638,6 @@
       if (!sISO) return;
       const calc = computeBatchDates(sISO);
       if (dateISO === calc.d1ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--brand);\"><b>🥚 SETTING DAY (DAY 1):</b> " + b.name + " (" + b.eggs + " eggs)</div>";
-      if (dateISO === calc.d7ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--text-secondary);\"><b>🔍 DAY 7 CANDLING:</b> " + b.name + "</div>";
       if (dateISO === calc.d14ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--text-secondary);\"><b>🔍 DAY 14 CANDLING:</b> " + b.name + "</div>";
       if (dateISO === calc.d18ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--amber);\"><b>🐣 DAY 18 LOCKDOWN:</b> " + b.name + "</div>";
       if (dateISO === calc.d21ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--emerald);\"><b>🐥 DAY 21 PULL:</b> " + b.name + "</div>";
@@ -2896,7 +2890,7 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 2. INCUBATION BATCHES AUDIT (EXACT HATCH RATE TALLY)
+  // 2. INCUBATION BATCHES AUDIT (EXCLUSIVELY D14 CANDLING + HATCHED BATCHES TALLY)
   function displayIncubationDataReport() {
     const sorted = [...batches].sort((a, b) => {
       return toNormalizedISO(a.startDate || a.rawDate).localeCompare(toNormalizedISO(b.startDate || b.rawDate));
@@ -2909,18 +2903,16 @@
     if (idxFrom > idxTo) { const temp = idxFrom; idxFrom = idxTo; idxTo = temp; }
 
     const selectedBatches = sorted.slice(idxFrom, idxTo + 1);
-    let totalEggs = 0, totalChicks = 0, totalD7 = 0, totalD14 = 0;
+    let totalEggs = 0, totalChicks = 0, totalD14 = 0;
     let eggsInCompletedBatches = 0;
     let rowsHtml = "";
 
     selectedBatches.forEach(b => {
       const sISO = toNormalizedISO(b.startDate || b.rawDate);
-      const calc = sISO ? computeBatchDates(sISO) : { d1ISO: '', d7ISO: '', d14ISO: '', d18ISO: '', d21ISO: '' };
+      const calc = sISO ? computeBatchDates(sISO) : { d1ISO: '', d14ISO: '', d18ISO: '', d21ISO: '' };
       const eggs = parseInt(b.eggs, 10) || 0;
-      const c7 = parseInt(b.candlingD7Cleared, 10) || 0;
       const c14 = parseInt(b.candlingD14Cleared, 10) || 0;
       totalEggs += eggs;
-      totalD7 += c7;
       totalD14 += c14;
 
       const hasChicks = (b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "");
@@ -2935,7 +2927,6 @@
           <td><b>${b.name}</b><br><small style="color:var(--text-secondary);">${b.setTime || 'Evening'}</small></td>
           <td>${eggs}</td>
           <td>${formatDisplayDate(calc.d1ISO)}</td>
-          <td style="color:var(--violet); font-weight:bold;">${c7}</td>
           <td style="color:var(--amber); font-weight:bold;">${c14}</td>
           <td>${formatDisplayDate(calc.d21ISO)}</td>
           <td><b>${hasChicks ? b.chicksHatched : '<span style="color:var(--text-secondary);">Running</span>'}</b></td>
@@ -2963,13 +2954,12 @@
         <div style="font-size:0.85rem; font-weight:800; color:var(--emerald); margin-top:6px;">Lifetime Chicks Produced All-Time: ${lifetimeChicks.toLocaleString()} Chicks</div>
       </div>
       <div class="table-wrap">
-        <table style="min-width: 660px;">
+        <table style="min-width: 620px;">
           <thead>
             <tr>
               <th style="background:var(--brand); color:#fff;">Batch</th>
               <th>Eggs</th>
               <th>Set Date</th>
-              <th>D7 Candled</th>
               <th>D14 Candled</th>
               <th>Pull Date</th>
               <th>Chicks</th>
@@ -2982,7 +2972,6 @@
               <td>TOTALS</td>
               <td>${totalEggs}</td>
               <td>-</td>
-              <td style="color:var(--violet);">${totalD7}</td>
               <td style="color:var(--amber);">${totalD14}</td>
               <td>-</td>
               <td>${totalChicks > 0 ? totalChicks : '-'}</td>
