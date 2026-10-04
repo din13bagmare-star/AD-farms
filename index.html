@@ -30,7 +30,6 @@
     --violet-glow: rgba(124, 58, 237, 0.18);
 
     --shadow-plate: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
-    --shadow-float: 0 14px 34px -2px rgba(2, 132, 199, 0.45);
   }
 
   body.dark-theme {
@@ -56,7 +55,6 @@
     --violet-glow: rgba(168, 85, 247, 0.22);
 
     --shadow-plate: 0 8px 24px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    --shadow-float: 0 12px 36px -4px rgba(0, 0, 0, 0.7);
   }
 
   * {
@@ -169,6 +167,11 @@
   .command-hero-banner.alert-active {
     border-left-color: var(--crimson);
   }
+  .command-hero-banner.lockdown-sealed {
+    border-left-color: #dc2626;
+    background: linear-gradient(180deg, var(--card-surface) 0%, rgba(220, 38, 38, 0.06) 100%);
+  }
+
   .hero-top-row {
     display: flex;
     justify-content: space-between;
@@ -194,12 +197,36 @@
     font-feature-settings: "tnum";
   }
   .hero-action-feed {
-    font-size: 0.84rem;
-    font-weight: 800;
+    font-size: 0.82rem;
+    font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 10px;
-    line-height: 1.4;
+    line-height: 1.45;
   }
+
+  .plan-card {
+    background: var(--card-surface-subtle);
+    border: 1px solid var(--border-hairline);
+    border-radius: 12px;
+    padding: 8px 10px;
+    margin: 5px 0;
+  }
+  .plan-card.plan-opt1 { border-left: 4px solid var(--emerald); }
+  .plan-card.plan-opt2 { border-left: 4px solid var(--brand); }
+  .plan-title {
+    font-size: 0.74rem;
+    font-weight: 900;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2px;
+  }
+  .plan-body {
+    font-size: 0.70rem;
+    color: var(--text-secondary);
+    line-height: 1.35;
+    font-weight: 600;
+  }
+
   .hardware-grid-hero {
     display: grid;
     grid-template-columns: 1fr;
@@ -512,7 +539,7 @@
   .date-pill.d14 { background: var(--amber-glow); color: var(--amber); }
   .date-pill.d18 { background: var(--crimson-glow); color: var(--crimson); }
   .pill-lbl { font-size: 0.60rem; font-weight: 800; text-transform: uppercase; display: block; }
-  .pill-val { font-size: 0.76rem; font-weight: 800; margin-top: 2px; display: block; font-feature-settings: "tnum"; }
+  .pill-val { font-size: 0.74rem; font-weight: 800; margin-top: 2px; display: block; font-feature-settings: "tnum"; }
   .batch-results-bar {
     display: flex;
     justify-content: space-between;
@@ -724,29 +751,11 @@
   .cal-cell:active { transform: scale(0.96); }
   .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; }
 
-  .stage-set {
-    background: var(--brand-glow) !important;
-    border: 1.5px solid var(--brand) !important;
-    color: var(--brand) !important;
-  }
-  .stage-d18 {
-    background: var(--amber-glow) !important;
-    border: 1.5px solid var(--amber) !important;
-    color: var(--amber) !important;
-  }
-  .stage-pull {
-    background: var(--emerald-glow) !important;
-    border: 1.5px solid var(--emerald) !important;
-    color: var(--emerald) !important;
-  }
-  .stage-overlap-black {
-    background: #000000 !important;
-    border: 1.5px solid #000000 !important;
-    color: #ffffff !important;
-  }
-  .stage-overlap-black span {
-    color: #ffffff !important;
-  }
+  .stage-set { background: var(--brand-glow) !important; border: 1.5px solid var(--brand) !important; color: var(--brand) !important; }
+  .stage-d18 { background: var(--amber-glow) !important; border: 1.5px solid var(--amber) !important; color: var(--amber) !important; }
+  .stage-pull { background: var(--emerald-glow) !important; border: 1.5px solid var(--emerald) !important; color: var(--emerald) !important; }
+  .stage-overlap-black { background: #000000 !important; border: 1.5px solid #000000 !important; color: #ffffff !important; }
+  .stage-overlap-black span { color: #ffffff !important; }
 
   .stage-tag {
     font-size: 0.50rem;
@@ -762,15 +771,8 @@
     text-overflow: ellipsis;
     display: block;
   }
-  .neutral-pill {
-    background: var(--card-surface-subtle);
-    color: var(--text-secondary);
-    border: 1px solid var(--border-hairline);
-  }
-  body.dark-theme .neutral-pill {
-    background: rgba(255, 255, 255, 0.08);
-    color: #cbd5e1;
-  }
+  .neutral-pill { background: var(--card-surface-subtle); color: var(--text-secondary); border: 1px solid var(--border-hairline); }
+  body.dark-theme .neutral-pill { background: rgba(255, 255, 255, 0.08); color: #cbd5e1; }
 
   .egg-badge {
     background: var(--card-surface-subtle);
@@ -910,6 +912,19 @@
     flex-shrink: 0;
   }
   .btn-report-back:active { transform: scale(0.92); }
+
+  .sim-box {
+    background: var(--card-surface-subtle);
+    border: 1.5px solid var(--border-hairline);
+    border-radius: 14px;
+    padding: 10px 12px;
+    margin: 10px 0 12px 0;
+    font-size: 0.76rem;
+    line-height: 1.45;
+  }
+  .sim-box.sim-danger { border-color: var(--crimson); background: rgba(220, 38, 38, 0.08); }
+  .sim-box.sim-ok { border-color: var(--emerald); background: rgba(5, 150, 105, 0.08); }
+  .sim-box.sim-warn { border-color: var(--amber); background: rgba(217, 119, 6, 0.08); }
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -944,7 +959,7 @@
     </div>
     
     <div id="heroTriggersFeed" class="hero-action-feed">
-      Scanning active tray matrix...
+      Scanning tray matrix &amp; 2D laying velocity...
     </div>
 
     <div class="hardware-grid-hero">
@@ -998,7 +1013,7 @@
   </div>
 
   <div class="tab-bar">
-    <button class="tab-btn active" onclick="goToSlide(0)">🗄️ Rack View</button>
+    <button class="tab-btn active" onclick="goToSlide(0)">🗄️️ Rack View</button>
     <button class="tab-btn" onclick="goToSlide(1)">🥚 Daily Eggs</button>
     <button class="tab-btn" onclick="goToSlide(2)">☠️ Mortality</button>
     <button class="tab-btn" onclick="goToSlide(3)">📝 Farm Ledger</button>
@@ -1114,7 +1129,7 @@
         </div>
       </div>
 
-      <!-- SLIDE 4: TIMELINE (3-COLOR PRIORITY CALENDAR) -->
+      <!-- SLIDE 4: TIMELINE -->
       <div class="swipe-slide" id="slide4">
         <div class="card" style="padding: 12px 10px;">
           <div class="cal-header">
@@ -1144,7 +1159,7 @@
 
 </div>
 
-<!-- HIGHLY ELEVATED QUICK LOG BUTTON -->
+<!-- QUICK LOG BUTTON -->
 <button class="fab-quick-log" onclick="openQuickLogModal()">
   <span>+ Quick Log</span>
 </button>
@@ -1159,7 +1174,7 @@
 
     <div class="settings-option" onclick="toggleThemeMode()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1px solid var(--border-hairline); padding:14px 16px; border-radius:16px; margin-bottom:10px; cursor:pointer;">
       <div style="display:flex; align-items:center; gap:12px;">
-        <span id="themeMenuIcon" style="font-size:1.3rem;">🌙</span>
+        <span id="themeMenuIcon" style="font-size:1.3rem;">☀</span>
         <div>
           <div style="font-weight:800; font-size:0.9rem;">Appearance Theme</div>
           <div id="themeMenuStatus" style="font-size:0.75rem; color:var(--text-secondary); font-weight:500;">Light Theme</div>
@@ -1218,7 +1233,7 @@
       <button class="sub-tab-btn" onclick="switchQuickLogTab('quickLedger', this)">📝 Ledger</button>
     </div>
 
-    <!-- 1. BATCH -->
+    <!-- 1. BATCH FORM (HOUR-EXACT + SIMULATION) -->
     <div id="quickBatchForm" class="quick-form-panel">
       <input type="hidden" id="editDocId" value="">
       <div class="form-row">
@@ -1227,17 +1242,24 @@
           <input type="text" id="bname" placeholder="e.g. B1T3 or B2(T4T5)">
         </div>
         <div style="flex: 0.6;">
-          <label>Count</label>
+          <label>Count (Max 102)</label>
           <input type="number" id="eggsSet" value="102" min="1" max="102">
         </div>
       </div>
       <div class="form-row">
-        <div>
+        <div style="flex: 1.1;">
           <label>Setting Date</label>
-          <input type="date" id="sdate">
+          <input type="date" id="sdate" onchange="runSettingSimulation()">
+        </div>
+        <div style="flex: 0.9;">
+          <label>Setting Time</label>
+          <input type="time" id="stime" onchange="runSettingSimulation()">
         </div>
       </div>
-      <button class="btn-submit" id="submitBtn" onclick="saveBatch()">Set Batch (Auto-Stamped)</button>
+
+      <div id="settingSimulationOutput" class="sim-box" style="display:none;"></div>
+
+      <button class="btn-submit" id="submitBtn" onclick="saveBatch()">Set Batch (Timestamped)</button>
       <button class="btn-cancel" id="cancelBtn" onclick="resetBatchForm()">Cancel</button>
     </div>
 
@@ -1394,7 +1416,7 @@
   </div>
 </div>
 
-<!-- DELETE CENTER MODAL (THE ONLY AUTHORIZED PLACE FOR DELETIONS) -->
+<!-- DELETE CENTER MODAL -->
 <div class="modal-overlay" id="deleteCenterModal" onclick="closeDeleteCenterModal(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <h3>
@@ -1466,7 +1488,7 @@
   </div>
 </div>
 
-<!-- AUDIT REPORT VIEW WITH COMPACT BACK ARROW BUTTON -->
+<!-- AUDIT REPORT VIEW -->
 <div class="container" id="dataDisplayView">
   <div style="display:flex; align-items:center; gap:12px; border-bottom:2px solid var(--border-strong); padding-bottom:10px; margin-bottom:14px;">
     <button class="btn-report-back" onclick="closeDataDisplay()" title="Return">◀</button>
@@ -1500,12 +1522,19 @@
     return hours + ":" + pad(minutes) + " " + ampm;
   }
 
+  function getLiveTime24() {
+    const d = new Date();
+    return pad(d.getHours()) + ":" + pad(d.getMinutes());
+  }
+
   function toNormalizedISO(input) {
     if (!input) return "";
     if (typeof input === 'object' && input.seconds) {
       return dateToISO(new Date(input.seconds * 1000));
     }
     let s = String(input).trim();
+    if (s.includes('T')) s = s.split('T')[0];
+    if (s.includes(' ')) s = s.split(' ')[0];
     if (s.includes('-')) {
       const parts = s.split('-');
       if (parts.length === 3 && parts[0].length === 4) {
@@ -1530,6 +1559,17 @@
     return parts[2] + "/" + parts[1] + "/" + parts[0];
   }
 
+  function formatDisplayDateTime(timestampMs) {
+    if (!timestampMs) return "-";
+    const d = new Date(timestampMs);
+    let hours = d.getHours();
+    const minutes = d.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    return pad(d.getDate()) + "/" + pad(d.getMonth() + 1) + " " + hours + ":" + pad(minutes) + " " + ampm;
+  }
+
   function addDaysToISO(isoStr, days) {
     const norm = toNormalizedISO(isoStr) || getTodayISO();
     const parts = norm.split('-').map(Number);
@@ -1551,7 +1591,7 @@
 
   function updateSettingsDisplay() {
     const isDark = document.body.classList.contains('dark-theme');
-    document.getElementById('themeMenuIcon').innerText = isDark ? '☀️' : '🌙';
+    document.getElementById('themeMenuIcon').innerText = isDark ? '☀' : '🌙';
     document.getElementById('themeMenuStatus').innerText = isDark ? 'Dark Theme' : 'Light Theme';
   }
 
@@ -1581,14 +1621,7 @@
   let collections = JSON.parse(localStorage.getItem("ad_farms_local_collections") || "[]");
   let batches = JSON.parse(localStorage.getItem("ad_farms_local_batches") || "[]");
   let mortality = JSON.parse(localStorage.getItem("ad_farms_local_mortality") || "[]");
-  
   let ledger = JSON.parse(localStorage.getItem("ad_farms_local_ledger") || "[]");
-  if (ledger.length === 0) {
-    ledger = [
-      { id: "ledg_init_1", date: "2026-09-11", category: "Sales", notes: "4 birds @ 3550", target: "Growers", qty: 4 },
-      { id: "ledg_init_2", date: "2026-09-10", category: "Sales", notes: "2 birds @ 2180", target: "Growers", qty: 2 }
-    ];
-  }
 
   let showArchived = false;
   let currentMortalitySection = 'All';
@@ -1603,6 +1636,7 @@
     const todayISO = getTodayISO();
     document.getElementById('colDate').value = todayISO;
     document.getElementById('sdate').value = todayISO;
+    document.getElementById('stime').value = getLiveTime24();
     document.getElementById('mortDate').value = todayISO;
     document.getElementById('ledgerDate').value = todayISO;
     const mr = document.getElementById('mortReason');
@@ -1653,12 +1687,7 @@
         const d = doc.data();
         cloudMort.push({ id: doc.id, ...d, reason: d.reason || "-" });
       });
-      if (cloudMort.length > 0) { 
-        mortality = cloudMort; 
-        syncToLocalStorage(); 
-        renderMortality(); 
-        renderLiveMetrics(); 
-      }
+      if (cloudMort.length > 0) { mortality = cloudMort; syncToLocalStorage(); renderMortality(); renderLiveMetrics(); }
     }, err => console.warn(err));
 
     db.collection("ledger").onSnapshot(snapshot => {
@@ -1666,7 +1695,6 @@
       snapshot.forEach(doc => cloudLedger.push({ id: doc.id, ...doc.data() }));
       if (cloudLedger.length > 0) { ledger = cloudLedger; syncToLocalStorage(); renderLedger(); renderLiveMetrics(); renderCalendar(); }
     }, err => console.warn(err));
-
   } catch(e) { console.warn("Offline fallback active", e); }
 
   let currentSlideIndex = 0;
@@ -1678,9 +1706,7 @@
     if (index > 4) index = 4;
     currentSlideIndex = index;
     swipeTrack.style.transform = "translateX(-" + (index * 20) + "%)";
-    tabButtons.forEach((btn, idx) => {
-      btn.classList.toggle('active', idx === index);
-    });
+    tabButtons.forEach((btn, idx) => { btn.classList.toggle('active', idx === index); });
     if (index === 4) renderCalendar();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -1692,24 +1718,14 @@
   viewport.addEventListener('touchstart', e => {
     touchStartX = e.changedTouches[0].screenX;
     touchStartY = e.changedTouches[0].screenY;
-
     const targetTableWrap = e.target.closest('.table-wrap');
-    if (targetTableWrap && targetTableWrap.scrollWidth > targetTableWrap.clientWidth) {
-      isTouchInsideScrollableTable = true;
-    } else {
-      isTouchInsideScrollableTable = false;
-    }
+    isTouchInsideScrollableTable = Boolean(targetTableWrap && targetTableWrap.scrollWidth > targetTableWrap.clientWidth);
   }, { passive: true });
 
   viewport.addEventListener('touchend', e => {
     touchEndX = e.changedTouches[0].screenX;
     touchEndY = e.changedTouches[0].screenY;
-
-    if (isTouchInsideScrollableTable) {
-      isTouchInsideScrollableTable = false;
-      return;
-    }
-
+    if (isTouchInsideScrollableTable) { isTouchInsideScrollableTable = false; return; }
     const diffX = touchStartX - touchEndX;
     const diffY = touchStartY - touchEndY;
     if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
@@ -1738,26 +1754,194 @@
   }
   checkAndLockLogo();
 
-  function computeBatchDates(startDateISO) {
-    const norm = toNormalizedISO(startDateISO) || getTodayISO();
-    const parts = norm.split('-').map(Number);
-    const base = new Date(parts[0], parts[1] - 1, parts[2]);
+  // -------------------------------------------------------------
+  // EXACT TEMPORAL LOGIC: 432h SETTER (18 FULL DAYS) + 72h LOCKDOWN
+  // -------------------------------------------------------------
+  function parseBatchStartTimestamp(startDateISO, timeStr) {
+    const sDate = toNormalizedISO(startDateISO) || getTodayISO();
+    let hours = 18, mins = 0;
+    if (timeStr) {
+      const t = String(timeStr).trim();
+      if (t.includes(':')) {
+        const parts = t.split(':');
+        hours = parseInt(parts[0], 10) || 0;
+        const sub = parts[1] ? parts[1].split(' ') : ['00'];
+        mins = parseInt(sub[0], 10) || 0;
+        if (t.toUpperCase().includes('PM') && hours < 12) hours += 12;
+        if (t.toUpperCase().includes('AM') && hours === 12) hours = 0;
+      }
+    }
+    const dParts = sDate.split('-').map(Number);
+    const d = new Date(dParts[0], dParts[1] - 1, dParts[2], hours, mins, 0, 0);
+    return d.getTime();
+  }
+
+  function computeBatchTimePhysics(startDateISO, timeStr) {
+    const startMs = parseBatchStartTimestamp(startDateISO, timeStr);
+    const d14Ms = startMs + (14 * 24 * 3600 * 1000); // Nominal 336h
+    const shiftD18CompletedMs = startMs + (18 * 24 * 3600 * 1000); // 432h Completed
+    const pullD21CompletedMs = startMs + (21 * 24 * 3600 * 1000); // 504h Completed
+    const promotion45DMs = pullD21CompletedMs + (45 * 24 * 3600 * 1000);
+
     return {
-      d1ISO: norm,
-      d14ISO: addDaysToISO(norm, 13),
-      d18ISO: addDaysToISO(norm, 18),
-      d21ISO: addDaysToISO(norm, 21),
-      growerPromotionISO: addDaysToISO(norm, 66),
-      d21EndTimestamp: new Date(base.getFullYear(), base.getMonth(), base.getDate() + 21, 23, 59, 59).getTime()
+      startMs: startMs,
+      d1ISO: toNormalizedISO(startDateISO),
+      d14Ms: d14Ms,
+      d14ISO: dateToISO(new Date(d14Ms)),
+      shiftD18CompletedMs: shiftD18CompletedMs,
+      shiftD18ISO: dateToISO(new Date(shiftD18CompletedMs)),
+      pullD21CompletedMs: pullD21CompletedMs,
+      pullD21ISO: dateToISO(new Date(pullD21CompletedMs)),
+      promotion45DMs: promotion45DMs,
+      promotion45DISO: dateToISO(new Date(promotion45DMs))
+    };
+  }
+
+  function getBatchStageInfo(b) {
+    const phys = computeBatchTimePhysics(b.startDate || b.rawDate, b.setTime);
+    const now = Date.now();
+    const hasHatched = (b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "");
+    const elapsedHours = Math.max(0, (now - phys.startMs) / (1000 * 3600));
+
+    let inActiveLockdown = false;
+    let isOverduePull = false;
+
+    if (!hasHatched) {
+      if (now >= phys.shiftD18CompletedMs && now < phys.pullD21CompletedMs) {
+        inActiveLockdown = true; // Hours 432 to 504 (Days 19–21)
+      } else if (now >= phys.pullD21CompletedMs) {
+        isOverduePull = true;
+      }
+    }
+
+    return {
+      physics: phys,
+      hasHatched: hasHatched,
+      elapsedHours: elapsedHours,
+      inActiveLockdown: inActiveLockdown,
+      isOverduePull: isOverduePull
     };
   }
 
   function isBatchActive(b) {
-    if (b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "") return false;
-    const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
-    if (!sISO) return false;
-    const calc = computeBatchDates(sISO);
-    return Date.now() <= calc.d21EndTimestamp;
+    const stage = getBatchStageInfo(b);
+    if (stage.hasHatched) return false;
+    return Date.now() <= (stage.physics.pullD21CompletedMs + (24 * 3600 * 1000));
+  }
+
+  // -------------------------------------------------------------
+  // 2D PREDICTIVE LOGIC: 70% WEEKLY / 30% MONTHLY + INTRA-DAY SLOTS
+  // -------------------------------------------------------------
+  function calculateDualHorizonPrediction() {
+    const today = new Date();
+    const ms7d = 7 * 24 * 3600 * 1000;
+    const ms30d = 30 * 24 * 3600 * 1000;
+
+    let eggs7d = 0, loggedDays7d = 0;
+    let eggs30d = 0, loggedDays30d = 0;
+    let sumMorn = 0, sumAftn = 0, sumEve = 0, sumTotalIntact = 0;
+
+    collections.forEach(c => {
+      const cDateISO = toNormalizedISO(c.date);
+      if (!cDateISO) return;
+      const dParts = cDateISO.split('-').map(Number);
+      const cMs = new Date(dParts[0], dParts[1] - 1, dParts[2]).getTime();
+      const diff = today.getTime() - cMs;
+      const totalGood = parseInt(c.total, 10) || 0;
+
+      const m = parseInt(c.morning, 10) || 0;
+      const a = parseInt(c.afternoon, 10) || 0;
+      const e = parseInt(c.evening, 10) || 0;
+
+      sumMorn += m; sumAftn += a; sumEve += e; sumTotalIntact += totalGood;
+
+      if (diff >= 0 && diff <= ms7d) {
+        eggs7d += totalGood;
+        if (totalGood > 0) loggedDays7d++;
+      }
+      if (diff >= 0 && diff <= ms30d) {
+        eggs30d += totalGood;
+        if (totalGood > 0) loggedDays30d++;
+      }
+    });
+
+    const vWeekly = loggedDays7d > 0 ? (eggs7d / Math.max(1, loggedDays7d)) : (eggs7d / 7);
+    const vMonthly = loggedDays30d > 0 ? (eggs30d / Math.max(1, loggedDays30d)) : (eggs30d / 30);
+    const fallbackV = 30;
+
+    let blendedLayVelocity = (vWeekly > 0 && vMonthly > 0)
+      ? ((0.70 * vWeekly) + (0.30 * vMonthly))
+      : (vWeekly > 0 ? vWeekly : (vMonthly > 0 ? vMonthly : fallbackV));
+
+    let pMorn = 0.50, pAftn = 0.30, pEve = 0.20;
+    if (sumTotalIntact > 20) {
+      pMorn = sumMorn / sumTotalIntact;
+      pAftn = sumAftn / sumTotalIntact;
+      pEve = sumEve / sumTotalIntact;
+    }
+
+    let candledRecent = 0, eggsRecent = 0;
+    let candled30d = 0, eggs30dBatches = 0;
+
+    const completedBatches = batches.filter(b => b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "");
+    const sortedCompleted = [...completedBatches].sort((a, b) => {
+      return parseBatchStartTimestamp(b.startDate || b.rawDate, b.setTime) - parseBatchStartTimestamp(a.startDate || a.rawDate, a.setTime);
+    });
+
+    sortedCompleted.slice(0, 3).forEach(b => {
+      candledRecent += (parseInt(b.candlingD14Cleared, 10) || 0);
+      eggsRecent += (parseInt(b.eggs, 10) || 102);
+    });
+
+    sortedCompleted.forEach(b => {
+      const sMs = parseBatchStartTimestamp(b.startDate || b.rawDate, b.setTime);
+      if (today.getTime() - sMs <= ms30d) {
+        candled30d += (parseInt(b.candlingD14Cleared, 10) || 0);
+        eggs30dBatches += (parseInt(b.eggs, 10) || 102);
+      }
+    });
+
+    const rWeekly = eggsRecent > 0 ? (candledRecent / eggsRecent) : 0.12;
+    const rMonthly = eggs30dBatches > 0 ? (candled30d / eggs30dBatches) : 0.12;
+    const blendedCandleDiscardRate = (0.70 * rWeekly) + (0.30 * rMonthly);
+
+    return {
+      vWeekly: vWeekly.toFixed(1),
+      vMonthly: vMonthly.toFixed(1),
+      blendedLayVelocity: parseFloat(blendedLayVelocity.toFixed(1)),
+      pMorn: pMorn,
+      pAftn: pAftn,
+      pEve: pEve,
+      blendedCandleDiscardRate: parseFloat(blendedCandleDiscardRate.toFixed(3))
+    };
+  }
+
+  function getRealTimeStockTrajectory() {
+    const baseInventory = calculateSlidingWindowInventory();
+    const todayISO = getTodayISO();
+    const todayCol = collections.find(c => toNormalizedISO(c.date) === todayISO);
+    const pred = calculateDualHorizonPrediction();
+
+    const loggedMorn = todayCol ? (parseInt(todayCol.morning, 10) || 0) : 0;
+    const loggedAftn = todayCol ? (parseInt(todayCol.afternoon, 10) || 0) : 0;
+    const loggedEve = todayCol ? (parseInt(todayCol.evening, 10) || 0) : 0;
+
+    let expectedRemainingToday = 0;
+    if (!todayCol || (loggedMorn === 0 && loggedAftn === 0 && loggedEve === 0)) {
+      expectedRemainingToday = pred.blendedLayVelocity;
+    } else if (loggedEve > 0) {
+      expectedRemainingToday = 0;
+    } else if (loggedAftn > 0) {
+      expectedRemainingToday = pred.blendedLayVelocity * pred.pEve;
+    } else if (loggedMorn > 0) {
+      expectedRemainingToday = pred.blendedLayVelocity * (pred.pAftn + pred.pEve);
+    }
+
+    return {
+      currentActualInHand: baseInventory,
+      projectedTonight: Math.round(baseInventory + expectedRemainingToday),
+      pendingRemainingToday: Math.round(expectedRemainingToday)
+    };
   }
 
   function calculateSlidingWindowInventory() {
@@ -1800,27 +1984,23 @@
     const allSetters = ['T1', 'T2', 'T3', 'T4', 'T5'];
     const occupiedSetters = new Set();
     const hatcherOccupiedBy = [];
-    const todayISO = getTodayISO();
 
     batches.forEach(b => {
-      const isPulled = (b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "");
-      if (isPulled) return;
-
+      const stage = getBatchStageInfo(b);
+      if (stage.hasHatched) return;
       const nameUpper = (b.name || "").toUpperCase();
-      const sISO = toNormalizedISO(b.startDate || b.rawDate);
-      const calc = sISO ? computeBatchDates(sISO) : null;
-      const isOverdue = calc ? (todayISO > calc.d21ISO) : false;
 
-      if (b.inHatcher) {
-        hatcherOccupiedBy.push({ name: b.name, isOverdue: isOverdue });
+      if (b.inHatcher || stage.inActiveLockdown || stage.isOverduePull) {
+        hatcherOccupiedBy.push({
+          name: b.name,
+          isOverdue: stage.isOverduePull,
+          inLockdown: stage.inActiveLockdown,
+          hoursElapsed: Math.round(stage.elapsedHours),
+          stage: stage
+        });
       } else {
         const matches = nameUpper.match(/T[1-5]/gi);
-        if (matches) {
-          matches.forEach(m => occupiedSetters.add(m.toUpperCase()));
-        }
-        if (calc && todayISO >= calc.d18ISO) {
-          hatcherOccupiedBy.push({ name: b.name + " (Pending Shift)", isOverdue: isOverdue });
-        }
+        if (matches) { matches.forEach(m => occupiedSetters.add(m.toUpperCase())); }
       }
     });
 
@@ -1832,7 +2012,11 @@
     };
   }
 
+  // -------------------------------------------------------------
+  // COMMAND CENTER: ACTIONABLE CONCISE BRIEF & SAFETY CONTROLS
+  // -------------------------------------------------------------
   function renderCommandCenter() {
+    const now = Date.now();
     const todayISO = getTodayISO();
     const parts = todayISO.split('-').map(Number);
     const dObj = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -1841,37 +2025,156 @@
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     document.getElementById('heroDateText').innerText = dayNames[dObj.getDay()] + ", " + dObj.getDate() + " " + monthNames[dObj.getMonth()];
 
-    let actions = [];
-    let hasUrgentAlert = false;
-    batches.forEach(b => {
-      const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
-      if (!sISO) return;
-      const calc = computeBatchDates(sISO);
-      const isNotPulled = (b.chicksHatched === null || b.chicksHatched === undefined || b.chicksHatched === "");
+    let isCabinetSealedNow = false;
+    let activeLockdownBatches = [];
+    let imminentShiftBatch = null;
+    let imminentPullBatch = null;
+    let candlingAlerts = [];
 
-      if (todayISO === calc.d14ISO) actions.push(`• 🔍 <b>${b.name}</b>: D14 Candling`);
-      if (todayISO === calc.d18ISO && !b.inHatcher) actions.push(`• 🐣 <b>${b.name}</b>: D18 Lockdown - Move to H1`);
-      if (todayISO === calc.d21ISO && isNotPulled) actions.push(`• 🐥 <b>${b.name}</b>: D21 Pull Due`);
-      if (todayISO > calc.d21ISO && isNotPulled) {
-        actions.push(`• 🔴 <b>${b.name}</b>: Overdue Hatcher Lock`);
-        hasUrgentAlert = true;
+    batches.forEach(b => {
+      if (!isBatchActive(b)) return;
+      const stage = getBatchStageInfo(b);
+      const phys = stage.physics;
+
+      if (stage.inActiveLockdown) {
+        isCabinetSealedNow = true;
+        activeLockdownBatches.push(b.name + ` (${Math.round(stage.elapsedHours)}h/504h)`);
       }
-      if (todayISO === calc.growerPromotionISO) actions.push(`• 🐓 <b>${b.name}</b>: Graduate 45D`);
+
+      // Check shift window
+      const hoursToShift = (phys.shiftD18CompletedMs - now) / (1000 * 3600);
+      if (hoursToShift <= 36 && hoursToShift >= -12 && !b.inHatcher && !stage.hasHatched) {
+        if (!imminentShiftBatch || hoursToShift < imminentShiftBatch.hours) {
+          imminentShiftBatch = { batch: b, hours: hoursToShift, stage: stage };
+        }
+      }
+
+      // Check pull window
+      const hoursToPull = (phys.pullD21CompletedMs - now) / (1000 * 3600);
+      if (hoursToPull <= 72 && hoursToPull >= -12 && !stage.hasHatched) {
+        if (!imminentPullBatch || hoursToPull < imminentPullBatch.hours) {
+          imminentPullBatch = { batch: b, hours: hoursToPull, stage: stage };
+        }
+      }
+
+      // Floating candling window (Day 13 to Day 15)
+      const hoursToD14 = (phys.d14Ms - now) / (1000 * 3600);
+      if (hoursToD14 >= -36 && hoursToD14 <= 36 && !b.candlingD14Cleared) {
+        candlingAlerts.push({ batch: b, hours: hoursToD14 });
+      }
     });
 
     const heroBanner = document.getElementById('commandHeroBanner');
     if (heroBanner) {
-      heroBanner.classList.toggle('alert-active', hasUrgentAlert);
-    }
-
-    const feedEl = document.getElementById('heroTriggersFeed');
-    if (actions.length > 0) {
-      feedEl.innerHTML = actions.join('<br>');
-    } else {
-      feedEl.innerHTML = '✨ Zero mandatory incubator triggers today. Routine observation.';
+      heroBanner.classList.toggle('lockdown-sealed', isCabinetSealedNow);
+      heroBanner.classList.toggle('alert-active', isCabinetSealedNow);
     }
 
     const spatial = parseHardwareSpatialOccupancy();
+    const traj = getRealTimeStockTrajectory();
+    const pred = calculateDualHorizonPrediction();
+    const targetTray = spatial.freeSetters.length > 0 ? spatial.freeSetters[0] : "Next Vacated Tray";
+
+    let feedHtml = "";
+
+    // 1. ACTIVE SEALED STATE (HOURS 432–504)
+    if (isCabinetSealedNow) {
+      feedHtml += `<div style="color:var(--crimson); font-weight:900; margin-bottom:4px;">🛑 CABINET SEALED: Lockdown in Progress (${activeLockdownBatches.join(', ')})</div>`;
+      feedHtml += `<div style="font-size:0.74rem; color:var(--text-secondary); margin-bottom:8px;">RH 65%–75%. Zero cabinet door access permitted. Hold eggs in cool storage.</div>`;
+    }
+
+    // 2. CANDLING SAFETY ADVISORY
+    if (candlingAlerts.length > 0) {
+      candlingAlerts.forEach(ca => {
+        if (isCabinetSealedNow) {
+          feedHtml += `<div style="color:var(--amber); font-size:0.75rem; margin-bottom:4px;">• 🔍 <b>${ca.batch.name}</b>: D14 Candling Due — <b>FLOATED to Pull Day</b> (Protects ongoing lockdown).</div>`;
+        } else {
+          feedHtml += `<div style="color:var(--brand); font-size:0.75rem; margin-bottom:4px;">• 🔍 <b>${ca.batch.name}</b>: D14 Candling Window (Flexible D13–D15). Access allowed today.</div>`;
+        }
+      });
+    }
+
+    // 3. ACTIONABLE INTELLIGENT FLIGHT PLAN
+    if (imminentShiftBatch) {
+      const bObj = imminentShiftBatch.batch;
+      const phys = imminentShiftBatch.stage.physics;
+      const shiftTimeDisplay = formatDisplayDateTime(phys.shiftD18CompletedMs);
+      const hoursLeft = Math.round(imminentShiftBatch.hours);
+
+      // Pre-Pone Calculation (Tonight at 432h Shift)
+      const projectedAtShift = (hoursLeft <= 12) ? traj.projectedTonight : (traj.currentActualInHand + Math.round((hoursLeft / 24) * pred.blendedLayVelocity));
+      const opt1Set = Math.min(102, projectedAtShift);
+      const opt1Carry = Math.max(0, projectedAtShift - 102);
+
+      // Post-Pone Calculation (Pull Day at 504h)
+      const pullTimeMs = phys.pullD21CompletedMs;
+      const pullTimeDisplay = formatDisplayDateTime(pullTimeMs);
+      const daysToPull = Math.max(1, (pullTimeMs - now) / (1000 * 3600 * 24));
+      const projectedAtPull = Math.round(traj.currentActualInHand + (daysToPull * pred.blendedLayVelocity));
+      const opt2Set = Math.min(102, projectedAtPull);
+      const opt2Carry = Math.max(0, projectedAtPull - 102);
+
+      feedHtml += `
+        <div style="font-size:0.76rem; font-weight:900; color:var(--brand); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:2px;">
+          🎯 Intelligent Setting Flight Plan
+        </div>
+        <div style="font-size:0.74rem; margin-bottom:6px; color:var(--text-primary);">
+          • <b>${bObj.name}</b>: Completes 18d (432h) in <b>${hoursLeft > 0 ? hoursLeft + 'h' : 'Due Now'}</b> (${shiftTimeDisplay}). Shift to H1.
+        </div>
+        
+        <div class="plan-card plan-opt1">
+          <div class="plan-title" style="color:var(--emerald);">
+            <span>👉 OPTION 1: PRE-PONE (Set at Shift)</span>
+            <span>${opt1Set} Set (${opt1Carry > 0 ? '+' + opt1Carry + ' Carry' : '0 Carry'})</span>
+          </div>
+          <div class="plan-body">
+            <b>Plan:</b> Set ${opt1Set} eggs in <b>${targetTray}</b> at <b>${shiftTimeDisplay}</b> in the SAME door opening as ${bObj.name} H1 shift.<br>
+            <b>Lockdown Safety:</b> Cabinet stays sealed for full 72h hatch. Zero shrink-wrap.
+          </div>
+        </div>
+
+        <div class="plan-card plan-opt2">
+          <div class="plan-title" style="color:var(--brand);">
+            <span>👉 OPTION 2: POST-PONE (Set at Pull)</span>
+            <span>${opt2Set} Set (+${opt2Carry} Carry)</span>
+          </div>
+          <div class="plan-body">
+            <b>Plan:</b> Hold collections until <b>${pullTimeDisplay}</b>. Load a full 102-egg tray immediately after harvesting ${bObj.name} chicks. Surplus (${opt2Carry} eggs) carries forward.
+          </div>
+        </div>
+
+        <div style="font-size:0.70rem; color:var(--crimson); font-weight:800; margin-top:3px;">
+          🛑 LOCKDOWN SEAL: Do not open cabinet between Shift and Pull (72h Hatch).
+        </div>
+      `;
+    } else if (imminentPullBatch && !isCabinetSealedNow) {
+      const bObj = imminentPullBatch.batch;
+      const phys = imminentPullBatch.stage.physics;
+      const pullTimeDisplay = formatDisplayDateTime(phys.pullD21CompletedMs);
+      const hoursToPull = Math.round(imminentPullBatch.hours);
+
+      feedHtml += `
+        <div style="font-size:0.76rem; font-weight:900; color:var(--emerald); margin-bottom:3px;">
+          🐥 HATCH HARVEST SCHEDULED: ${bObj.name}
+        </div>
+        <div style="font-size:0.72rem; color:var(--text-secondary);">
+          Pull due in <b>${hoursToPull}h</b> (${pullTimeDisplay}). After chicks are pulled and H1 sanitized, load Setter <b>${targetTray}</b>.
+        </div>
+      `;
+    } else if (!isCabinetSealedNow) {
+      feedHtml += `
+        <div style="font-size:0.76rem; font-weight:800; color:var(--emerald); margin-bottom:2px;">
+          ✨ Machine Clear • Standby Window Open
+        </div>
+        <div style="font-size:0.72rem; color:var(--text-secondary);">
+          In hand: <b>${traj.currentActualInHand} eggs</b> (Projected tonight: <b>${traj.projectedTonight} eggs</b>). Free setter trays: <b>${spatial.freeSetters.join(', ') || 'None'}</b>.
+        </div>
+      `;
+    }
+
+    document.getElementById('heroTriggersFeed').innerHTML = feedHtml;
+
+    // Hardware slot telemetry
     const setterMapEl = document.getElementById('heroSetterMap');
     if (setterMapEl) {
       if (spatial.freeSetters.length === 5 && spatial.occupiedSetters.length === 0) {
@@ -1888,7 +2191,9 @@
       if (spatial.hatcherOccupiedBy.length > 0) {
         const h = spatial.hatcherOccupiedBy[0];
         if (h.isOverdue) {
-          hatcherMapEl.innerHTML = `<span style="color:var(--crimson);">🔴 H1 Locked Overdue (${h.name})</span>`;
+          hatcherMapEl.innerHTML = `<span style="color:var(--crimson);">🔴 H1 Overdue Pull (${h.name})</span>`;
+        } else if (h.inLockdown) {
+          hatcherMapEl.innerHTML = `<span style="color:var(--crimson);">🔒 H1 SEALED (${h.name} @ ${h.hoursElapsed}h)</span>`;
         } else {
           hatcherMapEl.innerHTML = `<span style="color:var(--amber);">🟡 In H1: ${h.name}</span>`;
         }
@@ -1896,6 +2201,68 @@
         hatcherMapEl.innerHTML = `<span style="color:var(--emerald);">🟢 H1 Standby / Vacant</span>`;
       }
     }
+  }
+
+  // -------------------------------------------------------------
+  // WHAT-IF SIMULATION ENGINE IN QUICK LOG
+  // -------------------------------------------------------------
+  function runSettingSimulation() {
+    const sDate = document.getElementById('sdate').value || getTodayISO();
+    const sTime = document.getElementById('stime').value || getLiveTime24();
+    const eggCount = parseInt(document.getElementById('eggsSet').value, 10) || 102;
+    const outputEl = document.getElementById('settingSimulationOutput');
+    if (!outputEl) return;
+
+    const propPhysics = computeBatchTimePhysics(sDate, sTime);
+    const pred = calculateDualHorizonPrediction();
+    const expectedDiscard = Math.round(eggCount * pred.blendedCandleDiscardRate);
+    const expectedH1Load = Math.max(0, eggCount - expectedDiscard);
+
+    let conflicts = [];
+    let isSevere = false;
+
+    batches.forEach(b => {
+      if (!isBatchActive(b)) return;
+      const bStage = getBatchStageInfo(b);
+      const bPhys = bStage.physics;
+
+      // Check 3-day gap (72h)
+      const diffHours = Math.abs(propPhysics.startMs - bPhys.startMs) / (1000 * 3600);
+      if (diffHours < 72) {
+        conflicts.push(`Breaches 3-day hatcher gap with "${b.name}" (${Math.round(diffHours)}h apart). H1 conflict.`);
+        isSevere = true;
+      }
+
+      // Check setting inside an active lockdown
+      if (propPhysics.startMs >= bPhys.shiftD18CompletedMs && propPhysics.startMs <= bPhys.pullD21CompletedMs) {
+        conflicts.push(`Sets eggs inside Batch "${b.name}" lockdown. Cabinet door opening drops humidity.`);
+        isSevere = true;
+      }
+
+      // Check future Day 18 completion overlap
+      if (propPhysics.shiftD18CompletedMs >= bPhys.shiftD18CompletedMs && propPhysics.shiftD18CompletedMs <= bPhys.pullD21CompletedMs) {
+        conflicts.push(`When this batch reaches 18 full days (432h), Hatcher H1 will still be locked by "${b.name}".`);
+        isSevere = true;
+      }
+    });
+
+    outputEl.style.display = 'block';
+    outputEl.className = 'sim-box ' + (isSevere ? 'sim-danger' : (conflicts.length > 0 ? 'sim-warn' : 'sim-ok'));
+
+    let html = `<b>🔮 Projection for ${formatDisplayDate(sDate)} at ${sTime}:</b><br>`;
+    html += `• Eggs to Set: <b>${eggCount}</b> (Est. D14 Candling Removal: ~${expectedDiscard} eggs).<br>`;
+    html += `• Projected Fertile Eggs to H1 at 432h: <b>~${expectedH1Load}</b>.<br>`;
+    html += `• 18 Full Days (432h) completed: <b>${formatDisplayDateTime(propPhysics.shiftD18CompletedMs)}</b>.<br>`;
+    html += `• Hatch Pull (504h): <b>${formatDisplayDateTime(propPhysics.pullD21CompletedMs)}</b>.<br>`;
+
+    if (conflicts.length > 0) {
+      html += `<div style="color:var(--crimson); font-weight:800; margin-top:3px;">⚠️ Impact Assessment:</div>`;
+      conflicts.forEach(c => html += `• ${c}<br>`);
+    } else {
+      html += `<div style="color:var(--emerald); font-weight:800; margin-top:3px;">🟢 Zero Door / Lockdown Collisions for this timeline.</div>`;
+    }
+
+    outputEl.innerHTML = html;
   }
 
   function calculateReconciledFlock() {
@@ -1910,14 +2277,9 @@
         const hatchedCount = parseInt(b.chicksHatched, 10) || 0;
         lifetimeChicksTotal += hatchedCount;
 
-        const sISO = toNormalizedISO(b.startDate || b.rawDate);
-        if (sISO) {
-          const calc = computeBatchDates(sISO);
-          if (todayISO >= calc.growerPromotionISO) {
-            poolGrowersFromAging += hatchedCount;
-          } else {
-            poolChicksActive += hatchedCount;
-          }
+        const phys = computeBatchTimePhysics(b.startDate || b.rawDate, b.setTime);
+        if (Date.now() >= phys.promotion45DMs) {
+          poolGrowersFromAging += hatchedCount;
         } else {
           poolChicksActive += hatchedCount;
         }
@@ -1979,23 +2341,12 @@
 
   function renderLiveMetrics() {
     let currentIncubatorEggs = 0;
-    let completedInitialEggs = 0;
-    let completedChicksHatched = 0;
 
     batches.forEach(b => {
       const initialEggs = parseInt(b.eggs, 10) || 0;
       const c14 = parseInt(b.candlingD14Cleared, 10) || 0;
-
       if (isBatchActive(b)) {
         currentIncubatorEggs += Math.max(0, initialEggs - c14);
-      }
-
-      const hasHatched = b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "";
-      if (!isBatchActive(b) || hasHatched) {
-        if (hasHatched) {
-          completedInitialEggs += initialEggs;
-          completedChicksHatched += parseInt(b.chicksHatched, 10) || 0;
-        }
       }
     });
 
@@ -2015,25 +2366,23 @@
     document.getElementById('totalBreedersDeadSub').innerText = recon.breedersDead + " dead";
 
     let lifetimeEggsTotal = 0;
-    collections.forEach(c => {
-      lifetimeEggsTotal += (parseInt(c.total, 10) || 0);
-    });
+    collections.forEach(c => { lifetimeEggsTotal += (parseInt(c.total, 10) || 0); });
     document.getElementById('lifetimeEggsDisplay').innerText = lifetimeEggsTotal.toLocaleString();
     document.getElementById('lifetimeChicksDisplay').innerText = recon.lifetimeChicksTotal.toLocaleString();
 
-    const eggsAvailable = calculateSlidingWindowInventory();
-    document.getElementById('inventoryEggsDisplay').innerText = eggsAvailable;
+    const traj = getRealTimeStockTrajectory();
+    document.getElementById('inventoryEggsDisplay').innerText = traj.currentActualInHand;
 
-    const fillRatio = Math.min(100, Math.round((eggsAvailable / 102) * 100));
+    const fillRatio = Math.min(100, Math.round((traj.currentActualInHand / 102) * 100));
     document.getElementById('setterCard').style.setProperty('--progress-pct', fillRatio + '%');
 
-    if (eggsAvailable >= 102) {
-      const fullTrays = Math.floor(eggsAvailable / 102);
-      const remainder = eggsAvailable % 102;
-      document.getElementById('trayProgressSub').innerText = "✅ " + fullTrays + " Full Tray" + (fullTrays > 1 ? "s" : "") + " Ready (" + remainder + " rem)";
+    if (traj.currentActualInHand >= 80 && traj.currentActualInHand <= 110) {
+      document.getElementById('trayProgressSub').innerText = `⭐ Ready (${traj.currentActualInHand} in 80–110 buffer)`;
+    } else if (traj.currentActualInHand > 110) {
+      document.getElementById('trayProgressSub').innerText = `⚠️ Full (${traj.currentActualInHand} eggs - Set Now)`;
     } else {
-      const needed = 102 - eggsAvailable;
-      document.getElementById('trayProgressSub').innerText = eggsAvailable + " / 102 Tray Filled (" + needed + " needed)";
+      const needed = 80 - traj.currentActualInHand;
+      document.getElementById('trayProgressSub').innerText = `${traj.currentActualInHand} eggs (${needed} to reach 80 threshold)`;
     }
   }
 
@@ -2041,7 +2390,6 @@
     const cat = document.getElementById('ledgerCatSelect').value;
     const salesRow = document.getElementById('salesFieldsRow');
     const breederRow = document.getElementById('breederFieldsRow');
-    
     if (salesRow) salesRow.style.display = (cat === "Sales") ? "flex" : "none";
     if (breederRow) breederRow.style.display = (cat === "Breeders") ? "flex" : "none";
   }
@@ -2050,8 +2398,10 @@
     initTodayInputs();
     document.getElementById('quickLogModal').style.display = "flex";
     const buttons = document.querySelectorAll('#quickLogModal .sub-tab-btn');
-    if (tab === 'quickBatch' || !tab) switchQuickLogTab('quickBatch', buttons[0]);
-    else if (tab === 'quickEgg') switchQuickLogTab('quickEgg', buttons[1]);
+    if (tab === 'quickBatch' || !tab) {
+      switchQuickLogTab('quickBatch', buttons[0]);
+      runSettingSimulation();
+    } else if (tab === 'quickEgg') switchQuickLogTab('quickEgg', buttons[1]);
     else if (tab === 'quickMort') switchQuickLogTab('quickMort', buttons[2]);
     else if (tab === 'quickLedger') switchQuickLogTab('quickLedger', buttons[3]);
   }
@@ -2072,40 +2422,54 @@
 
   function saveBatch() {
     const name = document.getElementById('bname').value.trim() || "Tray";
-    const eggs = parseInt(document.getElementById('eggsSet').value, 10) || 102;
+    const eggs = Math.min(102, parseInt(document.getElementById('eggsSet').value, 10) || 102);
     const dateInput = document.getElementById('sdate').value || getTodayISO();
+    const timeInput = document.getElementById('stime').value || getLiveTime24();
     const editDocId = document.getElementById('editDocId').value;
     const startDateISO = toNormalizedISO(dateInput);
-    const liveTime = getLiveTimeString();
 
-    // 3-DAY SETTING GAP ENFORCEMENT
-    const newDateObj = new Date(startDateISO + "T00:00:00");
-    for (let b of batches) {
-      if (editDocId && b.id === editDocId) continue;
-      if (isBatchActive(b)) {
-        const existingDateISO = toNormalizedISO(b.startDate || b.rawDate);
-        if (existingDateISO) {
-          const exDateObj = new Date(existingDateISO + "T00:00:00");
-          const diffDays = Math.round(Math.abs(newDateObj - exDateObj) / (1000 * 60 * 60 * 24));
-          if (diffDays < 3) {
-            const conflictMsg = `⚠️️ Hatcher (H1) Collision Warning!\n\nBatch "${b.name}" is set on ${formatDisplayDate(existingDateISO)} (Lockdown D18: ${formatDisplayDate(addDaysToISO(existingDateISO, 18))}).\n\nSetting a batch on ${formatDisplayDate(startDateISO)} breaches the mandatory 3-day gap and will cause both batches to conflict in Hatcher H1!\n\nDo you still want to force override this warning?`;
-            if (!confirm(conflictMsg)) return;
-            break;
-          }
-        }
+    const propPhysics = computeBatchTimePhysics(startDateISO, timeInput);
+
+    let hasLockdownConflict = false;
+    batches.forEach(b => {
+      if (editDocId && b.id === editDocId) return;
+      if (!isBatchActive(b)) return;
+      const bStage = getBatchStageInfo(b);
+      const bPhys = bStage.physics;
+
+      if (propPhysics.startMs >= bPhys.shiftD18CompletedMs && propPhysics.startMs <= bPhys.pullD21CompletedMs) {
+        hasLockdownConflict = true;
+      }
+    });
+
+    if (hasLockdownConflict) {
+      if (!confirm("⚠️ WARNING: Setting eggs at this exact time breaches Batch Lockdown (Days 19–21). Cabinet humidity will drop and risk shrink-wrapping pipping chicks!\n\nDo you still choose to proceed with this entry?")) {
+        return;
       }
     }
 
-    const calc = computeBatchDates(startDateISO);
     const id = editDocId || ("batch_" + Date.now());
     const data = { 
-      id: id, name: name, eggs: eggs, startDate: calc.d1ISO, d14Date: calc.d14ISO, d18Date: calc.d18ISO, d21Date: calc.d21ISO, growerPromotionDate: calc.growerPromotionISO, rawDate: calc.d1ISO, inHatcher: false
+      id: id,
+      name: name,
+      eggs: eggs,
+      startDate: startDateISO,
+      setTime: timeInput,
+      startTimestampMs: propPhysics.startMs,
+      d14Date: propPhysics.d14ISO,
+      d14TimestampMs: propPhysics.d14Ms,
+      shiftD18Date: propPhysics.shiftD18ISO,
+      shiftD18TimestampMs: propPhysics.shiftD18CompletedMs,
+      pullD21Date: propPhysics.pullD21ISO,
+      pullD21TimestampMs: propPhysics.pullD21CompletedMs,
+      growerPromotionDate: propPhysics.promotion45DISO,
+      rawDate: startDateISO,
+      inHatcher: false
     };
 
     if (editDocId) {
       const idx = batches.findIndex(b => b.id === editDocId);
       if (idx !== -1) {
-        data.setTime = batches[idx].setTime || liveTime;
         data.candlingD14Cleared = batches[idx].candlingD14Cleared || 0;
         data.chicksHatched = batches[idx].chicksHatched !== undefined ? batches[idx].chicksHatched : null;
         data.hatchRate = batches[idx].hatchRate !== undefined ? batches[idx].hatchRate : null;
@@ -2113,7 +2477,6 @@
         batches[idx] = data;
       }
     } else {
-      data.setTime = liveTime;
       data.candlingD14Cleared = 0; data.chicksHatched = null; data.hatchRate = null;
       batches.unshift(data);
     }
@@ -2143,7 +2506,7 @@
     if (!b) return;
 
     if (!b.inHatcher) {
-      if (!confirm("Confirm shifting " + b.name + " to Hatcher basket (H1)?\n\nThis will immediately FREE its setting trays for new batches!")) return;
+      if (!confirm("Confirm shifting " + b.name + " to Hatcher basket (H1)?\n\nThis marks Day 18 (432h) complete and seals the machine for 72 hours.")) return;
       b.inHatcher = true;
     } else {
       if (!confirm("Move " + b.name + " back to Setters?")) return;
@@ -2171,23 +2534,24 @@
   }
 
   function buildBatchCardHtml(b, isArchived) {
-    const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
-    const calc = sISO ? computeBatchDates(sISO) : null;
+    const stage = getBatchStageInfo(b);
+    const phys = stage.physics;
     const initialEggs = parseInt(b.eggs, 10) || 0;
     const c14 = parseInt(b.candlingD14Cleared, 10) || 0;
     const currentLiveInTray = Math.max(0, initialEggs - c14);
     const rateText = b.hatchRate !== null && b.hatchRate !== undefined ? "<b style=\"color:var(--emerald);\">" + b.hatchRate + "%</b>" : "<span style=\"color:var(--brand); font-weight:bold;\">Running</span>";
     const chickCount = b.chicksHatched !== null && b.chicksHatched !== undefined ? "<b>" + b.chicksHatched + "</b> chicks" : "<span style=\"color:var(--text-secondary);\">" + currentLiveInTray + " in Rack</span>";
-    const agingTag = (calc && b.chicksHatched) ? `<div style="font-size:0.62rem; color:var(--text-secondary); margin-top:2px;">45D Grower Promotion: <b>${formatDisplayDate(calc.growerPromotionISO)}</b></div>` : "";
+    const agingTag = (b.chicksHatched) ? `<div style="font-size:0.62rem; color:var(--text-secondary); margin-top:2px;">45D Promotion: <b>${formatDisplayDate(phys.promotion45DISO)}</b></div>` : "";
 
-    const locationBadge = b.inHatcher
-      ? `<span style="font-size:0.68rem; font-weight:800; background:var(--amber-glow); color:var(--amber); padding:2px 8px; border-radius:8px;">🟡 In Hatcher H1 (Setters Free)</span>`
-      : `<span style="font-size:0.68rem; font-weight:800; background:var(--brand-glow); color:var(--brand); padding:2px 8px; border-radius:8px;">🔵 In Setters</span>`;
+    let locationBadge = `<span style="font-size:0.68rem; font-weight:800; background:var(--brand-glow); color:var(--brand); padding:2px 8px; border-radius:8px;">🔵 In Setters (${Math.round(stage.elapsedHours)}h)</span>`;
+    if (stage.inActiveLockdown || b.inHatcher) {
+      locationBadge = `<span style="font-size:0.68rem; font-weight:800; background:rgba(220,38,38,0.15); color:var(--crimson); padding:2px 8px; border-radius:8px;">🔒 In Hatcher H1 (Sealed)</span>`;
+    }
 
     const hatcherButtonHtml = !isArchived ? (
       b.inHatcher
         ? `<button class="btn-neutral" style="color:var(--text-secondary);" onclick="toggleHatcherShift('${b.id}')">↩ Setters</button>`
-        : `<button class="btn-neutral" style="color:var(--amber); font-weight:900;" onclick="toggleHatcherShift('${b.id}')">🐣 To H1</button>`
+        : `<button class="btn-neutral" style="color:var(--amber); font-weight:900;" onclick="toggleHatcherShift('${b.id}')">🐣 Shift H1</button>`
     ) : "";
 
     return `
@@ -2198,15 +2562,15 @@
               <span class="batch-title">${b.name} ${isArchived ? '<span style="font-size:0.65rem; color:var(--text-secondary);">(ARCHIVED)</span>' : '🟢'}</span>
               ${!isArchived ? locationBadge : ''}
             </div>
-            <div class="batch-time-tag" style="font-size:0.68rem; color:var(--text-secondary); font-weight:700;">Set at: <b>${b.setTime || 'Evening'}</b></div>
+            <div class="batch-time-tag" style="font-size:0.68rem; color:var(--text-secondary); font-weight:700;">Set: <b>${formatDisplayDateTime(phys.startMs)}</b></div>
             ${agingTag}
           </div>
           <span class="batch-eggs">${currentLiveInTray} / ${initialEggs} eggs</span>
         </div>
         <div class="batch-dates-grid">
-          <div class="date-pill d1"><span class="pill-lbl">Set (D1)</span><span class="pill-val">${formatDisplayDate(calc ? calc.d1ISO : sISO)}</span></div>
-          <div class="date-pill d14"><span class="pill-lbl">Candle (D14)</span><span class="pill-val">${formatDisplayDate(calc ? calc.d14ISO : '')}</span></div>
-          <div class="date-pill d18"><span class="pill-lbl">Lock (D18)</span><span class="pill-val">${formatDisplayDate(calc ? calc.d18ISO : '')}</span></div>
+          <div class="date-pill d1"><span class="pill-lbl">Set</span><span class="pill-val">${formatDisplayDate(phys.d1ISO)}</span></div>
+          <div class="date-pill d14"><span class="pill-lbl">Candle (D14)</span><span class="pill-val">${formatDisplayDate(phys.d14ISO)}</span></div>
+          <div class="date-pill d18"><span class="pill-lbl">Shift (432h)</span><span class="pill-val">${formatDisplayDate(phys.shiftD18ISO)}</span></div>
         </div>
         <div class="batch-results-bar">
           <div>Candled (D14): <b>-${c14}</b></div>
@@ -2233,10 +2597,10 @@
     });
 
     document.getElementById('noBatches').style.display = activeList.length === 0 ? "block" : "none";
-    activeList.sort((a, b) => toNormalizedISO(a.startDate || a.rawDate).localeCompare(toNormalizedISO(b.startDate || b.rawDate)));
+    activeList.sort((a, b) => parseBatchStartTimestamp(a.startDate || a.rawDate, a.setTime) - parseBatchStartTimestamp(b.startDate || b.rawDate, b.setTime));
     activeList.forEach(b => container.insertAdjacentHTML('beforeend', buildBatchCardHtml(b, false)));
 
-    archivedList.sort((a, b) => toNormalizedISO(b.startDate || b.rawDate).localeCompare(toNormalizedISO(a.startDate || a.rawDate)));
+    archivedList.sort((a, b) => parseBatchStartTimestamp(b.startDate || b.rawDate, b.setTime) - parseBatchStartTimestamp(a.startDate || a.rawDate, a.setTime));
     archivedList.forEach(b => archivedContainer.insertAdjacentHTML('beforeend', buildBatchCardHtml(b, true)));
     document.getElementById('toggleArchiveBtn').style.display = archivedList.length > 0 ? "inline-block" : "none";
   }
@@ -2251,9 +2615,12 @@
     document.getElementById('bname').value = "";
     document.getElementById('eggsSet').value = "102";
     document.getElementById('sdate').value = getTodayISO();
+    document.getElementById('stime').value = getLiveTime24();
     document.getElementById('editDocId').value = "";
-    document.getElementById('submitBtn').innerText = "Set Batch (Auto-Stamped)";
+    document.getElementById('submitBtn').innerText = "Set Batch (Timestamped)";
     document.getElementById('cancelBtn').style.display = "none";
+    const simBox = document.getElementById('settingSimulationOutput');
+    if (simBox) simBox.style.display = "none";
   }
 
   let editingColId = null;
@@ -2301,6 +2668,7 @@
     renderCollections();
     renderLiveMetrics();
     renderCalendar();
+    renderCommandCenter();
     closeQuickLogModal();
     if (db) db.collection("collections").doc(entry.id).set(entry).catch(err => console.warn(err));
   }
@@ -2571,29 +2939,28 @@
 
       let dayEvents = [];
       batches.forEach(b => {
-        const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
-        if (!sISO) return;
-        const calc = computeBatchDates(sISO);
-        if (cellISO === calc.d1ISO) dayEvents.push({ type: 'set', name: b.name });
-        if (cellISO === calc.d14ISO) dayEvents.push({ type: 'd14', name: b.name });
-        if (cellISO === calc.d18ISO) dayEvents.push({ type: 'd18', name: b.name });
-        if (cellISO === calc.d21ISO) dayEvents.push({ type: 'pull', name: b.name });
+        const stage = getBatchStageInfo(b);
+        const phys = stage.physics;
+        if (cellISO === phys.d1ISO) dayEvents.push({ type: 'set', name: b.name });
+        if (cellISO === phys.d14ISO) dayEvents.push({ type: 'd14', name: b.name });
+        if (cellISO === phys.shiftD18ISO) dayEvents.push({ type: 'shift', name: b.name });
+        if (cellISO === phys.pullD21ISO) dayEvents.push({ type: 'pull', name: b.name });
       });
 
       const colRecord = collections.find(c => toNormalizedISO(c.date) === cellISO);
       const ledgerOnDate = ledger.filter(l => toNormalizedISO(l.date) === cellISO);
 
       const hasSet = dayEvents.some(e => e.type === 'set');
-      const hasD18 = dayEvents.some(e => e.type === 'd18');
+      const hasShift = dayEvents.some(e => e.type === 'shift');
       const hasPull = dayEvents.some(e => e.type === 'pull');
 
-      const priorityEventCount = (hasSet ? 1 : 0) + (hasD18 ? 1 : 0) + (hasPull ? 1 : 0);
+      const priorityEventCount = (hasSet ? 1 : 0) + (hasShift ? 1 : 0) + (hasPull ? 1 : 0);
 
       if (priorityEventCount > 1) {
         cell.classList.add('stage-overlap-black');
       } else if (hasSet) {
         cell.classList.add('stage-set');
-      } else if (hasD18) {
+      } else if (hasShift) {
         cell.classList.add('stage-d18');
       } else if (hasPull) {
         cell.classList.add('stage-pull');
@@ -2604,12 +2971,12 @@
       dayEvents.forEach(ev => {
         if (priorityEventCount > 1) {
           if (ev.type === 'set') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">SET: " + ev.name + "</span>";
-          else if (ev.type === 'd18') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">D18: " + ev.name + "</span>";
+          else if (ev.type === 'shift') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">432h: " + ev.name + "</span>";
           else if (ev.type === 'pull') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">PULL: " + ev.name + "</span>";
           else if (ev.type === 'd14') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.1); color:#ffffff;\">D14: " + ev.name + "</span>";
         } else {
           if (ev.type === 'set') content += "<span class=\"stage-tag\" style=\"background:var(--brand); color:#ffffff;\">SET: " + ev.name + "</span>";
-          else if (ev.type === 'd18') content += "<span class=\"stage-tag\" style=\"background:var(--amber); color:#ffffff;\">D18: " + ev.name + "</span>";
+          else if (ev.type === 'shift') content += "<span class=\"stage-tag\" style=\"background:var(--amber); color:#ffffff;\">SHIFT: " + ev.name + "</span>";
           else if (ev.type === 'pull') content += "<span class=\"stage-tag\" style=\"background:var(--emerald); color:#ffffff;\">PULL: " + ev.name + "</span>";
           else if (ev.type === 'd14') content += "<span class=\"stage-tag neutral-pill\">D14 Candling</span>";
         }
@@ -2639,14 +3006,13 @@
     let html = "";
 
     batches.forEach(b => {
-      const sISO = toNormalizedISO(b.startDate || b.rawDate || b.labelD1);
-      if (!sISO) return;
-      const calc = computeBatchDates(sISO);
-      if (dateISO === calc.d1ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--brand);\"><b>🥚 SETTING DAY (DAY 1):</b> " + b.name + " (" + b.eggs + " eggs)</div>";
-      if (dateISO === calc.d14ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--text-secondary);\"><b>🔍 DAY 14 CANDLING:</b> " + b.name + "</div>";
-      if (dateISO === calc.d18ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--amber);\"><b>🐣 DAY 18 LOCKDOWN:</b> " + b.name + "</div>";
-      if (dateISO === calc.d21ISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--emerald);\"><b>🐥 DAY 21 PULL:</b> " + b.name + "</div>";
-      if (dateISO === calc.growerPromotionISO) html += "<div class=\"event-item\" style=\"border-left: 4px solid var(--brand);\"><b>🐓 45-DAY AGING:</b> " + b.name + " graduated from Chicks to Growers</div>";
+      const stage = getBatchStageInfo(b);
+      const phys = stage.physics;
+      if (dateISO === phys.d1ISO) html += `<div class="event-item" style="border-left: 4px solid var(--brand);"><b>🥚 SETTING:</b> ${b.name} (${b.eggs} eggs at ${formatDisplayDateTime(phys.startMs)})</div>`;
+      if (dateISO === phys.d14ISO) html += `<div class="event-item" style="border-left: 4px solid var(--text-secondary);"><b>🔍 DAY 14 CANDLING (Flexible D13-D15):</b> ${b.name}</div>`;
+      if (dateISO === phys.shiftD18ISO) html += `<div class="event-item" style="border-left: 4px solid var(--amber);"><b>🐣 18 FULL DAYS COMPLETED (432h):</b> ${b.name} shift to Hatcher H1 (${formatDisplayDateTime(phys.shiftD18CompletedMs)})</div>`;
+      if (dateISO === phys.pullD21ISO) html += `<div class="event-item" style="border-left: 4px solid var(--emerald);"><b>🐥 21 DAYS COMPLETED (504h):</b> ${b.name} Chick Pull (${formatDisplayDateTime(phys.pullD21CompletedMs)})</div>`;
+      if (dateISO === phys.promotion45DISO) html += `<div class="event-item" style="border-left: 4px solid var(--brand);"><b>🐓 45-DAY AGING:</b> ${b.name} graduated to Growers</div>`;
     });
 
     const col = collections.find(c => toNormalizedISO(c.date) === dateISO);
@@ -2728,7 +3094,7 @@
     const id = document.getElementById('delColSelect').value;
     if (!id || !confirm("Delete this egg record?")) return;
     collections = collections.filter(c => c.id !== id);
-    syncToLocalStorage(); renderCollections(); renderLiveMetrics(); renderCalendar();
+    syncToLocalStorage(); renderCollections(); renderLiveMetrics(); renderCalendar(); renderCommandCenter();
     if (db) db.collection("collections").doc(id).delete().catch(e => console.warn(e));
     openDeleteCenterModal();
   }
@@ -2788,7 +3154,7 @@
     bFrom.innerHTML = ""; bTo.innerHTML = "";
 
     const sortedBatches = [...batches].sort((a, b) => {
-      return toNormalizedISO(a.startDate || a.rawDate).localeCompare(toNormalizedISO(b.startDate || b.rawDate));
+      return parseBatchStartTimestamp(a.startDate || a.rawDate, a.setTime) - parseBatchStartTimestamp(b.startDate || b.rawDate, b.setTime);
     });
 
     sortedBatches.forEach((b, idx) => {
@@ -2820,7 +3186,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 1. EGG PRODUCTION AUDIT (OPTION A: PURE RECORDED DAYS AVERAGE CALCULATION)
   function displayEggDataReport() {
     const fromISO = document.getElementById('reportColFrom').value;
     const toISO = document.getElementById('reportColTo').value;
@@ -2857,7 +3222,6 @@
     let allTimeEggs = 0;
     collections.forEach(c => allTimeEggs += (parseInt(c.total, 10) || 0));
 
-    // Option A Math: Divided strictly by the number of recorded laying days
     const avgMorn = (totalMorn / loggedDaysCount).toFixed(1);
     const avgAftn = (totalAftn / loggedDaysCount).toFixed(1);
     const avgEve = (totalEve / loggedDaysCount).toFixed(1);
@@ -2916,10 +3280,9 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 2. INCUBATION BATCHES AUDIT
   function displayIncubationDataReport() {
     const sorted = [...batches].sort((a, b) => {
-      return toNormalizedISO(a.startDate || a.rawDate).localeCompare(toNormalizedISO(b.startDate || b.rawDate));
+      return parseBatchStartTimestamp(a.startDate || a.rawDate, a.setTime) - parseBatchStartTimestamp(b.startDate || b.rawDate, b.setTime);
     });
 
     if (sorted.length === 0) return alert("No batches recorded.");
@@ -2934,8 +3297,8 @@
     let rowsHtml = "";
 
     selectedBatches.forEach(b => {
-      const sISO = toNormalizedISO(b.startDate || b.rawDate);
-      const calc = sISO ? computeBatchDates(sISO) : { d1ISO: '', d14ISO: '', d18ISO: '', d21ISO: '' };
+      const stage = getBatchStageInfo(b);
+      const phys = stage.physics;
       const eggs = parseInt(b.eggs, 10) || 0;
       const c14 = parseInt(b.candlingD14Cleared, 10) || 0;
       totalEggs += eggs;
@@ -2952,9 +3315,9 @@
         <tr>
           <td><b>${b.name}</b><br><small style="color:var(--text-secondary);">${b.setTime || 'Evening'}</small></td>
           <td>${eggs}</td>
-          <td>${formatDisplayDate(calc.d1ISO)}</td>
+          <td>${formatDisplayDate(phys.d1ISO)}</td>
           <td style="color:var(--amber); font-weight:bold;">${c14}</td>
-          <td>${formatDisplayDate(calc.d21ISO)}</td>
+          <td>${formatDisplayDate(phys.pullD21ISO)}</td>
           <td><b>${hasChicks ? b.chicksHatched : '<span style="color:var(--text-secondary);">Running</span>'}</b></td>
           <td style="color:var(--emerald); font-weight:bold;">${b.hatchRate ? b.hatchRate + '%' : '<span style="color:var(--brand);">Running</span>'}</td>
         </tr>
@@ -3006,9 +3369,6 @@
           </tbody>
         </table>
       </div>
-      <div style="font-size:0.70rem; color:var(--text-secondary); text-align:center; margin-top:8px;">
-        * Overall hatch rate tally is calculated strictly from hatched batches (${totalChicks} chicks / ${eggsInCompletedBatches} eggs set). Running trays are excluded from denominator.
-      </div>
     `;
 
     document.getElementById('dataReportContent').innerHTML = reportHtml;
@@ -3018,7 +3378,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 3. ACTIVITIES & LEDGER AUDIT
   function displayActivityDataReport() {
     const fromISO = document.getElementById('reportActivityFrom').value;
     const toISO = document.getElementById('reportActivityTo').value;
@@ -3078,7 +3437,6 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // 4. FLOCK RECONCILIATION & 45-DAY AGING AUDIT
   function displayFlockReconciliationReport() {
     const recon = calculateReconciledFlock();
     
@@ -3129,14 +3487,6 @@
           </tbody>
         </table>
       </div>
-
-      <div style="font-size:0.75rem; color:var(--text-secondary); background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:12px; padding:12px; line-height:1.4;">
-        <b>Operational Audit Notes:</b><br>
-        • Chicks automatically mature and graduate to <b>Growers</b> on Day 66 (Day 21 Hatch + 45 days).<br>
-        • Transferring breeders from grower stock automatically deducts from your live grower headcount.<br>
-        • External stock breeders are added directly without adjusting homegrown stock.<br>
-        • Bird sales deduct from active stock while preserving permanent lifetime incubation output.
-      </div>
     `;
 
     document.getElementById('dataReportContent').innerHTML = reportHtml;
@@ -3146,7 +3496,7 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // AUTOMATIC CALENDAR & DATE WATCHDOG
+  // AUTOMATIC CALENDAR & REAL-TIME WATCHDOG
   let lastCheckedDateISO = getTodayISO();
   function checkAndAutoRefreshDate() {
     const currentToday = getTodayISO();
@@ -3156,6 +3506,8 @@
       renderCommandCenter();
       renderLiveMetrics();
       renderCalendar();
+    } else {
+      renderCommandCenter();
     }
   }
 
@@ -3165,7 +3517,7 @@
   });
   setInterval(checkAndAutoRefreshDate, 60000);
 
-  // INITIAL RUNTIME STARTUP
+  // INITIAL BOOT
   renderCollections();
   renderBatches();
   renderMortality();
