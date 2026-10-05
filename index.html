@@ -154,21 +154,20 @@
   }
   .btn-settings:active { transform: scale(0.92); }
 
+  /* POINTWISE TELEMETRY CARDS */
   .command-hero-banner {
     background: var(--card-surface);
     border: 2px solid var(--border-strong);
     border-left: 6px solid var(--brand);
     border-radius: 18px;
-    padding: 13px 15px;
+    padding: 13px 14px;
     margin-bottom: 12px;
     box-shadow: var(--shadow-plate);
     color: var(--text-primary);
   }
-  .command-hero-banner.alert-active {
-    border-left-color: var(--crimson);
-  }
+  .command-hero-banner.alert-active { border-left-color: var(--crimson); }
   .command-hero-banner.lockdown-sealed {
-    border-left-color: #dc2626;
+    border-left-color: var(--crimson);
     background: linear-gradient(180deg, var(--card-surface) 0%, rgba(220, 38, 38, 0.06) 100%);
   }
 
@@ -176,7 +175,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
   .hero-title-group h2 {
     margin: 0;
@@ -196,36 +195,57 @@
     border-radius: 10px;
     font-feature-settings: "tnum";
   }
-  .hero-action-feed {
-    font-size: 0.82rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 10px;
-    line-height: 1.45;
-  }
 
-  .plan-card {
+  .pointwise-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 10px;
+  }
+  .action-point-item {
     background: var(--card-surface-subtle);
     border: 1px solid var(--border-hairline);
     border-radius: 12px;
     padding: 8px 10px;
-    margin: 5px 0;
-  }
-  .plan-card.plan-opt1 { border-left: 4px solid var(--emerald); }
-  .plan-card.plan-opt2 { border-left: 4px solid var(--brand); }
-  .plan-title {
-    font-size: 0.74rem;
-    font-weight: 900;
+    font-size: 0.77rem;
+    line-height: 1.35;
     display: flex;
-    justify-content: space-between;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .action-point-item.point-hatch {
+    border-left: 4px solid var(--amber);
+    background: rgba(217, 119, 6, 0.06);
+  }
+  .action-point-item.point-lockdown {
+    border-left: 4px solid var(--crimson);
+    background: rgba(220, 38, 38, 0.08);
+  }
+  .action-point-item.point-candling {
+    border-left: 4px solid var(--violet);
+    background: rgba(124, 58, 237, 0.05);
+  }
+  .action-point-item.point-plan {
+    border-left: 4px solid var(--brand);
+    background: rgba(2, 132, 199, 0.05);
+  }
+
+  .point-icon { font-size: 1rem; flex-shrink: 0; line-height: 1.2; }
+  .point-content { flex: 1; }
+  .point-tag {
+    font-size: 0.60rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 6px;
     margin-bottom: 2px;
   }
-  .plan-body {
-    font-size: 0.70rem;
-    color: var(--text-secondary);
-    line-height: 1.35;
-    font-weight: 600;
-  }
+  .tag-lock { background: var(--crimson-glow); color: var(--crimson); }
+  .tag-shift { background: var(--amber-glow); color: var(--amber); }
+  .tag-candle { background: var(--violet-glow); color: var(--violet); }
+  .tag-plan { background: var(--brand-glow); color: var(--brand); }
 
   .hardware-grid-hero {
     display: grid;
@@ -536,7 +556,7 @@
   }
   .date-pill { padding: 6px 4px; border-radius: 10px; }
   .date-pill.d1 { background: var(--brand-glow); color: var(--brand); }
-  .date-pill.d14 { background: var(--amber-glow); color: var(--amber); }
+  .date-pill.d14 { background: var(--violet-glow); color: var(--violet); }
   .date-pill.d18 { background: var(--crimson-glow); color: var(--crimson); }
   .pill-lbl { font-size: 0.60rem; font-weight: 800; text-transform: uppercase; display: block; }
   .pill-val { font-size: 0.74rem; font-weight: 800; margin-top: 2px; display: block; font-feature-settings: "tnum"; }
@@ -950,16 +970,17 @@
     </div>
   </div>
 
+  <!-- POINTWISE OPERATIONAL TELEMETRY BOARD -->
   <div class="command-hero-banner" id="commandHeroBanner">
     <div class="hero-top-row">
       <div class="hero-title-group">
-        <h2>⚡ Today's Operation</h2>
+        <h2>⚡ Operational Telemetry</h2>
       </div>
       <div id="heroDateText" class="hero-date-pill">--</div>
     </div>
     
-    <div id="heroTriggersFeed" class="hero-action-feed">
-      Scanning tray matrix &amp; 2D laying velocity...
+    <div id="heroTriggersFeed" class="pointwise-stack">
+      <div style="font-size:0.75rem; color:var(--text-secondary); text-align:center; padding:6px 0;">Scanning telemetry matrix...</div>
     </div>
 
     <div class="hardware-grid-hero">
@@ -1013,9 +1034,9 @@
   </div>
 
   <div class="tab-bar">
-    <button class="tab-btn active" onclick="goToSlide(0)">🗄️️ Rack View</button>
+    <button class="tab-btn active" onclick="goToSlide(0)">🗄 Rack View</button>
     <button class="tab-btn" onclick="goToSlide(1)">🥚 Daily Eggs</button>
-    <button class="tab-btn" onclick="goToSlide(2)">☠️ Mortality</button>
+    <button class="tab-btn" onclick="goToSlide(2)">☠ Mortality</button>
     <button class="tab-btn" onclick="goToSlide(3)">📝 Farm Ledger</button>
     <button class="tab-btn" onclick="goToSlide(4)">📅 Timeline</button>
   </div>
@@ -1233,7 +1254,7 @@
       <button class="sub-tab-btn" onclick="switchQuickLogTab('quickLedger', this)">📝 Ledger</button>
     </div>
 
-    <!-- 1. BATCH FORM (HOUR-EXACT + SIMULATION) -->
+    <!-- 1. BATCH FORM -->
     <div id="quickBatchForm" class="quick-form-panel">
       <input type="hidden" id="editDocId" value="">
       <div class="form-row">
@@ -1390,9 +1411,7 @@
       <span id="modalDateTitle">Date Details</span>
       <button class="modal-close" onclick="closeDateDetails()">✕</button>
     </h3>
-    
     <div id="modalDetailsBody"></div>
-
     <div style="background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:14px; padding:12px; margin-top:12px;">
       <div style="font-size:0.82rem; font-weight:800; color:var(--violet); margin-bottom:6px;">📝 Append Entry on this Date</div>
       <div class="form-row">
@@ -1608,15 +1627,8 @@
     updateSettingsDisplay();
   }
 
-  function openReportFromSettings() {
-    closeSettingsModal();
-    openDataModal();
-  }
-
-  function openDeleteFromSettings() {
-    closeSettingsModal();
-    openDeleteCenterModal();
-  }
+  function openReportFromSettings() { closeSettingsModal(); openDataModal(); }
+  function openDeleteFromSettings() { closeSettingsModal(); openDeleteCenterModal(); }
 
   let collections = JSON.parse(localStorage.getItem("ad_farms_local_collections") || "[]");
   let batches = JSON.parse(localStorage.getItem("ad_farms_local_batches") || "[]");
@@ -1632,18 +1644,26 @@
   let curYear = todayDateObj.getFullYear();
   let curMonth = todayDateObj.getMonth();
 
+  function toggleLedgerDynamicFields() {
+    const el = document.getElementById('ledgerCatSelect');
+    if (!el) return;
+    const cat = el.value;
+    const salesRow = document.getElementById('salesFieldsRow');
+    const breederRow = document.getElementById('breederFieldsRow');
+    if (salesRow) salesRow.style.display = (cat === "Sales") ? "flex" : "none";
+    if (breederRow) breederRow.style.display = (cat === "Breeders") ? "flex" : "none";
+  }
+
   function initTodayInputs() {
     const todayISO = getTodayISO();
-    document.getElementById('colDate').value = todayISO;
-    document.getElementById('sdate').value = todayISO;
-    document.getElementById('stime').value = getLiveTime24();
-    document.getElementById('mortDate').value = todayISO;
-    document.getElementById('ledgerDate').value = todayISO;
-    const mr = document.getElementById('mortReason');
-    if (mr) mr.value = "";
+    const cDate = document.getElementById('colDate'); if (cDate) cDate.value = todayISO;
+    const sDate = document.getElementById('sdate'); if (sDate) sDate.value = todayISO;
+    const sTime = document.getElementById('stime'); if (sTime) sTime.value = getLiveTime24();
+    const mDate = document.getElementById('mortDate'); if (mDate) mDate.value = todayISO;
+    const lDate = document.getElementById('ledgerDate'); if (lDate) lDate.value = todayISO;
+    const mr = document.getElementById('mortReason'); if (mr) mr.value = "";
     toggleLedgerDynamicFields();
   }
-  initTodayInputs();
 
   function syncToLocalStorage() {
     localStorage.setItem("ad_farms_local_collections", JSON.stringify(collections));
@@ -1755,7 +1775,7 @@
   checkAndLockLogo();
 
   // -------------------------------------------------------------
-  // EXACT TEMPORAL LOGIC: 432h SETTER (18 FULL DAYS) + 72h LOCKDOWN
+  // TEMPORAL LOGIC: 432h SETTER (18 FULL DAYS) + 72h LOCKDOWN
   // -------------------------------------------------------------
   function parseBatchStartTimestamp(startDateISO, timeStr) {
     const sDate = toNormalizedISO(startDateISO) || getTodayISO();
@@ -1776,9 +1796,67 @@
     return d.getTime();
   }
 
-  function computeBatchTimePhysics(startDateISO, timeStr) {
+  // DIRECT BATCH ACTIVITY CHECK (STOPS RECURSION)
+  function isBatchActiveDirect(b) {
+    if (!b) return false;
+    if (b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "") return false;
+    const sMs = parseBatchStartTimestamp(b.startDate || b.rawDate, b.setTime);
+    const pullMs = sMs + (21 * 24 * 3600 * 1000);
+    return Date.now() <= (pullMs + (24 * 3600 * 1000));
+  }
+
+  // RESOLVES SINGLE BEST-FIT CANDLING DAY (SAFE NON-RECURSIVE)
+  function resolveOptimalCandlingDay(batchStartMs, batchId) {
+    const d13Ms = batchStartMs + (13 * 24 * 3600 * 1000);
+    const d14Ms = batchStartMs + (14 * 24 * 3600 * 1000);
+    const d15Ms = batchStartMs + (15 * 24 * 3600 * 1000);
+
+    const candidates = [
+      { day: 13, iso: dateToISO(new Date(d13Ms)), ms: d13Ms },
+      { day: 14, iso: dateToISO(new Date(d14Ms)), ms: d14Ms },
+      { day: 15, iso: dateToISO(new Date(d15Ms)), ms: d15Ms }
+    ];
+
+    if (!batches || batches.length === 0) return candidates[1];
+
+    const otherBatches = batches.filter(b => b.id !== batchId && isBatchActiveDirect(b));
+
+    // Rule 1: Consolidate with door opening of another batch (Shift at 18d or Pull at 21d)
+    for (let c of candidates) {
+      for (let ob of otherBatches) {
+        const obStart = parseBatchStartTimestamp(ob.startDate || ob.rawDate, ob.setTime);
+        const obShiftISO = dateToISO(new Date(obStart + (18 * 24 * 3600 * 1000)));
+        const obPullISO = dateToISO(new Date(obStart + (21 * 24 * 3600 * 1000)));
+        if (c.iso === obShiftISO || c.iso === obPullISO) {
+          return c;
+        }
+      }
+    }
+
+    // Rule 2: Avoid Days 19-20 lockdown collision of another batch
+    const safeCandidates = candidates.filter(c => {
+      for (let ob of otherBatches) {
+        const obStart = parseBatchStartTimestamp(ob.startDate || ob.rawDate, ob.setTime);
+        const obShiftMs = obStart + (18 * 24 * 3600 * 1000);
+        const obPullMs = obStart + (21 * 24 * 3600 * 1000);
+        if (c.ms >= obShiftMs && c.ms < obPullMs) {
+          return false;
+        }
+      }
+      return true;
+    });
+
+    if (safeCandidates.length > 0) {
+      const pref14 = safeCandidates.find(sc => sc.day === 14);
+      return pref14 || safeCandidates[0];
+    }
+
+    return candidates[1];
+  }
+
+  function computeBatchTimePhysics(startDateISO, timeStr, batchId) {
     const startMs = parseBatchStartTimestamp(startDateISO, timeStr);
-    const d14Ms = startMs + (14 * 24 * 3600 * 1000); // Nominal 336h
+    const optimalCandle = resolveOptimalCandlingDay(startMs, batchId);
     const shiftD18CompletedMs = startMs + (18 * 24 * 3600 * 1000); // 432h Completed
     const pullD21CompletedMs = startMs + (21 * 24 * 3600 * 1000); // 504h Completed
     const promotion45DMs = pullD21CompletedMs + (45 * 24 * 3600 * 1000);
@@ -1786,8 +1864,9 @@
     return {
       startMs: startMs,
       d1ISO: toNormalizedISO(startDateISO),
-      d14Ms: d14Ms,
-      d14ISO: dateToISO(new Date(d14Ms)),
+      d14Ms: optimalCandle.ms,
+      d14ISO: optimalCandle.iso,
+      d14OffsetDay: optimalCandle.day,
       shiftD18CompletedMs: shiftD18CompletedMs,
       shiftD18ISO: dateToISO(new Date(shiftD18CompletedMs)),
       pullD21CompletedMs: pullD21CompletedMs,
@@ -1798,7 +1877,7 @@
   }
 
   function getBatchStageInfo(b) {
-    const phys = computeBatchTimePhysics(b.startDate || b.rawDate, b.setTime);
+    const phys = computeBatchTimePhysics(b.startDate || b.rawDate, b.setTime, b.id);
     const now = Date.now();
     const hasHatched = (b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "");
     const elapsedHours = Math.max(0, (now - phys.startMs) / (1000 * 3600));
@@ -1808,7 +1887,7 @@
 
     if (!hasHatched) {
       if (now >= phys.shiftD18CompletedMs && now < phys.pullD21CompletedMs) {
-        inActiveLockdown = true; // Hours 432 to 504 (Days 19–21)
+        inActiveLockdown = true; // 432h to 504h
       } else if (now >= phys.pullD21CompletedMs) {
         isOverduePull = true;
       }
@@ -1824,13 +1903,11 @@
   }
 
   function isBatchActive(b) {
-    const stage = getBatchStageInfo(b);
-    if (stage.hasHatched) return false;
-    return Date.now() <= (stage.physics.pullD21CompletedMs + (24 * 3600 * 1000));
+    return isBatchActiveDirect(b);
   }
 
   // -------------------------------------------------------------
-  // 2D PREDICTIVE LOGIC: 70% WEEKLY / 30% MONTHLY + INTRA-DAY SLOTS
+  // 2D PROBABILISTIC PREDICTION ENGINE (70% WEEKLY / 30% MONTHLY)
   // -------------------------------------------------------------
   function calculateDualHorizonPrediction() {
     const today = new Date();
@@ -1855,14 +1932,8 @@
 
       sumMorn += m; sumAftn += a; sumEve += e; sumTotalIntact += totalGood;
 
-      if (diff >= 0 && diff <= ms7d) {
-        eggs7d += totalGood;
-        if (totalGood > 0) loggedDays7d++;
-      }
-      if (diff >= 0 && diff <= ms30d) {
-        eggs30d += totalGood;
-        if (totalGood > 0) loggedDays30d++;
-      }
+      if (diff >= 0 && diff <= ms7d) { eggs7d += totalGood; if (totalGood > 0) loggedDays7d++; }
+      if (diff >= 0 && diff <= ms30d) { eggs30d += totalGood; if (totalGood > 0) loggedDays30d++; }
     });
 
     const vWeekly = loggedDays7d > 0 ? (eggs7d / Math.max(1, loggedDays7d)) : (eggs7d / 7);
@@ -1937,10 +2008,34 @@
       expectedRemainingToday = pred.blendedLayVelocity * (pred.pAftn + pred.pEve);
     }
 
+    // Age of oldest un-set pot
+    let oldestPotDays = 0;
+    const chronologicalBatches = [...batches]
+      .map(b => ({ normalizedDate: toNormalizedISO(b.startDate || b.rawDate || b.labelD1) }))
+      .filter(b => Boolean(b.normalizedDate))
+      .sort((a, b) => a.normalizedDate.localeCompare(b.normalizedDate));
+
+    let windowStart = INITIAL_ANCHOR_DATE;
+    if (chronologicalBatches.length > 0) {
+      windowStart = chronologicalBatches[chronologicalBatches.length - 1].normalizedDate;
+    }
+
+    const unSetCollections = collections
+      .filter(c => toNormalizedISO(c.date) > windowStart && (parseInt(c.total, 10) || 0) > 0)
+      .sort((a, b) => toNormalizedISO(a.date).localeCompare(toNormalizedISO(b.date)));
+
+    if (unSetCollections.length > 0) {
+      const oldestDateISO = toNormalizedISO(unSetCollections[0].date);
+      const dParts = oldestDateISO.split('-').map(Number);
+      const oldestMs = new Date(dParts[0], dParts[1] - 1, dParts[2]).getTime();
+      oldestPotDays = Math.max(0, (Date.now() - oldestMs) / (1000 * 3600 * 24));
+    }
+
     return {
       currentActualInHand: baseInventory,
       projectedTonight: Math.round(baseInventory + expectedRemainingToday),
-      pendingRemainingToday: Math.round(expectedRemainingToday)
+      pendingRemainingToday: Math.round(expectedRemainingToday),
+      oldestPotDays: parseFloat(oldestPotDays.toFixed(1))
     };
   }
 
@@ -1986,8 +2081,8 @@
     const hatcherOccupiedBy = [];
 
     batches.forEach(b => {
+      if (!isBatchActiveDirect(b)) return;
       const stage = getBatchStageInfo(b);
-      if (stage.hasHatched) return;
       const nameUpper = (b.name || "").toUpperCase();
 
       if (b.inHatcher || stage.inActiveLockdown || stage.isOverduePull) {
@@ -2013,7 +2108,10 @@
   }
 
   // -------------------------------------------------------------
-  // COMMAND CENTER: ACTIONABLE CONCISE BRIEF & SAFETY CONTROLS
+  // REVISED POINTWISE TELEMETRY BOARD
+  // Priority 1: Hatching Lockdown / Shift
+  // Priority 2: Candling (Notified strictly on the chosen day)
+  // Priority 3: Intelligent Setting Plan (3 Exact Conditions)
   // -------------------------------------------------------------
   function renderCommandCenter() {
     const now = Date.now();
@@ -2029,16 +2127,16 @@
     let activeLockdownBatches = [];
     let imminentShiftBatch = null;
     let imminentPullBatch = null;
-    let candlingAlerts = [];
+    let candlingDueToday = [];
 
     batches.forEach(b => {
-      if (!isBatchActive(b)) return;
+      if (!isBatchActiveDirect(b)) return;
       const stage = getBatchStageInfo(b);
       const phys = stage.physics;
 
       if (stage.inActiveLockdown) {
         isCabinetSealedNow = true;
-        activeLockdownBatches.push(b.name + ` (${Math.round(stage.elapsedHours)}h/504h)`);
+        activeLockdownBatches.push({ name: b.name, hours: Math.round(stage.elapsedHours) });
       }
 
       // Check shift window
@@ -2051,16 +2149,15 @@
 
       // Check pull window
       const hoursToPull = (phys.pullD21CompletedMs - now) / (1000 * 3600);
-      if (hoursToPull <= 72 && hoursToPull >= -12 && !stage.hasHatched) {
+      if (hoursToPull <= 36 && hoursToPull >= -12 && !stage.hasHatched) {
         if (!imminentPullBatch || hoursToPull < imminentPullBatch.hours) {
           imminentPullBatch = { batch: b, hours: hoursToPull, stage: stage };
         }
       }
 
-      // Floating candling window (Day 13 to Day 15)
-      const hoursToD14 = (phys.d14Ms - now) / (1000 * 3600);
-      if (hoursToD14 >= -36 && hoursToD14 <= 36 && !b.candlingD14Cleared) {
-        candlingAlerts.push({ batch: b, hours: hoursToD14 });
+      // Candling window check: Notify ONLY on the exact selected optimal day
+      if (todayISO === phys.d14ISO && !b.candlingD14Cleared) {
+        candlingDueToday.push({ batch: b, offset: phys.d14OffsetDay });
       }
     });
 
@@ -2075,106 +2172,174 @@
     const pred = calculateDualHorizonPrediction();
     const targetTray = spatial.freeSetters.length > 0 ? spatial.freeSetters[0] : "Next Vacated Tray";
 
-    let feedHtml = "";
+    let pointsHtml = "";
 
-    // 1. ACTIVE SEALED STATE (HOURS 432–504)
+    // 1. PRIORITY 1: HATCHING LOCKDOWN / SHIFT / PULL
     if (isCabinetSealedNow) {
-      feedHtml += `<div style="color:var(--crimson); font-weight:900; margin-bottom:4px;">🛑 CABINET SEALED: Lockdown in Progress (${activeLockdownBatches.join(', ')})</div>`;
-      feedHtml += `<div style="font-size:0.74rem; color:var(--text-secondary); margin-bottom:8px;">RH 65%–75%. Zero cabinet door access permitted. Hold eggs in cool storage.</div>`;
-    }
-
-    // 2. CANDLING SAFETY ADVISORY
-    if (candlingAlerts.length > 0) {
-      candlingAlerts.forEach(ca => {
-        if (isCabinetSealedNow) {
-          feedHtml += `<div style="color:var(--amber); font-size:0.75rem; margin-bottom:4px;">• 🔍 <b>${ca.batch.name}</b>: D14 Candling Due — <b>FLOATED to Pull Day</b> (Protects ongoing lockdown).</div>`;
-        } else {
-          feedHtml += `<div style="color:var(--brand); font-size:0.75rem; margin-bottom:4px;">• 🔍 <b>${ca.batch.name}</b>: D14 Candling Window (Flexible D13–D15). Access allowed today.</div>`;
-        }
-      });
-    }
-
-    // 3. ACTIONABLE INTELLIGENT FLIGHT PLAN
-    if (imminentShiftBatch) {
+      const namesList = activeLockdownBatches.map(item => `<b>${item.name}</b> (${item.hours}h/504h)`).join(', ');
+      pointsHtml += `
+        <div class="action-point-item point-lockdown">
+          <span class="point-icon">🛑</span>
+          <div class="point-content">
+            <span class="point-tag tag-lock">Priority 1: Cabinet Sealed</span>
+            <div>Lockdown active: ${namesList}. Humidity locked (65%–75%). <b>Zero door access allowed</b>.</div>
+          </div>
+        </div>
+      `;
+    } else if (imminentShiftBatch) {
       const bObj = imminentShiftBatch.batch;
       const phys = imminentShiftBatch.stage.physics;
       const shiftTimeDisplay = formatDisplayDateTime(phys.shiftD18CompletedMs);
       const hoursLeft = Math.round(imminentShiftBatch.hours);
 
-      // Pre-Pone Calculation (Tonight at 432h Shift)
-      const projectedAtShift = (hoursLeft <= 12) ? traj.projectedTonight : (traj.currentActualInHand + Math.round((hoursLeft / 24) * pred.blendedLayVelocity));
-      const opt1Set = Math.min(102, projectedAtShift);
-      const opt1Carry = Math.max(0, projectedAtShift - 102);
-
-      // Post-Pone Calculation (Pull Day at 504h)
-      const pullTimeMs = phys.pullD21CompletedMs;
-      const pullTimeDisplay = formatDisplayDateTime(pullTimeMs);
-      const daysToPull = Math.max(1, (pullTimeMs - now) / (1000 * 3600 * 24));
-      const projectedAtPull = Math.round(traj.currentActualInHand + (daysToPull * pred.blendedLayVelocity));
-      const opt2Set = Math.min(102, projectedAtPull);
-      const opt2Carry = Math.max(0, projectedAtPull - 102);
-
-      feedHtml += `
-        <div style="font-size:0.76rem; font-weight:900; color:var(--brand); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:2px;">
-          🎯 Intelligent Setting Flight Plan
-        </div>
-        <div style="font-size:0.74rem; margin-bottom:6px; color:var(--text-primary);">
-          • <b>${bObj.name}</b>: Completes 18d (432h) in <b>${hoursLeft > 0 ? hoursLeft + 'h' : 'Due Now'}</b> (${shiftTimeDisplay}). Shift to H1.
-        </div>
-        
-        <div class="plan-card plan-opt1">
-          <div class="plan-title" style="color:var(--emerald);">
-            <span>👉 OPTION 1: PRE-PONE (Set at Shift)</span>
-            <span>${opt1Set} Set (${opt1Carry > 0 ? '+' + opt1Carry + ' Carry' : '0 Carry'})</span>
+      pointsHtml += `
+        <div class="action-point-item point-hatch">
+          <span class="point-icon">🐣</span>
+          <div class="point-content">
+            <span class="point-tag tag-shift">Priority 1: 18d Shift Due</span>
+            <div><b>${bObj.name}</b> completes 18d (432h) in <b>${hoursLeft > 0 ? hoursLeft + 'h' : 'Due Now'}</b> (${shiftTimeDisplay}). Shift to H1 basket.</div>
           </div>
-          <div class="plan-body">
-            <b>Plan:</b> Set ${opt1Set} eggs in <b>${targetTray}</b> at <b>${shiftTimeDisplay}</b> in the SAME door opening as ${bObj.name} H1 shift.<br>
-            <b>Lockdown Safety:</b> Cabinet stays sealed for full 72h hatch. Zero shrink-wrap.
-          </div>
-        </div>
-
-        <div class="plan-card plan-opt2">
-          <div class="plan-title" style="color:var(--brand);">
-            <span>👉 OPTION 2: POST-PONE (Set at Pull)</span>
-            <span>${opt2Set} Set (+${opt2Carry} Carry)</span>
-          </div>
-          <div class="plan-body">
-            <b>Plan:</b> Hold collections until <b>${pullTimeDisplay}</b>. Load a full 102-egg tray immediately after harvesting ${bObj.name} chicks. Surplus (${opt2Carry} eggs) carries forward.
-          </div>
-        </div>
-
-        <div style="font-size:0.70rem; color:var(--crimson); font-weight:800; margin-top:3px;">
-          🛑 LOCKDOWN SEAL: Do not open cabinet between Shift and Pull (72h Hatch).
         </div>
       `;
-    } else if (imminentPullBatch && !isCabinetSealedNow) {
+    } else if (imminentPullBatch) {
       const bObj = imminentPullBatch.batch;
       const phys = imminentPullBatch.stage.physics;
       const pullTimeDisplay = formatDisplayDateTime(phys.pullD21CompletedMs);
-      const hoursToPull = Math.round(imminentPullBatch.hours);
+      const hoursLeft = Math.round(imminentPullBatch.hours);
 
-      feedHtml += `
-        <div style="font-size:0.76rem; font-weight:900; color:var(--emerald); margin-bottom:3px;">
-          🐥 HATCH HARVEST SCHEDULED: ${bObj.name}
-        </div>
-        <div style="font-size:0.72rem; color:var(--text-secondary);">
-          Pull due in <b>${hoursToPull}h</b> (${pullTimeDisplay}). After chicks are pulled and H1 sanitized, load Setter <b>${targetTray}</b>.
-        </div>
-      `;
-    } else if (!isCabinetSealedNow) {
-      feedHtml += `
-        <div style="font-size:0.76rem; font-weight:800; color:var(--emerald); margin-bottom:2px;">
-          ✨ Machine Clear • Standby Window Open
-        </div>
-        <div style="font-size:0.72rem; color:var(--text-secondary);">
-          In hand: <b>${traj.currentActualInHand} eggs</b> (Projected tonight: <b>${traj.projectedTonight} eggs</b>). Free setter trays: <b>${spatial.freeSetters.join(', ') || 'None'}</b>.
+      pointsHtml += `
+        <div class="action-point-item point-hatch">
+          <span class="point-icon">🐥</span>
+          <div class="point-content">
+            <span class="point-tag tag-shift">Priority 1: Hatch Pull</span>
+            <div><b>${bObj.name}</b> completes 21d (504h) in <b>${hoursLeft > 0 ? hoursLeft + 'h' : 'Due Now'}</b> (${pullTimeDisplay}). Harvest chicks and disinfect H1.</div>
+          </div>
         </div>
       `;
     }
 
-    document.getElementById('heroTriggersFeed').innerHTML = feedHtml;
+    // 2. PRIORITY 2: CANDLING WINDOW (Notified strictly today)
+    if (candlingDueToday.length > 0) {
+      candlingDueToday.forEach(ca => {
+        pointsHtml += `
+          <div class="action-point-item point-candling">
+            <span class="point-icon">🔍</span>
+            <div class="point-content">
+              <span class="point-tag tag-candle">Priority 2: Candling Scheduled Today</span>
+              <div><b>${ca.batch.name}</b> Day 14 candling (Targeted at Day ${ca.offset} for door safety). Access allowed today.</div>
+            </div>
+          </div>
+        `;
+      });
+    }
 
-    // Hardware slot telemetry
+    // 3. PRIORITY 3: INTELLIGENT SETTING PLAN (3 Exact Conditions)
+    if (imminentShiftBatch && !isCabinetSealedNow) {
+      const bObj = imminentShiftBatch.batch;
+      const phys = imminentShiftBatch.stage.physics;
+      const shiftTimeDisplay = formatDisplayDateTime(phys.shiftD18CompletedMs);
+      const hoursLeft = Math.max(0, Math.round(imminentShiftBatch.hours));
+
+      // 18th Day Shift Stock Projection
+      const expectedShiftStock = (hoursLeft <= 12) ? traj.projectedTonight : (traj.currentActualInHand + Math.round((hoursLeft / 24) * pred.blendedLayVelocity));
+      const minPShift = Math.max(0, expectedShiftStock - 2);
+      const maxPShift = expectedShiftStock + 3;
+
+      // 21st Day Pull Stock Projection (72 hours later)
+      const expectedPullStock = Math.round(expectedShiftStock + (3 * pred.blendedLayVelocity));
+      const minPPull = Math.max(0, expectedPullStock - 3);
+      const maxPPull = expectedPullStock + 4;
+
+      // CONDITION A: 80-102 Eggs on Day 18 Completion
+      if (expectedShiftStock >= 80 && expectedShiftStock <= 102) {
+        pointsHtml += `
+          <div class="action-point-item point-plan">
+            <span class="point-icon">🎯</span>
+            <div class="point-content">
+              <span class="point-tag tag-plan">Priority 3: Setting Plan (Condition A)</span>
+              <div>Probable stock at shift: <b>~${minPShift}–${maxPShift} eggs</b> (Range: 80–102).</div>
+              <div style="color:var(--emerald); font-weight:800; margin-top:2px;">STRONGLY SUGGEST SETTING TONIGHT AT ${shiftTimeDisplay}.</div>
+              <div style="font-size:0.72rem; color:var(--text-secondary);">Load Setter <b>${targetTray}</b> in same door opening. Carry forward: 0 eggs.</div>
+            </div>
+          </div>
+        `;
+      }
+      // CONDITION C: <80 on Day 18 AND >110 on Day 21
+      else if (expectedShiftStock < 80 && expectedPullStock > 110) {
+        const oldestAgeOnPull = traj.oldestPotDays + 3.0;
+        let suggestionText = "";
+
+        if (oldestAgeOnPull > 6.0) {
+          suggestionText = `<b>SUGGESTION: SET TONIGHT AT SHIFT (~${expectedShiftStock} EGGS).</b> Holding to Day 21 breaches the 5-day freshness limit (Oldest pot becomes ${oldestAgeOnPull.toFixed(1)}d old).`;
+        } else {
+          suggestionText = `<b>SUGGESTION: HOLD TO DAY 21 PULL.</b> Oldest pot will be ${oldestAgeOnPull.toFixed(1)}d (within 5±1d buffer). Load full 102 tray; carry forward ~${expectedPullStock - 102} surplus eggs.`;
+        }
+
+        pointsHtml += `
+          <div class="action-point-item point-plan">
+            <span class="point-icon">⚠️</span>
+            <div class="point-content">
+              <span class="point-tag tag-lock">Priority 3: Storage Limit Advisory (Condition C)</span>
+              <div>Day 18 shift stock: ~${minPShift}–${maxPShift} eggs (&lt;80). Day 21 pull projection: ~${minPPull}–${maxPPull} eggs (&gt;110).</div>
+              <div style="font-size:0.72rem; margin-top:3px; color:var(--text-primary);">${suggestionText}</div>
+              <div style="font-size:0.68rem; color:var(--crimson); font-weight:700; margin-top:2px;">Machine locked for 72h hatch between Shift and Pull.</div>
+            </div>
+          </div>
+        `;
+      }
+      // Condition B pending: Stock accumulating
+      else if (expectedShiftStock < 80 && expectedPullStock >= 102 && expectedPullStock <= 110) {
+        pointsHtml += `
+          <div class="action-point-item point-plan">
+            <span class="point-icon">⏳</span>
+            <div class="point-content">
+              <span class="point-tag tag-plan">Priority 3: Stock Accumulating</span>
+              <div>Current stock lean (~${expectedShiftStock} eggs). Hold in cool storage for scheduled Pull Day.</div>
+            </div>
+          </div>
+        `;
+      }
+    }
+    // CONDITION B: Notified DIRECTLY on 21st Day (Pull Day)
+    else if (imminentPullBatch && !isCabinetSealedNow) {
+      const bObj = imminentPullBatch.batch;
+      const phys = imminentPullBatch.stage.physics;
+      const pullTimeDisplay = formatDisplayDateTime(phys.pullD21CompletedMs);
+      const expectedPullStock = traj.projectedTonight;
+      const minPPull = Math.max(0, expectedPullStock - 2);
+      const maxPPull = expectedPullStock + 3;
+
+      if (expectedPullStock >= 102 && expectedPullStock <= 110) {
+        const carryOver = Math.max(0, expectedPullStock - 102);
+        pointsHtml += `
+          <div class="action-point-item point-plan">
+            <span class="point-icon">🎯</span>
+            <div class="point-content">
+              <span class="point-tag tag-plan">Priority 3: Setting Plan (Condition B)</span>
+              <div>Probable stock available: <b>~${minPPull}–${maxPPull} eggs</b> (Range: 102–110).</div>
+              <div style="color:var(--emerald); font-weight:800; margin-top:2px;">STRONGLY SUGGEST SETTING TONIGHT AT ${pullTimeDisplay}.</div>
+              <div style="font-size:0.72rem; color:var(--text-secondary);">Load full 102 eggs in Setter <b>${targetTray}</b> after chick harvest. Surplus (~${carryOver} eggs) carries forward.</div>
+            </div>
+          </div>
+        `;
+      }
+    } else if (!isCabinetSealedNow) {
+      const minP = Math.max(0, traj.projectedTonight - 2);
+      const maxP = traj.projectedTonight + 3;
+      pointsHtml += `
+        <div class="action-point-item point-plan">
+          <span class="point-icon">✨</span>
+          <div class="point-content">
+            <span class="point-tag tag-plan">Priority 3: Standby Buffer</span>
+            <div>Stock in hand: <b>${traj.currentActualInHand} eggs</b> (Probable by evening: <b>~${minP}–${maxP} eggs</b>). Free trays: <b>${spatial.freeSetters.join(', ') || 'None'}</b>.</div>
+          </div>
+        </div>
+      `;
+    }
+
+    document.getElementById('heroTriggersFeed').innerHTML = pointsHtml;
+
+    // Telemetry mapping
     const setterMapEl = document.getElementById('heroSetterMap');
     if (setterMapEl) {
       if (spatial.freeSetters.length === 5 && spatial.occupiedSetters.length === 0) {
@@ -2204,16 +2369,16 @@
   }
 
   // -------------------------------------------------------------
-  // WHAT-IF SIMULATION ENGINE IN QUICK LOG
+  // WHAT-IF SIMULATION ENGINE
   // -------------------------------------------------------------
   function runSettingSimulation() {
     const sDate = document.getElementById('sdate').value || getTodayISO();
     const sTime = document.getElementById('stime').value || getLiveTime24();
-    const eggCount = parseInt(document.getElementById('eggsSet').value, 10) || 102;
+    const eggCount = Math.min(102, parseInt(document.getElementById('eggsSet').value, 10) || 102);
     const outputEl = document.getElementById('settingSimulationOutput');
     if (!outputEl) return;
 
-    const propPhysics = computeBatchTimePhysics(sDate, sTime);
+    const propPhysics = computeBatchTimePhysics(sDate, sTime, "sim_test");
     const pred = calculateDualHorizonPrediction();
     const expectedDiscard = Math.round(eggCount * pred.blendedCandleDiscardRate);
     const expectedH1Load = Math.max(0, eggCount - expectedDiscard);
@@ -2222,18 +2387,18 @@
     let isSevere = false;
 
     batches.forEach(b => {
-      if (!isBatchActive(b)) return;
+      if (!isBatchActiveDirect(b)) return;
       const bStage = getBatchStageInfo(b);
       const bPhys = bStage.physics;
 
-      // Check 3-day gap (72h)
+      // 72h minimum hatcher gap
       const diffHours = Math.abs(propPhysics.startMs - bPhys.startMs) / (1000 * 3600);
       if (diffHours < 72) {
-        conflicts.push(`Breaches 3-day hatcher gap with "${b.name}" (${Math.round(diffHours)}h apart). H1 conflict.`);
+        conflicts.push(`Breaches 3-day gap with "${b.name}" (${Math.round(diffHours)}h apart). H1 conflict.`);
         isSevere = true;
       }
 
-      // Check setting inside an active lockdown
+      // Check active lockdown entry
       if (propPhysics.startMs >= bPhys.shiftD18CompletedMs && propPhysics.startMs <= bPhys.pullD21CompletedMs) {
         conflicts.push(`Sets eggs inside Batch "${b.name}" lockdown. Cabinet door opening drops humidity.`);
         isSevere = true;
@@ -2250,10 +2415,10 @@
     outputEl.className = 'sim-box ' + (isSevere ? 'sim-danger' : (conflicts.length > 0 ? 'sim-warn' : 'sim-ok'));
 
     let html = `<b>🔮 Projection for ${formatDisplayDate(sDate)} at ${sTime}:</b><br>`;
-    html += `• Eggs to Set: <b>${eggCount}</b> (Est. D14 Candling Removal: ~${expectedDiscard} eggs).<br>`;
-    html += `• Projected Fertile Eggs to H1 at 432h: <b>~${expectedH1Load}</b>.<br>`;
+    html += `• Eggs to Set: <b>${eggCount}</b> (Tray Max: 102 | Est. Candling Removal: ~${expectedDiscard} eggs).<br>`;
+    html += `• Targeted Candling: <b>${formatDisplayDate(propPhysics.d14ISO)}</b> (Day ${propPhysics.d14OffsetDay}).<br>`;
     html += `• 18 Full Days (432h) completed: <b>${formatDisplayDateTime(propPhysics.shiftD18CompletedMs)}</b>.<br>`;
-    html += `• Hatch Pull (504h): <b>${formatDisplayDateTime(propPhysics.pullD21CompletedMs)}</b>.<br>`;
+    html += `• Hatch Harvest (504h): <b>${formatDisplayDateTime(propPhysics.pullD21CompletedMs)}</b>.<br>`;
 
     if (conflicts.length > 0) {
       html += `<div style="color:var(--crimson); font-weight:800; margin-top:3px;">⚠️ Impact Assessment:</div>`;
@@ -2277,7 +2442,7 @@
         const hatchedCount = parseInt(b.chicksHatched, 10) || 0;
         lifetimeChicksTotal += hatchedCount;
 
-        const phys = computeBatchTimePhysics(b.startDate || b.rawDate, b.setTime);
+        const phys = computeBatchTimePhysics(b.startDate || b.rawDate, b.setTime, b.id);
         if (Date.now() >= phys.promotion45DMs) {
           poolGrowersFromAging += hatchedCount;
         } else {
@@ -2341,11 +2506,10 @@
 
   function renderLiveMetrics() {
     let currentIncubatorEggs = 0;
-
     batches.forEach(b => {
       const initialEggs = parseInt(b.eggs, 10) || 0;
       const c14 = parseInt(b.candlingD14Cleared, 10) || 0;
-      if (isBatchActive(b)) {
+      if (isBatchActiveDirect(b)) {
         currentIncubatorEggs += Math.max(0, initialEggs - c14);
       }
     });
@@ -2379,19 +2543,11 @@
     if (traj.currentActualInHand >= 80 && traj.currentActualInHand <= 110) {
       document.getElementById('trayProgressSub').innerText = `⭐ Ready (${traj.currentActualInHand} in 80–110 buffer)`;
     } else if (traj.currentActualInHand > 110) {
-      document.getElementById('trayProgressSub').innerText = `⚠️ Full (${traj.currentActualInHand} eggs - Set Now)`;
+      document.getElementById('trayProgressSub').innerText = `⚠️ Full (${traj.currentActualInHand} eggs - 102 Tray Max)`;
     } else {
       const needed = 80 - traj.currentActualInHand;
       document.getElementById('trayProgressSub').innerText = `${traj.currentActualInHand} eggs (${needed} to reach 80 threshold)`;
     }
-  }
-
-  function toggleLedgerDynamicFields() {
-    const cat = document.getElementById('ledgerCatSelect').value;
-    const salesRow = document.getElementById('salesFieldsRow');
-    const breederRow = document.getElementById('breederFieldsRow');
-    if (salesRow) salesRow.style.display = (cat === "Sales") ? "flex" : "none";
-    if (breederRow) breederRow.style.display = (cat === "Breeders") ? "flex" : "none";
   }
 
   function openQuickLogModal(tab) {
@@ -2428,12 +2584,12 @@
     const editDocId = document.getElementById('editDocId').value;
     const startDateISO = toNormalizedISO(dateInput);
 
-    const propPhysics = computeBatchTimePhysics(startDateISO, timeInput);
+    const propPhysics = computeBatchTimePhysics(startDateISO, timeInput, editDocId || "new");
 
     let hasLockdownConflict = false;
     batches.forEach(b => {
       if (editDocId && b.id === editDocId) return;
-      if (!isBatchActive(b)) return;
+      if (!isBatchActiveDirect(b)) return;
       const bStage = getBatchStageInfo(b);
       const bPhys = bStage.physics;
 
@@ -2458,6 +2614,7 @@
       startTimestampMs: propPhysics.startMs,
       d14Date: propPhysics.d14ISO,
       d14TimestampMs: propPhysics.d14Ms,
+      d14OffsetDay: propPhysics.d14OffsetDay,
       shiftD18Date: propPhysics.shiftD18ISO,
       shiftD18TimestampMs: propPhysics.shiftD18CompletedMs,
       pullD21Date: propPhysics.pullD21ISO,
@@ -2497,7 +2654,7 @@
     if (isNaN(num) || num < 0) return alert("Enter valid egg count.");
     b.candlingD14Cleared = num;
     syncToLocalStorage();
-    renderBatches(); renderLiveMetrics();
+    renderBatches(); renderLiveMetrics(); renderCommandCenter();
     if (db) db.collection("batches").doc(docId).update({ candlingD14Cleared: num }).catch(e => console.warn(e));
   }
 
@@ -2569,7 +2726,7 @@
         </div>
         <div class="batch-dates-grid">
           <div class="date-pill d1"><span class="pill-lbl">Set</span><span class="pill-val">${formatDisplayDate(phys.d1ISO)}</span></div>
-          <div class="date-pill d14"><span class="pill-lbl">Candle (D14)</span><span class="pill-val">${formatDisplayDate(phys.d14ISO)}</span></div>
+          <div class="date-pill d14"><span class="pill-lbl">Candle (D${phys.d14OffsetDay})</span><span class="pill-val">${formatDisplayDate(phys.d14ISO)}</span></div>
           <div class="date-pill d18"><span class="pill-lbl">Shift (432h)</span><span class="pill-val">${formatDisplayDate(phys.shiftD18ISO)}</span></div>
         </div>
         <div class="batch-results-bar">
@@ -2577,7 +2734,7 @@
           <div>Harvest: ${chickCount} (${rateText})</div>
         </div>
         <div class="batch-actions">
-          <button class="btn-neutral" style="color:var(--amber);" onclick="recordCandlingD14('${b.id}')">🔍 D14</button>
+          <button class="btn-neutral" style="color:var(--violet);" onclick="recordCandlingD14('${b.id}')">🔍 D14</button>
           ${hatcherButtonHtml}
           <button class="btn-neutral" style="color:var(--emerald);" onclick="recordHatchResult('${b.id}')">🐥 Chicks</button>
         </div>
@@ -2592,7 +2749,7 @@
     const activeList = [], archivedList = [];
 
     batches.forEach(b => {
-      if (isBatchActive(b)) activeList.push(b);
+      if (isBatchActiveDirect(b)) activeList.push(b);
       else archivedList.push(b);
     });
 
@@ -2915,6 +3072,7 @@
     toggleLedgerDynamicFields();
   }
 
+  // CALENDAR WITH ALGORITHMICALLY LOCKED D14 CANDLING TAGS
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calMonthYear').innerText = monthNames[curMonth] + " " + curYear;
@@ -2942,7 +3100,8 @@
         const stage = getBatchStageInfo(b);
         const phys = stage.physics;
         if (cellISO === phys.d1ISO) dayEvents.push({ type: 'set', name: b.name });
-        if (cellISO === phys.d14ISO) dayEvents.push({ type: 'd14', name: b.name });
+        // Tag appears ONLY on the single algorithmically resolved candling day
+        if (cellISO === phys.d14ISO) dayEvents.push({ type: 'd14', name: b.name, offset: phys.d14OffsetDay });
         if (cellISO === phys.shiftD18ISO) dayEvents.push({ type: 'shift', name: b.name });
         if (cellISO === phys.pullD21ISO) dayEvents.push({ type: 'pull', name: b.name });
       });
@@ -2973,12 +3132,12 @@
           if (ev.type === 'set') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">SET: " + ev.name + "</span>";
           else if (ev.type === 'shift') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">432h: " + ev.name + "</span>";
           else if (ev.type === 'pull') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">PULL: " + ev.name + "</span>";
-          else if (ev.type === 'd14') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.1); color:#ffffff;\">D14: " + ev.name + "</span>";
+          else if (ev.type === 'd14') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.1); color:#ffffff;\">D" + ev.offset + ": " + ev.name + "</span>";
         } else {
           if (ev.type === 'set') content += "<span class=\"stage-tag\" style=\"background:var(--brand); color:#ffffff;\">SET: " + ev.name + "</span>";
           else if (ev.type === 'shift') content += "<span class=\"stage-tag\" style=\"background:var(--amber); color:#ffffff;\">SHIFT: " + ev.name + "</span>";
           else if (ev.type === 'pull') content += "<span class=\"stage-tag\" style=\"background:var(--emerald); color:#ffffff;\">PULL: " + ev.name + "</span>";
-          else if (ev.type === 'd14') content += "<span class=\"stage-tag neutral-pill\">D14 Candling</span>";
+          else if (ev.type === 'd14') content += "<span class=\"stage-tag\" style=\"background:var(--violet); color:#ffffff;\">D" + ev.offset + " CANDLE</span>";
         }
       });
 
@@ -3009,7 +3168,7 @@
       const stage = getBatchStageInfo(b);
       const phys = stage.physics;
       if (dateISO === phys.d1ISO) html += `<div class="event-item" style="border-left: 4px solid var(--brand);"><b>🥚 SETTING:</b> ${b.name} (${b.eggs} eggs at ${formatDisplayDateTime(phys.startMs)})</div>`;
-      if (dateISO === phys.d14ISO) html += `<div class="event-item" style="border-left: 4px solid var(--text-secondary);"><b>🔍 DAY 14 CANDLING (Flexible D13-D15):</b> ${b.name}</div>`;
+      if (dateISO === phys.d14ISO) html += `<div class="event-item" style="border-left: 4px solid var(--violet);"><b>🔍 TARGETED CANDLING (Day ${phys.d14OffsetDay}):</b> ${b.name} (Resolved to protect machine lockdown)</div>`;
       if (dateISO === phys.shiftD18ISO) html += `<div class="event-item" style="border-left: 4px solid var(--amber);"><b>🐣 18 FULL DAYS COMPLETED (432h):</b> ${b.name} shift to Hatcher H1 (${formatDisplayDateTime(phys.shiftD18CompletedMs)})</div>`;
       if (dateISO === phys.pullD21ISO) html += `<div class="event-item" style="border-left: 4px solid var(--emerald);"><b>🐥 21 DAYS COMPLETED (504h):</b> ${b.name} Chick Pull (${formatDisplayDateTime(phys.pullD21CompletedMs)})</div>`;
       if (dateISO === phys.promotion45DISO) html += `<div class="event-item" style="border-left: 4px solid var(--brand);"><b>🐓 45-DAY AGING:</b> ${b.name} graduated to Growers</div>`;
@@ -3316,7 +3475,7 @@
           <td><b>${b.name}</b><br><small style="color:var(--text-secondary);">${b.setTime || 'Evening'}</small></td>
           <td>${eggs}</td>
           <td>${formatDisplayDate(phys.d1ISO)}</td>
-          <td style="color:var(--amber); font-weight:bold;">${c14}</td>
+          <td style="color:var(--violet); font-weight:bold;">${c14} (D${phys.d14OffsetDay})</td>
           <td>${formatDisplayDate(phys.pullD21ISO)}</td>
           <td><b>${hasChicks ? b.chicksHatched : '<span style="color:var(--text-secondary);">Running</span>'}</b></td>
           <td style="color:var(--emerald); font-weight:bold;">${b.hatchRate ? b.hatchRate + '%' : '<span style="color:var(--brand);">Running</span>'}</td>
@@ -3349,7 +3508,7 @@
               <th style="background:var(--brand); color:#fff;">Batch</th>
               <th>Eggs</th>
               <th>Set Date</th>
-              <th>D14 Candled</th>
+              <th>Candled</th>
               <th>Pull Date</th>
               <th>Chicks</th>
               <th>Hatch Rate</th>
@@ -3361,13 +3520,16 @@
               <td>TOTALS</td>
               <td>${totalEggs}</td>
               <td>-</td>
-              <td style="color:var(--amber);">${totalD14}</td>
+              <td style="color:var(--violet);">${totalD14}</td>
               <td>-</td>
               <td>${totalChicks > 0 ? totalChicks : '-'}</td>
               <td style="color:var(--emerald);">${overallRate}</td>
             </tr>
           </tbody>
         </table>
+      </div>
+      <div style="font-size:0.70rem; color:var(--text-secondary); text-align:center; margin-top:8px;">
+        * Overall hatch rate tally is calculated strictly from hatched batches (${totalChicks} chicks / ${eggsInCompletedBatches} eggs set). Running trays are excluded from denominator.
       </div>
     `;
 
@@ -3487,6 +3649,14 @@
           </tbody>
         </table>
       </div>
+
+      <div style="font-size:0.75rem; color:var(--text-secondary); background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:12px; padding:12px; line-height:1.4;">
+        <b>Operational Audit Notes:</b><br>
+        • Chicks mature to <b>Growers</b> 45 days after the 504-hour hatch completion.<br>
+        • Transferring breeders from grower stock automatically deducts from your live grower headcount.<br>
+        • External stock breeders are added directly without adjusting homegrown stock.<br>
+        • Bird sales deduct from active stock while preserving permanent lifetime incubation output.
+      </div>
     `;
 
     document.getElementById('dataReportContent').innerHTML = reportHtml;
@@ -3517,7 +3687,8 @@
   });
   setInterval(checkAndAutoRefreshDate, 60000);
 
-  // INITIAL BOOT
+  // INITIAL BOOTSTRAP
+  initTodayInputs();
   renderCollections();
   renderBatches();
   renderMortality();
