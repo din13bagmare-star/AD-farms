@@ -154,7 +154,7 @@
   }
   .btn-settings:active { transform: scale(0.92); }
 
-  /* POINTWISE TELEMETRY CARDS */
+  /* POINTWISE TELEMETRY BOARD STYLING */
   .command-hero-banner {
     background: var(--card-surface);
     border: 2px solid var(--border-strong);
@@ -221,13 +221,17 @@
     border-left: 4px solid var(--crimson);
     background: rgba(220, 38, 38, 0.08);
   }
-  .action-point-item.point-candling {
+  .action-point-item.point-flock {
     border-left: 4px solid var(--violet);
-    background: rgba(124, 58, 237, 0.05);
+    background: rgba(124, 58, 237, 0.07);
+  }
+  .action-point-item.point-candling {
+    border-left: 4px solid var(--brand);
+    background: rgba(2, 132, 199, 0.06);
   }
   .action-point-item.point-plan {
-    border-left: 4px solid var(--brand);
-    background: rgba(2, 132, 199, 0.05);
+    border-left: 4px solid var(--emerald);
+    background: rgba(5, 150, 105, 0.06);
   }
 
   .point-icon { font-size: 1rem; flex-shrink: 0; line-height: 1.2; }
@@ -244,8 +248,9 @@
   }
   .tag-lock { background: var(--crimson-glow); color: var(--crimson); }
   .tag-shift { background: var(--amber-glow); color: var(--amber); }
-  .tag-candle { background: var(--violet-glow); color: var(--violet); }
-  .tag-plan { background: var(--brand-glow); color: var(--brand); }
+  .tag-flock { background: var(--violet-glow); color: var(--violet); }
+  .tag-candle { background: var(--brand-glow); color: var(--brand); }
+  .tag-plan { background: var(--emerald-glow); color: var(--emerald); }
 
   .hardware-grid-hero {
     display: grid;
@@ -966,7 +971,7 @@
       </div>
     </div>
     <div class="header-actions">
-      <button class="btn-settings" onclick="openSettingsModal()" title="Settings & Options">⚙️</button>
+      <button class="btn-settings" onclick="openSettingsModal()" title="Settings & Options">⚙️️</button>
     </div>
   </div>
 
@@ -1250,7 +1255,7 @@
     <div class="sub-tab-bar">
       <button class="sub-tab-btn active" onclick="switchQuickLogTab('quickBatch', this)">🐥 Tray</button>
       <button class="sub-tab-btn" onclick="switchQuickLogTab('quickEgg', this)">🥚 Eggs</button>
-      <button class="sub-tab-btn" onclick="switchQuickLogTab('quickMort', this)">☠️ Loss</button>
+      <button class="sub-tab-btn" onclick="switchQuickLogTab('quickMort', this)">☠ Loss</button>
       <button class="sub-tab-btn" onclick="switchQuickLogTab('quickLedger', this)">📝 Ledger</button>
     </div>
 
@@ -1713,7 +1718,7 @@
     db.collection("ledger").onSnapshot(snapshot => {
       let cloudLedger = [];
       snapshot.forEach(doc => cloudLedger.push({ id: doc.id, ...doc.data() }));
-      if (cloudLedger.length > 0) { ledger = cloudLedger; syncToLocalStorage(); renderLedger(); renderLiveMetrics(); renderCalendar(); }
+      if (cloudLedger.length > 0) { ledger = cloudLedger; syncToLocalStorage(); renderLedger(); renderLiveMetrics(); renderCalendar(); renderCommandCenter(); }
     }, err => console.warn(err));
   } catch(e) { console.warn("Offline fallback active", e); }
 
@@ -1796,7 +1801,7 @@
     return d.getTime();
   }
 
-  // DIRECT BATCH ACTIVITY CHECK (STOPS RECURSION)
+  // DIRECT BATCH ACTIVITY CHECK (PREVENTS RECURSIVE OVERHEAD)
   function isBatchActiveDirect(b) {
     if (!b) return false;
     if (b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "") return false;
@@ -1821,7 +1826,7 @@
 
     const otherBatches = batches.filter(b => b.id !== batchId && isBatchActiveDirect(b));
 
-    // Rule 1: Consolidate with door opening of another batch (Shift at 18d or Pull at 21d)
+    // Rule 1: Consolidate with planned door opening of another batch (Shift at 18d or Pull at 21d)
     for (let c of candidates) {
       for (let ob of otherBatches) {
         const obStart = parseBatchStartTimestamp(ob.startDate || ob.rawDate, ob.setTime);
@@ -2109,9 +2114,10 @@
 
   // -------------------------------------------------------------
   // REVISED POINTWISE TELEMETRY BOARD
-  // Priority 1: Hatching Lockdown / Shift
-  // Priority 2: Candling (Notified strictly on the chosen day)
-  // Priority 3: Intelligent Setting Plan (3 Exact Conditions)
+  // Priority 1: Hatching Lockdown / Shift / Pull
+  // Priority 2: Scheduled Flock Tasks (Medications, Feeds, Vaccines)
+  // Priority 3: Candling (Notified strictly on the selected day)
+  // Priority 4: Intelligent Setting Plan (3 Exact Conditions)
   // -------------------------------------------------------------
   function renderCommandCenter() {
     const now = Date.now();
@@ -2121,7 +2127,10 @@
 
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    document.getElementById('heroDateText').innerText = dayNames[dObj.getDay()] + ", " + dObj.getDate() + " " + monthNames[dObj.getMonth()];
+    const heroDateEl = document.getElementById('heroDateText');
+    if (heroDateEl) {
+      heroDateEl.innerText = dayNames[dObj.getDay()] + ", " + dObj.getDate() + " " + monthNames[dObj.getMonth()];
+    }
 
     let isCabinetSealedNow = false;
     let activeLockdownBatches = [];
@@ -2174,7 +2183,9 @@
 
     let pointsHtml = "";
 
+    // ==========================================
     // 1. PRIORITY 1: HATCHING LOCKDOWN / SHIFT / PULL
+    // ==========================================
     if (isCabinetSealedNow) {
       const namesList = activeLockdownBatches.map(item => `<b>${item.name}</b> (${item.hours}h/504h)`).join(', ');
       pointsHtml += `
@@ -2218,14 +2229,42 @@
       `;
     }
 
-    // 2. PRIORITY 2: CANDLING WINDOW (Notified strictly today)
+    // ==========================================
+    // 2. PRIORITY 2: SCHEDULED FLOCK TASKS (MEDICATIONS, VACCINES, FEEDS)
+    // Always visible, never suppressed by incubator lockdown
+    // ==========================================
+    const todaysFlockTasks = ledger.filter(entry => toNormalizedISO(entry.date) === todayISO);
+    if (todaysFlockTasks.length > 0) {
+      todaysFlockTasks.forEach(task => {
+        let icon = "📝";
+        if (task.category === "Medication") icon = "💊";
+        else if (task.category === "Feed") icon = "🌽";
+        else if (task.category === "Sales") icon = "💰";
+        else if (task.category === "Breeders") icon = "🥚";
+        else if (task.category === "Maint") icon = "🔧";
+
+        pointsHtml += `
+          <div class="action-point-item point-flock">
+            <span class="point-icon">${icon}</span>
+            <div class="point-content">
+              <span class="point-tag tag-flock">Priority 2: Flock Action (${task.category || 'General'})</span>
+              <div style="font-weight:700; color:var(--text-primary); font-size:0.80rem;">${task.notes || 'Scheduled flock task'}</div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // ==========================================
+    // 3. PRIORITY 3: CANDLING WINDOW (Notified strictly today)
+    // ==========================================
     if (candlingDueToday.length > 0) {
       candlingDueToday.forEach(ca => {
         pointsHtml += `
           <div class="action-point-item point-candling">
             <span class="point-icon">🔍</span>
             <div class="point-content">
-              <span class="point-tag tag-candle">Priority 2: Candling Scheduled Today</span>
+              <span class="point-tag tag-candle">Priority 3: Candling Scheduled Today</span>
               <div><b>${ca.batch.name}</b> Day 14 candling (Targeted at Day ${ca.offset} for door safety). Access allowed today.</div>
             </div>
           </div>
@@ -2233,7 +2272,9 @@
       });
     }
 
-    // 3. PRIORITY 3: INTELLIGENT SETTING PLAN (3 Exact Conditions)
+    // ==========================================
+    // 4. PRIORITY 4: INTELLIGENT SETTING PLAN (3 Exact Conditions)
+    // ==========================================
     if (imminentShiftBatch && !isCabinetSealedNow) {
       const bObj = imminentShiftBatch.batch;
       const phys = imminentShiftBatch.stage.physics;
@@ -2246,6 +2287,7 @@
       const maxPShift = expectedShiftStock + 3;
 
       // 21st Day Pull Stock Projection (72 hours later)
+      const pullTimeMs = phys.pullD21CompletedMs;
       const expectedPullStock = Math.round(expectedShiftStock + (3 * pred.blendedLayVelocity));
       const minPPull = Math.max(0, expectedPullStock - 3);
       const maxPPull = expectedPullStock + 4;
@@ -2256,7 +2298,7 @@
           <div class="action-point-item point-plan">
             <span class="point-icon">🎯</span>
             <div class="point-content">
-              <span class="point-tag tag-plan">Priority 3: Setting Plan (Condition A)</span>
+              <span class="point-tag tag-plan">Priority 4: Setting Plan (Condition A)</span>
               <div>Probable stock at shift: <b>~${minPShift}–${maxPShift} eggs</b> (Range: 80–102).</div>
               <div style="color:var(--emerald); font-weight:800; margin-top:2px;">STRONGLY SUGGEST SETTING TONIGHT AT ${shiftTimeDisplay}.</div>
               <div style="font-size:0.72rem; color:var(--text-secondary);">Load Setter <b>${targetTray}</b> in same door opening. Carry forward: 0 eggs.</div>
@@ -2279,7 +2321,7 @@
           <div class="action-point-item point-plan">
             <span class="point-icon">⚠️</span>
             <div class="point-content">
-              <span class="point-tag tag-lock">Priority 3: Storage Limit Advisory (Condition C)</span>
+              <span class="point-tag tag-lock">Priority 4: Storage Limit Advisory (Condition C)</span>
               <div>Day 18 shift stock: ~${minPShift}–${maxPShift} eggs (&lt;80). Day 21 pull projection: ~${minPPull}–${maxPPull} eggs (&gt;110).</div>
               <div style="font-size:0.72rem; margin-top:3px; color:var(--text-primary);">${suggestionText}</div>
               <div style="font-size:0.68rem; color:var(--crimson); font-weight:700; margin-top:2px;">Machine locked for 72h hatch between Shift and Pull.</div>
@@ -2293,7 +2335,7 @@
           <div class="action-point-item point-plan">
             <span class="point-icon">⏳</span>
             <div class="point-content">
-              <span class="point-tag tag-plan">Priority 3: Stock Accumulating</span>
+              <span class="point-tag tag-plan">Priority 4: Stock Accumulating</span>
               <div>Current stock lean (~${expectedShiftStock} eggs). Hold in cool storage for scheduled Pull Day.</div>
             </div>
           </div>
@@ -2315,7 +2357,7 @@
           <div class="action-point-item point-plan">
             <span class="point-icon">🎯</span>
             <div class="point-content">
-              <span class="point-tag tag-plan">Priority 3: Setting Plan (Condition B)</span>
+              <span class="point-tag tag-plan">Priority 4: Setting Plan (Condition B)</span>
               <div>Probable stock available: <b>~${minPPull}–${maxPPull} eggs</b> (Range: 102–110).</div>
               <div style="color:var(--emerald); font-weight:800; margin-top:2px;">STRONGLY SUGGEST SETTING TONIGHT AT ${pullTimeDisplay}.</div>
               <div style="font-size:0.72rem; color:var(--text-secondary);">Load full 102 eggs in Setter <b>${targetTray}</b> after chick harvest. Surplus (~${carryOver} eggs) carries forward.</div>
@@ -2330,14 +2372,15 @@
         <div class="action-point-item point-plan">
           <span class="point-icon">✨</span>
           <div class="point-content">
-            <span class="point-tag tag-plan">Priority 3: Standby Buffer</span>
+            <span class="point-tag tag-plan">Priority 4: Standby Buffer</span>
             <div>Stock in hand: <b>${traj.currentActualInHand} eggs</b> (Probable by evening: <b>~${minP}–${maxP} eggs</b>). Free trays: <b>${spatial.freeSetters.join(', ') || 'None'}</b>.</div>
           </div>
         </div>
       `;
     }
 
-    document.getElementById('heroTriggersFeed').innerHTML = pointsHtml;
+    const feedEl = document.getElementById('heroTriggersFeed');
+    if (feedEl) feedEl.innerHTML = pointsHtml;
 
     // Telemetry mapping
     const setterMapEl = document.getElementById('heroSetterMap');
@@ -2514,39 +2557,44 @@
       }
     });
 
-    document.getElementById('inIncubatorDisplay').innerText = currentIncubatorEggs;
+    const inIncEl = document.getElementById('inIncubatorDisplay');
+    if (inIncEl) inIncEl.innerText = currentIncubatorEggs;
 
     const recon = calculateReconciledFlock();
-    document.getElementById('liveChicksTopDisplay').innerText = recon.liveChicks;
-    document.getElementById('liveGrowersTopDisplay').innerText = recon.liveGrowers;
-    document.getElementById('liveBreedersTopDisplay').innerText = recon.liveBreeders;
+    const lC = document.getElementById('liveChicksTopDisplay'); if (lC) lC.innerText = recon.liveChicks;
+    const lG = document.getElementById('liveGrowersTopDisplay'); if (lG) lG.innerText = recon.liveGrowers;
+    const lB = document.getElementById('liveBreedersTopDisplay'); if (lB) lB.innerText = recon.liveBreeders;
 
-    document.getElementById('liveChicksBalance').innerText = recon.liveChicks;
-    document.getElementById('liveGrowersBalance').innerText = recon.liveGrowers;
-    document.getElementById('liveBreedersBalance').innerText = recon.liveBreeders;
+    const lCB = document.getElementById('liveChicksBalance'); if (lCB) lCB.innerText = recon.liveChicks;
+    const lGB = document.getElementById('liveGrowersBalance'); if (lGB) lGB.innerText = recon.liveGrowers;
+    const lBB = document.getElementById('liveBreedersBalance'); if (lBB) lBB.innerText = recon.liveBreeders;
 
-    document.getElementById('totalChicksDeadSub').innerText = recon.chicksDead + " dead";
-    document.getElementById('totalGrowersDeadSub').innerText = recon.growersDead + " dead";
-    document.getElementById('totalBreedersDeadSub').innerText = recon.breedersDead + " dead";
+    const tCD = document.getElementById('totalChicksDeadSub'); if (tCD) tCD.innerText = recon.chicksDead + " dead";
+    const tGD = document.getElementById('totalGrowersDeadSub'); if (tGD) tGD.innerText = recon.growersDead + " dead";
+    const tBD = document.getElementById('totalBreedersDeadSub'); if (tBD) tBD.innerText = recon.breedersDead + " dead";
 
     let lifetimeEggsTotal = 0;
     collections.forEach(c => { lifetimeEggsTotal += (parseInt(c.total, 10) || 0); });
-    document.getElementById('lifetimeEggsDisplay').innerText = lifetimeEggsTotal.toLocaleString();
-    document.getElementById('lifetimeChicksDisplay').innerText = recon.lifetimeChicksTotal.toLocaleString();
+    const lE = document.getElementById('lifetimeEggsDisplay'); if (lE) lE.innerText = lifetimeEggsTotal.toLocaleString();
+    const lCh = document.getElementById('lifetimeChicksDisplay'); if (lCh) lCh.innerText = recon.lifetimeChicksTotal.toLocaleString();
 
     const traj = getRealTimeStockTrajectory();
-    document.getElementById('inventoryEggsDisplay').innerText = traj.currentActualInHand;
+    const invEl = document.getElementById('inventoryEggsDisplay'); if (invEl) invEl.innerText = traj.currentActualInHand;
 
     const fillRatio = Math.min(100, Math.round((traj.currentActualInHand / 102) * 100));
-    document.getElementById('setterCard').style.setProperty('--progress-pct', fillRatio + '%');
+    const setCard = document.getElementById('setterCard');
+    if (setCard) setCard.style.setProperty('--progress-pct', fillRatio + '%');
 
-    if (traj.currentActualInHand >= 80 && traj.currentActualInHand <= 110) {
-      document.getElementById('trayProgressSub').innerText = `⭐ Ready (${traj.currentActualInHand} in 80–110 buffer)`;
-    } else if (traj.currentActualInHand > 110) {
-      document.getElementById('trayProgressSub').innerText = `⚠️ Full (${traj.currentActualInHand} eggs - 102 Tray Max)`;
-    } else {
-      const needed = 80 - traj.currentActualInHand;
-      document.getElementById('trayProgressSub').innerText = `${traj.currentActualInHand} eggs (${needed} to reach 80 threshold)`;
+    const tpSub = document.getElementById('trayProgressSub');
+    if (tpSub) {
+      if (traj.currentActualInHand >= 80 && traj.currentActualInHand <= 110) {
+        tpSub.innerText = `⭐ Ready (${traj.currentActualInHand} in 80–110 buffer)`;
+      } else if (traj.currentActualInHand > 110) {
+        tpSub.innerText = `⚠️️ Full (${traj.currentActualInHand} eggs - 102 Tray Max)`;
+      } else {
+        const needed = 80 - traj.currentActualInHand;
+        tpSub.innerText = `${traj.currentActualInHand} eggs (${needed} to reach 80 threshold)`;
+      }
     }
   }
 
@@ -3038,6 +3086,7 @@
     renderLedger();
     renderLiveMetrics();
     renderCalendar();
+    renderCommandCenter();
     closeQuickLogModal();
     if (db) db.collection("ledger").doc(entry.id).set(entry).catch(e => console.warn(e));
   }
@@ -3059,6 +3108,7 @@
     renderLedger();
     renderLiveMetrics();
     renderCalendar();
+    renderCommandCenter();
     showDateDetailsStrict(activeModalSelectedDateISO);
     document.getElementById('calTaskDescInput').value = "";
     if (db) db.collection("ledger").doc(entry.id).set(entry).catch(e => console.warn(e));
@@ -3271,7 +3321,7 @@
     const id = document.getElementById('delLedgerSelect').value;
     if (!id || !confirm("Delete this activity / sale log? Any deducted or transferred flock headcounts will be returned.")) return;
     ledger = ledger.filter(l => l.id !== id);
-    syncToLocalStorage(); renderLedger(); renderLiveMetrics(); renderCalendar();
+    syncToLocalStorage(); renderLedger(); renderLiveMetrics(); renderCalendar(); renderCommandCenter();
     if (db) db.collection("ledger").doc(id).delete().catch(e => console.warn(e));
     openDeleteCenterModal();
   }
@@ -3666,7 +3716,7 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // AUTOMATIC CALENDAR & REAL-TIME WATCHDOG
+  // AUTOMATIC CALENDAR & WATCHDOG
   let lastCheckedDateISO = getTodayISO();
   function checkAndAutoRefreshDate() {
     const currentToday = getTodayISO();
