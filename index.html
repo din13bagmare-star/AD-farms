@@ -342,6 +342,7 @@
     line-height: 1.1;
   }
 
+  /* 102 TRAY FILLED THRESHOLD CARD */
   .setter-progress-card {
     background: var(--card-surface);
     border: 1.5px solid var(--emerald);
@@ -965,7 +966,7 @@
       </div>
     </div>
     <div class="header-actions">
-      <!-- APPLE SF SYMBOLS GEAR SVG -->
+      <!-- VECTOR APPLE SF SYMBOLS SETTINGS ICON -->
       <button class="btn-settings" onclick="openSettingsModal()" title="Settings">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"></circle>
@@ -975,7 +976,7 @@
     </div>
   </div>
 
-  <!-- OPERATIONAL TELEMETRY BOARD -->
+  <!-- OPERATIONAL TELEMETRY BOARD: INVARIANT TASKS + CONCISE HARDWARE MAP -->
   <div class="command-hero-banner" id="commandHeroBanner">
     <div class="hero-top-row">
       <div class="hero-title-group">
@@ -1030,7 +1031,7 @@
     </div>
   </div>
 
-  <!-- FIXED 102 TRAY BUFFER CARD -->
+  <!-- 102 TRAY THRESHOLD CARD -->
   <div class="setter-progress-card" id="setterCard">
     <div class="setter-left">
       <span class="setter-tag">🥚 READY FOR SETTER</span>
@@ -1276,7 +1277,7 @@
       <div class="form-row">
         <div style="flex: 1.1;">
           <label>Setting Date</label>
-          <input type="date" id="sdate" onchange="runSettingSimulation()">
+          <input type="date" id="sdate" onchange="syncSettingTimeToCalendarTask(); runSettingSimulation();">
         </div>
         <div style="flex: 0.9;">
           <label>Setting Time</label>
@@ -1679,11 +1680,37 @@
     if (breederRow) breederRow.style.display = (cat === "Breeders") ? "flex" : "none";
   }
 
+  // RESOLVES EXACT TASK TIME FOR DATE (DEFAULTS TO EVENING ROUTINE 19:00 INSTEAD OF MORNING PHONE CLOCK)
+  function getOperatingTaskTimeForDate(dateISO) {
+    const targetISO = toNormalizedISO(dateISO) || getTodayISO();
+    for (let b of batches) {
+      if (!isBatchActiveDirect(b)) continue;
+      const phys = computeBatchTimePhysics(b.startDate || b.rawDate, b.setTime, b.id);
+      if (targetISO === phys.pullD21ISO) {
+        const d = new Date(phys.pullD21CompletedMs);
+        return pad(d.getHours()) + ":" + pad(d.getMinutes());
+      }
+      if (targetISO === phys.shiftD18ISO) {
+        const d = new Date(phys.shiftD18CompletedMs);
+        return pad(d.getHours()) + ":" + pad(d.getMinutes());
+      }
+    }
+    return "19:00"; // Standard farm evening incubator routine
+  }
+
+  function syncSettingTimeToCalendarTask() {
+    const sDate = document.getElementById('sdate').value || getTodayISO();
+    const stimeEl = document.getElementById('stime');
+    if (stimeEl) {
+      stimeEl.value = getOperatingTaskTimeForDate(sDate);
+    }
+  }
+
   function initTodayInputs() {
     const todayISO = getTodayISO();
     const cDate = document.getElementById('colDate'); if (cDate) cDate.value = todayISO;
     const sDate = document.getElementById('sdate'); if (sDate) sDate.value = todayISO;
-    const sTime = document.getElementById('stime'); if (sTime) sTime.value = getLiveTime24();
+    syncSettingTimeToCalendarTask();
     const mDate = document.getElementById('mortDate'); if (mDate) mDate.value = todayISO;
     const lDate = document.getElementById('ledgerDate'); if (lDate) lDate.value = todayISO;
     const mr = document.getElementById('mortReason'); if (mr) mr.value = "";
@@ -1800,7 +1827,7 @@
 
   function parseBatchStartTimestamp(startDateISO, timeStr) {
     const sDate = toNormalizedISO(startDateISO) || getTodayISO();
-    let hours = 18, mins = 0;
+    let hours = 19, mins = 0;
     if (timeStr) {
       const t = String(timeStr).trim();
       if (t.includes(':')) {
@@ -2120,7 +2147,7 @@
     };
   }
 
-  // REVISED OPERATIONAL TELEMETRY BOARD
+  // OPERATIONAL TELEMETRY BOARD
   function renderCommandCenter() {
     const todayISO = getTodayISO();
     const parts = todayISO.split('-').map(Number);
@@ -2172,7 +2199,7 @@
     const spatial = parseHardwareSpatialOccupancy();
     let pointsHtml = "";
 
-    // PULL DAY TOP PRIORITY CHECK
+    // 1. PULL DAY MORNING BRIEFING
     if (pullDueTodayBatch && !pullDueTodayBatch.stage.hasHatched) {
       const bObj = pullDueTodayBatch.batch;
       const phys = pullDueTodayBatch.stage.physics;
@@ -2192,7 +2219,7 @@
         </div>
       `;
     } 
-    // INTERMEDIATE LOCKDOWN DAYS (DAYS 19 & 20)
+    // 2. INTERMEDIATE LOCKDOWN DAYS (DAYS 19 & 20)
     else if (isCabinetSealedNow) {
       const namesList = activeLockdownBatches.map(item => `${item.name} in H1 (${item.hours}h / 504h)`).join(', ');
       pointsHtml += `
@@ -2205,7 +2232,7 @@
         </div>
       `;
     } 
-    // DAY 18 SHIFT
+    // 3. DAY 18 SHIFT
     else if (shiftDueTodayBatch) {
       const bObj = shiftDueTodayBatch.batch;
       const phys = shiftDueTodayBatch.stage.physics;
@@ -2222,7 +2249,7 @@
       `;
     }
 
-    // 14TH DAY CANDLING
+    // 4. 14TH DAY CANDLING
     if (candlingDueToday.length > 0) {
       candlingDueToday.forEach(ca => {
         pointsHtml += `
@@ -2237,7 +2264,7 @@
       });
     }
 
-    // FLOCK LEDGER TASKS
+    // 5. FLOCK TASKS
     const todaysFlockTasks = ledger.filter(entry => toNormalizedISO(entry.date) === todayISO);
     if (todaysFlockTasks.length > 0) {
       todaysFlockTasks.forEach(task => {
@@ -2274,30 +2301,28 @@
       }
     }
 
+    // CONCISE HARDWARE MAP (PHYSICAL STATUS ONLY)
     const hatcherMapEl = document.getElementById('heroHatcherMap');
     if (hatcherMapEl) {
-      if (pullDueTodayBatch && !pullDueTodayBatch.stage.hasHatched) {
-        const timeDescription = formatTimeOfDayDescription(pullDueTodayBatch.stage.physics.pullD21CompletedMs);
-        hatcherMapEl.innerHTML = `<span style="color:var(--amber); font-weight:900;">🟡 In H1: ${pullDueTodayBatch.batch.name} (Pull due ${timeDescription})</span>`;
-      } else if (spatial.hatcherOccupiedBy.length > 0) {
+      if (spatial.hatcherOccupiedBy.length > 0) {
         const h = spatial.hatcherOccupiedBy[0];
         if (h.isOverdue) {
-          hatcherMapEl.innerHTML = `<span style="color:var(--crimson);">🔴 H1 Overdue Pull (${h.name})</span>`;
+          hatcherMapEl.innerHTML = `<span style="color:var(--crimson); font-weight:900;">🔴 In Use (Overdue: ${h.name})</span>`;
         } else if (h.inLockdown) {
-          hatcherMapEl.innerHTML = `<span style="color:var(--crimson);">🔒 H1 SEALED (${h.name} @ ${h.hoursElapsed}h)</span>`;
+          hatcherMapEl.innerHTML = `<span style="color:var(--crimson); font-weight:900;">🔒 In Use (Sealed: ${h.name})</span>`;
         } else {
-          hatcherMapEl.innerHTML = `<span style="color:var(--amber);">🟡 In H1: ${h.name}</span>`;
+          hatcherMapEl.innerHTML = `<span style="color:var(--amber); font-weight:900;">🟡 In Use (${h.name})</span>`;
         }
       } else {
-        hatcherMapEl.innerHTML = `<span style="color:var(--emerald);">🟢 H1 Standby / Vacant</span>`;
+        hatcherMapEl.innerHTML = `<span style="color:var(--emerald); font-weight:900;">🟢 Free / Vacant</span>`;
       }
     }
   }
 
-  // QUICK LOG PRE-FLIGHT COPILOT VALIDATOR
+  // IMPACT ASSESSMENT & VERIFICATION
   function runSettingSimulation() {
     const sDate = document.getElementById('sdate').value || getTodayISO();
-    const sTime = document.getElementById('stime').value || getLiveTime24();
+    const sTime = document.getElementById('stime').value || "19:00";
     const eggCountInput = parseInt(document.getElementById('eggsSet').value, 10);
     const eggCount = isNaN(eggCountInput) ? 0 : Math.min(102, eggCountInput);
     const outputEl = document.getElementById('settingSimulationOutput');
@@ -2308,33 +2333,33 @@
     const expectedDiscard = Math.round(eggCount * pred.blendedCandleDiscardRate);
 
     let conflicts = [];
-    let isSevere = false;
 
-    // Hardware timeline cross-check against active batches
+    // Hardware checks against running batches
     batches.forEach(b => {
       if (!isBatchActiveDirect(b)) return;
       const bStage = getBatchStageInfo(b);
       const bPhys = bStage.physics;
 
-      const diffHours = Math.abs(propPhysics.startMs - bPhys.startMs) / (1000 * 3600);
-      if (diffHours < 72) {
-        conflicts.push(`H1 Conflict: Breaches 72h hatcher spacing with "${b.name}" (${Math.round(diffHours)}h apart).`);
-        isSevere = true;
+      // 1. Check if proposed set time directly breaches an active lockdown before the completion hour
+      if (propPhysics.startMs >= bPhys.shiftD18CompletedMs && propPhysics.startMs < bPhys.pullD21CompletedMs) {
+        conflicts.push(`Active Lockdown: Cabinet is sealed for Batch "${b.name}" until ${formatDisplayDateTime(bPhys.pullD21CompletedMs)}.`);
       }
 
-      if (propPhysics.startMs >= bPhys.shiftD18CompletedMs && propPhysics.startMs <= bPhys.pullD21CompletedMs) {
-        conflicts.push(`Active Lockdown: Proposed time sets eggs during Batch "${b.name}" lockdown.`);
-        isSevere = true;
+      // 2. Check 72h hatcher basket spacing at Hour 432
+      const diffHoursAtH1 = Math.abs(propPhysics.shiftD18CompletedMs - bPhys.shiftD18CompletedMs) / (1000 * 3600);
+      if (diffHoursAtH1 < 72) {
+        conflicts.push(`H1 Conflict: Breaches 72h hatcher spacing with "${b.name}" at Day 18 shift.`);
       }
 
-      if (propPhysics.shiftD18CompletedMs >= bPhys.shiftD18CompletedMs && propPhysics.shiftD18CompletedMs <= bPhys.pullD21CompletedMs) {
-        conflicts.push(`Future Lock: When this batch reaches 18 full days (432h), Hatcher H1 will still be sealed by "${b.name}".`);
-        isSevere = true;
+      // 3. Future overlap in H1
+      if (propPhysics.shiftD18CompletedMs >= bPhys.shiftD18CompletedMs && propPhysics.shiftD18CompletedMs < bPhys.pullD21CompletedMs) {
+        conflicts.push(`Future Lock: When this batch reaches 18 full days (432h), Hatcher H1 will still be occupied by "${b.name}".`);
       }
     });
 
     outputEl.style.display = 'block';
-    outputEl.className = 'sim-box ' + (isSevere ? 'sim-danger' : (conflicts.length > 0 ? 'sim-warn' : 'sim-ok'));
+    const canSet = conflicts.length === 0;
+    outputEl.className = 'sim-box ' + (canSet ? 'sim-ok' : 'sim-danger');
 
     let html = `<b>🔮 Pre-Flight Safety Verification for ${formatDisplayDate(sDate)} at ${sTime}:</b><br>`;
     html += `• Batch Load: <b>${eggCount} eggs</b> (Est. 14D Candling Removal: ~${expectedDiscard} eggs).<br>`;
@@ -2342,12 +2367,13 @@
     html += `• 18 Full Days (432h) Completed: <b>${formatDisplayDateTime(propPhysics.shiftD18CompletedMs)}</b> (Shift to H1).<br>`;
     html += `• Hatch Harvest (504h): <b>${formatDisplayDateTime(propPhysics.pullD21CompletedMs)}</b> (Chick Pull).<br>`;
 
-    if (conflicts.length > 0) {
-      html += `<div style="color:var(--crimson); font-weight:900; margin-top:4px;">⚠️ Impact Assessment:</div>`;
-      conflicts.forEach(c => html += `• ${c}<br>`);
+    html += `<div style="margin-top:6px; font-weight:900; font-size:0.84rem;">`;
+    if (canSet) {
+      html += `<span style="color:var(--emerald);">✅ Clear to Set: All parameters checked. Turning racks and Hatcher H1 are clear for this run.</span>`;
     } else {
-      html += `<div style="color:var(--emerald); font-weight:900; margin-top:4px;">🟢 Safe: Hatcher H1 and turning racks are completely clear for this run.</div>`;
+      html += `<span style="color:var(--crimson);">❌ Cannot Set: ${conflicts.join(' ')}</span>`;
     }
+    html += `</div>`;
 
     outputEl.innerHTML = html;
   }
@@ -2489,6 +2515,7 @@
 
     if (tab === 'quickBatch' || !tab) {
       switchQuickLogTab('quickBatch', buttons[0]);
+      syncSettingTimeToCalendarTask();
       runSettingSimulation();
     } else if (tab === 'quickEgg') switchQuickLogTab('quickEgg', buttons[1]);
     else if (tab === 'quickMort') switchQuickLogTab('quickMort', buttons[2]);
@@ -2513,7 +2540,7 @@
     const name = document.getElementById('bname').value.trim() || "Tray";
     const eggs = Math.min(102, parseInt(document.getElementById('eggsSet').value, 10) || 0);
     const dateInput = document.getElementById('sdate').value || getTodayISO();
-    const timeInput = document.getElementById('stime').value || getLiveTime24();
+    const timeInput = document.getElementById('stime').value || "19:00";
     const editDocId = document.getElementById('editDocId').value;
     const startDateISO = toNormalizedISO(dateInput);
 
@@ -2521,20 +2548,20 @@
 
     const propPhysics = computeBatchTimePhysics(startDateISO, timeInput, editDocId || "new");
 
-    let hasLockdownConflict = false;
+    let hasActiveConflict = false;
     batches.forEach(b => {
       if (editDocId && b.id === editDocId) return;
       if (!isBatchActiveDirect(b)) return;
       const bStage = getBatchStageInfo(b);
       const bPhys = bStage.physics;
 
-      if (propPhysics.startMs >= bPhys.shiftD18CompletedMs && propPhysics.startMs <= bPhys.pullD21CompletedMs) {
-        hasLockdownConflict = true;
+      if (propPhysics.startMs >= bPhys.shiftD18CompletedMs && propPhysics.startMs < bPhys.pullD21CompletedMs) {
+        hasActiveConflict = true;
       }
     });
 
-    if (hasLockdownConflict) {
-      if (!confirm("⚠️ WARNING: Setting eggs at this exact time breaches Batch Lockdown (Days 19–21). Cabinet humidity will drop and risk shrink-wrapping pipping chicks!\n\nDo you still choose to proceed with this entry?")) {
+    if (hasActiveConflict) {
+      if (!confirm("⚠️ WARNING: Setting eggs during active hatcher lockdown vents humidity and risks shrink-wrapping pipping chicks!\n\nDo you still choose to proceed with setting now?")) {
         return;
       }
     }
@@ -2620,9 +2647,10 @@
     b.chicksHatched = count;
     b.hatchRate = ((count / b.eggs) * 100).toFixed(1);
     b.pullTime = getLiveTimeString();
+    b.inHatcher = false;
     syncToLocalStorage();
     renderBatches(); renderMortality(); renderLiveMetrics(); renderCommandCenter();
-    if (db) db.collection("batches").doc(docId).update({ chicksHatched: count, hatchRate: b.hatchRate, pullTime: b.pullTime }).catch(e => console.warn(e));
+    if (db) db.collection("batches").doc(docId).update({ chicksHatched: count, hatchRate: b.hatchRate, pullTime: b.pullTime, inHatcher: false }).catch(e => console.warn(e));
   }
 
   function buildBatchCardHtml(b, isArchived) {
@@ -2708,7 +2736,7 @@
     const traj = getRealTimeStockTrajectory();
     document.getElementById('eggsSet').value = Math.min(102, traj.currentActualInHand);
     document.getElementById('sdate').value = getTodayISO();
-    document.getElementById('stime').value = getLiveTime24();
+    syncSettingTimeToCalendarTask();
     document.getElementById('editDocId').value = "";
     document.getElementById('submitBtn').innerText = "Set Batch (Timestamped)";
     document.getElementById('cancelBtn').style.display = "none";
