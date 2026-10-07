@@ -6,100 +6,102 @@
 <title>AD Farms ; Herd & Harvest</title>
 <style>
   :root {
-    --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", system-ui, sans-serif;
+    --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     
     --bg-canvas: #f8fafc;
     --card-surface: #ffffff;
     --card-surface-subtle: #f1f5f9;
-    --border-hairline: rgba(148, 163, 184, 0.28);
-    --border-strong: rgba(100, 116, 139, 0.45);
+    --border-hairline: rgba(203, 213, 225, 0.75);
+    --border-strong: #cbd5e1;
     
-    --text-primary: #090d16;
-    --text-secondary: #475569;
-    --text-tertiary: #94a3b8;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-tertiary: #64748b;
     
     --brand: #0284c7;
-    --brand-glow: rgba(2, 132, 199, 0.18);
+    --brand-glow: rgba(2, 132, 199, 0.12);
     --emerald: #059669;
-    --emerald-glow: rgba(5, 150, 105, 0.18);
+    --emerald-glow: rgba(5, 150, 105, 0.12);
     --amber: #d97706;
-    --amber-glow: rgba(217, 119, 6, 0.18);
+    --amber-glow: rgba(217, 119, 6, 0.12);
     --crimson: #dc2626;
-    --crimson-glow: rgba(220, 38, 38, 0.18);
+    --crimson-glow: rgba(220, 38, 38, 0.12);
     --violet: #7c3aed;
-    --violet-glow: rgba(124, 58, 237, 0.18);
+    --violet-glow: rgba(124, 58, 237, 0.12);
 
-    --shadow-plate: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+    --charcoal-pill: #334155;
+    --charcoal-fab: #1e293b;
+
+    --shadow-plate: 0 4px 18px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+    --shadow-pop: 0 8px 24px rgba(15, 23, 42, 0.16);
   }
 
   body.dark-theme {
-    --bg-canvas: #060911;
-    --card-surface: rgba(15, 23, 42, 0.92);
-    --card-surface-subtle: rgba(30, 41, 59, 0.7);
-    --border-hairline: rgba(71, 85, 105, 0.4);
-    --border-strong: rgba(148, 163, 184, 0.35);
+    --bg-canvas: #090d16;
+    --card-surface: #111827;
+    --card-surface-subtle: #1e293b;
+    --border-hairline: rgba(51, 65, 85, 0.7);
+    --border-strong: #334155;
     
     --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-tertiary: #64748b;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #94a3b8;
     
     --brand: #38bdf8;
-    --brand-glow: rgba(56, 189, 248, 0.22);
+    --brand-glow: rgba(56, 189, 248, 0.16);
     --emerald: #10b981;
-    --emerald-glow: rgba(16, 185, 129, 0.22);
+    --emerald-glow: rgba(16, 185, 129, 0.16);
     --amber: #f59e0b;
-    --amber-glow: rgba(245, 158, 11, 0.22);
-    --crimson: #ef4444;
-    --crimson-glow: rgba(239, 68, 68, 0.22);
-    --violet: #a855f7;
-    --violet-glow: rgba(168, 85, 247, 0.22);
+    --amber-glow: rgba(245, 158, 11, 0.16);
+    --crimson: #f87171;
+    --crimson-glow: rgba(248, 113, 113, 0.16);
+    --violet: #c084fc;
+    --violet-glow: rgba(192, 132, 252, 0.16);
 
-    --shadow-plate: 0 8px 24px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    --charcoal-pill: #475569;
+    --charcoal-fab: #0f172a;
+
+    --shadow-plate: 0 8px 24px -4px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    --shadow-pop: 0 8px 20px rgba(0, 0, 0, 0.35);
   }
 
   * {
     box-sizing: border-box;
     font-family: var(--font-stack);
     -webkit-tap-highlight-color: transparent;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    letter-spacing: -0.01em;
   }
 
   body {
     background-color: var(--bg-canvas);
     color: var(--text-primary);
     margin: 0;
-    padding-top: max(14px, env(safe-area-inset-top, 28px));
+    padding-top: max(14px, env(safe-area-inset-top, 24px));
     padding-left: 12px;
     padding-right: 12px;
     padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px));
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
-    transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: background-color 0.25s ease;
   }
 
   .container {
-    max-width: 580px;
+    max-width: 600px;
     margin: 0 auto;
     position: relative;
   }
 
   .top-bar {
-    background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%) !important;
-    border: 1.5px solid #cbd5e1 !important;
+    background: var(--card-surface);
+    border: 1.5px solid var(--border-hairline);
     border-radius: 22px;
     padding: 12px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 6px;
+    margin-top: 4px;
     margin-bottom: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
-  }
-
-  body.dark-theme .top-bar {
-    background: linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 100%) !important;
-    border: 1.5px solid #94a3b8 !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    box-shadow: var(--shadow-plate);
   }
 
   .brand-group { display: flex; align-items: center; gap: 12px; }
@@ -107,68 +109,66 @@
   .logo-box {
     width: 44px;
     height: 44px;
-    background: #ffffff !important;
-    border: 1.5px solid #cbd5e1 !important;
-    border-radius: 12px;
+    background: var(--card-surface-subtle);
+    border: 1.5px solid var(--border-hairline);
+    border-radius: 13px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
   }
   .logo-box img { width: 100%; height: 100%; object-fit: contain; }
 
   .brand-text h1 {
     margin: 0;
-    font-size: 1.15rem;
-    color: #090d16 !important;
-    line-height: 1.1;
+    font-size: 1.18rem;
+    color: var(--text-primary);
+    line-height: 1.15;
     font-weight: 900;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.03em;
   }
   .brand-text .sub-title {
     margin: 0;
-    font-size: 0.65rem;
-    color: #0284c7 !important;
+    font-size: 0.66rem;
+    color: var(--brand);
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.08em;
   }
 
   .btn-settings {
-    background: #ffffff !important;
-    border: 1.5px solid #cbd5e1 !important;
-    color: #090d16 !important;
+    background: var(--card-surface);
+    border: 1.5px solid var(--border-hairline);
+    color: var(--text-primary);
     border-radius: 14px;
     width: 42px;
     height: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.25rem;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    transition: transform 0.15s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: transform 0.15s ease, background 0.15s ease;
   }
   .btn-settings:active { transform: scale(0.92); }
+  .btn-settings svg { width: 20px; height: 20px; stroke: currentColor; }
 
-  /* POINTWISE TELEMETRY BOARD STYLING */
   .command-hero-banner {
     background: var(--card-surface);
-    border: 2px solid var(--border-strong);
-    border-left: 6px solid var(--brand);
-    border-radius: 18px;
-    padding: 13px 14px;
+    border: 1.5px solid var(--border-hairline);
+    border-left: 5px solid var(--brand);
+    border-radius: 20px;
+    padding: 14px 16px;
     margin-bottom: 12px;
     box-shadow: var(--shadow-plate);
-    color: var(--text-primary);
   }
   .command-hero-banner.alert-active { border-left-color: var(--crimson); }
   .command-hero-banner.lockdown-sealed {
     border-left-color: var(--crimson);
-    background: linear-gradient(180deg, var(--card-surface) 0%, rgba(220, 38, 38, 0.06) 100%);
+    background: linear-gradient(180deg, var(--card-surface) 0%, rgba(220, 38, 38, 0.04) 100%);
   }
 
   .hero-top-row {
@@ -179,21 +179,21 @@
   }
   .hero-title-group h2 {
     margin: 0;
-    font-size: 0.90rem;
+    font-size: 0.92rem;
     font-weight: 900;
-    letter-spacing: -0.2px;
+    letter-spacing: -0.02em;
     text-transform: uppercase;
     color: var(--text-primary);
   }
   .hero-date-pill {
-    font-size: 0.68rem;
+    font-size: 0.70rem;
     font-weight: 800;
     background: var(--card-surface-subtle);
-    color: var(--text-primary);
+    color: var(--text-secondary);
     border: 1px solid var(--border-hairline);
-    padding: 3px 8px;
+    padding: 3px 9px;
     border-radius: 10px;
-    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
   }
 
   .pointwise-stack {
@@ -205,52 +205,47 @@
   .action-point-item {
     background: var(--card-surface-subtle);
     border: 1px solid var(--border-hairline);
-    border-radius: 12px;
-    padding: 8px 10px;
-    font-size: 0.77rem;
-    line-height: 1.35;
+    border-radius: 13px;
+    padding: 9px 11px;
+    font-size: 0.80rem;
+    line-height: 1.4;
     display: flex;
-    gap: 8px;
+    gap: 9px;
     align-items: flex-start;
   }
   .action-point-item.point-hatch {
     border-left: 4px solid var(--amber);
-    background: rgba(217, 119, 6, 0.06);
+    background: rgba(217, 119, 6, 0.05);
   }
   .action-point-item.point-lockdown {
     border-left: 4px solid var(--crimson);
-    background: rgba(220, 38, 38, 0.08);
+    background: rgba(220, 38, 38, 0.05);
   }
   .action-point-item.point-flock {
     border-left: 4px solid var(--violet);
-    background: rgba(124, 58, 237, 0.07);
+    background: rgba(124, 58, 237, 0.05);
   }
   .action-point-item.point-candling {
     border-left: 4px solid var(--brand);
-    background: rgba(2, 132, 199, 0.06);
-  }
-  .action-point-item.point-plan {
-    border-left: 4px solid var(--emerald);
-    background: rgba(5, 150, 105, 0.06);
+    background: rgba(2, 132, 199, 0.05);
   }
 
-  .point-icon { font-size: 1rem; flex-shrink: 0; line-height: 1.2; }
+  .point-icon { font-size: 1.10rem; flex-shrink: 0; line-height: 1.2; }
   .point-content { flex: 1; }
   .point-tag {
-    font-size: 0.60rem;
+    font-size: 0.62rem;
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.05em;
     display: inline-block;
-    padding: 1px 6px;
-    border-radius: 6px;
+    padding: 2px 7px;
+    border-radius: 7px;
     margin-bottom: 2px;
   }
   .tag-lock { background: var(--crimson-glow); color: var(--crimson); }
   .tag-shift { background: var(--amber-glow); color: var(--amber); }
   .tag-flock { background: var(--violet-glow); color: var(--violet); }
   .tag-candle { background: var(--brand-glow); color: var(--brand); }
-  .tag-plan { background: var(--emerald-glow); color: var(--emerald); }
 
   .hardware-grid-hero {
     display: grid;
@@ -258,42 +253,41 @@
     gap: 6px;
     background: var(--card-surface-subtle);
     border: 1px solid var(--border-hairline);
-    border-radius: 12px;
-    padding: 8px 12px;
+    border-radius: 13px;
+    padding: 9px 12px;
   }
   .hw-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.74rem;
+    font-size: 0.76rem;
     color: var(--text-primary);
   }
   .hw-label {
     font-weight: 800;
     color: var(--text-secondary);
     text-transform: uppercase;
-    font-size: 0.60rem;
-    letter-spacing: 0.4px;
+    font-size: 0.62rem;
+    letter-spacing: 0.05em;
   }
   .hw-value {
     font-weight: 900;
-    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
   }
 
   .metrics-strip {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    margin-bottom: 8px;
+    gap: 7px;
+    margin-bottom: 9px;
   }
   .metric-card {
     background: var(--card-surface);
-    border: 1px solid var(--border-hairline);
-    border-radius: 16px;
-    padding: 10px 4px;
+    border: 1.5px solid var(--border-hairline);
+    border-radius: 17px;
+    padding: 11px 4px;
     text-align: center;
     box-shadow: var(--shadow-plate);
-    backdrop-filter: blur(12px);
     position: relative;
     overflow: hidden;
   }
@@ -301,49 +295,50 @@
     content: '';
     position: absolute;
     bottom: 0;
-    left: 15%;
-    right: 15%;
-    height: 2px;
-    border-radius: 2px;
+    left: 20%;
+    right: 20%;
+    height: 2.5px;
+    border-radius: 3px;
     background: currentColor;
-    opacity: 0.4;
+    opacity: 0.8;
   }
   .metric-lbl {
-    font-size: 0.54rem;
+    font-size: 0.56rem;
     font-weight: 800;
     text-transform: uppercase;
     color: var(--text-secondary);
-    letter-spacing: 0.4px;
+    letter-spacing: 0.05em;
     margin-bottom: 4px;
   }
   .metric-val {
-    font-size: 1.25rem;
+    font-size: 1.30rem;
     font-weight: 900;
     line-height: 1;
-    font-feature-settings: "tnum";
-    letter-spacing: -0.4px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.04em;
   }
 
   .production-summary-strip {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 8px;
+    gap: 7px;
+    margin-bottom: 9px;
   }
   .production-card {
-    background: var(--card-surface-subtle);
-    border: 1px solid var(--border-hairline);
-    border-radius: 14px;
-    padding: 10px 12px;
+    background: var(--card-surface);
+    border: 1.5px solid var(--border-hairline);
+    border-radius: 17px;
+    padding: 11px 13px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
+    box-shadow: var(--shadow-plate);
   }
-  .prod-lbl { font-size: 0.60rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.4px; }
+  .prod-lbl { font-size: 0.60rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
   .prod-val {
-    font-size: clamp(1.2rem, 5vw, 1.5rem);
+    font-size: clamp(1.22rem, 5vw, 1.50rem);
     font-weight: 900;
-    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
     line-height: 1.1;
   }
 
@@ -351,11 +346,11 @@
     background: var(--card-surface);
     border: 1.5px solid var(--emerald);
     border-radius: 18px;
-    padding: 12px 16px;
+    padding: 13px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 14px;
+    margin-bottom: 13px;
     box-shadow: var(--shadow-plate);
     position: relative;
     overflow: hidden;
@@ -373,35 +368,36 @@
   }
   .setter-left { display: flex; flex-direction: column; z-index: 1; }
   .setter-tag {
-    font-size: 0.64rem;
+    font-size: 0.66rem;
     font-weight: 800;
     text-transform: uppercase;
     color: var(--emerald);
-    letter-spacing: 0.6px;
+    letter-spacing: 0.07em;
   }
   .setter-sub {
-    font-size: 0.78rem;
+    font-size: 0.80rem;
     font-weight: 700;
     color: var(--text-secondary);
     margin-top: 2px;
   }
   .setter-val {
-    font-size: 1.6rem;
+    font-size: 1.65rem;
     font-weight: 900;
     color: var(--emerald);
     line-height: 1;
-    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
     z-index: 1;
   }
 
   .tab-bar {
     display: flex;
     background: var(--card-surface-subtle);
-    border: 1px solid var(--border-hairline);
+    border: 1.5px solid var(--border-hairline);
     border-radius: 26px;
-    padding: 4px;
+    padding: 3px;
     gap: 3px;
-    margin-bottom: 14px;
+    margin-bottom: 13px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
     overflow-x: auto;
     scrollbar-width: none;
   }
@@ -411,21 +407,21 @@
     min-width: fit-content;
     border: none;
     background: transparent;
-    padding: 10px 12px;
-    min-height: 44px;
-    font-size: 0.78rem;
-    font-weight: 700;
+    padding: 9px 13px;
+    min-height: 42px;
+    font-size: 0.80rem;
+    font-weight: 800;
     color: var(--text-secondary);
     border-radius: 22px;
     cursor: pointer;
     text-align: center;
     white-space: nowrap;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .tab-btn.active {
-    background: var(--card-surface);
-    color: var(--brand);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    background: var(--charcoal-pill);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.14);
   }
 
   .swipe-viewport {
@@ -449,7 +445,7 @@
 
   .card {
     background: var(--card-surface);
-    border: 1px solid var(--border-hairline);
+    border: 1.5px solid var(--border-hairline);
     border-radius: 20px;
     padding: 16px;
     margin-bottom: 12px;
@@ -457,12 +453,12 @@
   }
   .card h2 {
     margin: 0 0 14px 0;
-    font-size: 1rem;
+    font-size: 1.02rem;
     color: var(--text-primary);
-    font-weight: 800;
-    letter-spacing: -0.3px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
   }
-  .form-row { display: flex; gap: 10px; margin-bottom: 10px; }
+  .form-row { display: flex; gap: 10px; margin-bottom: 11px; }
   .form-row > div { flex: 1; }
   label {
     font-size: 0.70rem;
@@ -471,37 +467,39 @@
     display: block;
     margin-bottom: 4px;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.05em;
   }
   input, select, textarea {
     width: 100%;
     min-height: 44px;
-    padding: 10px 12px;
-    border: 1px solid var(--border-strong);
-    border-radius: 12px;
-    font-size: 0.90rem;
-    background: var(--card-surface);
+    padding: 10px 13px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 13px;
+    font-size: 0.92rem;
+    background: var(--card-surface-subtle);
     color: var(--text-primary);
+    font-weight: 600;
     outline: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: all 0.15s ease;
   }
   input:focus, select:focus, textarea:focus {
     border-color: var(--brand);
     box-shadow: 0 0 0 3px var(--brand-glow);
+    background: var(--card-surface);
   }
   .btn-submit {
     width: 100%;
-    min-height: 48px;
-    background: var(--brand);
+    min-height: 46px;
+    background: #0284c7;
     color: #ffffff;
     border: none;
     padding: 12px;
-    border-radius: 14px;
+    border-radius: 13px;
     font-weight: 800;
-    font-size: 0.94rem;
+    font-size: 0.92rem;
     cursor: pointer;
     margin-top: 6px;
-    box-shadow: 0 4px 14px var(--brand-glow);
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.18);
     transition: transform 0.12s ease;
   }
   .btn-submit:active { transform: scale(0.98); }
@@ -522,10 +520,10 @@
 
   .batch-card {
     background: var(--card-surface);
-    border: 1px solid var(--border-hairline);
+    border: 1.5px solid var(--border-hairline);
     border-left: 5px solid var(--brand);
-    border-radius: 16px;
-    padding: 14px;
+    border-radius: 18px;
+    padding: 15px;
     margin-bottom: 12px;
     box-shadow: var(--shadow-plate);
   }
@@ -539,58 +537,59 @@
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid var(--border-hairline);
-    padding-bottom: 8px;
+    padding-bottom: 9px;
     margin-bottom: 10px;
   }
-  .batch-title { font-size: 1.05rem; font-weight: 800; color: var(--text-primary); }
+  .batch-title { font-size: 1.08rem; font-weight: 900; color: var(--text-primary); }
   .batch-eggs {
-    font-size: 0.78rem;
+    font-size: 0.80rem;
     background: var(--brand-glow);
     color: var(--brand);
-    font-weight: 800;
-    padding: 4px 10px;
+    font-weight: 900;
+    padding: 4px 11px;
     border-radius: 20px;
-    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
   }
   .batch-dates-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
+    gap: 7px;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 11px;
   }
-  .date-pill { padding: 6px 4px; border-radius: 10px; }
+  .date-pill { padding: 7px 5px; border-radius: 11px; }
   .date-pill.d1 { background: var(--brand-glow); color: var(--brand); }
   .date-pill.d14 { background: var(--violet-glow); color: var(--violet); }
-  .date-pill.d18 { background: var(--crimson-glow); color: var(--crimson); }
+  .date-pill.d18 { background: var(--amber-glow); color: var(--amber); }
   .pill-lbl { font-size: 0.60rem; font-weight: 800; text-transform: uppercase; display: block; }
-  .pill-val { font-size: 0.74rem; font-weight: 800; margin-top: 2px; display: block; font-feature-settings: "tnum"; }
+  .pill-val { font-size: 0.76rem; font-weight: 800; margin-top: 2px; display: block; font-variant-numeric: tabular-nums; }
   .batch-results-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: var(--card-surface-subtle);
-    padding: 8px 12px;
-    border-radius: 10px;
-    font-size: 0.80rem;
-    margin-bottom: 10px;
+    padding: 9px 13px;
+    border-radius: 11px;
+    font-size: 0.82rem;
+    margin-bottom: 11px;
     border: 1px solid var(--border-hairline);
-    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
   }
   .batch-actions {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
-    gap: 6px;
+    grid-template-columns: repeat(auto-fit, minmax(88px, 1fr));
+    gap: 7px;
   }
   .btn-neutral {
     min-height: 40px;
-    padding: 8px 4px;
-    border-radius: 10px;
-    font-size: 0.74rem;
-    font-weight: 700;
+    padding: 8px 6px;
+    border-radius: 11px;
+    font-size: 0.76rem;
+    font-weight: 800;
     color: var(--text-primary);
     background: var(--card-surface);
-    border: 1px solid var(--border-hairline);
+    border: 1.5px solid var(--border-hairline);
     cursor: pointer;
     text-align: center;
     display: inline-flex;
@@ -598,16 +597,13 @@
     justify-content: center;
     transition: transform 0.12s ease;
   }
-  .btn-neutral:active { transform: scale(0.96); }
+  .btn-neutral:active { transform: scale(0.95); }
 
   .table-wrap {
     width: 100%;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior-x: contain;
-    touch-action: pan-x pan-y;
-    border-radius: 14px;
-    border: 1px solid var(--border-hairline);
+    border-radius: 15px;
+    border: 1.5px solid var(--border-hairline);
     background: var(--card-surface);
     box-shadow: var(--shadow-plate);
   }
@@ -615,30 +611,30 @@
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    font-size: 0.84rem;
+    font-size: 0.86rem;
     text-align: center;
   }
   th {
     background: var(--card-surface-subtle);
     color: var(--text-secondary);
-    font-weight: 800;
+    font-weight: 900;
     font-size: 0.70rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 11px 8px;
-    border-bottom: 1px solid var(--border-strong);
+    letter-spacing: 0.05em;
+    padding: 11px 9px;
+    border-bottom: 1.5px solid var(--border-strong);
     border-right: 1px solid var(--border-hairline);
     white-space: nowrap;
   }
   th:last-child { border-right: none; }
   td {
-    padding: 10px 8px;
+    padding: 10px 9px;
     border-bottom: 1px solid var(--border-hairline);
     border-right: 1px solid var(--border-hairline);
     color: var(--text-primary);
     background: var(--card-surface);
     white-space: nowrap;
-    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
   }
   td:last-child { border-right: none; }
   tr:last-child td { border-bottom: none; }
@@ -646,98 +642,98 @@
 
   .ledger-main-card {
     background: var(--card-surface);
-    border: 1px solid var(--border-hairline);
+    border: 1.5px solid var(--border-hairline);
     border-radius: 20px;
     padding: 16px;
     box-shadow: var(--shadow-plate);
   }
-  .ledger-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-  .ledger-title-text { font-size: 1.05rem; font-weight: 800; color: var(--violet); display: flex; align-items: center; gap: 6px; }
+  .ledger-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 13px; }
+  .ledger-title-text { font-size: 1.05rem; font-weight: 900; color: var(--violet); display: flex; align-items: center; gap: 7px; }
   .btn-new-log {
-    background: var(--card-surface);
-    border: 1.5px solid var(--violet);
-    color: var(--violet);
-    font-size: 0.78rem;
+    background: var(--violet);
+    color: #ffffff;
+    font-size: 0.80rem;
     font-weight: 800;
     padding: 8px 16px;
-    min-height: 40px;
+    min-height: 38px;
+    border: none;
     border-radius: 12px;
     cursor: pointer;
+    box-shadow: 0 3px 10px var(--violet-glow);
     transition: transform 0.12s ease;
   }
   .btn-new-log:active { transform: scale(0.95); }
 
   .ledger-pills-row {
     display: flex;
-    gap: 8px;
+    gap: 7px;
     overflow-x: auto;
-    padding-bottom: 8px;
-    margin-bottom: 14px;
+    padding-bottom: 7px;
+    margin-bottom: 13px;
     scrollbar-width: none;
   }
   .ledger-pills-row::-webkit-scrollbar { display: none; }
   .filter-pill {
-    padding: 8px 16px;
-    min-height: 38px;
-    border-radius: 20px;
-    font-size: 0.76rem;
-    font-weight: 700;
+    padding: 7px 15px;
+    min-height: 36px;
+    border-radius: 18px;
+    font-size: 0.78rem;
+    font-weight: 800;
     background: var(--card-surface-subtle);
-    border: 1px solid var(--border-hairline);
+    border: 1.5px solid var(--border-hairline);
     color: var(--text-secondary);
     cursor: pointer;
     white-space: nowrap;
     transition: all 0.15s ease;
   }
   .filter-pill.active {
-    background: var(--violet);
+    background: var(--charcoal-pill);
     color: #ffffff;
-    border-color: var(--violet);
-    box-shadow: 0 2px 10px var(--violet-glow);
+    border-color: var(--charcoal-pill);
   }
   .ledger-item-card {
     background: var(--card-surface-subtle);
-    border: 1px solid var(--border-hairline);
-    border-radius: 14px;
-    padding: 12px 14px;
-    margin-bottom: 10px;
+    border: 1.5px solid var(--border-hairline);
+    border-radius: 15px;
+    padding: 13px 15px;
+    margin-bottom: 9px;
     position: relative;
   }
-  .ledger-item-date { font-size: 0.74rem; color: var(--text-secondary); font-weight: 700; margin-bottom: 2px; }
-  .ledger-item-type { font-size: 0.95rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-  .ledger-item-notes { font-size: 0.86rem; color: var(--text-secondary); font-weight: 500; }
+  .ledger-item-date { font-size: 0.74rem; color: var(--text-tertiary); font-weight: 800; margin-bottom: 2px; }
+  .ledger-item-type { font-size: 0.96rem; font-weight: 900; color: var(--text-primary); display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .ledger-item-notes { font-size: 0.86rem; color: var(--text-secondary); font-weight: 600; line-height: 1.4; }
 
   .fab-quick-log {
     position: fixed;
     bottom: calc(75px + env(safe-area-inset-bottom, 20px));
     right: 20px;
-    background: linear-gradient(135deg, var(--brand) 0%, #0369a1 100%);
+    background: var(--charcoal-fab);
     color: #ffffff;
-    border: none;
-    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 28px;
     padding: 14px 26px;
     min-height: 52px;
-    font-size: 0.98rem;
-    font-weight: 800;
-    box-shadow: 0 14px 34px -2px rgba(2, 132, 199, 0.45);
+    font-size: 0.96rem;
+    font-weight: 900;
+    box-shadow: var(--shadow-pop);
     cursor: pointer;
     z-index: 900;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
-  .fab-quick-log:active { transform: scale(0.94); }
+  .fab-quick-log:active { transform: scale(0.93); }
 
-  .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 11px; }
   .cal-header button {
-    padding: 8px 16px;
+    padding: 7px 16px;
     min-height: 40px;
     background: var(--card-surface-subtle);
     color: var(--text-primary);
-    border: 1px solid var(--border-hairline);
-    border-radius: 12px;
-    font-weight: bold;
+    border: 1.5px solid var(--border-hairline);
+    border-radius: 13px;
+    font-weight: 900;
     cursor: pointer;
   }
   .cal-grid-header {
@@ -745,10 +741,10 @@
     grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 3px;
     text-align: center;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
     width: 100%;
   }
-  .cal-day-name { font-size: 0.68rem; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; padding-bottom: 4px; }
+  .cal-day-name { font-size: 0.68rem; font-weight: 800; color: var(--text-tertiary); text-transform: uppercase; padding-bottom: 4px; }
   .cal-grid-body {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -756,58 +752,55 @@
     width: 100%;
   }
   .cal-cell {
-    min-height: 68px;
+    min-height: 70px;
     width: 100%;
-    border-radius: 10px;
-    border: 1px solid var(--border-hairline);
+    border-radius: 11px;
+    border: 1.5px solid var(--border-hairline);
     background: var(--card-surface);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     padding: 4px 2px;
-    font-size: 0.78rem;
-    font-weight: 800;
+    font-size: 0.80rem;
+    font-weight: 900;
     cursor: pointer;
     overflow: hidden;
     transition: transform 0.1s ease;
     color: var(--text-primary);
   }
-  .cal-cell:active { transform: scale(0.96); }
+  .cal-cell:active { transform: scale(0.95); }
   .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; }
 
-  .stage-set { background: var(--brand-glow) !important; border: 1.5px solid var(--brand) !important; color: var(--brand) !important; }
-  .stage-d18 { background: var(--amber-glow) !important; border: 1.5px solid var(--amber) !important; color: var(--amber) !important; }
-  .stage-pull { background: var(--emerald-glow) !important; border: 1.5px solid var(--emerald) !important; color: var(--emerald) !important; }
-  .stage-overlap-black { background: #000000 !important; border: 1.5px solid #000000 !important; color: #ffffff !important; }
+  .stage-set { background: var(--brand-glow) !important; border: 2px solid var(--brand) !important; color: var(--brand) !important; }
+  .stage-d18 { background: var(--amber-glow) !important; border: 2px solid var(--amber) !important; color: var(--amber) !important; }
+  .stage-pull { background: var(--emerald-glow) !important; border: 2px solid var(--emerald) !important; color: var(--emerald) !important; }
+  .stage-overlap-black { background: #000000 !important; border: 2px solid #000000 !important; color: #ffffff !important; }
   .stage-overlap-black span { color: #ffffff !important; }
 
   .stage-tag {
-    font-size: 0.50rem;
+    font-size: 0.52rem;
     font-weight: 900;
     line-height: 1.1;
     text-transform: uppercase;
     margin-top: 2px;
-    padding: 2px 3px;
-    border-radius: 4px;
+    padding: 2px 4px;
+    border-radius: 5px;
     white-space: nowrap;
     max-width: 96%;
     overflow: hidden;
     text-overflow: ellipsis;
     display: block;
   }
-  .neutral-pill { background: var(--card-surface-subtle); color: var(--text-secondary); border: 1px solid var(--border-hairline); }
-  body.dark-theme .neutral-pill { background: rgba(255, 255, 255, 0.08); color: #cbd5e1; }
-
   .egg-badge {
     background: var(--card-surface-subtle);
     color: var(--text-primary);
     border: 1px solid var(--border-hairline);
     border-radius: 6px;
-    font-size: 0.52rem;
+    font-size: 0.53rem;
     padding: 1px 4px;
     margin-top: 2px;
-    font-weight: 800;
+    font-weight: 900;
     max-width: 96%;
     overflow: hidden;
     white-space: nowrap;
@@ -816,13 +809,13 @@
   }
   .task-cal-badge {
     background: var(--card-surface-subtle);
-    color: var(--text-secondary);
+    color: var(--violet);
     border: 1px solid var(--border-hairline);
     border-radius: 6px;
-    font-size: 0.50rem;
+    font-size: 0.51rem;
     padding: 1px 4px;
     margin-top: 2px;
-    font-weight: 800;
+    font-weight: 900;
     max-width: 96%;
     overflow: hidden;
     white-space: nowrap;
@@ -837,7 +830,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(6, 9, 17, 0.7);
+    background: rgba(15, 23, 42, 0.70);
     backdrop-filter: blur(10px);
     z-index: 999;
     align-items: center;
@@ -846,20 +839,20 @@
   }
   .modal-box {
     background: var(--card-surface);
-    border: 1px solid var(--border-hairline);
+    border: 1.5px solid var(--border-hairline);
     width: 100%;
     max-width: 440px;
     border-radius: 24px;
     padding: 20px;
-    box-shadow: var(--shadow-plate);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
     max-height: 90vh;
     overflow-y: auto;
     color: var(--text-primary);
   }
   .modal-box h3 {
-    margin: 0 0 14px 0;
+    margin: 0 0 15px 0;
     color: var(--brand);
-    font-size: 1.1rem;
+    font-size: 1.12rem;
     font-weight: 900;
     display: flex;
     justify-content: space-between;
@@ -868,11 +861,11 @@
   .modal-close {
     background: var(--card-surface-subtle);
     color: var(--text-primary);
-    border: 1px solid var(--border-hairline);
+    border: 1.5px solid var(--border-hairline);
     border-radius: 50%;
     width: 36px;
     height: 36px;
-    font-weight: bold;
+    font-weight: 900;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -880,39 +873,40 @@
   }
   .event-item {
     background: var(--card-surface-subtle);
-    border: 1px solid var(--border-hairline);
-    border-radius: 12px;
+    border: 1.5px solid var(--border-hairline);
+    border-radius: 13px;
     padding: 11px;
     margin-bottom: 8px;
-    font-size: 0.85rem;
+    font-size: 0.86rem;
+    font-weight: 600;
   }
   .sub-tab-bar {
     display: flex;
     gap: 4px;
-    margin-bottom: 14px;
+    margin-bottom: 13px;
     background: var(--card-surface-subtle);
-    border: 1px solid var(--border-hairline);
+    border: 1.5px solid var(--border-hairline);
     padding: 3px;
-    border-radius: 12px;
+    border-radius: 13px;
   }
   .sub-tab-btn {
     flex: 1;
     border: none;
     background: transparent;
     padding: 8px 2px;
-    min-height: 38px;
-    font-size: 0.74rem;
-    font-weight: 700;
+    min-height: 36px;
+    font-size: 0.76rem;
+    font-weight: 800;
     color: var(--text-secondary);
     border-radius: 9px;
     cursor: pointer;
   }
-  .sub-tab-btn.active { background: var(--card-surface); color: var(--text-primary); box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+  .sub-tab-btn.active { background: var(--card-surface); color: var(--text-primary); box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
 
   #dataDisplayView {
     display: none;
     background: var(--card-surface);
-    border: 1px solid var(--border-hairline);
+    border: 1.5px solid var(--border-hairline);
     border-radius: 20px;
     padding: 16px;
     margin-top: 10px;
@@ -920,19 +914,19 @@
   }
 
   .btn-report-back {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
-    font-size: 1.1rem;
+    border-radius: 13px;
+    font-size: 1.15rem;
     font-weight: 900;
     color: var(--text-primary);
     background: var(--card-surface);
-    border: 1px solid var(--border-hairline);
+    border: 1.5px solid var(--border-hairline);
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
     transition: transform 0.12s ease;
     flex-shrink: 0;
   }
@@ -941,15 +935,15 @@
   .sim-box {
     background: var(--card-surface-subtle);
     border: 1.5px solid var(--border-hairline);
-    border-radius: 14px;
-    padding: 10px 12px;
+    border-radius: 15px;
+    padding: 11px 13px;
     margin: 10px 0 12px 0;
-    font-size: 0.76rem;
+    font-size: 0.78rem;
     line-height: 1.45;
   }
-  .sim-box.sim-danger { border-color: var(--crimson); background: rgba(220, 38, 38, 0.08); }
-  .sim-box.sim-ok { border-color: var(--emerald); background: rgba(5, 150, 105, 0.08); }
-  .sim-box.sim-warn { border-color: var(--amber); background: rgba(217, 119, 6, 0.08); }
+  .sim-box.sim-danger { border-color: var(--crimson); background: rgba(220, 38, 38, 0.05); }
+  .sim-box.sim-ok { border-color: var(--emerald); background: rgba(5, 150, 105, 0.05); }
+  .sim-box.sim-warn { border-color: var(--amber); background: rgba(217, 119, 6, 0.05); }
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
@@ -962,7 +956,7 @@
     <div class="brand-group">
       <div class="logo-box" id="logoContainer" onclick="triggerUploadOnce()">
         <img id="logoDisplay" alt="AD Farms" style="display:none;">
-        <span id="placeholderText" style="font-size:0.6rem; font-weight:bold; color:#090d16;">AD<br>FARMS</span>
+        <span id="placeholderText" style="font-size:0.64rem; font-weight:900; line-height:1.1; text-align:center;">AD<br>FARMS</span>
       </div>
       <input type="file" id="logoInput" accept="image/*" style="display: none;" onchange="handleLogoUpload(this)">
       <div class="brand-text">
@@ -971,11 +965,17 @@
       </div>
     </div>
     <div class="header-actions">
-      <button class="btn-settings" onclick="openSettingsModal()" title="Settings & Options">⚙️️</button>
+      <!-- APPLE SF SYMBOLS GEAR SVG -->
+      <button class="btn-settings" onclick="openSettingsModal()" title="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
     </div>
   </div>
 
-  <!-- POINTWISE OPERATIONAL TELEMETRY BOARD -->
+  <!-- OPERATIONAL TELEMETRY BOARD -->
   <div class="command-hero-banner" id="commandHeroBanner">
     <div class="hero-top-row">
       <div class="hero-title-group">
@@ -985,7 +985,7 @@
     </div>
     
     <div id="heroTriggersFeed" class="pointwise-stack">
-      <div style="font-size:0.75rem; color:var(--text-secondary); text-align:center; padding:6px 0;">Scanning telemetry matrix...</div>
+      <div style="font-size:0.78rem; color:var(--text-secondary); text-align:center; padding:7px 0; font-weight:700;">Scanning telemetry matrix...</div>
     </div>
 
     <div class="hardware-grid-hero">
@@ -1030,6 +1030,7 @@
     </div>
   </div>
 
+  <!-- FIXED 102 TRAY BUFFER CARD -->
   <div class="setter-progress-card" id="setterCard">
     <div class="setter-left">
       <span class="setter-tag">🥚 READY FOR SETTER</span>
@@ -1051,11 +1052,11 @@
 
       <!-- SLIDE 0: RACK VIEW -->
       <div class="swipe-slide" id="slide0">
-        <div style="font-size:0.75rem; font-weight:800; color:var(--text-secondary); text-transform:uppercase; margin:4px 2px 8px 2px; letter-spacing:0.5px;">Incubator Tray Matrix (5 Setters T1–T5 + Hatcher H1)</div>
+        <div style="font-size:0.74rem; font-weight:900; color:var(--text-tertiary); text-transform:uppercase; margin:4px 3px 9px 3px; letter-spacing:0.05em;">Incubator Tray Matrix (5 Setters T1–T5 + Hatcher H1)</div>
         <div id="batchContainer"></div>
-        <div id="noBatches" style="text-align:center; color:var(--text-secondary); padding:30px 20px; font-size:0.85rem;">No active batches inside incubator.<br><br>Tap <b>+ Quick Log</b> below to set a new batch.</div>
+        <div id="noBatches" style="text-align:center; color:var(--text-secondary); padding:35px 20px; font-size:0.88rem; font-weight:700;">No active batches inside incubator.<br><br>Tap <b>+ Quick Log</b> below to set a new batch.</div>
         <div class="archive-toggle-bar" style="text-align:center; margin:10px 0;">
-          <button class="btn-neutral" style="border-radius:20px; padding:6px 14px;" onclick="toggleArchivedBatches()" id="toggleArchiveBtn">👁️ Show Archived Batches</button>
+          <button class="btn-neutral" style="border-radius:20px; padding:7px 16px;" onclick="toggleArchivedBatches()" id="toggleArchiveBtn">👁️ Show Archived Batches</button>
         </div>
         <div id="archivedContainer" style="display:none;"></div>
       </div>
@@ -1079,29 +1080,29 @@
               </thead>
               <tbody id="collectionBody"></tbody>
             </table>
-            <div id="noCollections" style="text-align:center; color:var(--text-secondary); padding:15px; font-size:0.8rem;">No collections entered yet.</div>
+            <div id="noCollections" style="text-align:center; color:var(--text-secondary); padding:18px; font-size:0.84rem; font-weight:700;">No collections entered yet.</div>
           </div>
         </div>
       </div>
 
       <!-- SLIDE 2: MORTALITY -->
       <div class="swipe-slide" id="slide2">
-        <div class="card" style="padding: 10px;">
-          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px; text-align:center;">
-            <div style="background:var(--card-surface); border:1px solid var(--border-hairline); border-radius:14px; padding:10px 4px;">
+        <div class="card" style="padding: 11px;">
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:7px; text-align:center;">
+            <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:15px; padding:11px 5px;">
               <div id="liveChicksBalance" style="font-size:1.30rem; font-weight:900; color:var(--emerald);">0</div>
-              <div style="font-size:0.58rem; font-weight:bold; color:var(--text-secondary);">CHICKS ALIVE</div>
-              <div style="font-size:0.58rem; color:var(--crimson); font-weight:bold;" id="totalChicksDeadSub">0 dead</div>
+              <div style="font-size:0.60rem; font-weight:900; color:var(--text-secondary); margin-top:2px;">CHICKS ALIVE</div>
+              <div style="font-size:0.60rem; color:var(--crimson); font-weight:800; margin-top:2px;" id="totalChicksDeadSub">0 dead</div>
             </div>
-            <div style="background:var(--card-surface); border:1px solid var(--border-hairline); border-radius:14px; padding:10px 4px;">
+            <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:15px; padding:11px 5px;">
               <div id="liveGrowersBalance" style="font-size:1.30rem; font-weight:900; color:var(--brand);">0</div>
-              <div style="font-size:0.58rem; font-weight:bold; color:var(--text-secondary);">GROWERS ALIVE</div>
-              <div style="font-size:0.58rem; color:var(--crimson); font-weight:bold;" id="totalGrowersDeadSub">0 dead</div>
+              <div style="font-size:0.60rem; font-weight:900; color:var(--text-secondary); margin-top:2px;">GROWERS ALIVE</div>
+              <div style="font-size:0.60rem; color:var(--crimson); font-weight:800; margin-top:2px;" id="totalGrowersDeadSub">0 dead</div>
             </div>
-            <div style="background:var(--card-surface); border:1px solid var(--border-hairline); border-radius:14px; padding:10px 4px;">
+            <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:15px; padding:11px 5px;">
               <div id="liveBreedersBalance" style="font-size:1.30rem; font-weight:900; color:var(--violet);">0</div>
-              <div style="font-size:0.58rem; font-weight:bold; color:var(--text-secondary);">BREEDERS ALIVE</div>
-              <div style="font-size:0.58rem; color:var(--crimson); font-weight:bold;" id="totalBreedersDeadSub">0 dead</div>
+              <div style="font-size:0.60rem; font-weight:900; color:var(--text-secondary); margin-top:2px;">BREEDERS ALIVE</div>
+              <div style="font-size:0.60rem; color:var(--crimson); font-weight:800; margin-top:2px;" id="totalBreedersDeadSub">0 dead</div>
             </div>
           </div>
         </div>
@@ -1126,7 +1127,7 @@
               </thead>
               <tbody id="mortalityBody"></tbody>
             </table>
-            <div id="noMortality" style="text-align:center; color:var(--text-secondary); padding:15px; font-size:0.8rem;">No mortality recorded.</div>
+            <div id="noMortality" style="text-align:center; color:var(--text-secondary); padding:18px; font-size:0.84rem; font-weight:700;">No mortality recorded.</div>
           </div>
         </div>
       </div>
@@ -1151,16 +1152,16 @@
           </div>
 
           <div id="ledgerCardList"></div>
-          <div id="noLedgerCards" style="text-align:center; color:var(--text-secondary); padding:30px 10px; font-size:0.85rem;">No activity logged yet.<br><br>Tap <b>+ New Log</b> to record tasks, medicines, sales, or breeder additions.</div>
+          <div id="noLedgerCards" style="text-align:center; color:var(--text-secondary); padding:35px 10px; font-size:0.88rem; font-weight:700;">No activity logged yet.<br><br>Tap <b>+ New Log</b> to record tasks, medicines, sales, or breeder additions.</div>
         </div>
       </div>
 
       <!-- SLIDE 4: TIMELINE -->
       <div class="swipe-slide" id="slide4">
-        <div class="card" style="padding: 12px 10px;">
+        <div class="card" style="padding: 13px 10px;">
           <div class="cal-header">
             <button onclick="changeMonth(-1)">◀</button>
-            <h3 id="calMonthYear" style="margin:0; font-size:0.95rem; color:var(--text-primary);">Month</h3>
+            <h3 id="calMonthYear" style="margin:0; font-size:1.02rem; font-weight:900; color:var(--text-primary);">Month</h3>
             <button onclick="changeMonth(1)">▶</button>
           </div>
 
@@ -1176,7 +1177,7 @@
 
           <div class="cal-grid-body" id="calGridBody"></div>
 
-          <div style="font-size:0.72rem; text-align:center; color:var(--text-secondary); margin-top:10px;">💡 Tap any date to add notes or review details.</div>
+          <div style="font-size:0.74rem; font-weight:700; text-align:center; color:var(--text-tertiary); margin-top:11px;">💡 Tap any date to add notes or review events.</div>
         </div>
       </div>
 
@@ -1185,7 +1186,7 @@
 
 </div>
 
-<!-- QUICK LOG BUTTON -->
+<!-- SOBER GRAPHITE FLOATING QUICK LOG BUTTON -->
 <button class="fab-quick-log" onclick="openQuickLogModal()">
   <span>+ Quick Log</span>
 </button>
@@ -1198,48 +1199,48 @@
       <button class="modal-close" onclick="closeSettingsModal()">✕</button>
     </h3>
 
-    <div class="settings-option" onclick="toggleThemeMode()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1px solid var(--border-hairline); padding:14px 16px; border-radius:16px; margin-bottom:10px; cursor:pointer;">
+    <div class="settings-option" onclick="toggleThemeMode()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); padding:13px 15px; border-radius:16px; margin-bottom:11px; cursor:pointer;">
       <div style="display:flex; align-items:center; gap:12px;">
-        <span id="themeMenuIcon" style="font-size:1.3rem;">☀</span>
+        <span id="themeMenuIcon" style="font-size:1.30rem;">☀</span>
         <div>
-          <div style="font-weight:800; font-size:0.9rem;">Appearance Theme</div>
-          <div id="themeMenuStatus" style="font-size:0.75rem; color:var(--text-secondary); font-weight:500;">Light Theme</div>
+          <div style="font-weight:900; font-size:0.90rem;">Appearance Theme</div>
+          <div id="themeMenuStatus" style="font-size:0.75rem; color:var(--text-tertiary); font-weight:600;">Light Theme</div>
         </div>
       </div>
-      <span style="color:var(--brand); font-size:0.8rem; font-weight:800;">Switch</span>
+      <span style="color:var(--brand); font-size:0.82rem; font-weight:900;">Switch</span>
     </div>
 
-    <div class="settings-option" onclick="openReportFromSettings()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1px solid var(--border-hairline); padding:14px 16px; border-radius:16px; margin-bottom:10px; cursor:pointer;">
+    <div class="settings-option" onclick="openReportFromSettings()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); padding:13px 15px; border-radius:16px; margin-bottom:11px; cursor:pointer;">
       <div style="display:flex; align-items:center; gap:12px;">
-        <span style="font-size:1.3rem;">📊</span>
+        <span style="font-size:1.30rem;">📊</span>
         <div>
-          <div style="font-weight:800; font-size:0.9rem;">Export Farm Reports</div>
-          <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:500;">Audits for Eggs, Trays, Flock &amp; Sales</div>
+          <div style="font-weight:900; font-size:0.90rem;">Export Farm Reports</div>
+          <div style="font-size:0.75rem; color:var(--text-tertiary); font-weight:600;">Audits for Eggs, Trays, Flock &amp; Sales</div>
         </div>
       </div>
-      <span style="color:var(--brand); font-size:1rem;">▶</span>
+      <span style="color:var(--brand); font-size:1.05rem; font-weight:900;">▶</span>
     </div>
 
-    <div class="settings-option" onclick="openDeleteFromSettings()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1px solid var(--border-hairline); padding:14px 16px; border-radius:16px; margin-bottom:10px; cursor:pointer;">
+    <div class="settings-option" onclick="openDeleteFromSettings()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); padding:13px 15px; border-radius:16px; margin-bottom:11px; cursor:pointer;">
       <div style="display:flex; align-items:center; gap:12px;">
-        <span style="font-size:1.3rem;">🗑️</span>
+        <span style="font-size:1.30rem;">🗑️</span>
         <div>
-          <div style="color:var(--crimson); font-weight:800; font-size:0.9rem;">Delete Center</div>
-          <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:500;">Purge erroneous entries safely</div>
+          <div style="color:var(--crimson); font-weight:900; font-size:0.90rem;">Delete Center</div>
+          <div style="font-size:0.75rem; color:var(--text-tertiary); font-weight:600;">Purge erroneous entries safely</div>
         </div>
       </div>
-      <span style="color:var(--crimson); font-size:1rem;">▶</span>
+      <span style="color:var(--crimson); font-size:1.05rem; font-weight:900;">▶</span>
     </div>
 
-    <div style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1px solid var(--border-hairline); padding:14px 16px; border-radius:16px; cursor:default;">
+    <div style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); padding:13px 15px; border-radius:16px; cursor:default;">
       <div style="display:flex; align-items:center; gap:12px;">
-        <span style="font-size:1.3rem;">☁</span>
+        <span style="font-size:1.30rem;">☁</span>
         <div>
-          <div style="font-weight:800; font-size:0.9rem;">Cloud Persistence</div>
-          <div style="font-size:0.75rem; color:var(--text-secondary); font-weight:500;">Encrypted Firestore Pipeline</div>
+          <div style="font-weight:900; font-size:0.90rem;">Cloud Persistence</div>
+          <div style="font-size:0.75rem; color:var(--text-tertiary); font-weight:600;">Encrypted Firestore Pipeline</div>
         </div>
       </div>
-      <span id="cloudStatusSetting" style="font-size:0.68rem; padding:4px 8px; border-radius:10px; font-weight:800; background:var(--brand-glow); color:var(--brand);">🟢 Synced</span>
+      <span id="cloudStatusSetting" style="font-size:0.68rem; padding:4px 9px; border-radius:11px; font-weight:900; background:var(--brand-glow); color:var(--brand);">🟢 Synced</span>
     </div>
   </div>
 </div>
@@ -1259,7 +1260,7 @@
       <button class="sub-tab-btn" onclick="switchQuickLogTab('quickLedger', this)">📝 Ledger</button>
     </div>
 
-    <!-- 1. BATCH FORM -->
+    <!-- 1. BATCH FORM: PURE MECHANICAL COPILOT VALIDATOR -->
     <div id="quickBatchForm" class="quick-form-panel">
       <input type="hidden" id="editDocId" value="">
       <div class="form-row">
@@ -1269,7 +1270,7 @@
         </div>
         <div style="flex: 0.6;">
           <label>Count (Max 102)</label>
-          <input type="number" id="eggsSet" value="102" min="1" max="102">
+          <input type="number" id="eggsSet" min="1" max="102" oninput="runSettingSimulation()">
         </div>
       </div>
       <div class="form-row">
@@ -1417,8 +1418,8 @@
       <button class="modal-close" onclick="closeDateDetails()">✕</button>
     </h3>
     <div id="modalDetailsBody"></div>
-    <div style="background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:14px; padding:12px; margin-top:12px;">
-      <div style="font-size:0.82rem; font-weight:800; color:var(--violet); margin-bottom:6px;">📝 Append Entry on this Date</div>
+    <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:16px; padding:13px; margin-top:13px;">
+      <div style="font-size:0.84rem; font-weight:900; color:var(--violet); margin-bottom:7px;">📝 Append Entry on this Date</div>
       <div class="form-row">
         <div>
           <label>Category</label>
@@ -1431,11 +1432,11 @@
           </select>
         </div>
       </div>
-      <div style="margin-bottom:6px;">
+      <div style="margin-bottom:7px;">
         <label>Details</label>
         <input type="text" id="calTaskDescInput" placeholder="e.g. Deworming or 2 birds @ 2180">
       </div>
-      <button class="btn-submit" style="background:var(--violet); padding:10px; font-size:0.85rem;" onclick="saveDateTaskToLedger()">Save to Ledger</button>
+      <button class="btn-submit" style="background:var(--violet); padding:10px; font-size:0.86rem;" onclick="saveDateTaskToLedger()">Save to Ledger</button>
     </div>
   </div>
 </div>
@@ -1447,25 +1448,25 @@
       <span style="color:var(--crimson);">🗑️ Record Purge Center</span>
       <button class="modal-close" onclick="closeDeleteCenterModal()">✕</button>
     </h3>
-    <div style="background:var(--crimson-glow); border:1px solid var(--crimson); border-radius:14px; padding:12px; margin-bottom:10px;">
-      <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:var(--crimson);">Delete Accidental Batch</h4>
-      <select id="delBatchSelect" style="margin-bottom:6px;"></select>
-      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.8rem; min-height:38px;" onclick="confirmDeleteBatch()">Delete Batch</button>
+    <div style="background:var(--crimson-glow); border:1.5px solid var(--crimson); border-radius:15px; padding:13px; margin-bottom:11px;">
+      <h4 style="margin:0 0 5px 0; font-size:0.86rem; color:var(--crimson); font-weight:900;">Delete Accidental Batch</h4>
+      <select id="delBatchSelect" style="margin-bottom:7px;"></select>
+      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.80rem; min-height:38px;" onclick="confirmDeleteBatch()">Delete Batch</button>
     </div>
-    <div style="background:var(--crimson-glow); border:1px solid var(--crimson); border-radius:14px; padding:12px; margin-bottom:10px;">
-      <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:var(--crimson);">Delete Egg Collection Log</h4>
-      <select id="delColSelect" style="margin-bottom:6px;"></select>
-      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.8rem; min-height:38px;" onclick="confirmDeleteCollection()">Delete Egg Log</button>
+    <div style="background:var(--crimson-glow); border:1.5px solid var(--crimson); border-radius:15px; padding:13px; margin-bottom:11px;">
+      <h4 style="margin:0 0 5px 0; font-size:0.86rem; color:var(--crimson); font-weight:900;">Delete Egg Collection Log</h4>
+      <select id="delColSelect" style="margin-bottom:7px;"></select>
+      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.80rem; min-height:38px;" onclick="confirmDeleteCollection()">Delete Egg Log</button>
     </div>
-    <div style="background:var(--crimson-glow); border:1px solid var(--crimson); border-radius:14px; padding:12px; margin-bottom:10px;">
-      <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:var(--crimson);">Delete Mortality Log</h4>
-      <select id="delMortSelect" style="margin-bottom:6px;"></select>
-      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.8rem; min-height:38px;" onclick="confirmDeleteMortality()">Delete Mortality</button>
+    <div style="background:var(--crimson-glow); border:1.5px solid var(--crimson); border-radius:15px; padding:13px; margin-bottom:11px;">
+      <h4 style="margin:0 0 5px 0; font-size:0.86rem; color:var(--crimson); font-weight:900;">Delete Mortality Log</h4>
+      <select id="delMortSelect" style="margin-bottom:7px;"></select>
+      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.80rem; min-height:38px;" onclick="confirmDeleteMortality()">Delete Mortality</button>
     </div>
-    <div style="background:var(--crimson-glow); border:1px solid var(--crimson); border-radius:14px; padding:12px;">
-      <h4 style="margin:0 0 4px 0; font-size:0.86rem; color:var(--crimson);">Delete Sales / Activity Log</h4>
-      <select id="delLedgerSelect" style="margin-bottom:6px;"></select>
-      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.8rem; min-height:38px;" onclick="confirmDeleteLedger()">Delete Activity / Sale</button>
+    <div style="background:var(--crimson-glow); border:1.5px solid var(--crimson); border-radius:15px; padding:13px;">
+      <h4 style="margin:0 0 5px 0; font-size:0.86rem; color:var(--crimson); font-weight:900;">Delete Sales / Activity Log</h4>
+      <select id="delLedgerSelect" style="margin-bottom:7px;"></select>
+      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.80rem; min-height:38px;" onclick="confirmDeleteLedger()">Delete Activity / Sale</button>
     </div>
   </div>
 </div>
@@ -1474,12 +1475,12 @@
 <div class="modal-overlay" id="dataModal" onclick="closeDataModal(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <h3>
-      <span style="color:var(--text-primary); font-weight:800;">📊 Export Audits</span>
+      <span style="color:var(--text-primary); font-weight:900;">📊 Export Audits</span>
       <button class="modal-close" onclick="closeDataModal()">✕</button>
     </h3>
 
-    <div style="background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:16px; padding:14px; margin-bottom:12px;">
-      <div style="font-size:0.88rem; font-weight:800; color:var(--emerald); margin-bottom:8px;">🥚 1. Egg Production Audit (Lifetime &amp; Range)</div>
+    <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:17px; padding:15px; margin-bottom:11px;">
+      <div style="font-size:0.88rem; font-weight:900; color:var(--emerald); margin-bottom:7px;">🥚 1. Egg Production Audit (Lifetime &amp; Range)</div>
       <div class="form-row">
         <div><label>From</label><select id="reportColFrom"></select></div>
         <div><label>To</label><select id="reportColTo"></select></div>
@@ -1487,8 +1488,8 @@
       <button class="btn-submit" style="background:var(--emerald); padding:10px; font-size:0.86rem;" onclick="displayEggDataReport()">Generate Egg Audit</button>
     </div>
 
-    <div style="background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:16px; padding:14px; margin-bottom:12px;">
-      <div style="font-size:0.88rem; font-weight:800; color:var(--brand); margin-bottom:8px;">🐥 2. Incubation Batches Audit (Lifetime &amp; Range)</div>
+    <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:17px; padding:15px; margin-bottom:11px;">
+      <div style="font-size:0.88rem; font-weight:900; color:var(--brand); margin-bottom:7px;">🐥 2. Incubation Batches Audit (Lifetime &amp; Range)</div>
       <div class="form-row">
         <div><label>From Tray</label><select id="reportBatchFrom"></select></div>
         <div><label>To Tray</label><select id="reportBatchTo"></select></div>
@@ -1496,8 +1497,8 @@
       <button class="btn-submit" style="background:var(--brand); padding:10px; font-size:0.86rem;" onclick="displayIncubationDataReport()">Generate Tray Audit</button>
     </div>
 
-    <div style="background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:16px; padding:14px; margin-bottom:12px;">
-      <div style="font-size:0.88rem; font-weight:800; color:var(--violet); margin-bottom:8px;">📝 3. Farm Activities &amp; Ledger Audit</div>
+    <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:17px; padding:15px; margin-bottom:11px;">
+      <div style="font-size:0.88rem; font-weight:900; color:var(--violet); margin-bottom:7px;">📝 3. Farm Activities &amp; Ledger Audit</div>
       <div class="form-row">
         <div><label>From</label><select id="reportActivityFrom"></select></div>
         <div><label>To</label><select id="reportActivityTo"></select></div>
@@ -1505,8 +1506,8 @@
       <button class="btn-submit" style="background:var(--violet); padding:10px; font-size:0.86rem;" onclick="displayActivityDataReport()">Generate Ledger Audit</button>
     </div>
 
-    <div style="background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:16px; padding:14px;">
-      <div style="font-size:0.88rem; font-weight:800; color:var(--amber); margin-bottom:8px;">🐓 4. Flock Balance &amp; Reconciliation Audit</div>
+    <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:17px; padding:15px;">
+      <div style="font-size:0.88rem; font-weight:900; color:var(--amber); margin-bottom:7px;">🐓 4. Flock Balance &amp; Reconciliation Audit</div>
       <button class="btn-submit" style="background:var(--amber); padding:10px; font-size:0.86rem;" onclick="displayFlockReconciliationReport()">Reconcile Active Flock &amp; 45D Aging</button>
     </div>
   </div>
@@ -1514,9 +1515,9 @@
 
 <!-- AUDIT REPORT VIEW -->
 <div class="container" id="dataDisplayView">
-  <div style="display:flex; align-items:center; gap:12px; border-bottom:2px solid var(--border-strong); padding-bottom:10px; margin-bottom:14px;">
+  <div style="display:flex; align-items:center; gap:12px; border-bottom:2px solid var(--border-strong); padding-bottom:11px; margin-bottom:15px;">
     <button class="btn-report-back" onclick="closeDataDisplay()" title="Return">◀</button>
-    <div style="font-size:0.95rem; font-weight:900; color:var(--brand); letter-spacing:-0.2px;">AD FARMS TELEMETRY REPORT</div>
+    <div style="font-size:1.02rem; font-weight:900; color:var(--brand); letter-spacing:-0.02em;">AD FARMS TELEMETRY REPORT</div>
   </div>
   <div id="dataReportContent"></div>
 </div>
@@ -1592,6 +1593,25 @@
     hours = hours % 12;
     hours = hours ? hours : 12;
     return pad(d.getDate()) + "/" + pad(d.getMonth() + 1) + " " + hours + ":" + pad(minutes) + " " + ampm;
+  }
+
+  function formatTimeOfDayDescription(timestampMs) {
+    if (!timestampMs) return "-";
+    const d = new Date(timestampMs);
+    const hours24 = d.getHours();
+    let hours12 = hours24 % 12;
+    hours12 = hours12 ? hours12 : 12;
+    const timeFormatted = hours12 + ":" + pad(d.getMinutes()) + " " + (hours24 >= 12 ? 'PM' : 'AM');
+    
+    if (hours24 >= 16 && hours24 < 20) {
+      return "this evening at " + timeFormatted;
+    } else if (hours24 >= 20 || hours24 < 4) {
+      return "tonight at " + timeFormatted;
+    } else if (hours24 >= 12 && hours24 < 16) {
+      return "this afternoon at " + timeFormatted;
+    } else {
+      return "this morning at " + timeFormatted;
+    }
   }
 
   function addDaysToISO(isoStr, days) {
@@ -1733,7 +1753,6 @@
     swipeTrack.style.transform = "translateX(-" + (index * 20) + "%)";
     tabButtons.forEach((btn, idx) => { btn.classList.toggle('active', idx === index); });
     if (index === 4) renderCalendar();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
@@ -1779,9 +1798,6 @@
   }
   checkAndLockLogo();
 
-  // -------------------------------------------------------------
-  // TEMPORAL LOGIC: 432h SETTER (18 FULL DAYS) + 72h LOCKDOWN
-  // -------------------------------------------------------------
   function parseBatchStartTimestamp(startDateISO, timeStr) {
     const sDate = toNormalizedISO(startDateISO) || getTodayISO();
     let hours = 18, mins = 0;
@@ -1801,7 +1817,6 @@
     return d.getTime();
   }
 
-  // DIRECT BATCH ACTIVITY CHECK (PREVENTS RECURSIVE OVERHEAD)
   function isBatchActiveDirect(b) {
     if (!b) return false;
     if (b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "") return false;
@@ -1810,7 +1825,6 @@
     return Date.now() <= (pullMs + (24 * 3600 * 1000));
   }
 
-  // RESOLVES SINGLE BEST-FIT CANDLING DAY (SAFE NON-RECURSIVE)
   function resolveOptimalCandlingDay(batchStartMs, batchId) {
     const d13Ms = batchStartMs + (13 * 24 * 3600 * 1000);
     const d14Ms = batchStartMs + (14 * 24 * 3600 * 1000);
@@ -1826,7 +1840,6 @@
 
     const otherBatches = batches.filter(b => b.id !== batchId && isBatchActiveDirect(b));
 
-    // Rule 1: Consolidate with planned door opening of another batch (Shift at 18d or Pull at 21d)
     for (let c of candidates) {
       for (let ob of otherBatches) {
         const obStart = parseBatchStartTimestamp(ob.startDate || ob.rawDate, ob.setTime);
@@ -1838,7 +1851,6 @@
       }
     }
 
-    // Rule 2: Avoid Days 19-20 lockdown collision of another batch
     const safeCandidates = candidates.filter(c => {
       for (let ob of otherBatches) {
         const obStart = parseBatchStartTimestamp(ob.startDate || ob.rawDate, ob.setTime);
@@ -1862,8 +1874,8 @@
   function computeBatchTimePhysics(startDateISO, timeStr, batchId) {
     const startMs = parseBatchStartTimestamp(startDateISO, timeStr);
     const optimalCandle = resolveOptimalCandlingDay(startMs, batchId);
-    const shiftD18CompletedMs = startMs + (18 * 24 * 3600 * 1000); // 432h Completed
-    const pullD21CompletedMs = startMs + (21 * 24 * 3600 * 1000); // 504h Completed
+    const shiftD18CompletedMs = startMs + (18 * 24 * 3600 * 1000);
+    const pullD21CompletedMs = startMs + (21 * 24 * 3600 * 1000);
     const promotion45DMs = pullD21CompletedMs + (45 * 24 * 3600 * 1000);
 
     return {
@@ -1892,7 +1904,7 @@
 
     if (!hasHatched) {
       if (now >= phys.shiftD18CompletedMs && now < phys.pullD21CompletedMs) {
-        inActiveLockdown = true; // 432h to 504h
+        inActiveLockdown = true;
       } else if (now >= phys.pullD21CompletedMs) {
         isOverduePull = true;
       }
@@ -1911,9 +1923,6 @@
     return isBatchActiveDirect(b);
   }
 
-  // -------------------------------------------------------------
-  // 2D PROBABILISTIC PREDICTION ENGINE (70% WEEKLY / 30% MONTHLY)
-  // -------------------------------------------------------------
   function calculateDualHorizonPrediction() {
     const today = new Date();
     const ms7d = 7 * 24 * 3600 * 1000;
@@ -2008,12 +2017,11 @@
     } else if (loggedEve > 0) {
       expectedRemainingToday = 0;
     } else if (loggedAftn > 0) {
-      expectedRemainingToday = pred.blendedLayVelocity * pred.pEve;
+      expectedRemainingToday = 0;
     } else if (loggedMorn > 0) {
       expectedRemainingToday = pred.blendedLayVelocity * (pred.pAftn + pred.pEve);
     }
 
-    // Age of oldest un-set pot
     let oldestPotDays = 0;
     const chronologicalBatches = [...batches]
       .map(b => ({ normalizedDate: toNormalizedISO(b.startDate || b.rawDate || b.labelD1) }))
@@ -2112,15 +2120,8 @@
     };
   }
 
-  // -------------------------------------------------------------
-  // REVISED POINTWISE TELEMETRY BOARD
-  // Priority 1: Hatching Lockdown / Shift / Pull
-  // Priority 2: Scheduled Flock Tasks (Medications, Feeds, Vaccines)
-  // Priority 3: Candling (Notified strictly on the selected day)
-  // Priority 4: Intelligent Setting Plan (3 Exact Conditions)
-  // -------------------------------------------------------------
+  // REVISED OPERATIONAL TELEMETRY BOARD
   function renderCommandCenter() {
-    const now = Date.now();
     const todayISO = getTodayISO();
     const parts = todayISO.split('-').map(Number);
     const dObj = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -2134,8 +2135,8 @@
 
     let isCabinetSealedNow = false;
     let activeLockdownBatches = [];
-    let imminentShiftBatch = null;
-    let imminentPullBatch = null;
+    let shiftDueTodayBatch = null;
+    let pullDueTodayBatch = null;
     let candlingDueToday = [];
 
     batches.forEach(b => {
@@ -2148,91 +2149,95 @@
         activeLockdownBatches.push({ name: b.name, hours: Math.round(stage.elapsedHours) });
       }
 
-      // Check shift window
-      const hoursToShift = (phys.shiftD18CompletedMs - now) / (1000 * 3600);
-      if (hoursToShift <= 36 && hoursToShift >= -12 && !b.inHatcher && !stage.hasHatched) {
-        if (!imminentShiftBatch || hoursToShift < imminentShiftBatch.hours) {
-          imminentShiftBatch = { batch: b, hours: hoursToShift, stage: stage };
-        }
+      if (todayISO === phys.shiftD18ISO && !b.inHatcher && !stage.hasHatched) {
+        shiftDueTodayBatch = { batch: b, stage: stage };
       }
 
-      // Check pull window
-      const hoursToPull = (phys.pullD21CompletedMs - now) / (1000 * 3600);
-      if (hoursToPull <= 36 && hoursToPull >= -12 && !stage.hasHatched) {
-        if (!imminentPullBatch || hoursToPull < imminentPullBatch.hours) {
-          imminentPullBatch = { batch: b, hours: hoursToPull, stage: stage };
-        }
+      if (todayISO === phys.pullD21ISO && !stage.hasHatched) {
+        pullDueTodayBatch = { batch: b, stage: stage };
       }
 
-      // Candling window check: Notify ONLY on the exact selected optimal day
       if (todayISO === phys.d14ISO && !b.candlingD14Cleared) {
-        candlingDueToday.push({ batch: b, offset: phys.d14OffsetDay });
+        candlingDueToday.push({ batch: b });
       }
     });
 
     const heroBanner = document.getElementById('commandHeroBanner');
     if (heroBanner) {
-      heroBanner.classList.toggle('lockdown-sealed', isCabinetSealedNow);
-      heroBanner.classList.toggle('alert-active', isCabinetSealedNow);
+      const isBannerAlert = Boolean(pullDueTodayBatch || isCabinetSealedNow);
+      heroBanner.classList.toggle('alert-active', isBannerAlert);
+      heroBanner.classList.toggle('lockdown-sealed', isCabinetSealedNow && !pullDueTodayBatch);
     }
 
     const spatial = parseHardwareSpatialOccupancy();
-    const traj = getRealTimeStockTrajectory();
-    const pred = calculateDualHorizonPrediction();
-    const targetTray = spatial.freeSetters.length > 0 ? spatial.freeSetters[0] : "Next Vacated Tray";
-
     let pointsHtml = "";
 
-    // ==========================================
-    // 1. PRIORITY 1: HATCHING LOCKDOWN / SHIFT / PULL
-    // ==========================================
-    if (isCabinetSealedNow) {
-      const namesList = activeLockdownBatches.map(item => `<b>${item.name}</b> (${item.hours}h/504h)`).join(', ');
-      pointsHtml += `
-        <div class="action-point-item point-lockdown">
-          <span class="point-icon">🛑</span>
-          <div class="point-content">
-            <span class="point-tag tag-lock">Priority 1: Cabinet Sealed</span>
-            <div>Lockdown active: ${namesList}. Humidity locked (65%–75%). <b>Zero door access allowed</b>.</div>
-          </div>
-        </div>
-      `;
-    } else if (imminentShiftBatch) {
-      const bObj = imminentShiftBatch.batch;
-      const phys = imminentShiftBatch.stage.physics;
-      const shiftTimeDisplay = formatDisplayDateTime(phys.shiftD18CompletedMs);
-      const hoursLeft = Math.round(imminentShiftBatch.hours);
-
-      pointsHtml += `
-        <div class="action-point-item point-hatch">
-          <span class="point-icon">🐣</span>
-          <div class="point-content">
-            <span class="point-tag tag-shift">Priority 1: 18d Shift Due</span>
-            <div><b>${bObj.name}</b> completes 18d (432h) in <b>${hoursLeft > 0 ? hoursLeft + 'h' : 'Due Now'}</b> (${shiftTimeDisplay}). Shift to H1 basket.</div>
-          </div>
-        </div>
-      `;
-    } else if (imminentPullBatch) {
-      const bObj = imminentPullBatch.batch;
-      const phys = imminentPullBatch.stage.physics;
-      const pullTimeDisplay = formatDisplayDateTime(phys.pullD21CompletedMs);
-      const hoursLeft = Math.round(imminentPullBatch.hours);
+    // PULL DAY TOP PRIORITY CHECK
+    if (pullDueTodayBatch && !pullDueTodayBatch.stage.hasHatched) {
+      const bObj = pullDueTodayBatch.batch;
+      const phys = pullDueTodayBatch.stage.physics;
+      const timeDescription = formatTimeOfDayDescription(phys.pullD21CompletedMs);
 
       pointsHtml += `
         <div class="action-point-item point-hatch">
           <span class="point-icon">🐥</span>
           <div class="point-content">
-            <span class="point-tag tag-shift">Priority 1: Hatch Pull</span>
-            <div><b>${bObj.name}</b> completes 21d (504h) in <b>${hoursLeft > 0 ? hoursLeft + 'h' : 'Due Now'}</b> (${pullTimeDisplay}). Harvest chicks and disinfect H1.</div>
+            <span class="point-tag tag-shift">Priority 1: Pull Day</span>
+            <div style="font-weight:900; font-size:0.86rem;">Batch: ${bObj.name} in H1 (Day 21 Completion)</div>
+            <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:3px; line-height:1.45;">
+              • 72h Lockdown ends today. Keep cabinet sealed until cycle completes.<br>
+              • <b>Action: Harvest chicks ${timeDescription} (504h completed)</b>.
+            </div>
+          </div>
+        </div>
+      `;
+    } 
+    // INTERMEDIATE LOCKDOWN DAYS (DAYS 19 & 20)
+    else if (isCabinetSealedNow) {
+      const namesList = activeLockdownBatches.map(item => `${item.name} in H1 (${item.hours}h / 504h)`).join(', ');
+      pointsHtml += `
+        <div class="action-point-item point-lockdown">
+          <span class="point-icon">🛑</span>
+          <div class="point-content">
+            <span class="point-tag tag-lock">Priority 1: Lockdown Sealed</span>
+            <div style="font-weight:800;">Batch: ${namesList}</div>
+          </div>
+        </div>
+      `;
+    } 
+    // DAY 18 SHIFT
+    else if (shiftDueTodayBatch) {
+      const bObj = shiftDueTodayBatch.batch;
+      const phys = shiftDueTodayBatch.stage.physics;
+      const timeDescription = formatTimeOfDayDescription(phys.shiftD18CompletedMs);
+
+      pointsHtml += `
+        <div class="action-point-item point-hatch">
+          <span class="point-icon">🐣</span>
+          <div class="point-content">
+            <span class="point-tag tag-shift">Priority 1: Shift</span>
+            <div style="font-weight:800;">Batch: ${bObj.name} -> Transfer to H1 (${timeDescription})</div>
           </div>
         </div>
       `;
     }
 
-    // ==========================================
-    // 2. PRIORITY 2: SCHEDULED FLOCK TASKS (MEDICATIONS, VACCINES, FEEDS)
-    // Always visible, never suppressed by incubator lockdown
-    // ==========================================
+    // 14TH DAY CANDLING
+    if (candlingDueToday.length > 0) {
+      candlingDueToday.forEach(ca => {
+        pointsHtml += `
+          <div class="action-point-item point-candling">
+            <span class="point-icon">🔍</span>
+            <div class="point-content">
+              <span class="point-tag tag-candle">14th Day Candling</span>
+              <div style="font-weight:800;">Batch: ${ca.batch.name}</div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // FLOCK LEDGER TASKS
     const todaysFlockTasks = ledger.filter(entry => toNormalizedISO(entry.date) === todayISO);
     if (todaysFlockTasks.length > 0) {
       todaysFlockTasks.forEach(task => {
@@ -2247,142 +2252,17 @@
           <div class="action-point-item point-flock">
             <span class="point-icon">${icon}</span>
             <div class="point-content">
-              <span class="point-tag tag-flock">Priority 2: Flock Action (${task.category || 'General'})</span>
-              <div style="font-weight:700; color:var(--text-primary); font-size:0.80rem;">${task.notes || 'Scheduled flock task'}</div>
+              <span class="point-tag tag-flock">Flock Task</span>
+              <div style="font-weight:800; color:var(--text-primary); font-size:0.84rem;">${task.category}: ${task.notes || '-'}</div>
             </div>
           </div>
         `;
       });
-    }
-
-    // ==========================================
-    // 3. PRIORITY 3: CANDLING WINDOW (Notified strictly today)
-    // ==========================================
-    if (candlingDueToday.length > 0) {
-      candlingDueToday.forEach(ca => {
-        pointsHtml += `
-          <div class="action-point-item point-candling">
-            <span class="point-icon">🔍</span>
-            <div class="point-content">
-              <span class="point-tag tag-candle">Priority 3: Candling Scheduled Today</span>
-              <div><b>${ca.batch.name}</b> Day 14 candling (Targeted at Day ${ca.offset} for door safety). Access allowed today.</div>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    // ==========================================
-    // 4. PRIORITY 4: INTELLIGENT SETTING PLAN (3 Exact Conditions)
-    // ==========================================
-    if (imminentShiftBatch && !isCabinetSealedNow) {
-      const bObj = imminentShiftBatch.batch;
-      const phys = imminentShiftBatch.stage.physics;
-      const shiftTimeDisplay = formatDisplayDateTime(phys.shiftD18CompletedMs);
-      const hoursLeft = Math.max(0, Math.round(imminentShiftBatch.hours));
-
-      // 18th Day Shift Stock Projection
-      const expectedShiftStock = (hoursLeft <= 12) ? traj.projectedTonight : (traj.currentActualInHand + Math.round((hoursLeft / 24) * pred.blendedLayVelocity));
-      const minPShift = Math.max(0, expectedShiftStock - 2);
-      const maxPShift = expectedShiftStock + 3;
-
-      // 21st Day Pull Stock Projection (72 hours later)
-      const pullTimeMs = phys.pullD21CompletedMs;
-      const expectedPullStock = Math.round(expectedShiftStock + (3 * pred.blendedLayVelocity));
-      const minPPull = Math.max(0, expectedPullStock - 3);
-      const maxPPull = expectedPullStock + 4;
-
-      // CONDITION A: 80-102 Eggs on Day 18 Completion
-      if (expectedShiftStock >= 80 && expectedShiftStock <= 102) {
-        pointsHtml += `
-          <div class="action-point-item point-plan">
-            <span class="point-icon">🎯</span>
-            <div class="point-content">
-              <span class="point-tag tag-plan">Priority 4: Setting Plan (Condition A)</span>
-              <div>Probable stock at shift: <b>~${minPShift}–${maxPShift} eggs</b> (Range: 80–102).</div>
-              <div style="color:var(--emerald); font-weight:800; margin-top:2px;">STRONGLY SUGGEST SETTING TONIGHT AT ${shiftTimeDisplay}.</div>
-              <div style="font-size:0.72rem; color:var(--text-secondary);">Load Setter <b>${targetTray}</b> in same door opening. Carry forward: 0 eggs.</div>
-            </div>
-          </div>
-        `;
-      }
-      // CONDITION C: <80 on Day 18 AND >110 on Day 21
-      else if (expectedShiftStock < 80 && expectedPullStock > 110) {
-        const oldestAgeOnPull = traj.oldestPotDays + 3.0;
-        let suggestionText = "";
-
-        if (oldestAgeOnPull > 6.0) {
-          suggestionText = `<b>SUGGESTION: SET TONIGHT AT SHIFT (~${expectedShiftStock} EGGS).</b> Holding to Day 21 breaches the 5-day freshness limit (Oldest pot becomes ${oldestAgeOnPull.toFixed(1)}d old).`;
-        } else {
-          suggestionText = `<b>SUGGESTION: HOLD TO DAY 21 PULL.</b> Oldest pot will be ${oldestAgeOnPull.toFixed(1)}d (within 5±1d buffer). Load full 102 tray; carry forward ~${expectedPullStock - 102} surplus eggs.`;
-        }
-
-        pointsHtml += `
-          <div class="action-point-item point-plan">
-            <span class="point-icon">⚠️</span>
-            <div class="point-content">
-              <span class="point-tag tag-lock">Priority 4: Storage Limit Advisory (Condition C)</span>
-              <div>Day 18 shift stock: ~${minPShift}–${maxPShift} eggs (&lt;80). Day 21 pull projection: ~${minPPull}–${maxPPull} eggs (&gt;110).</div>
-              <div style="font-size:0.72rem; margin-top:3px; color:var(--text-primary);">${suggestionText}</div>
-              <div style="font-size:0.68rem; color:var(--crimson); font-weight:700; margin-top:2px;">Machine locked for 72h hatch between Shift and Pull.</div>
-            </div>
-          </div>
-        `;
-      }
-      // Condition B pending: Stock accumulating
-      else if (expectedShiftStock < 80 && expectedPullStock >= 102 && expectedPullStock <= 110) {
-        pointsHtml += `
-          <div class="action-point-item point-plan">
-            <span class="point-icon">⏳</span>
-            <div class="point-content">
-              <span class="point-tag tag-plan">Priority 4: Stock Accumulating</span>
-              <div>Current stock lean (~${expectedShiftStock} eggs). Hold in cool storage for scheduled Pull Day.</div>
-            </div>
-          </div>
-        `;
-      }
-    }
-    // CONDITION B: Notified DIRECTLY on 21st Day (Pull Day)
-    else if (imminentPullBatch && !isCabinetSealedNow) {
-      const bObj = imminentPullBatch.batch;
-      const phys = imminentPullBatch.stage.physics;
-      const pullTimeDisplay = formatDisplayDateTime(phys.pullD21CompletedMs);
-      const expectedPullStock = traj.projectedTonight;
-      const minPPull = Math.max(0, expectedPullStock - 2);
-      const maxPPull = expectedPullStock + 3;
-
-      if (expectedPullStock >= 102 && expectedPullStock <= 110) {
-        const carryOver = Math.max(0, expectedPullStock - 102);
-        pointsHtml += `
-          <div class="action-point-item point-plan">
-            <span class="point-icon">🎯</span>
-            <div class="point-content">
-              <span class="point-tag tag-plan">Priority 4: Setting Plan (Condition B)</span>
-              <div>Probable stock available: <b>~${minPPull}–${maxPPull} eggs</b> (Range: 102–110).</div>
-              <div style="color:var(--emerald); font-weight:800; margin-top:2px;">STRONGLY SUGGEST SETTING TONIGHT AT ${pullTimeDisplay}.</div>
-              <div style="font-size:0.72rem; color:var(--text-secondary);">Load full 102 eggs in Setter <b>${targetTray}</b> after chick harvest. Surplus (~${carryOver} eggs) carries forward.</div>
-            </div>
-          </div>
-        `;
-      }
-    } else if (!isCabinetSealedNow) {
-      const minP = Math.max(0, traj.projectedTonight - 2);
-      const maxP = traj.projectedTonight + 3;
-      pointsHtml += `
-        <div class="action-point-item point-plan">
-          <span class="point-icon">✨</span>
-          <div class="point-content">
-            <span class="point-tag tag-plan">Priority 4: Standby Buffer</span>
-            <div>Stock in hand: <b>${traj.currentActualInHand} eggs</b> (Probable by evening: <b>~${minP}–${maxP} eggs</b>). Free trays: <b>${spatial.freeSetters.join(', ') || 'None'}</b>.</div>
-          </div>
-        </div>
-      `;
     }
 
     const feedEl = document.getElementById('heroTriggersFeed');
     if (feedEl) feedEl.innerHTML = pointsHtml;
 
-    // Telemetry mapping
     const setterMapEl = document.getElementById('heroSetterMap');
     if (setterMapEl) {
       if (spatial.freeSetters.length === 5 && spatial.occupiedSetters.length === 0) {
@@ -2396,7 +2276,10 @@
 
     const hatcherMapEl = document.getElementById('heroHatcherMap');
     if (hatcherMapEl) {
-      if (spatial.hatcherOccupiedBy.length > 0) {
+      if (pullDueTodayBatch && !pullDueTodayBatch.stage.hasHatched) {
+        const timeDescription = formatTimeOfDayDescription(pullDueTodayBatch.stage.physics.pullD21CompletedMs);
+        hatcherMapEl.innerHTML = `<span style="color:var(--amber); font-weight:900;">🟡 In H1: ${pullDueTodayBatch.batch.name} (Pull due ${timeDescription})</span>`;
+      } else if (spatial.hatcherOccupiedBy.length > 0) {
         const h = spatial.hatcherOccupiedBy[0];
         if (h.isOverdue) {
           hatcherMapEl.innerHTML = `<span style="color:var(--crimson);">🔴 H1 Overdue Pull (${h.name})</span>`;
@@ -2411,45 +2294,41 @@
     }
   }
 
-  // -------------------------------------------------------------
-  // WHAT-IF SIMULATION ENGINE
-  // -------------------------------------------------------------
+  // QUICK LOG PRE-FLIGHT COPILOT VALIDATOR
   function runSettingSimulation() {
     const sDate = document.getElementById('sdate').value || getTodayISO();
     const sTime = document.getElementById('stime').value || getLiveTime24();
-    const eggCount = Math.min(102, parseInt(document.getElementById('eggsSet').value, 10) || 102);
+    const eggCountInput = parseInt(document.getElementById('eggsSet').value, 10);
+    const eggCount = isNaN(eggCountInput) ? 0 : Math.min(102, eggCountInput);
     const outputEl = document.getElementById('settingSimulationOutput');
     if (!outputEl) return;
 
     const propPhysics = computeBatchTimePhysics(sDate, sTime, "sim_test");
     const pred = calculateDualHorizonPrediction();
     const expectedDiscard = Math.round(eggCount * pred.blendedCandleDiscardRate);
-    const expectedH1Load = Math.max(0, eggCount - expectedDiscard);
 
     let conflicts = [];
     let isSevere = false;
 
+    // Hardware timeline cross-check against active batches
     batches.forEach(b => {
       if (!isBatchActiveDirect(b)) return;
       const bStage = getBatchStageInfo(b);
       const bPhys = bStage.physics;
 
-      // 72h minimum hatcher gap
       const diffHours = Math.abs(propPhysics.startMs - bPhys.startMs) / (1000 * 3600);
       if (diffHours < 72) {
-        conflicts.push(`Breaches 3-day gap with "${b.name}" (${Math.round(diffHours)}h apart). H1 conflict.`);
+        conflicts.push(`H1 Conflict: Breaches 72h hatcher spacing with "${b.name}" (${Math.round(diffHours)}h apart).`);
         isSevere = true;
       }
 
-      // Check active lockdown entry
       if (propPhysics.startMs >= bPhys.shiftD18CompletedMs && propPhysics.startMs <= bPhys.pullD21CompletedMs) {
-        conflicts.push(`Sets eggs inside Batch "${b.name}" lockdown. Cabinet door opening drops humidity.`);
+        conflicts.push(`Active Lockdown: Proposed time sets eggs during Batch "${b.name}" lockdown.`);
         isSevere = true;
       }
 
-      // Check future Day 18 completion overlap
       if (propPhysics.shiftD18CompletedMs >= bPhys.shiftD18CompletedMs && propPhysics.shiftD18CompletedMs <= bPhys.pullD21CompletedMs) {
-        conflicts.push(`When this batch reaches 18 full days (432h), Hatcher H1 will still be locked by "${b.name}".`);
+        conflicts.push(`Future Lock: When this batch reaches 18 full days (432h), Hatcher H1 will still be sealed by "${b.name}".`);
         isSevere = true;
       }
     });
@@ -2457,24 +2336,23 @@
     outputEl.style.display = 'block';
     outputEl.className = 'sim-box ' + (isSevere ? 'sim-danger' : (conflicts.length > 0 ? 'sim-warn' : 'sim-ok'));
 
-    let html = `<b>🔮 Projection for ${formatDisplayDate(sDate)} at ${sTime}:</b><br>`;
-    html += `• Eggs to Set: <b>${eggCount}</b> (Tray Max: 102 | Est. Candling Removal: ~${expectedDiscard} eggs).<br>`;
-    html += `• Targeted Candling: <b>${formatDisplayDate(propPhysics.d14ISO)}</b> (Day ${propPhysics.d14OffsetDay}).<br>`;
-    html += `• 18 Full Days (432h) completed: <b>${formatDisplayDateTime(propPhysics.shiftD18CompletedMs)}</b>.<br>`;
-    html += `• Hatch Harvest (504h): <b>${formatDisplayDateTime(propPhysics.pullD21CompletedMs)}</b>.<br>`;
+    let html = `<b>🔮 Pre-Flight Safety Verification for ${formatDisplayDate(sDate)} at ${sTime}:</b><br>`;
+    html += `• Batch Load: <b>${eggCount} eggs</b> (Est. 14D Candling Removal: ~${expectedDiscard} eggs).<br>`;
+    html += `• 14th Day Candling: <b>${formatDisplayDate(propPhysics.d14ISO)}</b>.<br>`;
+    html += `• 18 Full Days (432h) Completed: <b>${formatDisplayDateTime(propPhysics.shiftD18CompletedMs)}</b> (Shift to H1).<br>`;
+    html += `• Hatch Harvest (504h): <b>${formatDisplayDateTime(propPhysics.pullD21CompletedMs)}</b> (Chick Pull).<br>`;
 
     if (conflicts.length > 0) {
-      html += `<div style="color:var(--crimson); font-weight:800; margin-top:3px;">⚠️ Impact Assessment:</div>`;
+      html += `<div style="color:var(--crimson); font-weight:900; margin-top:4px;">⚠️ Impact Assessment:</div>`;
       conflicts.forEach(c => html += `• ${c}<br>`);
     } else {
-      html += `<div style="color:var(--emerald); font-weight:800; margin-top:3px;">🟢 Zero Door / Lockdown Collisions for this timeline.</div>`;
+      html += `<div style="color:var(--emerald); font-weight:900; margin-top:4px;">🟢 Safe: Hatcher H1 and turning racks are completely clear for this run.</div>`;
     }
 
     outputEl.innerHTML = html;
   }
 
   function calculateReconciledFlock() {
-    const todayISO = getTodayISO();
     let lifetimeChicksTotal = 0;
     let poolChicksActive = 0;
     let poolGrowersFromAging = 0;
@@ -2581,19 +2459,18 @@
     const traj = getRealTimeStockTrajectory();
     const invEl = document.getElementById('inventoryEggsDisplay'); if (invEl) invEl.innerText = traj.currentActualInHand;
 
+    // 102 TRAY DENOMINATOR
     const fillRatio = Math.min(100, Math.round((traj.currentActualInHand / 102) * 100));
     const setCard = document.getElementById('setterCard');
     if (setCard) setCard.style.setProperty('--progress-pct', fillRatio + '%');
 
     const tpSub = document.getElementById('trayProgressSub');
     if (tpSub) {
-      if (traj.currentActualInHand >= 80 && traj.currentActualInHand <= 110) {
-        tpSub.innerText = `⭐ Ready (${traj.currentActualInHand} in 80–110 buffer)`;
-      } else if (traj.currentActualInHand > 110) {
-        tpSub.innerText = `⚠️️ Full (${traj.currentActualInHand} eggs - 102 Tray Max)`;
+      if (traj.currentActualInHand >= 102) {
+        tpSub.innerText = `⭐ Ready (${traj.currentActualInHand} / 102 Tray Capacity Met)`;
       } else {
-        const needed = 80 - traj.currentActualInHand;
-        tpSub.innerText = `${traj.currentActualInHand} eggs (${needed} to reach 80 threshold)`;
+        const needed = 102 - traj.currentActualInHand;
+        tpSub.innerText = `${traj.currentActualInHand} / 102 Tray Filled (${needed} to complete tray)`;
       }
     }
   }
@@ -2602,6 +2479,14 @@
     initTodayInputs();
     document.getElementById('quickLogModal').style.display = "flex";
     const buttons = document.querySelectorAll('#quickLogModal .sub-tab-btn');
+
+    // Dynamic stock pre-fill capped at 102
+    const traj = getRealTimeStockTrajectory();
+    const eggInput = document.getElementById('eggsSet');
+    if (eggInput && !document.getElementById('editDocId').value) {
+      eggInput.value = Math.min(102, traj.currentActualInHand);
+    }
+
     if (tab === 'quickBatch' || !tab) {
       switchQuickLogTab('quickBatch', buttons[0]);
       runSettingSimulation();
@@ -2626,11 +2511,13 @@
 
   function saveBatch() {
     const name = document.getElementById('bname').value.trim() || "Tray";
-    const eggs = Math.min(102, parseInt(document.getElementById('eggsSet').value, 10) || 102);
+    const eggs = Math.min(102, parseInt(document.getElementById('eggsSet').value, 10) || 0);
     const dateInput = document.getElementById('sdate').value || getTodayISO();
     const timeInput = document.getElementById('stime').value || getLiveTime24();
     const editDocId = document.getElementById('editDocId').value;
     const startDateISO = toNormalizedISO(dateInput);
+
+    if (eggs <= 0) return alert("Enter a valid number of eggs to set.");
 
     const propPhysics = computeBatchTimePhysics(startDateISO, timeInput, editDocId || "new");
 
@@ -2696,7 +2583,7 @@
     const b = batches.find(item => item.id === docId);
     if (!b) return;
     const current = (b.candlingD14Cleared || 0);
-    const val = prompt("Day 14 Candling for \"" + b.name + "\":\nEnter unfertilized/cleared eggs to remove:", current);
+    const val = prompt("14th Day Candling for \"" + b.name + "\":\nEnter unfertilized/cleared eggs to remove:", current);
     if (val === null) return;
     const num = parseInt(val, 10);
     if (isNaN(num) || num < 0) return alert("Enter valid egg count.");
@@ -2746,11 +2633,11 @@
     const currentLiveInTray = Math.max(0, initialEggs - c14);
     const rateText = b.hatchRate !== null && b.hatchRate !== undefined ? "<b style=\"color:var(--emerald);\">" + b.hatchRate + "%</b>" : "<span style=\"color:var(--brand); font-weight:bold;\">Running</span>";
     const chickCount = b.chicksHatched !== null && b.chicksHatched !== undefined ? "<b>" + b.chicksHatched + "</b> chicks" : "<span style=\"color:var(--text-secondary);\">" + currentLiveInTray + " in Rack</span>";
-    const agingTag = (b.chicksHatched) ? `<div style="font-size:0.62rem; color:var(--text-secondary); margin-top:2px;">45D Promotion: <b>${formatDisplayDate(phys.promotion45DISO)}</b></div>` : "";
+    const agingTag = (b.chicksHatched) ? `<div style="font-size:0.65rem; color:var(--text-tertiary); margin-top:3px; font-weight:700;">45D Promotion: <b>${formatDisplayDate(phys.promotion45DISO)}</b></div>` : "";
 
-    let locationBadge = `<span style="font-size:0.68rem; font-weight:800; background:var(--brand-glow); color:var(--brand); padding:2px 8px; border-radius:8px;">🔵 In Setters (${Math.round(stage.elapsedHours)}h)</span>`;
+    let locationBadge = `<span style="font-size:0.70rem; font-weight:900; background:var(--brand-glow); color:var(--brand); padding:3px 10px; border-radius:10px;">🔵 Setters (${Math.round(stage.elapsedHours)}h)</span>`;
     if (stage.inActiveLockdown || b.inHatcher) {
-      locationBadge = `<span style="font-size:0.68rem; font-weight:800; background:rgba(220,38,38,0.15); color:var(--crimson); padding:2px 8px; border-radius:8px;">🔒 In Hatcher H1 (Sealed)</span>`;
+      locationBadge = `<span style="font-size:0.70rem; font-weight:900; background:rgba(220,38,38,0.15); color:var(--crimson); padding:3px 10px; border-radius:10px;">🔒 Hatcher H1 (Sealed)</span>`;
     }
 
     const hatcherButtonHtml = !isArchived ? (
@@ -2764,21 +2651,21 @@
         <div class="batch-card-header">
           <div>
             <div style="display:flex; align-items:center; gap:8px; margin-bottom:3px;">
-              <span class="batch-title">${b.name} ${isArchived ? '<span style="font-size:0.65rem; color:var(--text-secondary);">(ARCHIVED)</span>' : '🟢'}</span>
+              <span class="batch-title">${b.name} ${isArchived ? '<span style="font-size:0.68rem; color:var(--text-tertiary);">(ARCHIVED)</span>' : '🟢'}</span>
               ${!isArchived ? locationBadge : ''}
             </div>
-            <div class="batch-time-tag" style="font-size:0.68rem; color:var(--text-secondary); font-weight:700;">Set: <b>${formatDisplayDateTime(phys.startMs)}</b></div>
+            <div class="batch-time-tag" style="font-size:0.72rem; color:var(--text-tertiary); font-weight:700;">Set: <b>${formatDisplayDateTime(phys.startMs)}</b></div>
             ${agingTag}
           </div>
           <span class="batch-eggs">${currentLiveInTray} / ${initialEggs} eggs</span>
         </div>
         <div class="batch-dates-grid">
           <div class="date-pill d1"><span class="pill-lbl">Set</span><span class="pill-val">${formatDisplayDate(phys.d1ISO)}</span></div>
-          <div class="date-pill d14"><span class="pill-lbl">Candle (D${phys.d14OffsetDay})</span><span class="pill-val">${formatDisplayDate(phys.d14ISO)}</span></div>
+          <div class="date-pill d14"><span class="pill-lbl">14th Day Candle</span><span class="pill-val">${formatDisplayDate(phys.d14ISO)}</span></div>
           <div class="date-pill d18"><span class="pill-lbl">Shift (432h)</span><span class="pill-val">${formatDisplayDate(phys.shiftD18ISO)}</span></div>
         </div>
         <div class="batch-results-bar">
-          <div>Candled (D14): <b>-${c14}</b></div>
+          <div>14th Day Candling Rejected: <b>-${c14}</b></div>
           <div>Harvest: ${chickCount} (${rateText})</div>
         </div>
         <div class="batch-actions">
@@ -2818,7 +2705,8 @@
 
   function resetBatchForm() {
     document.getElementById('bname').value = "";
-    document.getElementById('eggsSet').value = "102";
+    const traj = getRealTimeStockTrajectory();
+    document.getElementById('eggsSet').value = Math.min(102, traj.currentActualInHand);
     document.getElementById('sdate').value = getTodayISO();
     document.getElementById('stime').value = getLiveTime24();
     document.getElementById('editDocId').value = "";
@@ -2890,9 +2778,9 @@
         <td>${c.morning || '-'}</td>
         <td>${c.afternoon || '-'}</td>
         <td>${c.evening || '-'}</td>
-        <td style="color:var(--crimson); font-weight:bold;">${c.broken || '-'}</td>
-        <td style="color:var(--brand); font-weight:bold;">${c.total}</td>
-        <td><button class="btn-neutral" style="padding:4px 10px; font-weight:bold; color:var(--brand);" onclick="startEditCollection('${c.id}')">✎ Edit</button></td>
+        <td style="color:var(--crimson); font-weight:800;">${c.broken || '-'}</td>
+        <td style="color:var(--brand); font-weight:900;">${c.total}</td>
+        <td><button class="btn-neutral" style="padding:4px 12px; font-weight:800; color:var(--brand);" onclick="startEditCollection('${c.id}')">✎ Edit</button></td>
       `;
       tbody.appendChild(tr);
     });
@@ -3003,10 +2891,10 @@
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><b>${formatDisplayDate(m.date)}</b></td>
-        <td><span style="font-size:0.75rem; font-weight:bold; color:var(--text-secondary);">${m.category||'Chicks'}</span></td>
-        <td style="color:var(--crimson); font-weight:bold;">${m.dead}</td>
-        <td style="text-align:left; font-size:0.8rem; color:var(--text-primary); font-weight:600;">${m.reason || '-'}</td>
-        <td><button class="btn-neutral" style="padding:4px 10px; font-weight:bold; color:var(--brand);" onclick="startEditMortality('${m.id}')">✎ Edit</button></td>
+        <td><span style="font-size:0.78rem; font-weight:800; color:var(--text-secondary);">${m.category||'Chicks'}</span></td>
+        <td style="color:var(--crimson); font-weight:900;">${m.dead}</td>
+        <td style="text-align:left; font-size:0.82rem; color:var(--text-primary); font-weight:600;">${m.reason || '-'}</td>
+        <td><button class="btn-neutral" style="padding:4px 12px; font-weight:800; color:var(--brand);" onclick="startEditMortality('${m.id}')">✎ Edit</button></td>
       `;
       tbody.appendChild(tr);
     });
@@ -3036,10 +2924,10 @@
       
       let badge = "";
       if (l.category === "Sales" && l.target && l.qty > 0) {
-        badge = `<div style="font-size:0.75rem; font-weight:800; color:var(--emerald); margin-top:2px;">Deducted: ${l.qty} from ${l.target}</div>`;
+        badge = `<div style="font-size:0.78rem; font-weight:900; color:var(--emerald); margin-top:4px;">Deducted: ${l.qty} from ${l.target}</div>`;
       } else if (l.category === "Breeders" && l.qty > 0) {
         const srcText = (l.source === "GrowerStock") ? "Transferred from Growers" : "Direct External Stock";
-        badge = `<div style="font-size:0.75rem; font-weight:800; color:var(--violet); margin-top:2px;">Added: +${l.qty} Breeders (${srcText})</div>`;
+        badge = `<div style="font-size:0.78rem; font-weight:900; color:var(--violet); margin-top:4px;">Added: +${l.qty} Breeders (${srcText})</div>`;
       }
       
       card.innerHTML = `
@@ -3122,7 +3010,6 @@
     toggleLedgerDynamicFields();
   }
 
-  // CALENDAR WITH ALGORITHMICALLY LOCKED D14 CANDLING TAGS
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calMonthYear').innerText = monthNames[curMonth] + " " + curYear;
@@ -3150,7 +3037,6 @@
         const stage = getBatchStageInfo(b);
         const phys = stage.physics;
         if (cellISO === phys.d1ISO) dayEvents.push({ type: 'set', name: b.name });
-        // Tag appears ONLY on the single algorithmically resolved candling day
         if (cellISO === phys.d14ISO) dayEvents.push({ type: 'd14', name: b.name, offset: phys.d14OffsetDay });
         if (cellISO === phys.shiftD18ISO) dayEvents.push({ type: 'shift', name: b.name });
         if (cellISO === phys.pullD21ISO) dayEvents.push({ type: 'pull', name: b.name });
@@ -3175,19 +3061,19 @@
         cell.classList.add('stage-pull');
       }
 
-      let content = "<span style=\"font-size:0.75rem; margin-bottom:1px;\">" + d + "</span>";
+      let content = "<span style=\"font-size:0.80rem; margin-bottom:2px; font-weight:900;\">" + d + "</span>";
       
       dayEvents.forEach(ev => {
         if (priorityEventCount > 1) {
           if (ev.type === 'set') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">SET: " + ev.name + "</span>";
           else if (ev.type === 'shift') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">432h: " + ev.name + "</span>";
           else if (ev.type === 'pull') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.2); color:#ffffff;\">PULL: " + ev.name + "</span>";
-          else if (ev.type === 'd14') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.1); color:#ffffff;\">D" + ev.offset + ": " + ev.name + "</span>";
+          else if (ev.type === 'd14') content += "<span class=\"stage-tag\" style=\"background:rgba(255,255,255,0.1); color:#ffffff;\">D14: " + ev.name + "</span>";
         } else {
           if (ev.type === 'set') content += "<span class=\"stage-tag\" style=\"background:var(--brand); color:#ffffff;\">SET: " + ev.name + "</span>";
           else if (ev.type === 'shift') content += "<span class=\"stage-tag\" style=\"background:var(--amber); color:#ffffff;\">SHIFT: " + ev.name + "</span>";
           else if (ev.type === 'pull') content += "<span class=\"stage-tag\" style=\"background:var(--emerald); color:#ffffff;\">PULL: " + ev.name + "</span>";
-          else if (ev.type === 'd14') content += "<span class=\"stage-tag\" style=\"background:var(--violet); color:#ffffff;\">D" + ev.offset + " CANDLE</span>";
+          else if (ev.type === 'd14') content += "<span class=\"stage-tag\" style=\"background:var(--violet); color:#ffffff;\">D14 CANDLE</span>";
         }
       });
 
@@ -3218,7 +3104,7 @@
       const stage = getBatchStageInfo(b);
       const phys = stage.physics;
       if (dateISO === phys.d1ISO) html += `<div class="event-item" style="border-left: 4px solid var(--brand);"><b>🥚 SETTING:</b> ${b.name} (${b.eggs} eggs at ${formatDisplayDateTime(phys.startMs)})</div>`;
-      if (dateISO === phys.d14ISO) html += `<div class="event-item" style="border-left: 4px solid var(--violet);"><b>🔍 TARGETED CANDLING (Day ${phys.d14OffsetDay}):</b> ${b.name} (Resolved to protect machine lockdown)</div>`;
+      if (dateISO === phys.d14ISO) html += `<div class="event-item" style="border-left: 4px solid var(--violet);"><b>🔍 14th DAY CANDLING:</b> ${b.name}</div>`;
       if (dateISO === phys.shiftD18ISO) html += `<div class="event-item" style="border-left: 4px solid var(--amber);"><b>🐣 18 FULL DAYS COMPLETED (432h):</b> ${b.name} shift to Hatcher H1 (${formatDisplayDateTime(phys.shiftD18CompletedMs)})</div>`;
       if (dateISO === phys.pullD21ISO) html += `<div class="event-item" style="border-left: 4px solid var(--emerald);"><b>🐥 21 DAYS COMPLETED (504h):</b> ${b.name} Chick Pull (${formatDisplayDateTime(phys.pullD21CompletedMs)})</div>`;
       if (dateISO === phys.promotion45DISO) html += `<div class="event-item" style="border-left: 4px solid var(--brand);"><b>🐓 45-DAY AGING:</b> ${b.name} graduated to Growers</div>`;
@@ -3253,7 +3139,7 @@
       });
     }
 
-    if (!html) html = "<div style=\"text-align:center; padding:12px; color:var(--text-secondary); font-size:0.85rem;\">No activity on this date.</div>";
+    if (!html) html = "<div style=\"text-align:center; padding:16px; color:var(--text-secondary); font-size:0.90rem; font-weight:700;\">No activity on this date.</div>";
     body.innerHTML = html;
     modal.style.display = "flex";
   }
@@ -3392,7 +3278,6 @@
   function closeDataDisplay() {
     document.getElementById('dataDisplayView').style.display = "none";
     document.getElementById('mainDashboard').style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function displayEggDataReport() {
@@ -3422,8 +3307,8 @@
           <td>${m}</td>
           <td>${a}</td>
           <td>${e}</td>
-          <td style="color:var(--crimson); font-weight:bold;">${b}</td>
-          <td style="color:var(--brand); font-weight:bold;">${t}</td>
+          <td style="color:var(--crimson); font-weight:800;">${b}</td>
+          <td style="color:var(--brand); font-weight:900;">${t}</td>
         </tr>
       `;
     });
@@ -3439,13 +3324,13 @@
 
     const reportHtml = `
       <div style="text-align:center; margin-bottom:16px;">
-        <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary); font-weight:800;">AD FARMS ; HERD &amp; HARVEST</h2>
-        <div style="font-size:0.86rem; font-weight:bold; color:var(--emerald); margin-top:4px;">Egg Production Audit Report</div>
-        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Selected Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b> (${loggedDaysCount} Active Laying Days)</div>
-        <div style="font-size:0.85rem; font-weight:800; color:var(--brand); margin-top:6px;">
+        <h2 style="margin:0; font-size:1.2rem; color:var(--text-primary); font-weight:900;">AD FARMS ; HERD &amp; HARVEST</h2>
+        <div style="font-size:0.88rem; font-weight:900; color:var(--emerald); margin-top:4px;">Egg Production Audit Report</div>
+        <div style="font-size:0.78rem; color:var(--text-tertiary); margin-top:2px;">Selected Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b> (${loggedDaysCount} Active Laying Days)</div>
+        <div style="font-size:0.88rem; font-weight:900; color:var(--brand); margin-top:8px;">
           Range Intact: <b>${grandTotal.toLocaleString()}</b> | Daily Lay Yield: <b style="color:var(--emerald);">${overallDailyAvg} Eggs/Day</b>
         </div>
-        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">All-Time Lifetime Production: <b>${allTimeEggs.toLocaleString()}</b> Intact Eggs</div>
+        <div style="font-size:0.78rem; color:var(--text-tertiary); margin-top:2px;">All-Time Lifetime Production: <b>${allTimeEggs.toLocaleString()}</b> Intact Eggs</div>
       </div>
       <div class="table-wrap">
         <table>
@@ -3486,7 +3371,6 @@
     document.getElementById('dataModal').style.display = "none";
     document.getElementById('mainDashboard').style.display = "none";
     document.getElementById('dataDisplayView').style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function displayIncubationDataReport() {
@@ -3522,13 +3406,13 @@
 
       rowsHtml += `
         <tr>
-          <td><b>${b.name}</b><br><small style="color:var(--text-secondary);">${b.setTime || 'Evening'}</small></td>
+          <td><b>${b.name}</b><br><small style="color:var(--text-tertiary);">${b.setTime || 'Evening'}</small></td>
           <td>${eggs}</td>
           <td>${formatDisplayDate(phys.d1ISO)}</td>
-          <td style="color:var(--violet); font-weight:bold;">${c14} (D${phys.d14OffsetDay})</td>
+          <td style="color:var(--violet); font-weight:900;">${c14}</td>
           <td>${formatDisplayDate(phys.pullD21ISO)}</td>
-          <td><b>${hasChicks ? b.chicksHatched : '<span style="color:var(--text-secondary);">Running</span>'}</b></td>
-          <td style="color:var(--emerald); font-weight:bold;">${b.hatchRate ? b.hatchRate + '%' : '<span style="color:var(--brand);">Running</span>'}</td>
+          <td><b>${hasChicks ? b.chicksHatched : '<span style="color:var(--text-tertiary);">Running</span>'}</b></td>
+          <td style="color:var(--emerald); font-weight:900;">${b.hatchRate ? b.hatchRate + '%' : '<span style="color:var(--brand);">Running</span>'}</td>
         </tr>
       `;
     });
@@ -3546,10 +3430,10 @@
 
     const reportHtml = `
       <div style="text-align:center; margin-bottom:16px;">
-        <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary); font-weight:800;">AD FARMS ; HERD &amp; HARVEST</h2>
-        <div style="font-size:0.86rem; font-weight:bold; color:var(--brand); margin-top:4px;">Incubation Batches Audit Report</div>
-        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Range: <b>${selectedBatches[0].name}</b> to <b>${selectedBatches[selectedBatches.length - 1].name}</b></div>
-        <div style="font-size:0.85rem; font-weight:800; color:var(--emerald); margin-top:6px;">Lifetime Chicks Produced All-Time: ${lifetimeChicks.toLocaleString()} Chicks</div>
+        <h2 style="margin:0; font-size:1.2rem; color:var(--text-primary); font-weight:900;">AD FARMS ; HERD &amp; HARVEST</h2>
+        <div style="font-size:0.88rem; font-weight:900; color:var(--brand); margin-top:4px;">Incubation Batches Audit Report</div>
+        <div style="font-size:0.78rem; color:var(--text-tertiary); margin-top:2px;">Range: <b>${selectedBatches[0].name}</b> to <b>${selectedBatches[selectedBatches.length - 1].name}</b></div>
+        <div style="font-size:0.88rem; font-weight:900; color:var(--emerald); margin-top:8px;">Lifetime Chicks Produced All-Time: ${lifetimeChicks.toLocaleString()} Chicks</div>
       </div>
       <div class="table-wrap">
         <table style="min-width: 620px;">
@@ -3558,7 +3442,7 @@
               <th style="background:var(--brand); color:#fff;">Batch</th>
               <th>Eggs</th>
               <th>Set Date</th>
-              <th>Candled</th>
+              <th>14th Day Candling Rejected</th>
               <th>Pull Date</th>
               <th>Chicks</th>
               <th>Hatch Rate</th>
@@ -3566,7 +3450,7 @@
           </thead>
           <tbody>
             ${rowsHtml}
-            <tr style="font-weight:bold; background:var(--card-surface-subtle);">
+            <tr style="font-weight:900; background:var(--card-surface-subtle);">
               <td>TOTALS</td>
               <td>${totalEggs}</td>
               <td>-</td>
@@ -3578,7 +3462,7 @@
           </tbody>
         </table>
       </div>
-      <div style="font-size:0.70rem; color:var(--text-secondary); text-align:center; margin-top:8px;">
+      <div style="font-size:0.74rem; color:var(--text-tertiary); text-align:center; margin-top:10px; font-weight:700;">
         * Overall hatch rate tally is calculated strictly from hatched batches (${totalChicks} chicks / ${eggsInCompletedBatches} eggs set). Running trays are excluded from denominator.
       </div>
     `;
@@ -3587,7 +3471,6 @@
     document.getElementById('dataModal').style.display = "none";
     document.getElementById('mainDashboard').style.display = "none";
     document.getElementById('dataDisplayView').style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function displayActivityDataReport() {
@@ -3607,14 +3490,14 @@
       const icon = getCategoryIcon(l.category);
       let extra = "";
       if (l.category === "Sales" && l.target) {
-        extra = ` <span style="color:var(--emerald); font-weight:bold;">[Deducted: ${l.qty} from ${l.target}]</span>`;
+        extra = ` <span style="color:var(--emerald); font-weight:900;">[Deducted: ${l.qty} from ${l.target}]</span>`;
       } else if (l.category === "Breeders") {
-        extra = ` <span style="color:var(--violet); font-weight:bold;">[+${l.qty} Breeders via ${l.source||'Stock'}]</span>`;
+        extra = ` <span style="color:var(--violet); font-weight:900;">[+${l.qty} Breeders via ${l.source||'Stock'}]</span>`;
       }
       rowsHtml += `
         <tr>
           <td><b>${formatDisplayDate(l.date)}</b></td>
-          <td style="font-weight:bold; color:var(--violet);">${icon} ${l.category}</td>
+          <td style="font-weight:900; color:var(--violet);">${icon} ${l.category}</td>
           <td style="text-align:left;">${l.notes || '-'}${extra}</td>
         </tr>
       `;
@@ -3622,9 +3505,9 @@
 
     const reportHtml = `
       <div style="text-align:center; margin-bottom:16px;">
-        <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary); font-weight:800;">AD FARMS ; HERD &amp; HARVEST</h2>
-        <div style="font-size:0.86rem; font-weight:bold; color:var(--violet); margin-top:4px;">Farm Activities &amp; Ledger Audit</div>
-        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b></div>
+        <h2 style="margin:0; font-size:1.2rem; color:var(--text-primary); font-weight:900;">AD FARMS ; HERD &amp; HARVEST</h2>
+        <div style="font-size:0.88rem; font-weight:900; color:var(--violet); margin-top:4px;">Farm Activities &amp; Ledger Audit</div>
+        <div style="font-size:0.78rem; color:var(--text-tertiary); margin-top:2px;">Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b></div>
       </div>
       <div class="table-wrap">
         <table style="min-width: 500px;">
@@ -3646,7 +3529,6 @@
     document.getElementById('dataModal').style.display = "none";
     document.getElementById('mainDashboard').style.display = "none";
     document.getElementById('dataDisplayView').style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function displayFlockReconciliationReport() {
@@ -3654,9 +3536,9 @@
     
     const reportHtml = `
       <div style="text-align:center; margin-bottom:16px;">
-        <h2 style="margin:0; font-size:1.15rem; color:var(--text-primary); font-weight:800;">AD FARMS ; HERD &amp; HARVEST</h2>
-        <div style="font-size:0.86rem; font-weight:bold; color:var(--amber); margin-top:4px;">Flock Balance &amp; 45-Day Aging Reconciliation</div>
-        <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:2px;">As of <b>${formatDisplayDate(getTodayISO())}</b></div>
+        <h2 style="margin:0; font-size:1.2rem; color:var(--text-primary); font-weight:900;">AD FARMS ; HERD &amp; HARVEST</h2>
+        <div style="font-size:0.88rem; font-weight:900; color:var(--amber); margin-top:4px;">Flock Balance &amp; 45-Day Aging Reconciliation</div>
+        <div style="font-size:0.78rem; color:var(--text-tertiary); margin-top:2px;">As of <b>${formatDisplayDate(getTodayISO())}</b></div>
       </div>
       
       <div class="table-wrap" style="margin-bottom:14px;">
@@ -3675,32 +3557,32 @@
             <tr>
               <td><b>🐥 Chicks (&lt;45D)</b></td>
               <td>${recon.lifetimeChicksTotal.toLocaleString()}</td>
-              <td style="color:var(--brand); font-weight:bold;">-${recon.poolGrowersFromAging}</td>
-              <td style="color:var(--crimson); font-weight:bold;">-${recon.chicksDead}</td>
-              <td style="color:var(--emerald); font-weight:bold;">-${recon.chicksSold}</td>
-              <td style="font-weight:900; font-size:1.05rem; color:var(--emerald);">${recon.liveChicks}</td>
+              <td style="color:var(--brand); font-weight:900;">-${recon.poolGrowersFromAging}</td>
+              <td style="color:var(--crimson); font-weight:900;">-${recon.chicksDead}</td>
+              <td style="color:var(--emerald); font-weight:900;">-${recon.chicksSold}</td>
+              <td style="font-weight:900; font-size:1.15rem; color:var(--emerald);">${recon.liveChicks}</td>
             </tr>
             <tr>
               <td><b>🐓 Growers (≥45D)</b></td>
               <td>-</td>
-              <td style="color:var(--brand); font-weight:bold;">+${recon.poolGrowersFromAging}</td>
-              <td style="color:var(--crimson); font-weight:bold;">-${recon.growersDead}</td>
-              <td style="color:var(--emerald); font-weight:bold;">-${recon.growersSold + recon.breedersAddedFromGrowers}</td>
-              <td style="font-weight:900; font-size:1.05rem; color:var(--brand);">${recon.liveGrowers}</td>
+              <td style="color:var(--brand); font-weight:900;">+${recon.poolGrowersFromAging}</td>
+              <td style="color:var(--crimson); font-weight:900;">-${recon.growersDead}</td>
+              <td style="color:var(--emerald); font-weight:900;">-${recon.growersSold + recon.breedersAddedFromGrowers}</td>
+              <td style="font-weight:900; font-size:1.15rem; color:var(--brand);">${recon.liveGrowers}</td>
             </tr>
             <tr>
               <td><b>🥚 Breeders / Layers</b></td>
-              <td style="color:var(--violet); font-weight:bold;">+${recon.breedersAddedFromOther} ext</td>
-              <td style="color:var(--brand); font-weight:bold;">+${recon.breedersAddedFromGrowers} grow</td>
-              <td style="color:var(--crimson); font-weight:bold;">-${recon.breedersDead}</td>
-              <td style="color:var(--emerald); font-weight:bold;">-${recon.breedersSold}</td>
-              <td style="font-weight:900; font-size:1.05rem; color:var(--violet);">${recon.liveBreeders}</td>
+              <td style="color:var(--violet); font-weight:900;">+${recon.breedersAddedFromOther} ext</td>
+              <td style="color:var(--brand); font-weight:900;">+${recon.breedersAddedFromGrowers} grow</td>
+              <td style="color:var(--crimson); font-weight:900;">-${recon.breedersDead}</td>
+              <td style="color:var(--emerald); font-weight:900;">-${recon.breedersSold}</td>
+              <td style="font-weight:900; font-size:1.15rem; color:var(--violet);">${recon.liveBreeders}</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <div style="font-size:0.75rem; color:var(--text-secondary); background:var(--card-surface-subtle); border:1px solid var(--border-hairline); border-radius:12px; padding:12px; line-height:1.4;">
+      <div style="font-size:0.78rem; color:var(--text-secondary); background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:14px; padding:14px; line-height:1.5; font-weight:600;">
         <b>Operational Audit Notes:</b><br>
         • Chicks mature to <b>Growers</b> 45 days after the 504-hour hatch completion.<br>
         • Transferring breeders from grower stock automatically deducts from your live grower headcount.<br>
@@ -3713,10 +3595,8 @@
     document.getElementById('dataModal').style.display = "none";
     document.getElementById('mainDashboard').style.display = "none";
     document.getElementById('dataDisplayView').style.display = "block";
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // AUTOMATIC CALENDAR & WATCHDOG
   let lastCheckedDateISO = getTodayISO();
   function checkAndAutoRefreshDate() {
     const currentToday = getTodayISO();
@@ -3737,7 +3617,6 @@
   });
   setInterval(checkAndAutoRefreshDate, 60000);
 
-  // INITIAL BOOTSTRAP
   initTodayInputs();
   renderCollections();
   renderBatches();
