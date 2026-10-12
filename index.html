@@ -166,6 +166,7 @@
     box-shadow: var(--shadow-plate);
   }
   .command-hero-banner.alert-active { border-left-color: var(--crimson); }
+  .command-hero-banner.banner-pull-day { border-left-color: var(--emerald) !important; }
   .command-hero-banner.lockdown-sealed {
     border-left-color: var(--crimson);
     background: linear-gradient(180deg, var(--card-surface) 0%, rgba(220, 38, 38, 0.04) 100%);
@@ -213,6 +214,10 @@
     gap: 9px;
     align-items: flex-start;
   }
+  .action-point-item.point-pull {
+    border-left: 4px solid var(--emerald);
+    background: rgba(5, 150, 105, 0.06);
+  }
   .action-point-item.point-hatch {
     border-left: 4px solid var(--amber);
     background: rgba(217, 119, 6, 0.05);
@@ -242,6 +247,7 @@
     border-radius: 7px;
     margin-bottom: 2px;
   }
+  .tag-pull { background: var(--emerald-glow); color: var(--emerald); }
   .tag-lock { background: var(--crimson-glow); color: var(--crimson); }
   .tag-shift { background: var(--amber-glow); color: var(--amber); }
   .tag-flock { background: var(--violet-glow); color: var(--violet); }
@@ -342,7 +348,6 @@
     line-height: 1.1;
   }
 
-  /* 102 TRAY FILLED THRESHOLD CARD */
   .setter-progress-card {
     background: var(--card-surface);
     border: 1.5px solid var(--emerald);
@@ -430,9 +435,11 @@
     overflow: hidden;
     position: relative;
     border-radius: 18px;
+    transition: height 0.25s ease;
   }
   .swipe-track {
     display: flex;
+    align-items: flex-start;
     width: 500%;
     transition: transform 0.28s cubic-bezier(0.25, 1, 0.5, 1);
     will-change: transform;
@@ -440,7 +447,7 @@
   .swipe-slide {
     width: 20%;
     flex-shrink: 0;
-    min-height: 480px;
+    box-sizing: border-box;
     padding-bottom: 10px;
   }
 
@@ -933,6 +940,49 @@
   }
   .btn-report-back:active { transform: scale(0.92); }
 
+  /* REPORT SHARING & PRINT STYLES FOR CLEAN ANDROID PDF / SHARING */
+  .report-action-pill {
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    border: 1.5px solid var(--border-hairline);
+    background: var(--card-surface-subtle);
+    color: var(--text-primary);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.12s ease;
+  }
+  .report-action-pill:active { transform: scale(0.94); }
+
+  @media print {
+    body {
+      background: #ffffff !important;
+      color: #000000 !important;
+      padding: 0 !important;
+    }
+    #mainDashboard, .top-bar, .tab-bar, .fab-quick-log, .btn-report-back, .report-actions-bar, .modal-overlay {
+      display: none !important;
+    }
+    #dataDisplayView {
+      display: block !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    .table-wrap {
+      box-shadow: none !important;
+      border: 1px solid #000 !important;
+    }
+    th, td {
+      border-color: #000 !important;
+      color: #000 !important;
+    }
+  }
+
   .sim-box {
     background: var(--card-surface-subtle);
     border: 1.5px solid var(--border-hairline);
@@ -976,7 +1026,7 @@
     </div>
   </div>
 
-  <!-- OPERATIONAL TELEMETRY BOARD: INVARIANT TASKS + CONCISE HARDWARE MAP -->
+  <!-- OPERATIONAL TELEMETRY BOARD: GREEN THEMED PULL DAY + INVARIANT MILESTONES -->
   <div class="command-hero-banner" id="commandHeroBanner">
     <div class="hero-top-row">
       <div class="hero-title-group">
@@ -1031,7 +1081,7 @@
     </div>
   </div>
 
-  <!-- 102 TRAY THRESHOLD CARD -->
+  <!-- 102 TRAY THRESHOLD BUFFER CARD -->
   <div class="setter-progress-card" id="setterCard">
     <div class="setter-left">
       <span class="setter-tag">🥚 READY FOR SETTER</span>
@@ -1472,7 +1522,7 @@
   </div>
 </div>
 
-<!-- EXPORT FARM REPORTS MODAL -->
+<!-- EXPORT FARM REPORTS MODAL (STEPWISE DIALOG) -->
 <div class="modal-overlay" id="dataModal" onclick="closeDataModal(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <h3>
@@ -1516,9 +1566,16 @@
 
 <!-- AUDIT REPORT VIEW -->
 <div class="container" id="dataDisplayView">
-  <div style="display:flex; align-items:center; gap:12px; border-bottom:2px solid var(--border-strong); padding-bottom:11px; margin-bottom:15px;">
-    <button class="btn-report-back" onclick="closeDataDisplay()" title="Return">◀</button>
-    <div style="font-size:1.02rem; font-weight:900; color:var(--brand); letter-spacing:-0.02em;">AD FARMS TELEMETRY REPORT</div>
+  <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid var(--border-strong); padding-bottom:11px; margin-bottom:15px;">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <button class="btn-report-back" onclick="closeDataDisplay()" title="Return to Export Audits">◀</button>
+      <div style="font-size:1.02rem; font-weight:900; color:var(--brand); letter-spacing:-0.02em;">AD FARMS TELEMETRY REPORT</div>
+    </div>
+    <!-- NATIVE MOBILE SHARE & PRINT ACTIONS -->
+    <div class="report-actions-bar" style="display:flex; gap:6px;">
+      <button class="report-action-pill" onclick="shareCurrentReport()" title="Share Report via WhatsApp/Email">📤 Share</button>
+      <button class="report-action-pill" onclick="window.print()" title="Print or Save as PDF">🖨️ PDF</button>
+    </div>
   </div>
   <div id="dataReportContent"></div>
 </div>
@@ -1653,7 +1710,11 @@
     updateSettingsDisplay();
   }
 
-  function openReportFromSettings() { closeSettingsModal(); openDataModal(); }
+  /* STEPWISE NAVIGATION: OPEN REPORT DIALOG FROM SETTINGS WITHOUT CLOSING ANCHOR */
+  function openReportFromSettings() {
+    document.getElementById('settingsModal').style.display = "none";
+    openDataModal();
+  }
   function openDeleteFromSettings() { closeSettingsModal(); openDeleteCenterModal(); }
 
   let collections = JSON.parse(localStorage.getItem("ad_farms_local_collections") || "[]");
@@ -1680,7 +1741,6 @@
     if (breederRow) breederRow.style.display = (cat === "Breeders") ? "flex" : "none";
   }
 
-  // RESOLVES EXACT TASK TIME FOR DATE (DEFAULTS TO EVENING ROUTINE 19:00 INSTEAD OF MORNING PHONE CLOCK)
   function getOperatingTaskTimeForDate(dateISO) {
     const targetISO = toNormalizedISO(dateISO) || getTodayISO();
     for (let b of batches) {
@@ -1695,7 +1755,7 @@
         return pad(d.getHours()) + ":" + pad(d.getMinutes());
       }
     }
-    return "19:00"; // Standard farm evening incubator routine
+    return "19:00";
   }
 
   function syncSettingTimeToCalendarTask() {
@@ -1773,6 +1833,17 @@
   const swipeTrack = document.getElementById('swipeTrack');
   const tabButtons = document.querySelectorAll('.tab-btn');
 
+  function updateViewportHeight() {
+    requestAnimationFrame(() => {
+      const activeSlide = document.getElementById('slide' + currentSlideIndex);
+      const viewport = document.getElementById('swipeViewport');
+      if (activeSlide && viewport) {
+        const h = activeSlide.offsetHeight;
+        viewport.style.height = (h > 0 ? h : 480) + 'px';
+      }
+    });
+  }
+
   function goToSlide(index) {
     if (index < 0) index = 0;
     if (index > 4) index = 4;
@@ -1780,6 +1851,7 @@
     swipeTrack.style.transform = "translateX(-" + (index * 20) + "%)";
     tabButtons.forEach((btn, idx) => { btn.classList.toggle('active', idx === index); });
     if (index === 4) renderCalendar();
+    updateViewportHeight();
   }
 
   let touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
@@ -2147,7 +2219,6 @@
     };
   }
 
-  // OPERATIONAL TELEMETRY BOARD
   function renderCommandCenter() {
     const todayISO = getTodayISO();
     const parts = todayISO.split('-').map(Number);
@@ -2191,26 +2262,27 @@
 
     const heroBanner = document.getElementById('commandHeroBanner');
     if (heroBanner) {
-      const isBannerAlert = Boolean(pullDueTodayBatch || isCabinetSealedNow);
-      heroBanner.classList.toggle('alert-active', isBannerAlert);
-      heroBanner.classList.toggle('lockdown-sealed', isCabinetSealedNow && !pullDueTodayBatch);
+      const isPullDayActive = Boolean(pullDueTodayBatch && !pullDueTodayBatch.stage.hasHatched);
+      heroBanner.classList.toggle('banner-pull-day', isPullDayActive);
+      heroBanner.classList.toggle('alert-active', isCabinetSealedNow && !isPullDayActive);
+      heroBanner.classList.toggle('lockdown-sealed', isCabinetSealedNow && !isPullDayActive);
     }
 
     const spatial = parseHardwareSpatialOccupancy();
     let pointsHtml = "";
 
-    // 1. PULL DAY MORNING BRIEFING
+    // 1. PULL DAY MORNING BRIEFING: GREEN THEME
     if (pullDueTodayBatch && !pullDueTodayBatch.stage.hasHatched) {
       const bObj = pullDueTodayBatch.batch;
       const phys = pullDueTodayBatch.stage.physics;
       const timeDescription = formatTimeOfDayDescription(phys.pullD21CompletedMs);
 
       pointsHtml += `
-        <div class="action-point-item point-hatch">
+        <div class="action-point-item point-pull">
           <span class="point-icon">🐥</span>
           <div class="point-content">
-            <span class="point-tag tag-shift">Priority 1: Pull Day</span>
-            <div style="font-weight:900; font-size:0.86rem;">Batch: ${bObj.name} in H1 (Day 21 Completion)</div>
+            <span class="point-tag tag-pull">Priority 1: Pull Day</span>
+            <div style="font-weight:900; font-size:0.86rem; color:var(--emerald);">Batch: ${bObj.name} in H1 (Day 21 Completion)</div>
             <div style="font-size:0.75rem; color:var(--text-secondary); margin-top:3px; line-height:1.45;">
               • 72h Lockdown ends today. Keep cabinet sealed until cycle completes.<br>
               • <b>Action: Harvest chicks ${timeDescription} (504h completed)</b>.
@@ -2301,7 +2373,6 @@
       }
     }
 
-    // CONCISE HARDWARE MAP (PHYSICAL STATUS ONLY)
     const hatcherMapEl = document.getElementById('heroHatcherMap');
     if (hatcherMapEl) {
       if (spatial.hatcherOccupiedBy.length > 0) {
@@ -2317,9 +2388,10 @@
         hatcherMapEl.innerHTML = `<span style="color:var(--emerald); font-weight:900;">🟢 Free / Vacant</span>`;
       }
     }
+
+    updateViewportHeight();
   }
 
-  // IMPACT ASSESSMENT & VERIFICATION
   function runSettingSimulation() {
     const sDate = document.getElementById('sdate').value || getTodayISO();
     const sTime = document.getElementById('stime').value || "19:00";
@@ -2334,24 +2406,20 @@
 
     let conflicts = [];
 
-    // Hardware checks against running batches
     batches.forEach(b => {
       if (!isBatchActiveDirect(b)) return;
       const bStage = getBatchStageInfo(b);
       const bPhys = bStage.physics;
 
-      // 1. Check if proposed set time directly breaches an active lockdown before the completion hour
       if (propPhysics.startMs >= bPhys.shiftD18CompletedMs && propPhysics.startMs < bPhys.pullD21CompletedMs) {
         conflicts.push(`Active Lockdown: Cabinet is sealed for Batch "${b.name}" until ${formatDisplayDateTime(bPhys.pullD21CompletedMs)}.`);
       }
 
-      // 2. Check 72h hatcher basket spacing at Hour 432
       const diffHoursAtH1 = Math.abs(propPhysics.shiftD18CompletedMs - bPhys.shiftD18CompletedMs) / (1000 * 3600);
       if (diffHoursAtH1 < 72) {
         conflicts.push(`H1 Conflict: Breaches 72h hatcher spacing with "${b.name}" at Day 18 shift.`);
       }
 
-      // 3. Future overlap in H1
       if (propPhysics.shiftD18CompletedMs >= bPhys.shiftD18CompletedMs && propPhysics.shiftD18CompletedMs < bPhys.pullD21CompletedMs) {
         conflicts.push(`Future Lock: When this batch reaches 18 full days (432h), Hatcher H1 will still be occupied by "${b.name}".`);
       }
@@ -2485,7 +2553,6 @@
     const traj = getRealTimeStockTrajectory();
     const invEl = document.getElementById('inventoryEggsDisplay'); if (invEl) invEl.innerText = traj.currentActualInHand;
 
-    // 102 TRAY DENOMINATOR
     const fillRatio = Math.min(100, Math.round((traj.currentActualInHand / 102) * 100));
     const setCard = document.getElementById('setterCard');
     if (setCard) setCard.style.setProperty('--progress-pct', fillRatio + '%');
@@ -2506,7 +2573,6 @@
     document.getElementById('quickLogModal').style.display = "flex";
     const buttons = document.querySelectorAll('#quickLogModal .sub-tab-btn');
 
-    // Dynamic stock pre-fill capped at 102
     const traj = getRealTimeStockTrajectory();
     const eggInput = document.getElementById('eggsSet');
     if (eggInput && !document.getElementById('editDocId').value) {
@@ -2693,7 +2759,7 @@
           <div class="date-pill d18"><span class="pill-lbl">Shift (432h)</span><span class="pill-val">${formatDisplayDate(phys.shiftD18ISO)}</span></div>
         </div>
         <div class="batch-results-bar">
-          <div>14th Day Candling Rejected: <b>-${c14}</b></div>
+          <div>D14 Rejected: <b>-${c14}</b></div>
           <div>Harvest: ${chickCount} (${rateText})</div>
         </div>
         <div class="batch-actions">
@@ -2723,12 +2789,16 @@
     archivedList.sort((a, b) => parseBatchStartTimestamp(b.startDate || b.rawDate, b.setTime) - parseBatchStartTimestamp(a.startDate || a.rawDate, a.setTime));
     archivedList.forEach(b => archivedContainer.insertAdjacentHTML('beforeend', buildBatchCardHtml(b, true)));
     document.getElementById('toggleArchiveBtn').style.display = archivedList.length > 0 ? "inline-block" : "none";
+
+    updateViewportHeight();
   }
 
   function toggleArchivedBatches() {
     showArchived = !showArchived;
-    document.getElementById('archivedContainer').style.display = showArchived ? "block" : "none";
+    const archBox = document.getElementById('archivedContainer');
+    archBox.style.display = showArchived ? "block" : "none";
     document.getElementById('toggleArchiveBtn').innerText = showArchived ? "🙈 Hide Archived Batches" : "👁️ Show Archived Batches";
+    updateViewportHeight();
   }
 
   function resetBatchForm() {
@@ -2812,6 +2882,7 @@
       `;
       tbody.appendChild(tr);
     });
+    updateViewportHeight();
   }
 
   function startEditCollection(docId) {
@@ -2926,6 +2997,7 @@
       `;
       tbody.appendChild(tr);
     });
+    updateViewportHeight();
   }
 
   function getCategoryIcon(cat) {
@@ -2966,6 +3038,7 @@
       `;
       container.appendChild(card);
     });
+    updateViewportHeight();
   }
 
   function filterLedgerView(category, btn) {
@@ -3111,6 +3184,8 @@
       cell.innerHTML = content;
       gridBody.appendChild(cell);
     }
+
+    updateViewportHeight();
   }
 
   function changeMonth(delta) {
@@ -3297,15 +3372,52 @@
     document.getElementById('dataModal').style.display = "flex";
   }
 
+  /* STEPWISE MODAL DISMISSAL: RETURNING FROM EXPORT AUDITS OPENS SETTINGS */
   function closeDataModal(e) {
     if (!e || e.target.id === "dataModal" || e.target.classList.contains("modal-close")) {
       document.getElementById('dataModal').style.display = "none";
+      openSettingsModal();
     }
   }
 
+  /* STEPWISE REPORT BACK BUTTON: RETURNS TO EXPORT AUDITS MODAL */
   function closeDataDisplay() {
     document.getElementById('dataDisplayView').style.display = "none";
     document.getElementById('mainDashboard').style.display = "block";
+    document.getElementById('dataModal').style.display = "flex";
+  }
+
+  /* NATIVE MOBILE SHARING VIA ANDROID SHARE SHEET / CLIPBOARD */
+  async function shareCurrentReport() {
+    const reportElem = document.getElementById('dataReportContent');
+    if (!reportElem) return;
+    const textData = reportElem.innerText.trim();
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "AD Farms Telemetry Report",
+          text: textData
+        });
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          fallbackCopyToClipboard(textData);
+        }
+      }
+    } else {
+      fallbackCopyToClipboard(textData);
+    }
+  }
+
+  function fallbackCopyToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Report summary copied to clipboard! You can paste it into WhatsApp or Email.");
+      }).catch(() => {
+        window.print();
+      });
+    } else {
+      window.print();
+    }
   }
 
   function displayEggDataReport() {
@@ -3470,7 +3582,7 @@
               <th style="background:var(--brand); color:#fff;">Batch</th>
               <th>Eggs</th>
               <th>Set Date</th>
-              <th>14th Day Candling Rejected</th>
+              <th>D14 Rejected</th>
               <th>Pull Date</th>
               <th>Chicks</th>
               <th>Hatch Rate</th>
