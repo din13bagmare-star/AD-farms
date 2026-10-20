@@ -2749,6 +2749,7 @@
     }
   }
 
+  /* HARDWARE SIMULATION WITH DAY 21 PULL EXEMPTION */
   function runSettingSimulation() {
     const sDate = document.getElementById('sdate').value || getTodayISO();
     const sTime = document.getElementById('stime').value || "19:00";
@@ -2764,9 +2765,14 @@
       const bStage = getBatchStageInfo(b);
       const bPhys = bStage.physics;
 
-      if (propPhysics.startMs >= bPhys.shiftD18CompletedMs && propPhysics.startMs < bPhys.pullD21CompletedMs) {
-        conflicts.push(`Active Lockdown: Cabinet is sealed for "${b.name}" until ${formatDisplayDateTime(bPhys.pullD21CompletedMs)}.`);
+      // Pull Day (Day 21) is harvest and reload day — evening setting is fully permitted
+      const isPullDay = (propPhysics.d1ISO === bPhys.pullD21ISO);
+
+      if (!isPullDay && propPhysics.startMs >= bPhys.shiftD18CompletedMs && propPhysics.startMs < bPhys.pullD21CompletedMs) {
+        conflicts.push(`Active Lockdown: Cabinet is sealed for "${b.name}" until Day 21 (${formatDisplayDate(bPhys.pullD21ISO)}).`);
       }
+
+      // Check 72-hour H1 hatcher spacing at Day 18 shift
       const diffHoursAtH1 = Math.abs(propPhysics.shiftD18CompletedMs - bPhys.shiftD18CompletedMs) / (1000 * 3600);
       if (diffHoursAtH1 < 72) {
         conflicts.push(`H1 Conflict: Breaches 72h hatcher spacing with "${b.name}" at Day 18 shift.`);
