@@ -178,7 +178,7 @@
   .btn-settings:active { transform: scale(0.92); }
   .btn-settings svg { width: 21px; height: 21px; }
 
-  /* NOTIFICATION BANNER */
+  /* INTIMATION NOTICE BANNER */
   .notice-banner {
     display: none;
     background: linear-gradient(135deg, rgba(217, 119, 6, 0.12), rgba(217, 119, 6, 0.04));
@@ -329,7 +329,7 @@
   }
   .hw-value { font-weight: 900; font-variant-numeric: tabular-nums; }
 
-  /* TOP 4-METRIC BALANCES STRIP */
+  /* TOP 4-METRIC BALANCES STRIP WITH RIGID SYMMETRY */
   .metrics-strip {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -340,11 +340,16 @@
     background: var(--card-surface);
     border: 1.5px solid var(--border-hairline);
     border-radius: 17px;
-    padding: 11px 4px;
+    padding: 10px 4px 12px 4px;
     text-align: center;
     box-shadow: var(--shadow-plate);
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 82px;
   }
   .metric-card::after {
     content: '';
@@ -357,13 +362,21 @@
     background: currentColor;
     opacity: 0.8;
   }
+  /* Rigid flex container so 1-line and 2-line labels match height exactly */
   .metric-lbl {
-    font-size: 0.56rem;
+    font-size: 0.54rem;
     font-weight: 800;
     text-transform: uppercase;
     color: var(--text-secondary);
     letter-spacing: 0.05em;
-    margin-bottom: 4px;
+    min-height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.15;
+    width: 100%;
+    padding: 0 2px;
   }
   .metric-val {
     font-size: 1.30rem;
@@ -371,6 +384,7 @@
     line-height: 1;
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.04em;
+    margin-top: auto;
   }
 
   /* 3-CARD PRODUCTION SUMMARY STRIP */
@@ -675,7 +689,7 @@
   }
   .btn-neutral:active { transform: scale(0.95); }
 
-  /* SUB-TAB BAR (WHITE CARD HIGHLIGHT) */
+  /* SUB-TAB BAR */
   .sub-tab-bar {
     display: flex;
     gap: 4px;
@@ -922,7 +936,7 @@
   }
   .fab-quick-log:active { transform: scale(0.93); }
 
-  /* TIMELINE CALENDAR */
+  /* TIMELINE CALENDAR WITH STRICT MARGIN CLIPPING */
   .cal-header { 
     display: flex; 
     justify-content: space-between; 
@@ -966,8 +980,11 @@
     gap: 4px;
     width: 100%;
   }
+  
+  /* Strictly enclosed calendar cell: zero overflow or bleeding */
   .cal-cell {
-    min-height: 78px;
+    min-height: 84px;
+    max-height: 98px;
     width: 100%;
     border-radius: 14px;
     border: 1.5px solid var(--border-hairline);
@@ -976,15 +993,15 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding: 5px 2px;
-    font-size: 0.82rem;
+    padding: 4px 2px;
+    font-size: 0.76rem;
     font-weight: 900;
     cursor: pointer;
     overflow: hidden;
+    position: relative;
     transition: transform 0.12s ease, border-color 0.15s ease;
     color: var(--text-primary);
     box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-    position: relative;
   }
   .cal-cell:active { transform: scale(0.94); }
   .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; box-shadow: none; }
@@ -1007,21 +1024,21 @@
   .cal-cell.has-set { background: rgba(2, 132, 199, 0.08); border-color: rgba(2, 132, 199, 0.4); }
   .cal-cell.has-overlap { background: rgba(15, 23, 42, 0.06); border-color: #0f172a; }
 
-  /* STAGE BADGES */
+  /* STAGE BADGES WITH STRICT FIT */
   .stage-badge {
-    font-size: 0.54rem;
+    font-size: 0.50rem;
     font-weight: 900;
-    line-height: 1.15;
+    line-height: 1.1;
     text-transform: uppercase;
-    margin-top: 2px;
-    padding: 2.5px 5px;
-    border-radius: 6px;
+    margin-top: 1.5px;
+    padding: 2px 4px;
+    border-radius: 5px;
     white-space: nowrap;
     max-width: 96%;
     overflow: hidden;
     text-overflow: ellipsis;
     display: block;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   }
   .stage-badge.badge-set { background: #0284c7; color: #ffffff; }
   .stage-badge.badge-d14 { background: #7c3aed; color: #ffffff; }
@@ -1032,14 +1049,16 @@
     background: #fef3c7;
     color: #92400e;
     border: 1px solid #fcd34d;
-    border-radius: 7px;
-    font-size: 0.56rem;
-    padding: 1.5px 4px;
-    margin-top: 2px;
+    border-radius: 6px;
+    font-size: 0.52rem;
+    padding: 1px 3px;
+    margin-top: 1.5px;
     font-weight: 900;
     max-width: 96%;
     white-space: nowrap;
     display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   body.dark-theme .egg-badge-pill {
     background: rgba(245, 158, 11, 0.2);
@@ -1051,14 +1070,16 @@
     background: #ede9fe;
     color: #5b21b6;
     border: 1px solid #c4b5fd;
-    border-radius: 7px;
-    font-size: 0.54rem;
-    padding: 1.5px 4px;
-    margin-top: 2px;
+    border-radius: 6px;
+    font-size: 0.50rem;
+    padding: 1px 3px;
+    margin-top: 1.5px;
     font-weight: 900;
     max-width: 96%;
     white-space: nowrap;
     display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   body.dark-theme .task-badge-pill {
     background: rgba(124, 58, 237, 0.2);
@@ -1154,97 +1175,21 @@
   .btn-report-back:active { transform: scale(0.92); }
 
   .report-action-pill {
-    padding: 9px 18px;
+    padding: 8px 16px;
     border-radius: 12px;
     font-size: 0.84rem;
     font-weight: 900;
-    border: 1.5px solid var(--border-hairline);
-    background: var(--card-surface-subtle);
-    color: var(--text-primary);
+    border: none;
+    background: #059669;
+    color: #ffffff;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25);
     transition: transform 0.12s ease;
   }
   .report-action-pill:active { transform: scale(0.94); }
-
-  /* RESTORED CLEAN PRINT & PDF MEDIA RULES */
-  @page {
-    size: A4 portrait;
-    margin: 8mm;
-  }
-
-  @media print {
-    html, body {
-      background: #ffffff !important;
-      color: #000000 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      width: 100% !important;
-      overflow: visible !important;
-      -webkit-print-color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-
-    .top-bar,
-    .tab-bar,
-    .fab-quick-log,
-    .btn-report-back,
-    .report-actions-bar,
-    .modal-overlay,
-    #bindingModal,
-    .btn-settings {
-      display: none !important;
-    }
-
-    #dataDisplayView {
-      display: block !important;
-      width: 100% !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-
-    .table-wrap,
-    .pnl-report-container {
-      overflow: visible !important;
-      box-shadow: none !important;
-      border: 1.5px solid #1e293b !important;
-      width: 100% !important;
-      border-radius: 8px !important;
-    }
-
-    table {
-      width: 100% !important;
-      table-layout: auto !important;
-      font-size: 0.80rem !important;
-      border-collapse: collapse !important;
-    }
-
-    th {
-      border: 1px solid #334155 !important;
-      background: #f1f5f9 !important;
-      color: #0f172a !important;
-      font-weight: 900 !important;
-      padding: 8px 6px !important;
-      white-space: nowrap !important;
-    }
-
-    td {
-      border: 1px solid #cbd5e1 !important;
-      color: #000 !important;
-      background: transparent !important;
-      padding: 7px 6px !important;
-      white-space: nowrap !important;
-    }
-
-    tr, .card, .pnl-row-item {
-      page-break-inside: avoid !important;
-      break-inside: avoid !important;
-    }
-  }
 
   .sim-box {
     background: var(--card-surface-subtle);
@@ -1461,7 +1406,7 @@
     </div>
   </div>
 
-  <!-- TOP 4 METRICS STRIP -->
+  <!-- TOP 4 METRICS STRIP: STRICT SYMMETRY ACROSS ALL NUMBERS -->
   <div class="metrics-strip">
     <div class="metric-card" style="color:var(--emerald);">
       <div class="metric-lbl">CHICKS (&lt;45D)</div>
@@ -1481,7 +1426,7 @@
     </div>
   </div>
 
-  <!-- 3-CARD PRODUCTION SUMMARY STRIP (LIFETIME EGGS, 30D DAILY AVG, LIFETIME CHICKS) -->
+  <!-- 3-CARD PRODUCTION SUMMARY STRIP -->
   <div class="production-summary-strip">
     <div class="production-card">
       <span class="prod-lbl">LIFETIME EGGS</span>
@@ -1603,7 +1548,7 @@
       </div>
     </div>
 
-    <!-- TAB 3: ACTIVITY & TASK LEDGER (WITH MATCHED DATA-CAT ATTRIBUTES) -->
+    <!-- TAB 3: ACTIVITY & TASK LEDGER -->
     <div class="tab-panel" id="tabPanel3">
       <div class="ledger-main-card">
         <div class="ledger-header">
@@ -2090,7 +2035,7 @@
         </div>
       </div>
 
-      <!-- LABOR WAGES -->
+      <!-- LABOR WAGES (PERMANENT ₹10,000 DEFAULT UNTIL REVISED) -->
       <div id="laborFieldsRow" style="display:none;">
         <div class="form-row">
           <div>
@@ -2098,7 +2043,7 @@
             <input type="text" id="laborWorkerInput" value="Farm Attendant" placeholder="Worker Name">
           </div>
           <div>
-            <label>Wage Paid (₹)</label>
+            <label>Wage Paid (₹) [Permanent 10k Default]</label>
             <input type="number" id="laborWageInput" value="10000" placeholder="10000">
           </div>
         </div>
@@ -2149,6 +2094,7 @@
             <option value="Feed">🌽 Feed</option>
             <option value="Treatment">💉 Treatment</option>
             <option value="Electricity">⚡ Power</option>
+            <option value="Labor">👷 Labor</option>
             <option value="Maint">🔧 Maint</option>
             <option value="Note">📌 Note</option>
           </select>
@@ -2274,16 +2220,18 @@
   </div>
 </div>
 
-<!-- AUDIT REPORT VIEWPORT -->
+<!-- AUDIT REPORT VIEWPORT (CLEAN EXCEL BUTTON - PDF BUTTON REMOVED) -->
 <div class="container" id="dataDisplayView">
   <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid var(--border-strong); padding-bottom:11px; margin-bottom:15px;">
     <div style="display:flex; align-items:center; gap:12px;">
-      <button class="btn-report-back" onclick="closeDataDisplay()" title="Return to Export Audits">◀</button>
+      <button class="btn-report-back" onclick="closeDataDisplay()" title="Return to Farm Dashboard">◀</button>
       <div style="font-size:1.02rem; font-weight:900; color:var(--brand); letter-spacing:-0.02em;">AD FARMS TELEMETRY REPORT</div>
     </div>
     <div class="report-actions-bar" style="display:flex; gap:6px;">
-      <!-- RESTORED NATIVE INLINE TRIGGER WITH EVENT PROPAGATION STOP -->
-      <button class="report-action-pill" onclick="event.stopPropagation(); window.print();" title="Print or Save as PDF">🖨️ PDF</button>
+      <!-- RELIABLE, STANDARDIZED EXCEL / CSV BUTTON -->
+      <button class="report-action-pill" onclick="exportActiveReportToCSV()" title="Export Structured Excel Spreadsheet">
+        <span>📗</span> Excel
+      </button>
     </div>
   </div>
   <div id="dataReportContent"></div>
@@ -2793,13 +2741,10 @@
     if (ov && !document.getElementById('editDocId').value) ov.value = Math.max(0, cur - eggs);
   }
 
-  /* CHECK IF MONTH-END FEED STOCK AUDIT IS DUE */
   function isMonthEndFeedAuditDue() {
     const now = new Date();
     const curD = now.getDate();
     const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    
-    // Check if within last 3 days of month or 1st day of following month
     const isWindow = (curD >= lastDayOfMonth - 2) || (curD === 1);
     if (!isWindow) return false;
 
@@ -2821,7 +2766,7 @@
     return !audited;
   }
 
-  /* TELEMETRY, 12-HOUR AM/PM & MONTH-END ALERTS */
+  /* TELEMETRY & STATUS */
   function renderCommandCenter() {
     const todayISO = getTodayISO();
     const p = todayISO.split('-').map(Number);
@@ -2845,8 +2790,6 @@
     banner.classList.toggle('banner-pull-day', Boolean(pullToday));
 
     let html = "";
-
-    // Month-End Feed Stock Alert
     if (isMonthEndFeedAuditDue()) {
       html += `
         <div class="action-point-item point-audit-alert" onclick="openQuickLogModal('quickLedger')" style="cursor:pointer;">
@@ -2939,12 +2882,9 @@
     outputEl.innerHTML = `<b>Set Verification:</b> ${eggCount} eggs.<br>&bull; Day 18 Shift: <b>${formatDisplayDateTime(phys.shiftD18CompletedMs)}</b>.<br>&bull; Day 21 Pull: <b>${formatDisplayDateTime(phys.pullD21CompletedMs)}</b>.<br><b>${conflicts.length === 0 ? '✅ Clear to Set' : '❌ Conflict: ' + conflicts.join(' ')}</b>`;
   }
 
-  /* STRICT 30-DAY ROLLING AVERAGE WINDOW (NO 31-DAY GLITCH) */
   function calculate30DayRollingEggAverage() {
     const todayISO = getTodayISO();
-    let sum = 0;
-    let daysWithEggs = 0;
-
+    let sum = 0, daysWithEggs = 0;
     for (let i = 0; i < 30; i++) {
       const checkISO = addDaysToISO(todayISO, -i);
       const log = collections.find(c => toNormalizedISO(c.date) === checkISO);
@@ -2954,9 +2894,7 @@
         if (cnt > 0) daysWithEggs++;
       }
     }
-    
-    const avg = (sum / 30).toFixed(1);
-    return { avg: avg, activeDays: daysWithEggs };
+    return { avg: (sum / 30).toFixed(1), activeDays: daysWithEggs };
   }
 
   function calculateReconciledFlock() {
@@ -3024,7 +2962,6 @@
     document.getElementById('totalGrowersDeadSub').innerText = `${r.gDead} dead`;
     document.getElementById('totalBreedersDeadSub').innerText = `${r.bDead} dead`;
 
-    // 3-Card Metrics Strip (With 30D Avg & "Rolling Standard")
     document.getElementById('lifetimeChicksDisplay').innerText = r.lifetimeChicks.toLocaleString();
     let eggsTot = 0;
     collections.forEach(c => { eggsTot += (parseInt(c.total, 10) || 0); });
@@ -3034,7 +2971,6 @@
     document.getElementById('rollingAvgEggDisplay').innerText = roll.avg;
     document.getElementById('rollingAvgSub').innerText = "Rolling Standard";
 
-    // Capacity Deficit Text
     const inv = calculateCurrentInventoryStock();
     document.getElementById('inventoryEggsDisplay').innerText = inv;
     document.getElementById('setterCard').style.setProperty('--progress-pct', Math.min(100, Math.round((inv / 102) * 100)) + '%');
@@ -3411,7 +3347,6 @@
     toggleLedgerDynamicFields();
   }
 
-  /* SUB-TAB SHINE & FILTER FIX */
   function filterLedgerView(cat, btn) {
     currentLedgerFilter = cat;
     document.querySelectorAll('#ledgerSubBar .sub-tab-btn').forEach(b => {
@@ -3445,7 +3380,7 @@
 
   function toggleFullLedgerView() { showAllLedger = !showAllLedger; renderLedger(); }
 
-  /* VIBRANT TIMELINE CALENDAR ENGINE */
+  /* TIMELINE CALENDAR WITH STRICT OVERFLOW CONSTRAINT */
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calMonthYear').innerText = `${monthNames[curMonth]} ${curYear}`;
@@ -3493,22 +3428,31 @@
 
       let inner = `<span class="cal-num-badge">${d}</span>`;
 
+      // Keep maximum 3 badges rendered so nothing bleeds past cell boundary
+      const displayBadges = [];
       evs.forEach(e => {
-        let badgeClass = "stage-badge ";
-        if (e.type === 'set') badgeClass += "badge-set";
-        else if (e.type === 'd14') badgeClass += "badge-d14";
-        else if (e.type === 'shift') badgeClass += "badge-shift";
-        else if (e.type === 'pull') badgeClass += "badge-pull";
-
-        inner += `<span class="${badgeClass}">${e.label}</span>`;
+        let bCls = "stage-badge ";
+        if (e.type === 'set') bCls += "badge-set";
+        else if (e.type === 'd14') bCls += "badge-d14";
+        else if (e.type === 'shift') bCls += "badge-shift";
+        else if (e.type === 'pull') bCls += "badge-pull";
+        displayBadges.push(`<span class="${bCls}">${e.label}</span>`);
       });
 
       if (col && parseInt(col.total, 10) > 0) {
-        inner += `<span class="egg-badge-pill">🥚 +${col.total}</span>`;
+        displayBadges.push(`<span class="egg-badge-pill">+${col.total} 🥚</span>`);
       }
 
       if (ledg.length > 0) {
-        inner += `<span class="task-badge-pill">📝 ${ledg.length} log${ledg.length > 1 ? 's' : ''}</span>`;
+        displayBadges.push(`<span class="task-badge-pill">📝 ${ledg.length} log${ledg.length > 1 ? 's' : ''}</span>`);
+      }
+
+      // Safe rendering limit: show top 3 badges, then compact overflow indicator if more
+      if (displayBadges.length <= 3) {
+        inner += displayBadges.join('');
+      } else {
+        inner += displayBadges.slice(0, 2).join('');
+        inner += `<span class="task-badge-pill" style="background:var(--card-surface-subtle); color:var(--text-secondary); border-color:var(--border-strong);">+${displayBadges.length - 2} more</span>`;
       }
 
       cell.innerHTML = inner;
@@ -3670,7 +3614,7 @@
     openDeleteCenterModal();
   }
 
-  /* DROPDOWNS: DEFAULTS TO FULL SETTLED PREVIOUS CALENDAR MONTH */
+  /* REPORT DROPDOWNS */
   function populateReportDropdowns() {
     const fillMonthlyAccountingDropdowns = (fromId, toId) => {
       const elFrom = document.getElementById(fromId);
@@ -3735,20 +3679,42 @@
 
   function openDataModal() { populateReportDropdowns(); document.getElementById('dataModal').style.display = "flex"; }
   function closeDataModal(e) { if (!e || e.target.id === "dataModal" || e.target.classList.contains("modal-close")) { document.getElementById('dataModal').style.display = "none"; openSettingsModal(); } }
-  function closeDataDisplay() { document.getElementById('dataDisplayView').style.display = "none"; document.getElementById('mainDashboard').style.display = "block"; document.getElementById('dataModal').style.display = "flex"; }
   
+  /* REPORT VIEW CONTROLS: AUTO-HIDE FLOATING FAB & RESTORE */
+  function openReportView() {
+    document.getElementById('dataModal').style.display = "none";
+    document.getElementById('mainDashboard').style.display = "none";
+
+    const fab = document.querySelector('.fab-quick-log');
+    if (fab) fab.style.display = "none";
+
+    document.getElementById('dataDisplayView').style.display = "block";
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function closeDataDisplay() {
+    document.getElementById('dataDisplayView').style.display = "none";
+    document.getElementById('mainDashboard').style.display = "block";
+
+    const fab = document.querySelector('.fab-quick-log');
+    if (fab) fab.style.display = "flex";
+
+    document.getElementById('dataModal').style.display = "flex";
+  }
+
   function formatReportSignature(author, modifier) {
     const a = author || "Legacy";
     return (modifier && modifier !== a) ? `<small><b>By:</b> ${a}<br><span style="color:var(--amber);"><b>Edit:</b> ${modifier}</span></small>` : `<small><b>By:</b> ${a}</small>`;
   }
 
-  /* 1. COMMERCIAL P&L STATEMENT: RESPONSIVE FLEX ON-SCREEN LAYOUT & LIGHT EXECUTIVE TOTAL */
+  /* 1. COMMERCIAL P&L (PERMANENT ₹10,000 LABOR DEFAULT + AUTO-REVISED OVERRIDE) */
   function displayBusinessPnLReport() {
     const fromISO = toNormalizedISO(document.getElementById('reportBusFrom').value);
     const toISO = toNormalizedISO(document.getElementById('reportBusTo').value);
     if (!fromISO || !toISO || fromISO > toISO) return alert("Select valid From and To dates.");
 
-    let birdRev = 0, birdCnt = 0, birdWt = 0, eggRev = 0, medCost = 0, powerCost = 0, laborCost = 0;
+    let birdRev = 0, birdCnt = 0, birdWt = 0, eggRev = 0, medCost = 0, powerCost = 0;
+    let loggedLaborCost = 0;
     let manualLaborLogged = false;
 
     const feeds = {
@@ -3767,7 +3733,7 @@
       return "Maize";
     }
 
-    // Historical Opening Balance
+    // Opening inventory
     Object.keys(feeds).forEach(key => {
       let priorBoughtKg = 0, priorSpent = 0, priorCloseKg = 0;
       ledger.forEach(l => {
@@ -3776,8 +3742,7 @@
           const wt = parseFloat(l.weightKg) || 0;
           const pr = parseInt(l.priceRupees, 10) || 0;
           if (l.feedAction === "Purchase" || !l.feedAction) {
-            priorBoughtKg += wt;
-            priorSpent += pr;
+            priorBoughtKg += wt; priorSpent += pr;
           } else if (l.feedAction === "Balance") {
             priorCloseKg = wt;
           }
@@ -3788,7 +3753,7 @@
       feeds[key].openVal = Math.round(priorCloseKg * priorRate);
     });
 
-    // Inflow Purchases and Closing Balances
+    // Accounting period transactions
     ledger.forEach(l => {
       const ld = toNormalizedISO(l.date);
       if (ld >= fromISO && ld <= toISO) {
@@ -3815,7 +3780,7 @@
         else if (l.category === "MedStock") medCost += p;
         else if (l.category === "Electricity") powerCost += p;
         else if (l.category === "Labor") { 
-          laborCost += p; 
+          loggedLaborCost += p; 
           manualLaborLogged = true; 
         }
       }
@@ -3844,7 +3809,11 @@
 
     const netFeedCost = Math.max(0, (totalOpeningVal + totalPurchasesRupees) - totalClosingVal);
 
-    if (!manualLaborLogged) {
+    // Dynamic Labor Rule: Permanent ₹10,000 default per month, overridden if new wage is logged
+    let laborCost = 0;
+    if (manualLaborLogged) {
+      laborCost = loggedLaborCost;
+    } else {
       const d1 = new Date(fromISO), d2 = new Date(toISO);
       const months = Math.max(1, (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth()) + 1);
       laborCost = months * DEFAULT_MONTHLY_LABOR;
@@ -3880,14 +3849,12 @@
         <div style="font-size:0.75rem; color:var(--text-tertiary);">Settled Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b></div>
       </div>
 
-      <!-- RESPONSIVE ON-SCREEN FLEX CONTAINER -->
       <div class="pnl-report-container">
         <div class="pnl-header-bar">
           <span>ACCOUNTING HEAD &amp; PARTICULARS</span>
           <span style="text-align:right;">AMOUNT (₹)</span>
         </div>
 
-        <!-- 1. GROSS REVENUE -->
         <div class="pnl-section-title-row" style="background:rgba(2,132,199,0.06); color:var(--brand); border-left:4px solid var(--brand);">
           <span>1. GROSS OPERATING REVENUE</span>
           <span style="font-size:1.05rem;">₹${grossRev.toLocaleString()}</span>
@@ -3908,7 +3875,6 @@
           </div>
         </div>
 
-        <!-- 2. DIRECT COSTS -->
         <div class="pnl-section-title-row" style="background:rgba(217,119,6,0.06); color:var(--amber); border-left:4px solid var(--amber);">
           <span>2. DIRECT VARIABLE COSTS (Consumed Feed)</span>
           <span style="font-size:1.05rem;">-₹${directCost.toLocaleString()}</span>
@@ -3931,20 +3897,18 @@
           </div>
         </div>
 
-        <!-- GROSS MARGIN -->
         <div class="pnl-section-title-row" style="background:var(--card-surface-subtle); color:var(--text-primary); border-top:1.5px solid var(--border-strong);">
           <span>GROSS MARGIN (Revenue - Direct Costs)</span>
           <span style="color:${grossMargin >= 0 ? 'var(--emerald)' : 'var(--crimson)'}; font-size:1.05rem;">₹${grossMargin.toLocaleString()}</span>
         </div>
 
-        <!-- 3. OVERHEADS -->
         <div class="pnl-section-title-row" style="background:rgba(124,58,237,0.06); color:var(--violet); border-left:4px solid var(--violet);">
           <span>3. FIXED OPERATIONAL OVERHEADS</span>
           <span style="font-size:1.05rem;">-₹${overheads.toLocaleString()}</span>
         </div>
         <div class="pnl-row-item">
           <div class="pnl-row-item-main">
-            <span class="pnl-item-label">• Farm Labor Wages (₹10,000/mo)</span>
+            <span class="pnl-item-label">• Farm Labor Wages (${manualLaborLogged ? 'Revised' : 'Fixed ₹10k/mo Default'})</span>
             <span class="pnl-item-amount">₹${laborCost.toLocaleString()}</span>
           </div>
         </div>
@@ -3955,7 +3919,6 @@
           </div>
         </div>
 
-        <!-- LIGHT EXECUTIVE NET PROFIT CARD -->
         <div class="pnl-net-profit-card">
           <span class="pnl-net-profit-label">NET OPERATING PROFIT / (LOSS)</span>
           <span class="pnl-net-profit-amount" style="color:${netProfit >= 0 ? 'var(--emerald)' : 'var(--crimson)'};">₹${netProfit.toLocaleString()}</span>
@@ -3968,16 +3931,13 @@
     `;
 
     document.getElementById('dataReportContent').innerHTML = reportHtml;
-    document.getElementById('dataModal').style.display = "none";
-    document.getElementById('mainDashboard').style.display = "none";
-    document.getElementById('dataDisplayView').style.display = "block";
+    openReportView();
   }
 
   /* 2. RECONCILED FEED AUDIT */
   function displayFlockFeedSpanReport() {
     const rawFrom = document.getElementById('reportFeedFrom').value;
     const rawTo = document.getElementById('reportFeedTo').value;
-    
     let fromISO = toNormalizedISO(rawFrom);
     let toISO = toNormalizedISO(rawTo);
     
@@ -4004,7 +3964,6 @@
       const dayParts = dayISO.split('-').map(Number);
       const dayMs = new Date(dayParts[0], dayParts[1] - 1, dayParts[2]).getTime();
 
-      // Chicks
       let dayChicks = 0;
       batches.forEach(b => {
         const rawChicks = b.chicksHatched ?? b.chicks ?? b.hatched;
@@ -4021,13 +3980,11 @@
               if (dayMs >= pullMs && dayMs < promoMs) {
                 const ageDays = Math.floor((dayMs - pullMs) / 86400000) + 1;
                 dayChicks += chickCount;
-
                 let intake = 12;
                 if (ageDays > 28) intake = 45;
                 else if (ageDays > 21) intake = 34;
                 else if (ageDays > 14) intake = 26;
                 else if (ageDays > 7) intake = 18;
-
                 totalStarterGrams += (chickCount * intake);
               }
             }
@@ -4045,7 +4002,6 @@
       dayChicks = Math.max(0, dayChicks - cLoss);
       sumChicks += dayChicks;
 
-      // Growers
       let batchGraduates = 0;
       batches.forEach(b => {
         const rawChicks = b.chicksHatched ?? b.chicks ?? b.hatched;
@@ -4075,7 +4031,6 @@
       growerFlockMashGrams += (dayGrowers * 55);
       growerGrainGrams += (dayGrowers * 40);
 
-      // Breeders
       let bAdded = 0, bLoss = 0;
       mortality.forEach(m => {
         if (toNormalizedISO(m.date) <= dayISO && m.category === "Breeders") bLoss += (parseInt(m.dead, 10) || 0);
@@ -4106,7 +4061,6 @@
     const targetBreederMaizeKg = breederGrainGrams / 1000;
     const targetTotalMaizeKg = targetGrowerMaizeKg + targetBreederMaizeKg;
 
-    // Physical Inventory
     const feedStock = {
       Starter: { openKg: 0, openVal: 0, boughtKg: 0, spent: 0, closeKg: null },
       Grower:  { openKg: 0, openVal: 0, boughtKg: 0, spent: 0, closeKg: null },
@@ -4121,7 +4075,6 @@
       return "Maize";
     }
 
-    // Historical Opening Balance prior to fromISO
     Object.keys(feedStock).forEach(key => {
       let priorBought = 0, priorSpent = 0, priorClose = 0;
       ledger.forEach(l => {
@@ -4130,8 +4083,7 @@
           const wt = parseFloat(l.weightKg) || 0;
           const pr = parseInt(l.priceRupees, 10) || 0;
           if (l.feedAction === "Purchase" || !l.feedAction) {
-            priorBought += wt;
-            priorSpent += pr;
+            priorBought += wt; priorSpent += pr;
           } else if (l.feedAction === "Balance") {
             priorClose = wt;
           }
@@ -4142,7 +4094,6 @@
       feedStock[key].openVal = Math.round(priorClose * priorRate);
     });
 
-    // Inflow purchases and ending stock inside span
     ledger.forEach(l => {
       const ld = toNormalizedISO(l.date);
       if (ld >= fromISO && ld <= toISO && l.category === "Feed") {
@@ -4150,8 +4101,7 @@
         const wt = parseFloat(l.weightKg) || 0;
         const pr = parseInt(l.priceRupees, 10) || 0;
         if (l.feedAction === "Purchase" || !l.feedAction) {
-          feedStock[cat].boughtKg += wt;
-          feedStock[cat].spent += pr;
+          feedStock[cat].boughtKg += wt; feedStock[cat].spent += pr;
         } else if (l.feedAction === "Balance") {
           feedStock[cat].closeKg = wt;
         }
@@ -4166,7 +4116,6 @@
       const availableKg = f.openKg + f.boughtKg;
       const availableVal = f.openVal + f.spent;
       const ratePerKg = availableKg > 0 ? (availableVal / availableKg) : 0;
-
       const closingKg = f.closeKg !== null ? f.closeKg : 0;
       const consumedKg = f.closeKg !== null ? Math.max(0, availableKg - closingKg) : availableKg;
       const consumedCost = Math.round(consumedKg * ratePerKg);
@@ -4177,17 +4126,11 @@
       totalConsumedCost += consumedCost;
 
       catAnalysis[k] = {
-        openKg: f.openKg,
-        boughtKg: f.boughtKg,
-        availableKg: availableKg,
-        closeKg: f.closeKg,
-        consumedKg: consumedKg,
-        ratePerKg: ratePerKg,
-        consumedCost: consumedCost
+        openKg: f.openKg, boughtKg: f.boughtKg, availableKg: availableKg,
+        closeKg: f.closeKg, consumedKg: consumedKg, ratePerKg: ratePerKg, consumedCost: consumedCost
       };
     });
 
-    // Proportional division of shared Grower Mash and Maize
     const growerMashRatio = targetTotalGrowerMashKg > 0 ? (targetGrowerOnlyMashKg / targetTotalGrowerMashKg) : 0.6;
     const allocatedGrowerMashForGrowers = catAnalysis.Grower.consumedKg * growerMashRatio;
     const allocatedGrowerMashForBreeders = catAnalysis.Grower.consumedKg * (1 - growerMashRatio);
@@ -4233,7 +4176,6 @@
         <div style="font-size:0.75rem; color:var(--text-tertiary);">Span: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b> (${dayCount} Active Days)</div>
       </div>
 
-      <!-- SECTION 1: INVENTORY TABLE -->
       <div style="font-size:0.84rem; font-weight:900; color:var(--brand); margin:12px 0 6px 0;">1. FEED ROOM INVENTORY &amp; VALUATION</div>
       <div class="table-wrap">
         <table>
@@ -4264,14 +4206,12 @@
         </table>
       </div>
 
-      <!-- SECTION 2: VERTICAL APPETITE RECONCILIATION -->
       <div style="font-size:0.84rem; font-weight:900; color:var(--amber); margin:16px 0 6px 0;">2. BIOLOGICAL TARGET VS. PHYSICAL USAGE</div>
       ${buildVarianceCard("Chick Starter Mash (Brooder Growth Curve)", targetStarterKg, catAnalysis.Starter.consumedKg)}
       ${buildVarianceCard("Grower Mash (Growers &amp; Breeders Shared)", targetTotalGrowerMashKg, catAnalysis.Grower.consumedKg)}
       ${buildVarianceCard("Layer Mash (Breeding Flock)", targetLayerMashKg, catAnalysis.Layer.consumedKg)}
       ${buildVarianceCard("Whole Maize (Evening Grain Scratch)", targetTotalMaizeKg, catAnalysis.Maize.consumedKg)}
 
-      <!-- SECTION 3: FLOCK PERFORMANCE -->
       <div style="font-size:0.84rem; font-weight:900; color:var(--violet); margin:16px 0 6px 0;">3. FLOCK ALLOCATION SUMMARY</div>
       <div class="table-wrap">
         <table style="text-align:left;">
@@ -4307,17 +4247,15 @@
       </div>
 
       <div class="card" style="margin-top:12px; font-size:0.75rem; text-align:center; color:var(--text-secondary);">
-        * <i>Inventory cost matches the Commercial P&amp;L at <b>₹${totalConsumedCost.toLocaleString()}</b>. Differences reflect foraging intake on free-range pasture.</i>
+        * <i>Inventory cost matches the Commercial P&amp;L at <b>₹${totalConsumedCost.toLocaleString()}</b>.</i>
       </div>
     `;
 
     document.getElementById('dataReportContent').innerHTML = reportHtml;
-    document.getElementById('dataModal').style.display = "none";
-    document.getElementById('mainDashboard').style.display = "none";
-    document.getElementById('dataDisplayView').style.display = "block";
+    openReportView();
   }
 
-  /* 3. EGG PRODUCTION AUDIT */
+  /* 3. EGG AUDIT */
   function displayEggDataReport() {
     const fromISO = toNormalizedISO(document.getElementById('reportColFrom').value);
     const toISO = toNormalizedISO(document.getElementById('reportColTo').value);
@@ -4344,12 +4282,10 @@
       </div>
     `;
     document.getElementById('dataReportContent').innerHTML = reportHtml;
-    document.getElementById('dataModal').style.display = "none";
-    document.getElementById('mainDashboard').style.display = "none";
-    document.getElementById('dataDisplayView').style.display = "block";
+    openReportView();
   }
 
-  /* 4. INCUBATION BATCHES AUDIT */
+  /* 4. TRAY INCUBATION AUDIT */
   function displayIncubationDataReport() {
     const sorted = [...batches].sort((a,b)=>toNormalizedISO(a.startDate||a.rawDate).localeCompare(toNormalizedISO(b.startDate||b.rawDate)));
     if (!sorted.length) return alert("No batches recorded.");
@@ -4414,9 +4350,7 @@
       </div>
     `;
     document.getElementById('dataReportContent').innerHTML = reportHtml;
-    document.getElementById('dataModal').style.display = "none";
-    document.getElementById('mainDashboard').style.display = "none";
-    document.getElementById('dataDisplayView').style.display = "block";
+    openReportView();
   }
 
   /* 5. MEDICINES AUDIT */
@@ -4443,12 +4377,10 @@
       </div>
     `;
     document.getElementById('dataReportContent').innerHTML = reportHtml;
-    document.getElementById('dataModal').style.display = "none";
-    document.getElementById('mainDashboard').style.display = "none";
-    document.getElementById('dataDisplayView').style.display = "block";
+    openReportView();
   }
 
-  /* 6. COMPLETE FARM JOURNAL & ACTIVITY LEDGER AUDIT */
+  /* 6. FARM JOURNAL & LEDGER AUDIT */
   function displayFarmLedgerReport() {
     const fromISO = toNormalizedISO(document.getElementById('reportActivityFrom').value);
     const toISO = toNormalizedISO(document.getElementById('reportActivityTo').value);
@@ -4495,9 +4427,93 @@
       </div>
     `;
     document.getElementById('dataReportContent').innerHTML = reportHtml;
-    document.getElementById('dataModal').style.display = "none";
-    document.getElementById('mainDashboard').style.display = "none";
-    document.getElementById('dataDisplayView').style.display = "block";
+    openReportView();
+  }
+
+  /* STRUCTURED EXCEL / CSV EXPORT ENGINE */
+  function exportActiveReportToCSV() {
+    const reportContainer = document.getElementById('dataReportContent');
+    if (!reportContainer || !reportContainer.innerText.trim()) {
+      return alert("No report generated to export.");
+    }
+
+    let csvContent = "";
+    const clean = (val) => {
+      if (val === null || val === undefined) return '""';
+      let s = String(val)
+        .replace(/[\u2022\u2023\u25E6\u2043\u2219]/g, '')
+        .replace(/₹/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      return `"${s.replace(/"/g, '""')}"`;
+    };
+
+    // 1. COMMERCIAL P&L (EXPORTED IN CLEAN 4-COLUMN TABULAR FORMAT)
+    if (reportContainer.querySelector('.pnl-report-container')) {
+      csvContent += `"AD FARMS ; HERD & HARVEST - COMMERCIAL P&L STATEMENT"\r\n`;
+      csvContent += `"Exported Date:","${getTodayISO()}"\r\n\r\n`;
+      csvContent += `"Accounting Head","Line Item / Particulars","Quantity / Details","Amount (INR)"\r\n`;
+
+      const sections = reportContainer.querySelectorAll('.pnl-section-title-row, .pnl-row-item, .pnl-net-profit-card');
+      let currentHead = "GROSS REVENUE";
+
+      sections.forEach(el => {
+        if (el.classList.contains('pnl-section-title-row')) {
+          const spans = el.querySelectorAll('span');
+          currentHead = spans[0] ? spans[0].innerText.trim() : currentHead;
+          const totalVal = spans[1] ? spans[1].innerText.replace(/[^0-9.-]/g, '') : "";
+          csvContent += `${clean(currentHead)},"Subtotal Head","-",${clean(totalVal)}\r\n`;
+        } else if (el.classList.contains('pnl-row-item')) {
+          const mainSpans = el.querySelectorAll('.pnl-row-item-main span');
+          const title = mainSpans[0] ? mainSpans[0].innerText.trim() : "";
+          const amt = mainSpans[1] ? mainSpans[1].innerText.replace(/[^0-9.-]/g, '') : "";
+          const subTextEl = el.querySelector('div:not(.pnl-row-item-main)');
+          const details = subTextEl ? subTextEl.innerText.trim() : "-";
+          csvContent += `${clean(currentHead)},${clean(title)},${clean(details)},${clean(amt)}\r\n`;
+        } else if (el.classList.contains('pnl-net-profit-card')) {
+          const title = el.querySelector('.pnl-net-profit-label')?.innerText || "NET OPERATING PROFIT / (LOSS)";
+          const netAmt = el.querySelector('.pnl-net-profit-amount')?.innerText.replace(/[^0-9.-]/g, '') || "";
+          csvContent += `\r\n"BOTTOM LINE",${clean(title)},"-",${clean(netAmt)}\r\n`;
+        }
+      });
+    } 
+    // 2. TABULAR STATEMENTS (FEED AUDIT, EGGS, BATCHES, LEDGER)
+    else {
+      const tables = reportContainer.querySelectorAll('table');
+      if (tables.length > 0) {
+        const title = reportContainer.querySelector('h2')?.innerText || "AD FARMS AUDIT";
+        csvContent += `"AD FARMS ; HERD & HARVEST - ${title}"\r\n`;
+        csvContent += `"Generated Date:","${getTodayISO()}"\r\n\r\n`;
+
+        tables.forEach((table, tIdx) => {
+          if (tIdx > 0) csvContent += "\r\n";
+          const rows = table.querySelectorAll('tr');
+          rows.forEach(tr => {
+            const cells = tr.querySelectorAll('th, td');
+            const rowData = [];
+            cells.forEach(td => {
+              let text = td.innerText.replace(/[\r\n]+/g, ' ').replace(/₹/g, '').trim();
+              rowData.push(clean(text));
+            });
+            if (rowData.length > 0) {
+              csvContent += rowData.join(",") + "\r\n";
+            }
+          });
+        });
+      }
+    }
+
+    // Direct Blob download using UTF-8 BOM so Excel opens values into neat columns
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const fileName = `AD_Farms_${getTodayISO()}.csv`;
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
   }
 
   /* TAB CENTERING HELPER */
