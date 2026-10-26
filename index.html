@@ -362,7 +362,7 @@
     background: currentColor;
     opacity: 0.8;
   }
-  /* Rigid flex container so 1-line and 2-line labels match height exactly */
+  /* Rigid flex container: guarantees exact horizontal alignment across 1-line and 2-line labels */
   .metric-lbl {
     font-size: 0.54rem;
     font-weight: 800;
@@ -936,7 +936,7 @@
   }
   .fab-quick-log:active { transform: scale(0.93); }
 
-  /* TIMELINE CALENDAR WITH STRICT MARGIN CLIPPING */
+  /* TIMELINE CALENDAR: ZERO-OVERFLOW PADDING & MARGIN CONTAINMENT */
   .cal-header { 
     display: flex; 
     justify-content: space-between; 
@@ -981,7 +981,6 @@
     width: 100%;
   }
   
-  /* Strictly enclosed calendar cell: zero overflow or bleeding */
   .cal-cell {
     min-height: 84px;
     max-height: 98px;
@@ -1006,7 +1005,6 @@
   .cal-cell:active { transform: scale(0.94); }
   .cal-cell.empty { border-color: transparent; background: transparent; cursor: default; box-shadow: none; }
 
-  /* TODAY HIGHLIGHT */
   .cal-cell.cal-today {
     border: 2px solid #0284c7 !important;
     box-shadow: 0 0 10px rgba(2, 132, 199, 0.3) !important;
@@ -1018,13 +1016,11 @@
     padding: 1px 6px;
   }
 
-  /* CELL BACKGROUND ACCENTS */
   .cal-cell.has-pull { background: rgba(5, 150, 105, 0.08); border-color: rgba(5, 150, 105, 0.4); }
   .cal-cell.has-shift { background: rgba(217, 119, 6, 0.08); border-color: rgba(217, 119, 6, 0.4); }
   .cal-cell.has-set { background: rgba(2, 132, 199, 0.08); border-color: rgba(2, 132, 199, 0.4); }
   .cal-cell.has-overlap { background: rgba(15, 23, 42, 0.06); border-color: #0f172a; }
 
-  /* STAGE BADGES WITH STRICT FIT */
   .stage-badge {
     font-size: 0.50rem;
     font-weight: 900;
@@ -1397,7 +1393,7 @@
     <div class="hardware-grid-hero">
       <div class="hw-row">
         <span class="hw-label">SETTERS (T1–T5)</span>
-        <span id="heroSetterMap" class="hw-value" style="color:var(--amber);">All Occupied</span>
+        <span id="heroSetterMap" class="hw-value" style="color:var(--amber);">All Occupied (T1–T5)</span>
       </div>
       <div class="hw-row">
         <span class="hw-label">HATCHER (H1)</span>
@@ -1501,24 +1497,24 @@
       </div>
     </div>
 
-    <!-- TAB 2: MORTALITY -->
+    <!-- TAB 2: MORTALITY (WITH SPAN-NORMALIZED % METRIC SUB-LABELS) -->
     <div class="tab-panel" id="tabPanel2">
       <div class="card" style="padding:11px;">
         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:7px; text-align:center;">
           <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:15px; padding:11px 5px;">
             <div id="liveChicksBalance" style="font-size:1.30rem; font-weight:900; color:var(--emerald);">0</div>
             <div style="font-size:0.60rem; font-weight:900; color:var(--text-secondary); margin-top:2px;">CHICKS ALIVE</div>
-            <div style="font-size:0.68rem; color:var(--crimson); font-weight:900; margin-top:3px;" id="totalChicksDeadSub">0 dead</div>
+            <div style="font-size:0.66rem; color:var(--crimson); font-weight:900; margin-top:3px;" id="totalChicksDeadSub">0 dead (45D: 0.0%)</div>
           </div>
           <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:15px; padding:11px 5px;">
             <div id="liveGrowersBalance" style="font-size:1.30rem; font-weight:900; color:var(--brand);">125</div>
             <div style="font-size:0.60rem; font-weight:900; color:var(--text-secondary); margin-top:2px;">GROWERS ALIVE</div>
-            <div style="font-size:0.68rem; color:var(--crimson); font-weight:900; margin-top:3px;" id="totalGrowersDeadSub">0 dead</div>
+            <div style="font-size:0.66rem; color:var(--crimson); font-weight:900; margin-top:3px;" id="totalGrowersDeadSub">0 dead (6M: 0.0%)</div>
           </div>
           <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:15px; padding:11px 5px;">
             <div id="liveBreedersBalance" style="font-size:1.30rem; font-weight:900; color:var(--violet);">150</div>
             <div style="font-size:0.60rem; font-weight:900; color:var(--text-secondary); margin-top:2px;">BREEDERS ALIVE</div>
-            <div style="font-size:0.68rem; color:var(--crimson); font-weight:900; margin-top:3px;" id="totalBreedersDeadSub">0 dead</div>
+            <div style="font-size:0.66rem; color:var(--crimson); font-weight:900; margin-top:3px;" id="totalBreedersDeadSub">0 dead (1.5Y: 0.0%)</div>
           </div>
         </div>
       </div>
@@ -2220,7 +2216,7 @@
   </div>
 </div>
 
-<!-- AUDIT REPORT VIEWPORT (CLEAN EXCEL BUTTON - PDF BUTTON REMOVED) -->
+<!-- AUDIT REPORT VIEWPORT (RELIABLE EXCEL WORKFLOW) -->
 <div class="container" id="dataDisplayView">
   <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid var(--border-strong); padding-bottom:11px; margin-bottom:15px;">
     <div style="display:flex; align-items:center; gap:12px;">
@@ -2228,7 +2224,7 @@
       <div style="font-size:1.02rem; font-weight:900; color:var(--brand); letter-spacing:-0.02em;">AD FARMS TELEMETRY REPORT</div>
     </div>
     <div class="report-actions-bar" style="display:flex; gap:6px;">
-      <!-- RELIABLE, STANDARDIZED EXCEL / CSV BUTTON -->
+      <!-- RELIABLE, STANDARDIZED EXCEL BUTTON -->
       <button class="report-action-pill" onclick="exportActiveReportToCSV()" title="Export Structured Excel Spreadsheet">
         <span>📗</span> Excel
       </button>
@@ -2306,7 +2302,7 @@
     return `${hours}:${mins} ${ampm}`;
   }
 
-  /* BULLETPROOF DATE NORMALIZATION */
+  /* DATE NORMALIZATION */
   function toNormalizedISO(input) {
     if (!input) return "";
     if (typeof input === 'object' && input.seconds) return dateToISO(new Date(input.seconds * 1000));
@@ -2766,97 +2762,149 @@
     return !audited;
   }
 
-  /* TELEMETRY & STATUS */
+  /* HARDWARE TELEMETRY & TRAY ALLOCATION ENGINE */
   function renderCommandCenter() {
     const todayISO = getTodayISO();
-    const p = todayISO.split('-').map(Number);
-    const dObj = new Date(p[0], p[1] - 1, p[2]);
+    const parts = todayISO.split('-').map(Number);
+    const dObj = new Date(parts[0], parts[1] - 1, parts[2]);
+
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    document.getElementById('heroDateText').innerText = `${dayNames[dObj.getDay()]}, ${dObj.getDate()} ${monthNames[dObj.getMonth()]}`;
+    const heroDateEl = document.getElementById('heroDateText');
+    if (heroDateEl) {
+      heroDateEl.innerText = `${dayNames[dObj.getDay()]}, ${dObj.getDate()} ${monthNames[dObj.getMonth()]}`;
+    }
 
-    let pullToday = null, shiftToday = null, candlingToday = [], activeSetterCount = 0, hatcherOccupied = false;
+    let pullToday = null;
+    let shiftToday = null;
+    let candlingToday = [];
+
+    const allTrays = ["T1", "T2", "T3", "T4", "T5"];
+    const occupiedSetters = new Set();
+    let hatcherBatch = null;
+
     batches.forEach(b => {
       if (!isBatchActiveDirect(b)) return;
-      activeSetterCount++;
-      const s = getBatchStageInfo(b);
-      if (b.inHatcher || s.inActiveLockdown) hatcherOccupied = true;
-      if (todayISO === s.physics.pullD21ISO && !s.hasHatched) pullToday = { batch: b, stage: s };
-      if (todayISO === s.physics.shiftD18ISO && !b.inHatcher && !s.hasHatched) shiftToday = { batch: b, stage: s };
-      if (todayISO === s.physics.d14ISO && !b.candlingD14Cleared) candlingToday.push(b);
+      const stage = getBatchStageInfo(b);
+      const nameUpper = (b.name || "").toUpperCase();
+
+      // Physical status: Is it in H1 or in Setters T1-T5?
+      if (b.inHatcher || stage.inActiveLockdown || stage.isOverduePull) {
+        // In Hatcher: does NOT occupy any T1-T5 tray
+        hatcherBatch = {
+          name: b.name,
+          isOverdue: stage.isOverduePull,
+          inLockdown: stage.inActiveLockdown,
+          elapsedHours: Math.round(stage.elapsedHours)
+        };
+      } else {
+        // In Setters: map exact T1-T5 tray tag
+        let matched = false;
+        allTrays.forEach(t => {
+          if (nameUpper.includes(t)) {
+            occupiedSetters.add(t);
+            matched = true;
+          }
+        });
+        if (!matched) {
+          for (let t of allTrays) {
+            if (!occupiedSetters.has(t)) {
+              occupiedSetters.add(t);
+              break;
+            }
+          }
+        }
+      }
+
+      if (todayISO === stage.physics.pullD21ISO && !stage.hasHatched) {
+        pullToday = { batch: b, stage: stage };
+      }
+      if (todayISO === stage.physics.shiftD18ISO && !b.inHatcher && !stage.hasHatched) {
+        shiftToday = { batch: b, stage: stage };
+      }
+      if (todayISO === stage.physics.d14ISO && !b.candlingD14Cleared) {
+        candlingToday.push(b);
+      }
     });
 
-    const banner = document.getElementById('commandHeroBanner');
-    banner.classList.toggle('banner-pull-day', Boolean(pullToday));
+    const freeTrays = allTrays.filter(t => !occupiedSetters.has(t));
+    const setterLabel = document.getElementById('heroSetterMap');
+    const hatcherLabel = document.getElementById('heroHatcherMap');
 
-    let html = "";
+    if (setterLabel) {
+      if (freeTrays.length === 0) {
+        setterLabel.style.color = "var(--amber)";
+        setterLabel.innerText = "All Occupied (T1–T5)";
+      } else {
+        setterLabel.style.color = "var(--emerald)";
+        setterLabel.innerText = `${occupiedSetters.size}/5 Occupied (🟢 Free: ${freeTrays.join(', ')})`;
+      }
+    }
+
+    if (hatcherLabel) {
+      if (hatcherBatch) {
+        hatcherLabel.style.color = "var(--crimson)";
+        hatcherLabel.innerText = `🔴 Active: ${hatcherBatch.name} (${hatcherBatch.elapsedHours}h)`;
+      } else {
+        hatcherLabel.style.color = "var(--emerald)";
+        hatcherLabel.innerText = "🟢 Free / Vacant";
+      }
+    }
+
+    const heroBanner = document.getElementById('commandHeroBanner');
+    if (heroBanner) heroBanner.classList.toggle('banner-pull-day', Boolean(pullToday));
+
+    let pointsHtml = "";
     if (isMonthEndFeedAuditDue()) {
-      html += `
+      pointsHtml += `
         <div class="action-point-item point-audit-alert" onclick="openQuickLogModal('quickLedger')" style="cursor:pointer;">
           <span class="point-icon">⚖️</span>
           <div class="point-content">
             <span class="point-tag tag-audit">MONTH-END FEED AUDIT DUE</span>
             <div style="font-weight:900; color:var(--amber);">Weigh remaining shed bags (Starter, Grower, Layer, Maize) &bull; Tap to Record Balance</div>
           </div>
-        </div>
-      `;
+        </div>`;
     }
 
     if (shiftToday) {
-      const shiftTimeStr = shiftToday.batch.setTime ? ` (this evening at ${formatToAmPm(shiftToday.batch.setTime)})` : " (this evening at 7:00 PM)";
-      html += `
+      const shiftTimeStr = shiftToday.batch.setTime ? ` (at ${formatToAmPm(shiftToday.batch.setTime)})` : " (at 7:00 PM)";
+      pointsHtml += `
         <div class="action-point-item point-hatch">
           <span class="point-icon">🐣</span>
           <div class="point-content">
             <span class="point-tag tag-shift">PRIORITY: SHIFT</span>
             <div style="font-weight:900; color:var(--amber);">Batch: ${shiftToday.batch.name} -&gt; Transfer to H1${shiftTimeStr}</div>
           </div>
-        </div>
-      `;
+        </div>`;
     }
+
     if (candlingToday.length > 0) {
       candlingToday.forEach(b => {
-        html += `
+        pointsHtml += `
           <div class="action-point-item point-candling">
             <span class="point-icon">🔍</span>
             <div class="point-content">
               <span class="point-tag tag-candle">14TH DAY CANDLING</span>
               <div style="font-weight:900; color:var(--brand);">Batch: ${b.name}</div>
             </div>
-          </div>
-        `;
+          </div>`;
       });
     }
+
     if (pullToday) {
-      html += `
+      pointsHtml += `
         <div class="action-point-item point-pull">
           <span class="point-icon">🐥</span>
           <div class="point-content">
             <span class="point-tag tag-pull">HARVEST: PULL DAY</span>
             <div style="font-weight:900; color:var(--emerald);">Batch: ${pullToday.batch.name} Live Chicks Harvest (504h Completed)</div>
           </div>
-        </div>
-      `;
+        </div>`;
     }
 
-    document.getElementById('heroTriggersFeed').innerHTML = html || `<div style="text-align:center; padding:7px 0; font-weight:700; font-size:0.78rem;">All operational parameters nominal.</div>`;
-
-    const setterLabel = document.getElementById('heroSetterMap');
-    if (activeSetterCount >= 5) {
-      setterLabel.style.color = "var(--amber)";
-      setterLabel.innerText = "All Occupied";
-    } else {
-      setterLabel.style.color = "var(--text-primary)";
-      setterLabel.innerText = `Occupied: ${activeSetterCount}/5 (Free: T${activeSetterCount + 1}–T5)`;
-    }
-
-    const hatcherLabel = document.getElementById('heroHatcherMap');
-    if (hatcherOccupied) {
-      hatcherLabel.style.color = "var(--crimson)";
-      hatcherLabel.innerText = "🔴 Active / In Use";
-    } else {
-      hatcherLabel.style.color = "var(--emerald)";
-      hatcherLabel.innerText = "🟢 Free / Vacant";
+    const triggersEl = document.getElementById('heroTriggersFeed');
+    if (triggersEl) {
+      triggersEl.innerHTML = pointsHtml || `<div style="text-align:center; padding:7px 0; font-weight:700; font-size:0.78rem;">All operational parameters nominal.</div>`;
     }
   }
 
@@ -2943,6 +2991,71 @@
     };
   }
 
+  /* BIOLOGICAL SPAN MORTALITY CALCULATION */
+  function calculateSpanMortalityMetrics() {
+    const nowMs = Date.now();
+    const MS_DAY = 86400000;
+
+    const chickSpanMs = nowMs - (45 * MS_DAY);     // 45 Days Brooder
+    const growerSpanMs = nowMs - (180 * MS_DAY);   // 6 Months (180 Days)
+    const breederSpanMs = nowMs - (548 * MS_DAY);  // 1.5 Years (548 Days)
+
+    const flock = calculateReconciledFlock();
+
+    // 1. CHICKS (45D)
+    let chicksDeadInSpan = 0, chicksSoldInSpan = 0;
+    mortality.forEach(m => {
+      const mMs = getSafeMs(m.date);
+      if (mMs && mMs >= chickSpanMs && (m.category === "Chicks" || !m.category)) {
+        chicksDeadInSpan += (parseInt(m.dead, 10) || 0);
+      }
+    });
+    ledger.forEach(l => {
+      const lMs = getSafeMs(l.date);
+      if (lMs && lMs >= chickSpanMs && l.category === "Sales" && l.target === "Chicks") {
+        chicksSoldInSpan += (parseInt(l.qty, 10) || 0);
+      }
+    });
+    const chicksDenom = flock.liveChicks + chicksDeadInSpan + chicksSoldInSpan;
+    const chickPct = chicksDenom > 0 ? ((chicksDeadInSpan / chicksDenom) * 100).toFixed(1) : "0.0";
+
+    // 2. GROWERS (180D)
+    let growersDeadInSpan = 0, growersSoldInSpan = 0;
+    mortality.forEach(m => {
+      const mMs = getSafeMs(m.date);
+      if (mMs && mMs >= growerSpanMs && m.category === "Growers") {
+        growersDeadInSpan += (parseInt(m.dead, 10) || 0);
+      }
+    });
+    ledger.forEach(l => {
+      const lMs = getSafeMs(l.date);
+      if (lMs && lMs >= growerSpanMs && l.category === "Sales" && l.target === "Growers") {
+        growersSoldInSpan += (parseInt(l.qty, 10) || 0);
+      }
+    });
+    const growersDenom = flock.liveGrowers + growersDeadInSpan + growersSoldInSpan;
+    const growerPct = growersDenom > 0 ? ((growersDeadInSpan / growersDenom) * 100).toFixed(1) : "0.0";
+
+    // 3. BREEDERS (548D)
+    let breedersDeadInSpan = 0, breedersSoldInSpan = 0;
+    mortality.forEach(m => {
+      const mMs = getSafeMs(m.date);
+      if (mMs && mMs >= breederSpanMs && m.category === "Breeders") {
+        breedersDeadInSpan += (parseInt(m.dead, 10) || 0);
+      }
+    });
+    ledger.forEach(l => {
+      const lMs = getSafeMs(l.date);
+      if (lMs && lMs >= breederSpanMs && l.category === "Sales" && l.target === "Breeders") {
+        breedersSoldInSpan += (parseInt(l.qty, 10) || 0);
+      }
+    });
+    const breedersDenom = flock.liveBreeders + breedersDeadInSpan + breedersSoldInSpan;
+    const breederPct = breedersDenom > 0 ? ((breedersDeadInSpan / breedersDenom) * 100).toFixed(1) : "0.0";
+
+    return { chickPct, growerPct, breederPct };
+  }
+
   function renderLiveMetrics() {
     let inc = 0;
     batches.forEach(b => {
@@ -2958,9 +3071,11 @@
     document.getElementById('liveGrowersBalance').innerText = r.liveGrowers;
     document.getElementById('liveBreedersBalance').innerText = r.liveBreeders;
     
-    document.getElementById('totalChicksDeadSub').innerText = `${r.cDead} dead`;
-    document.getElementById('totalGrowersDeadSub').innerText = `${r.gDead} dead`;
-    document.getElementById('totalBreedersDeadSub').innerText = `${r.bDead} dead`;
+    // Normalized biological span percentages
+    const span = calculateSpanMortalityMetrics();
+    document.getElementById('totalChicksDeadSub').innerText = `${r.cDead} dead (45D: ${span.chickPct}%)`;
+    document.getElementById('totalGrowersDeadSub').innerText = `${r.gDead} dead (6M: ${span.growerPct}%)`;
+    document.getElementById('totalBreedersDeadSub').innerText = `${r.bDead} dead (1.5Y: ${span.breederPct}%)`;
 
     document.getElementById('lifetimeChicksDisplay').innerText = r.lifetimeChicks.toLocaleString();
     let eggsTot = 0;
@@ -3428,7 +3543,6 @@
 
       let inner = `<span class="cal-num-badge">${d}</span>`;
 
-      // Keep maximum 3 badges rendered so nothing bleeds past cell boundary
       const displayBadges = [];
       evs.forEach(e => {
         let bCls = "stage-badge ";
@@ -3447,7 +3561,6 @@
         displayBadges.push(`<span class="task-badge-pill">📝 ${ledg.length} log${ledg.length > 1 ? 's' : ''}</span>`);
       }
 
-      // Safe rendering limit: show top 3 badges, then compact overflow indicator if more
       if (displayBadges.length <= 3) {
         inner += displayBadges.join('');
       } else {
@@ -3753,7 +3866,7 @@
       feeds[key].openVal = Math.round(priorCloseKg * priorRate);
     });
 
-    // Accounting period transactions
+    // Transactions in period
     ledger.forEach(l => {
       const ld = toNormalizedISO(l.date);
       if (ld >= fromISO && ld <= toISO) {
@@ -3809,7 +3922,7 @@
 
     const netFeedCost = Math.max(0, (totalOpeningVal + totalPurchasesRupees) - totalClosingVal);
 
-    // Dynamic Labor Rule: Permanent ₹10,000 default per month, overridden if new wage is logged
+    // Dynamic Labor Rule: Year-safe month calculation
     let laborCost = 0;
     if (manualLaborLogged) {
       laborCost = loggedLaborCost;
@@ -4430,82 +4543,179 @@
     openReportView();
   }
 
-  /* STRUCTURED EXCEL / CSV EXPORT ENGINE */
+  /* WIDE-COLUMN EXCEL EXPORTER (.XLS) */
   function exportActiveReportToCSV() {
     const reportContainer = document.getElementById('dataReportContent');
     if (!reportContainer || !reportContainer.innerText.trim()) {
       return alert("No report generated to export.");
     }
 
-    let csvContent = "";
-    const clean = (val) => {
-      if (val === null || val === undefined) return '""';
-      let s = String(val)
-        .replace(/[\u2022\u2023\u25E6\u2043\u2219]/g, '')
-        .replace(/₹/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-      return `"${s.replace(/"/g, '""')}"`;
-    };
+    let rawTitle = reportContainer.querySelector('h2, div[style*="font-weight:900"]')?.innerText || "FARM AUDIT";
+    rawTitle = rawTitle.replace(/AD FARMS\s*;\s*HERD & HARVEST/gi, '').replace(/[-–]/g, '').trim();
+    if (!rawTitle) rawTitle = "Audit Report";
 
-    // 1. COMMERCIAL P&L (EXPORTED IN CLEAN 4-COLUMN TABULAR FORMAT)
+    let tableHtml = "";
+
+    // 1. COMMERCIAL P&L (WIDE 4-COLUMN FORMAT)
     if (reportContainer.querySelector('.pnl-report-container')) {
-      csvContent += `"AD FARMS ; HERD & HARVEST - COMMERCIAL P&L STATEMENT"\r\n`;
-      csvContent += `"Exported Date:","${getTodayISO()}"\r\n\r\n`;
-      csvContent += `"Accounting Head","Line Item / Particulars","Quantity / Details","Amount (INR)"\r\n`;
+      tableHtml += `
+        <table border="1" style="border-collapse:collapse; font-family:Calibri,sans-serif; font-size:11pt;">
+          <thead>
+            <tr style="background-color:#1e293b; color:#ffffff; height:34px;">
+              <th style="width:240px; text-align:left; padding:6px 10px; white-space:nowrap;">Accounting Head</th>
+              <th style="width:280px; text-align:left; padding:6px 10px; white-space:nowrap;">Particulars</th>
+              <th style="width:360px; text-align:left; padding:6px 10px; white-space:nowrap;">Details / Notes</th>
+              <th style="width:140px; text-align:right; padding:6px 10px; white-space:nowrap;">Amount (INR)</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
 
-      const sections = reportContainer.querySelectorAll('.pnl-section-title-row, .pnl-row-item, .pnl-net-profit-card');
-      let currentHead = "GROSS REVENUE";
+      const pnl = reportContainer.querySelector('.pnl-report-container');
+      const children = Array.from(pnl.children);
+      let curHead = "";
+      let subVal = "";
 
-      sections.forEach(el => {
+      children.forEach(el => {
         if (el.classList.contains('pnl-section-title-row')) {
+          if (curHead && subVal !== "") {
+            const isExp = curHead.includes("COST") || curHead.includes("OVERHEAD");
+            const val = (isExp && !subVal.startsWith('-') ? '-' : '') + subVal;
+            tableHtml += `
+              <tr style="background-color:#f1f5f9; font-weight:bold; height:28px;">
+                <td colspan="3" style="text-align:right; padding:6px 10px;">SUBTOTAL ${curHead}:</td>
+                <td style="text-align:right; padding:6px 10px; mso-number-format:'\\#\\,\\#\\#0';">${val}</td>
+              </tr>
+            `;
+          }
           const spans = el.querySelectorAll('span');
-          currentHead = spans[0] ? spans[0].innerText.trim() : currentHead;
-          const totalVal = spans[1] ? spans[1].innerText.replace(/[^0-9.-]/g, '') : "";
-          csvContent += `${clean(currentHead)},"Subtotal Head","-",${clean(totalVal)}\r\n`;
+          curHead = spans[0] ? spans[0].innerText.trim() : "";
+          const rawNum = spans[1] ? spans[1].innerText.replace(/[^0-9.-]/g, '') : "";
+          subVal = rawNum;
+
+          if (curHead.includes("GROSS MARGIN")) {
+            tableHtml += `
+              <tr style="background-color:#e2e8f0; font-weight:bold; height:30px;">
+                <td colspan="3" style="text-align:right; padding:6px 10px;">GROSS OPERATING MARGIN:</td>
+                <td style="text-align:right; padding:6px 10px; color:${rawNum.startsWith('-') ? '#dc2626' : '#059669'}; mso-number-format:'\\#\\,\\#\\#0';">-${rawNum}</td>
+              </tr>
+            `;
+            curHead = "";
+            subVal = "";
+          }
         } else if (el.classList.contains('pnl-row-item')) {
           const mainSpans = el.querySelectorAll('.pnl-row-item-main span');
           const title = mainSpans[0] ? mainSpans[0].innerText.trim() : "";
-          const amt = mainSpans[1] ? mainSpans[1].innerText.replace(/[^0-9.-]/g, '') : "";
-          const subTextEl = el.querySelector('div:not(.pnl-row-item-main)');
-          const details = subTextEl ? subTextEl.innerText.trim() : "-";
-          csvContent += `${clean(currentHead)},${clean(title)},${clean(details)},${clean(amt)}\r\n`;
+          let amt = mainSpans[1] ? mainSpans[1].innerText.replace(/[^0-9.-]/g, '') : "0";
+
+          if ((curHead.includes("COST") || curHead.includes("OVERHEAD")) && amt !== "0" && !amt.startsWith('-')) {
+            amt = "-" + amt;
+          }
+
+          const subBoxes = el.querySelectorAll('div:not(.pnl-row-item-main)');
+          let dArr = [];
+          subBoxes.forEach(sb => {
+            const t = sb.innerText.replace(/[\r\n]+/g, ' ').trim();
+            if (t) dArr.push(t);
+          });
+          const details = dArr.length > 0 ? dArr.join(' | ') : "-";
+
+          tableHtml += `
+            <tr style="height:26px;">
+              <td style="font-weight:bold; padding:6px 10px; white-space:nowrap;">${curHead}</td>
+              <td style="padding:6px 10px; white-space:nowrap;">${title}</td>
+              <td style="color:#475569; padding:6px 10px;">${details}</td>
+              <td style="text-align:right; padding:6px 10px; mso-number-format:'\\#\\,\\#\\#0';">${amt}</td>
+            </tr>
+          `;
         } else if (el.classList.contains('pnl-net-profit-card')) {
-          const title = el.querySelector('.pnl-net-profit-label')?.innerText || "NET OPERATING PROFIT / (LOSS)";
-          const netAmt = el.querySelector('.pnl-net-profit-amount')?.innerText.replace(/[^0-9.-]/g, '') || "";
-          csvContent += `\r\n"BOTTOM LINE",${clean(title)},"-",${clean(netAmt)}\r\n`;
+          if (curHead && subVal !== "") {
+            tableHtml += `
+              <tr style="background-color:#f1f5f9; font-weight:bold; height:28px;">
+                <td colspan="3" style="text-align:right; padding:6px 10px;">SUBTOTAL ${curHead}:</td>
+                <td style="text-align:right; padding:6px 10px; mso-number-format:'\\#\\,\\#\\#0';">-${subVal}</td>
+              </tr>
+            `;
+          }
+          const netAmt = el.querySelector('.pnl-net-profit-amount')?.innerText.replace(/[^0-9.-]/g, '') || "0";
+          tableHtml += `
+            <tr style="background-color:#fee2e2; color:#dc2626; font-weight:bold; font-size:11pt; height:34px;">
+              <td colspan="3" style="text-align:right; padding:6px 10px;">NET OPERATING PROFIT / (LOSS):</td>
+              <td style="text-align:right; padding:6px 10px; mso-number-format:'\\#\\,\\#\\#0';">-${netAmt}</td>
+            </tr>
+          `;
         }
       });
+      tableHtml += `</tbody></table>`;
     } 
-    // 2. TABULAR STATEMENTS (FEED AUDIT, EGGS, BATCHES, LEDGER)
+    // 2. TABULAR STATEMENTS (FEED AUDIT, DAILY EGGS, BATCHES, JOURNAL)
     else {
       const tables = reportContainer.querySelectorAll('table');
       if (tables.length > 0) {
-        const title = reportContainer.querySelector('h2')?.innerText || "AD FARMS AUDIT";
-        csvContent += `"AD FARMS ; HERD & HARVEST - ${title}"\r\n`;
-        csvContent += `"Generated Date:","${getTodayISO()}"\r\n\r\n`;
+        tables.forEach((tbl, idx) => {
+          if (idx > 0) tableHtml += `<br><br>`;
+          tableHtml += `<table border="1" style="border-collapse:collapse; font-family:Calibri,sans-serif; font-size:10pt;">`;
 
-        tables.forEach((table, tIdx) => {
-          if (tIdx > 0) csvContent += "\r\n";
-          const rows = table.querySelectorAll('tr');
-          rows.forEach(tr => {
-            const cells = tr.querySelectorAll('th, td');
-            const rowData = [];
-            cells.forEach(td => {
-              let text = td.innerText.replace(/[\r\n]+/g, ' ').replace(/₹/g, '').trim();
-              rowData.push(clean(text));
+          const rows = tbl.querySelectorAll('tr');
+          rows.forEach((tr, rIdx) => {
+            const isHdr = tr.querySelectorAll('th').length > 0;
+            const bg = isHdr ? "background-color:#1e293b; color:#ffffff; font-weight:bold; height:32px;" : (rIdx % 2 === 0 ? "background-color:#f8fafc; height:26px;" : "background-color:#ffffff; height:26px;");
+            tableHtml += `<tr style="${bg}">`;
+
+            tr.querySelectorAll('th, td').forEach(cell => {
+              const text = cell.innerText.trim();
+              const isDate = text.match(/^\d{2,4}[-\/]\d{1,2}[-\/]\d{1,4}$/);
+              const isNumeric = text.match(/^[₹0-9\s.,-]+$/);
+
+              // Force text format on dates so Excel never shows ####
+              let formatStyle = "";
+              if (isDate) {
+                formatStyle = "mso-number-format:'\\@'; min-width:130px; width:130px; text-align:center;";
+              } else if (isHdr) {
+                formatStyle = "text-align:center; min-width:110px;";
+              } else if (isNumeric) {
+                formatStyle = "text-align:right; mso-number-format:'\\#\\,\\#\\#0'; min-width:100px;";
+              } else {
+                formatStyle = "text-align:left; min-width:140px;";
+              }
+
+              tableHtml += `<td style="padding:6px 10px; border:1px solid #cbd5e1; white-space:nowrap; ${formatStyle}">${text}</td>`;
             });
-            if (rowData.length > 0) {
-              csvContent += rowData.join(",") + "\r\n";
-            }
+            tableHtml += `</tr>`;
           });
+          tableHtml += `</table>`;
         });
       }
     }
 
-    // Direct Blob download using UTF-8 BOM so Excel opens values into neat columns
-    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const fileName = `AD_Farms_${getTodayISO()}.csv`;
+    const excelDocument = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+      <head>
+        <!--[if gte mso 9]>
+        <xml>
+          <x:ExcelWorkbook>
+            <x:ExcelWorksheets>
+              <x:ExcelWorksheet>
+                <x:Name>AD Farms Audit</x:Name>
+                <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
+              </x:ExcelWorksheet>
+            </x:ExcelWorksheets>
+          </x:ExcelWorkbook>
+        </xml>
+        <![endif]-->
+        <meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8"/>
+      </head>
+      <body style="font-family:Calibri,Arial,sans-serif;">
+        <h2 style="color:#0284c7; margin:0 0 4px 0;">AD FARMS ; HERD &amp; HARVEST</h2>
+        <div style="font-size:11pt; font-weight:bold; color:#334155; margin-bottom:2px;">${rawTitle}</div>
+        <div style="font-size:9.5pt; color:#64748b; margin-bottom:12px;">Exported on: ${getTodayISO()}</div>
+        ${tableHtml}
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob([excelDocument], { type: 'application/vnd.ms-excel;charset=utf-8' });
+    const fileName = `AD_Farms_${getTodayISO()}.xls`;
 
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
