@@ -760,7 +760,7 @@
   tr:last-child td { border-bottom: none; }
   tr:nth-child(even) td { background: var(--card-surface-subtle); }
 
-  /* ON-SCREEN FLEX P&L REPORT CARD LAYOUT */
+  /* ON-SCREEN RESPONSIVE FLEX P&L CARD LAYOUT */
   .pnl-report-container {
     background: var(--card-surface);
     border: 1.5px solid var(--border-strong);
@@ -1349,6 +1349,8 @@
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<!-- EMBEDDED PDF COMPILATION ENGINE (SUPPORTS APK WEBVIEWS AND BROWSERS DIRECTLY) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -1482,7 +1484,7 @@
     </div>
   </div>
 
-  <!-- RESTORED 3-CARD PRODUCTION SUMMARY STRIP (LIFETIME EGGS, 30D DAILY AVG, LIFETIME CHICKS) -->
+  <!-- RESTORED 3-CARD PRODUCTION SUMMARY STRIP -->
   <div class="production-summary-strip">
     <div class="production-card">
       <span class="prod-lbl">LIFETIME EGGS</span>
@@ -1501,7 +1503,7 @@
     </div>
   </div>
 
-  <!-- SETTER PROGRESS CARD (WITH RESTORED DEFICIT TEXT) -->
+  <!-- SETTER PROGRESS CARD -->
   <div class="setter-progress-card" id="setterCard">
     <div class="setter-left">
       <span class="setter-tag">🥚 READY FOR SETTER</span>
@@ -1557,7 +1559,7 @@
       </div>
     </div>
 
-    <!-- TAB 2: MORTALITY (SUB-CARDS WITH EXACT LOSS COUNTERS) -->
+    <!-- TAB 2: MORTALITY -->
     <div class="tab-panel" id="tabPanel2">
       <div class="card" style="padding:11px;">
         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:7px; text-align:center;">
@@ -1604,7 +1606,7 @@
       </div>
     </div>
 
-    <!-- TAB 3: ACTIVITY & TASK LEDGER (WITH MATCHED DATA-CAT ATTRIBUTES) -->
+    <!-- TAB 3: ACTIVITY & TASK LEDGER -->
     <div class="tab-panel" id="tabPanel3">
       <div class="ledger-main-card">
         <div class="ledger-header">
@@ -1667,7 +1669,7 @@
   <span>+ Quick Log</span>
 </button>
 
-<!-- SETTINGS MODAL (MIGRATION REMOVED) -->
+<!-- SETTINGS MODAL -->
 <div class="modal-overlay" id="settingsModal" onclick="closeSettingsModal(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <h3>
@@ -1675,7 +1677,6 @@
       <button class="modal-close" onclick="closeSettingsModal()">✕</button>
     </h3>
 
-    <!-- BOUND HARDWARE OWNER DISPLAY & EDIT -->
     <div class="settings-option" onclick="openProfileSettingsModal()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); padding:13px 15px; border-radius:16px; margin-bottom:11px; cursor:pointer;">
       <div style="display:flex; align-items:center; gap:12px;">
         <div class="binding-avatar-circle" id="settingsActiveAvatar" style="width:40px; height:40px; font-size:1rem; margin:0;">-</div>
@@ -2285,7 +2286,8 @@
     </div>
     <div class="report-actions-bar" style="display:flex; gap:6px;">
       <button class="report-action-pill" onclick="shareCurrentReport()" title="Share Report via WhatsApp/Email">📤 Share</button>
-      <button class="report-action-pill" onclick="window.print()" title="Print or Save as PDF">🖨️ PDF</button>
+      <!-- DIRECT CLIENT-SIDE PDF GENERATOR: WORKS IN BROWSERS AND APK WEBVIEWS -->
+      <button class="report-action-pill" onclick="generatePdfReport()" title="Download PDF Report">🖨️ PDF</button>
     </div>
   </div>
   <div id="dataReportContent"></div>
@@ -2805,7 +2807,6 @@
     const isWindow = (curD >= lastDayOfMonth - 2) || (curD === 1);
     if (!isWindow) return false;
 
-    // Determine target month to check
     let targetYear = now.getFullYear();
     let targetMonth = now.getMonth();
     if (curD === 1) {
@@ -2816,7 +2817,6 @@
     const targetEndISO = dateToISO(new Date(targetYear, targetMonth + 1, 0));
     const targetWindowStartISO = addDaysToISO(targetEndISO, -2);
 
-    // Look for any Month-End Balance entry
     const audited = ledger.some(l => {
       const ld = toNormalizedISO(l.date);
       return l.category === "Feed" && l.feedAction === "Balance" && ld >= targetWindowStartISO && ld <= addDaysToISO(targetEndISO, 1);
@@ -2949,7 +2949,6 @@
     let sum = 0;
     let daysWithEggs = 0;
 
-    // Loop strictly across the last 30 calendar days
     for (let i = 0; i < 30; i++) {
       const checkISO = addDaysToISO(todayISO, -i);
       const log = collections.find(c => toNormalizedISO(c.date) === checkISO);
@@ -2960,7 +2959,6 @@
       }
     }
     
-    // Rolling daily benchmark over 30 days
     const avg = (sum / 30).toFixed(1);
     return { avg: avg, activeDays: daysWithEggs };
   }
@@ -3685,7 +3683,6 @@
       elFrom.innerHTML = ""; elTo.innerHTML = "";
 
       const now = new Date();
-      // Generate clean monthly accounting boundaries
       for (let i = 0; i < 12; i++) {
         const firstDay = new Date(now.getFullYear(), now.getMonth() - i, 1);
         const lastDay = new Date(now.getFullYear(), now.getMonth() - i + 1, 0);
@@ -3698,7 +3695,6 @@
         elTo.add(new Option(`${label} End (${formatDisplayDate(toISO)})`, toISO));
       }
 
-      // Default cleanly to previous settled calendar month
       const prevMonthFirst = new Date(now.getFullYear(), now.getMonth() - 1, 1);
       const prevMonthLast = new Date(now.getFullYear(), now.getMonth(), 0);
 
@@ -3888,7 +3884,7 @@
         <div style="font-size:0.75rem; color:var(--text-tertiary);">Settled Period: <b>${formatDisplayDate(fromISO)}</b> to <b>${formatDisplayDate(toISO)}</b></div>
       </div>
 
-      <!-- RESPONSIVE ON-SCREEN FLEX CONTAINER (PREVENTS NUMBER OVERLAP) -->
+      <!-- RESPONSIVE ON-SCREEN FLEX CONTAINER -->
       <div class="pnl-report-container">
         <div class="pnl-header-bar">
           <span>ACCOUNTING HEAD &amp; PARTICULARS</span>
@@ -3981,7 +3977,7 @@
     document.getElementById('dataDisplayView').style.display = "block";
   }
 
-  /* 2. RECONCILED FEED AUDIT (MATCHES COMMERCIAL P&L AT EXACT CONSUMED COST) */
+  /* 2. RECONCILED FEED AUDIT */
   function displayFlockFeedSpanReport() {
     const rawFrom = document.getElementById('reportFeedFrom').value;
     const rawTo = document.getElementById('reportFeedTo').value;
@@ -4357,7 +4353,7 @@
     document.getElementById('dataDisplayView').style.display = "block";
   }
 
-  /* 4. INCUBATION BATCHES AUDIT (EXCLUDES "RUNNING" BATCHES FROM NET HATCH RATE) */
+  /* 4. INCUBATION BATCHES AUDIT */
   function displayIncubationDataReport() {
     const sorted = [...batches].sort((a,b)=>toNormalizedISO(a.startDate||a.rawDate).localeCompare(toNormalizedISO(b.startDate||b.rawDate)));
     if (!sorted.length) return alert("No batches recorded.");
@@ -4390,7 +4386,6 @@
       rows += `<tr><td><b>${b.name}</b></td><td>${init}</td><td>${formatDisplayDate(p.d1ISO)}</td><td style="color:var(--violet); font-weight:900;">${c14}</td><td><b>${fert}</b></td><td>${formatDisplayDate(p.pullD21ISO)}</td><td>${hasC ? rawC : 'Running'}</td><td>${rate}</td><td>${formatReportSignature(b.createdBy, b.lastModifiedBy)}</td></tr>`;
     });
 
-    // Net rate strictly tallies completed batches
     const netConcludedRate = (tFertileConcluded > 0 && tChicksConcluded > 0) ? ((tChicksConcluded / tFertileConcluded) * 100).toFixed(1) + '%' : '-';
 
     const reportHtml = `
@@ -4509,12 +4504,43 @@
     document.getElementById('dataDisplayView').style.display = "block";
   }
 
+  /* DIRECT PDF GENERATOR ENGINE (SUPPORTS BROWSERS AND APK WEBVIEWS RELIABLY) */
+  function generatePdfReport() {
+    const reportEl = document.getElementById('dataReportContent');
+    if (!reportEl || !reportEl.innerHTML.trim()) return alert("No report generated to export.");
+
+    // Direct client-side PDF compiler (Bypasses Android WebView print lock)
+    if (typeof html2pdf !== 'undefined') {
+      const opt = {
+        margin:       [8, 8, 8, 8],
+        filename:     'AD_Farms_Report_' + getTodayISO() + '.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+      };
+      
+      html2pdf().set(opt).from(reportEl).save().catch(() => {
+        // Fallback if compilation interrupted
+        try { window.print(); } catch (e) {}
+      });
+      return;
+    }
+
+    // Secondary fallback
+    try {
+      setTimeout(() => { window.print(); }, 50);
+    } catch (err) {
+      alert("Unable to open print spooler. Use Share option.");
+    }
+  }
+
   async function shareCurrentReport() {
     const el = document.getElementById('dataReportContent'); if (!el) return;
     if (navigator.share) {
       try { await navigator.share({ title: "AD Farms Telemetry Report", text: el.innerText.trim() }); }
-      catch (e) { if (e.name !== "AbortError") window.print(); }
-    } else window.print();
+      catch (e) { if (e.name !== "AbortError") generatePdfReport(); }
+    } else generatePdfReport();
   }
 
   /* TAB CENTERING HELPER */
