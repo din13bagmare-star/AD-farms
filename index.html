@@ -362,7 +362,7 @@
     background: currentColor;
     opacity: 0.8;
   }
-  /* Rigid flex container: guarantees exact horizontal alignment across 1-line and 2-line labels */
+  /* Rigid flex container: guarantees exact horizontal baseline alignment across 1-line and 2-line labels */
   .metric-lbl {
     font-size: 0.54rem;
     font-weight: 800;
@@ -2783,6 +2783,7 @@
     const occupiedSetters = new Set();
     let hatcherBatch = null;
 
+    // 1. SCAN BATCH MACHINE DEADLINES & TRAY ALLOCATIONS
     batches.forEach(b => {
       if (!isBatchActiveDirect(b)) return;
       const stage = getBatchStageInfo(b);
@@ -2790,7 +2791,7 @@
 
       // Physical status: Is it in H1 or in Setters T1-T5?
       if (b.inHatcher || stage.inActiveLockdown || stage.isOverduePull) {
-        // In Hatcher: does NOT occupy any T1-T5 tray
+        // In Hatcher: does NOT occupy any T1-T5 setter tray!
         hatcherBatch = {
           name: b.name,
           isOverdue: stage.isOverduePull,
@@ -2827,6 +2828,109 @@
       }
     });
 
+    // 2. SCAN TODAY'S NOTES, TASKS & TREATMENTS FROM THE LEDGER
+    const todayLedgerItems = ledger.filter(l => toNormalizedISO(l.date) === todayISO);
+
+    // 3. COMPILE ALL TELEMETRY NOTIFICATIONS
+    let pointsHtml = "";
+
+    // A. Month-End Feed Audit Alert
+    if (isMonthEndFeedAuditDue()) {
+      pointsHtml += `
+        <div class="action-point-item point-audit-alert" onclick="openQuickLogModal('quickLedger')" style="cursor:pointer;">
+          <span class="point-icon">⚖️</span>
+          <div class="point-content">
+            <span class="point-tag tag-audit">MONTH-END FEED AUDIT DUE</span>
+            <div style="font-weight:900; color:var(--amber);">Weigh remaining shed bags (Starter, Grower, Layer, Maize) &bull; Tap to Record Balance</div>
+          </div>
+        </div>
+      `;
+    }
+
+    // B. Machine Priority Events (Pull, Shift, Candling)
+    if (shiftToday) {
+      const shiftTimeStr = shiftToday.batch.setTime ? ` (at ${formatToAmPm(shiftToday.batch.setTime)})` : " (at 7:00 PM)";
+      pointsHtml += `
+        <div class="action-point-item point-hatch">
+          <span class="point-icon">🐣</span>
+          <div class="point-content">
+            <span class="point-tag tag-shift">PRIORITY: SHIFT</span>
+            <div style="font-weight:900; color:var(--amber);">Batch: ${shiftToday.batch.name} -&gt; Transfer to H1${shiftTimeStr}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (candlingToday.length > 0) {
+      candlingToday.forEach(b => {
+        pointsHtml += `
+          <div class="action-point-item point-candling">
+            <span class="point-icon">🔍</span>
+            <div class="point-content">
+              <span class="point-tag tag-candle">14TH DAY CANDLING</span>
+              <div style="font-weight:900; color:var(--brand);">Batch: ${b.name}</div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    if (pullToday) {
+      pointsHtml += `
+        <div class="action-point-item point-pull">
+          <span class="point-icon">🐥</span>
+          <div class="point-content">
+            <span class="point-tag tag-pull">HARVEST: PULL DAY</span>
+            <div style="font-weight:900; color:var(--emerald);">Batch: ${pullToday.batch.name} Live Chicks Harvest (504h Completed)</div>
+          </div>
+        </div>
+      `;
+    }
+
+    // C. TODAY'S NOTES & ACTIVITY NOTIFICATIONS
+    if (todayLedgerItems.length > 0) {
+      todayLedgerItems.forEach(item => {
+        let icon = "📌";
+        let label = "NOTE / TASK";
+        let borderStyle = "border-left: 4px solid var(--violet); background: rgba(124, 58, 237, 0.06);";
+
+        if (item.category === "Treatment") {
+          icon = "💉";
+          label = `DOSING: ${item.targetFlock || 'FLOCK'}`;
+          borderStyle = "border-left: 4px solid var(--crimson); background: rgba(220, 38, 38, 0.06);";
+        } else if (item.category === "Maint") {
+          icon = "🔧";
+          label = "MAINTENANCE";
+          borderStyle = "border-left: 4px solid var(--amber); background: rgba(217, 119, 6, 0.06);";
+        } else if (item.category === "Feed") {
+          icon = "🌽";
+          label = "FEED ACTIVITY";
+          borderStyle = "border-left: 4px solid var(--amber); background: rgba(217, 119, 6, 0.06);";
+        } else if (item.category === "Sales") {
+          icon = "💰";
+          label = "SALES RECORDED";
+          borderStyle = "border-left: 4px solid var(--emerald); background: rgba(5, 150, 105, 0.06);";
+        }
+
+        pointsHtml += `
+          <div class="action-point-item" style="${borderStyle} cursor:pointer;" onclick="showDateDetailsStrict('${todayISO}')">
+            <span class="point-icon">${icon}</span>
+            <div class="point-content">
+              <span class="point-tag" style="background:var(--card-surface); color:var(--text-primary); border:1px solid var(--border-hairline);">${label}</span>
+              <div style="font-weight:800; color:var(--text-primary); margin-top:2px;">${item.notes || '-'}</div>
+              <div style="font-size:0.68rem; color:var(--text-tertiary); margin-top:1px;">Logged by: <b>${item.createdBy || 'Dinesh'}</b></div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    const triggersEl = document.getElementById('heroTriggersFeed');
+    if (triggersEl) {
+      triggersEl.innerHTML = pointsHtml || `<div style="text-align:center; padding:7px 0; font-weight:700; font-size:0.78rem;">All operational parameters nominal.</div>`;
+    }
+
+    // Hardware Setters & Hatcher Labels
     const freeTrays = allTrays.filter(t => !occupiedSetters.has(t));
     const setterLabel = document.getElementById('heroSetterMap');
     const hatcherLabel = document.getElementById('heroHatcherMap');
@@ -2849,62 +2953,6 @@
         hatcherLabel.style.color = "var(--emerald)";
         hatcherLabel.innerText = "🟢 Free / Vacant";
       }
-    }
-
-    const heroBanner = document.getElementById('commandHeroBanner');
-    if (heroBanner) heroBanner.classList.toggle('banner-pull-day', Boolean(pullToday));
-
-    let pointsHtml = "";
-    if (isMonthEndFeedAuditDue()) {
-      pointsHtml += `
-        <div class="action-point-item point-audit-alert" onclick="openQuickLogModal('quickLedger')" style="cursor:pointer;">
-          <span class="point-icon">⚖️</span>
-          <div class="point-content">
-            <span class="point-tag tag-audit">MONTH-END FEED AUDIT DUE</span>
-            <div style="font-weight:900; color:var(--amber);">Weigh remaining shed bags (Starter, Grower, Layer, Maize) &bull; Tap to Record Balance</div>
-          </div>
-        </div>`;
-    }
-
-    if (shiftToday) {
-      const shiftTimeStr = shiftToday.batch.setTime ? ` (at ${formatToAmPm(shiftToday.batch.setTime)})` : " (at 7:00 PM)";
-      pointsHtml += `
-        <div class="action-point-item point-hatch">
-          <span class="point-icon">🐣</span>
-          <div class="point-content">
-            <span class="point-tag tag-shift">PRIORITY: SHIFT</span>
-            <div style="font-weight:900; color:var(--amber);">Batch: ${shiftToday.batch.name} -&gt; Transfer to H1${shiftTimeStr}</div>
-          </div>
-        </div>`;
-    }
-
-    if (candlingToday.length > 0) {
-      candlingToday.forEach(b => {
-        pointsHtml += `
-          <div class="action-point-item point-candling">
-            <span class="point-icon">🔍</span>
-            <div class="point-content">
-              <span class="point-tag tag-candle">14TH DAY CANDLING</span>
-              <div style="font-weight:900; color:var(--brand);">Batch: ${b.name}</div>
-            </div>
-          </div>`;
-      });
-    }
-
-    if (pullToday) {
-      pointsHtml += `
-        <div class="action-point-item point-pull">
-          <span class="point-icon">🐥</span>
-          <div class="point-content">
-            <span class="point-tag tag-pull">HARVEST: PULL DAY</span>
-            <div style="font-weight:900; color:var(--emerald);">Batch: ${pullToday.batch.name} Live Chicks Harvest (504h Completed)</div>
-          </div>
-        </div>`;
-    }
-
-    const triggersEl = document.getElementById('heroTriggersFeed');
-    if (triggersEl) {
-      triggersEl.innerHTML = pointsHtml || `<div style="text-align:center; padding:7px 0; font-weight:700; font-size:0.78rem;">All operational parameters nominal.</div>`;
     }
   }
 
