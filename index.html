@@ -3030,7 +3030,6 @@
       `;
     });
 
-    // PULL DAY: 12-HOUR CLOCK SYSTEM (E.G. 6:00 PM), HOURS CALCULATED IN BACKGROUND
     pullBatchesToday.forEach(item => {
       pointsHtml += `
         <div class="action-point-item point-pull">
@@ -3076,7 +3075,6 @@
       triggersEl.innerHTML = pointsHtml || `<div style="text-align:center; padding:7px 0; font-weight:700; font-size:0.78rem;">All operational parameters nominal.</div>`;
     }
 
-    // RESTORED CLEAN HARDWARE STATUS (T1-T5 & H1)
     const hw = getHardwareTrayStatus();
     const setterLabel = document.getElementById('heroSetterMap');
     const hatcherLabel = document.getElementById('heroHatcherMap');
@@ -3116,7 +3114,6 @@
     let turnarounds = [];
     let warnings = [];
 
-    // 1. TRAY SPATIAL CAPACITY CHECK ON PROPOSED SET DATE
     let activeOnProposedDate = 0;
     batches.forEach(b => {
       if (!isBatchActiveDirect(b)) return;
@@ -3129,18 +3126,15 @@
       warnings.push(`⚠️ Rack Full: All 5 Setter Trays (T1–T5) projected occupied on ${formatDisplayDate(prop.d1ISO)}.`);
     }
 
-    // 2. CHECK ALL ACTIVE BATCHES FOR BIDIRECTIONAL CONFLICTS
     batches.forEach(b => {
       if (!isBatchActiveDirect(b)) return;
       const bStage = getBatchStageInfo(b);
       const bPhys = bStage.physics;
 
-      // RULE A: Setting Day Door Open vs Active Lockdown
       if (prop.d1ISO > bPhys.shiftD18ISO && prop.d1ISO < bPhys.pullD21ISO) {
         blockers.push(`Cabinet sealed on Set Day: Batch "${b.name}" in lockdown until ${formatDisplayDate(bPhys.pullD21ISO)}.`);
       }
 
-      // Check if candidate date is on existing batch's pull day
       if (prop.d1ISO === bPhys.pullD21ISO) {
         const timeParts = sTime.split(':').map(Number);
         const setMinutes = (timeParts[0] || 0) * 60 + (timeParts[1] || 0);
@@ -3149,7 +3143,6 @@
         }
       }
 
-      // RULE B: HATCHER H1 SAME-DAY HANDOFF (PULL 6 PM -> SHIFT 7 PM)
       const isSameDayShiftAfterPull = (prop.shiftD18ISO === bPhys.pullD21ISO);
       const isSameDayPullBeforeShift = (prop.pullD21ISO === bPhys.shiftD18ISO);
 
@@ -3164,7 +3157,6 @@
         }
       }
 
-      // RULE C: Same-Day Harvest Pulls
       if (prop.pullD21ISO === bPhys.pullD21ISO && !isSameDayShiftAfterPull) {
         warnings.push(`Notice: Same-day chick harvest alongside "${b.name}" on ${formatDisplayDate(prop.pullD21ISO)}.`);
       }
@@ -3201,7 +3193,7 @@
     }
   }
 
-  /* SETTING PREDICTION: PULL-DAY EVENING AVAILABILITY IN QUICK LOG */
+  /* SETTING PREDICTION: PULL-DAY EVENING AVAILABILITY */
   function predictNextSafeSettingDate() {
     const todayISO = getTodayISO();
     const candidateDaysAhead = 30;
@@ -3223,7 +3215,6 @@
         const bStage = getBatchStageInfo(b);
         const bPhys = bStage.physics;
 
-        // Check if an existing batch pulls on this candidate set date
         if (candidateDateISO === bPhys.pullD21ISO) {
           pullBatchNameOnSetDate = b.name;
         }
@@ -3406,12 +3397,10 @@
 
     const flock = calculateReconciledFlock();
 
-    // 1. ALL-TIME CHICKS: Birth vs died within brooder
     const allTimeDead = flock.cDeadAllTime;
     const allTimeHatched = flock.lifetimeChicks;
     const allTimePct = allTimeHatched > 0 ? ((allTimeDead / allTimeHatched) * 100).toFixed(1) : "0.0";
 
-    // 2. CURRENT CHICKS (45D Active Cohort)
     let chicksDeadInSpan = 0, chicksSoldInSpan = 0;
     mortality.forEach(m => {
       const mMs = getSafeMs(m.date);
@@ -3428,7 +3417,6 @@
     const currentChicksDenom = flock.liveChicks + chicksDeadInSpan + chicksSoldInSpan;
     const currentChicksPct = currentChicksDenom > 0 ? ((chicksDeadInSpan / currentChicksDenom) * 100).toFixed(1) : "0.0";
 
-    // 3. GROWERS (180D Biological Span)
     let growersDeadInSpan = 0, growersSoldInSpan = 0;
     mortality.forEach(m => {
       const mMs = getSafeMs(m.date);
@@ -3445,7 +3433,6 @@
     const growersDenom = flock.liveGrowers + growersDeadInSpan + growersSoldInSpan;
     const growerPct = growersDenom > 0 ? ((growersDeadInSpan / growersDenom) * 100).toFixed(1) : "0.0";
 
-    // 4. BREEDERS (548D Biological Span)
     let breedersDeadInSpan = 0, breedersSoldInSpan = 0;
     mortality.forEach(m => {
       const mMs = getSafeMs(m.date);
@@ -3482,7 +3469,6 @@
     document.getElementById('liveGrowersTopDisplay').innerText = r.liveGrowers;
     document.getElementById('liveBreedersTopDisplay').innerText = r.liveBreeders;
 
-    // RENDER TAB 2 DEDICATED 4-BLOCK MORTALITY STRIP
     const mortStats = calculateDedicatedMortalityMetrics();
     document.getElementById('allTimeChicksDeadVal').innerText = mortStats.allTimeDead;
     document.getElementById('allTimeChicksPctSub').innerText = `All-Time: ${mortStats.allTimePct}%`;
@@ -3505,14 +3491,27 @@
     document.getElementById('rollingAvgEggDisplay').innerText = roll.avg;
     document.getElementById('rollingAvgSub').innerText = "Rolling Standard";
 
-    // RESTORE CLEAN, UNCLUTTERED SETTER PROGRESS CARD
     const inv = calculateCurrentInventoryStock();
     document.getElementById('inventoryEggsDisplay').innerText = inv;
     document.getElementById('setterCard').style.setProperty('--progress-pct', Math.min(100, Math.round((inv / 102) * 100)) + '%');
     const needed = Math.max(0, 102 - inv);
     document.getElementById('trayProgressSub').innerText = `${inv} / 102 Tray Filled (${needed} needed)`;
+  }
 
-    // PULL-DAY EVENING AVAILABILITY IN QUICK LOG CHIP
+  /* ==========================================================================
+     OPEN QUICK LOG MODAL (AUTO-TRIGGERS PREDICTION CHIP & VERIFICATION SIM)
+     ========================================================================== */
+  function openQuickLogModal(tab) {
+    initTodayInputs();
+    document.getElementById('quickLogModal').style.display = "flex";
+    const btns = document.querySelectorAll('#quickLogModal .sub-tab-btn');
+    
+    // 1. Auto-fill eggs and calculate leftovers
+    const curStock = calculateCurrentInventoryStock();
+    document.getElementById('eggsSet').value = Math.min(102, curStock);
+    updateDefaultLeftoverPreview();
+    
+    // 2. Immediately calculate and display the Setting Prediction Window Chip
     const predictions = predictNextSafeSettingDate();
     const chipBtn = document.getElementById('quickPredictionChipBtn');
     const chipBox = document.getElementById('quickPredictionChipBox');
@@ -3522,7 +3521,7 @@
       cachedPredictedTime = "19:00";
 
       if (predictions[0].isToday && predictions[0].pullBatchOnSetDate) {
-        // Today is Pull Day: Explicitly state evening availability after pull
+        // Pull Day Intimation: Available in evening after 6:00 PM pull
         chipBtn.innerHTML = `⚡ <b>Setting Window Today:</b> Available in evening after <b>6:00 PM</b> pull of <b>${predictions[0].pullBatchOnSetDate}</b> &bull; Tap to set at <b>7:00 PM</b>`;
       } else {
         chipBtn.innerHTML = `⚡ <b>Earliest Clear Window:</b> ${predictions[0].displayDate} (${predictions[0].freeTray}) ${predictions[0].hasTurnaround ? '&bull; 🔄 Turnaround' : ''} &bull; Tap to Apply`;
@@ -3531,14 +3530,11 @@
     } else if (chipBox) {
       chipBox.style.display = "none";
     }
-  }
 
-  function openQuickLogModal(tab) {
-    initTodayInputs();
-    document.getElementById('quickLogModal').style.display = "flex";
-    const btns = document.querySelectorAll('#quickLogModal .sub-tab-btn');
-    document.getElementById('eggsSet').value = Math.min(102, calculateCurrentInventoryStock());
-    updateDefaultLeftoverPreview();
+    // 3. Immediately run date & cabinet collision simulation for default values
+    runSettingSimulation();
+
+    // 4. Tab switching logic
     if (tab === 'quickEgg') switchQuickLogTab('quickEgg', btns[1]);
     else if (tab === 'quickMort') switchQuickLogTab('quickMort', btns[2]);
     else if (tab === 'quickLedger') switchQuickLogTab('quickLedger', btns[3]);
