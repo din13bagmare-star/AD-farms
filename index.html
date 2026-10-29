@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>AD Farms ; Herd & Harvest</title>
+<title>AD Farms ; Herd &amp; Harvest</title>
 <style>
   :root {
     --font-stack: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -304,6 +304,7 @@
   .tag-candle { background: var(--brand-glow); color: var(--brand); }
   .tag-audit { background: var(--amber-glow); color: var(--amber); }
 
+  /* RESTORED CLEAN HARDWARE GRID */
   .hardware-grid-hero {
     display: grid;
     grid-template-columns: 1fr;
@@ -317,6 +318,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 8px;
     font-size: 0.76rem;
     color: var(--text-primary);
   }
@@ -326,8 +328,16 @@
     text-transform: uppercase;
     font-size: 0.62rem;
     letter-spacing: 0.05em;
+    flex-shrink: 0;
   }
-  .hw-value { font-weight: 900; font-variant-numeric: tabular-nums; }
+  .hw-value {
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   /* TOP 4-METRIC BALANCES STRIP WITH RIGID SYMMETRY */
   .metrics-strip {
@@ -362,7 +372,6 @@
     background: currentColor;
     opacity: 0.8;
   }
-  /* Rigid flex container: guarantees exact horizontal baseline alignment across 1-line and 2-line labels */
   .metric-lbl {
     font-size: 0.54rem;
     font-weight: 800;
@@ -425,7 +434,7 @@
     color: var(--text-tertiary);
   }
 
-  /* SETTER PROGRESS CARD */
+  /* CLEAN SETTER PROGRESS CARD (UNCLUTTERED) */
   .setter-progress-card {
     background: var(--card-surface);
     border: 1.5px solid var(--emerald);
@@ -450,7 +459,7 @@
     transition: width 0.4s ease;
     z-index: 0;
   }
-  .setter-left { display: flex; flex-direction: column; z-index: 1; }
+  .setter-left { display: flex; flex-direction: column; z-index: 1; flex: 1; }
   .setter-tag {
     font-size: 0.66rem;
     font-weight: 800;
@@ -463,6 +472,7 @@
     font-weight: 700;
     color: var(--text-secondary);
     margin-top: 2px;
+    line-height: 1.35;
   }
   .setter-val {
     font-size: 1.65rem;
@@ -471,6 +481,53 @@
     line-height: 1;
     font-variant-numeric: tabular-nums;
     z-index: 1;
+    padding-left: 10px;
+  }
+
+  /* 4-BLOCK DEDICATED MORTALITY STRIP (TAB 2) */
+  .mortality-four-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    text-align: center;
+  }
+  .mort-metric-card {
+    background: var(--card-surface-subtle);
+    border: 1.5px solid var(--border-hairline);
+    border-radius: 15px;
+    padding: 9px 3px 10px 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 88px;
+  }
+  .mort-metric-title {
+    font-size: 0.52rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    min-height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2px;
+  }
+  .mort-metric-val {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: var(--crimson);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    margin: 3px 0 2px 0;
+  }
+  .mort-metric-pct {
+    font-size: 0.62rem;
+    font-weight: 900;
+    color: var(--text-tertiary);
+    line-height: 1.1;
   }
 
   /* TAB NAVIGATION BAR */
@@ -592,6 +649,8 @@
     transition: transform 0.12s ease;
   }
   .btn-submit:active { transform: scale(0.98); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+  
   .btn-cancel {
     width: 100%;
     min-height: 44px;
@@ -936,7 +995,7 @@
   }
   .fab-quick-log:active { transform: scale(0.93); }
 
-  /* TIMELINE CALENDAR: ZERO-OVERFLOW PADDING & MARGIN CONTAINMENT */
+  /* TIMELINE CALENDAR */
   .cal-header { 
     display: flex; 
     justify-content: space-between; 
@@ -1171,18 +1230,15 @@
   .btn-report-back:active { transform: scale(0.92); }
 
   .report-action-pill {
-    padding: 8px 16px;
+    padding: 8px 14px;
     border-radius: 12px;
-    font-size: 0.84rem;
+    font-size: 0.82rem;
     font-weight: 900;
     border: none;
-    background: #059669;
-    color: #ffffff;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25);
+    gap: 5px;
     transition: transform 0.12s ease;
   }
   .report-action-pill:active { transform: scale(0.94); }
@@ -1285,6 +1341,44 @@
     margin-bottom: 7px;
     font-size: 0.78rem;
     line-height: 1.4;
+  }
+
+  /* WEB PRINT / PDF STYLESHEET */
+  @media print {
+    body {
+      background: #ffffff !important;
+      color: #000000 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    #mainDashboard, .fab-quick-log, .modal-overlay, .top-bar, .report-actions-bar, .btn-report-back {
+      display: none !important;
+    }
+    #dataDisplayView {
+      display: block !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    .table-wrap {
+      border: 1px solid #000 !important;
+      box-shadow: none !important;
+      overflow: visible !important;
+    }
+    th {
+      background: #f1f5f9 !important;
+      color: #000 !important;
+      border: 1px solid #000 !important;
+    }
+    td {
+      border: 1px solid #ccc !important;
+      color: #000 !important;
+    }
+    .pnl-report-container {
+      border: 1px solid #000 !important;
+      box-shadow: none !important;
+    }
   }
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -1390,10 +1484,11 @@
       <div style="font-size:0.78rem; color:var(--text-secondary); text-align:center; padding:7px 0; font-weight:700;">Scanning telemetry matrix...</div>
     </div>
 
+    <!-- RESTORED CLEAN HARDWARE STATUS (T1-T5 & H1) -->
     <div class="hardware-grid-hero">
       <div class="hw-row">
         <span class="hw-label">SETTERS (T1–T5)</span>
-        <span id="heroSetterMap" class="hw-value" style="color:var(--amber);">All Occupied (T1–T5)</span>
+        <span id="heroSetterMap" class="hw-value" style="color:var(--emerald);">Scanning Setters...</span>
       </div>
       <div class="hw-row">
         <span class="hw-label">HATCHER (H1)</span>
@@ -1441,7 +1536,7 @@
     </div>
   </div>
 
-  <!-- SETTER PROGRESS CARD -->
+  <!-- CLEAN SETTER PROGRESS CARD (UNCLUTTERED) -->
   <div class="setter-progress-card" id="setterCard">
     <div class="setter-left">
       <span class="setter-tag">🥚 READY FOR SETTER</span>
@@ -1497,24 +1592,33 @@
       </div>
     </div>
 
-    <!-- TAB 2: MORTALITY (WITH SPAN-NORMALIZED % METRIC SUB-LABELS) -->
+    <!-- TAB 2: 4-BLOCK DEDICATED MORTALITY STRIP (LOSSES ONLY) -->
     <div class="tab-panel" id="tabPanel2">
-      <div class="card" style="padding:11px;">
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:7px; text-align:center;">
-          <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:15px; padding:11px 5px;">
-            <div id="liveChicksBalance" style="font-size:1.30rem; font-weight:900; color:var(--emerald);">0</div>
-            <div style="font-size:0.60rem; font-weight:900; color:var(--text-secondary); margin-top:2px;">CHICKS ALIVE</div>
-            <div style="font-size:0.66rem; color:var(--crimson); font-weight:900; margin-top:3px;" id="totalChicksDeadSub">0 dead (45D: 0.0%)</div>
+      <div class="card" style="padding:10px 8px;">
+        <div class="mortality-four-strip">
+          <!-- BLOCK 1: ALL-TIME CHICKS -->
+          <div class="mort-metric-card">
+            <span class="mort-metric-title">ALL-TIME CHICKS</span>
+            <span class="mort-metric-val" id="allTimeChicksDeadVal">0</span>
+            <span class="mort-metric-pct" id="allTimeChicksPctSub">All-Time: 0.0%</span>
           </div>
-          <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:15px; padding:11px 5px;">
-            <div id="liveGrowersBalance" style="font-size:1.30rem; font-weight:900; color:var(--brand);">125</div>
-            <div style="font-size:0.60rem; font-weight:900; color:var(--text-secondary); margin-top:2px;">GROWERS ALIVE</div>
-            <div style="font-size:0.66rem; color:var(--crimson); font-weight:900; margin-top:3px;" id="totalGrowersDeadSub">0 dead (6M: 0.0%)</div>
+          <!-- BLOCK 2: CURRENT CHICKS (45D) -->
+          <div class="mort-metric-card">
+            <span class="mort-metric-title">CURRENT CHICKS</span>
+            <span class="mort-metric-val" id="currentChicksDeadVal">0</span>
+            <span class="mort-metric-pct" id="currentChicksPctSub">45D: 0.0%</span>
           </div>
-          <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:15px; padding:11px 5px;">
-            <div id="liveBreedersBalance" style="font-size:1.30rem; font-weight:900; color:var(--violet);">150</div>
-            <div style="font-size:0.60rem; font-weight:900; color:var(--text-secondary); margin-top:2px;">BREEDERS ALIVE</div>
-            <div style="font-size:0.66rem; color:var(--crimson); font-weight:900; margin-top:3px;" id="totalBreedersDeadSub">0 dead (1.5Y: 0.0%)</div>
+          <!-- BLOCK 3: GROWERS (180D) -->
+          <div class="mort-metric-card">
+            <span class="mort-metric-title">GROWERS (180D)</span>
+            <span class="mort-metric-val" id="growersDeadVal">0</span>
+            <span class="mort-metric-pct" id="growersPctSub">6M: 0.0%</span>
+          </div>
+          <!-- BLOCK 4: BREEDERS (548D) -->
+          <div class="mort-metric-card">
+            <span class="mort-metric-title">BREEDERS (548D)</span>
+            <span class="mort-metric-val" id="breedersDeadVal">0</span>
+            <span class="mort-metric-pct" id="breedersPctSub">1.5Y: 0.0%</span>
           </div>
         </div>
       </div>
@@ -1767,7 +1871,7 @@
   </div>
 </div>
 
-<!-- UNIVERSAL QUICK LOG DRAWER -->
+<!-- UNIVERSAL QUICK LOG DRAWER (WITH PULL-DAY EVENING AVAILABILITY CHIP) -->
 <div class="modal-overlay" id="quickLogModal" onclick="closeQuickLogModal(event)">
   <div class="modal-box" onclick="event.stopPropagation()">
     <h3>
@@ -1785,6 +1889,14 @@
     <!-- 1. BATCH FORM -->
     <div id="quickBatchForm" class="quick-form-panel">
       <input type="hidden" id="editDocId" value="">
+      
+      <!-- DYNAMIC PULL-DAY EVENING AVAILABILITY CHIP -->
+      <div id="quickPredictionChipBox" style="margin-bottom:10px; display:none;">
+        <button type="button" id="quickPredictionChipBtn" onclick="applySuggestedSettingDate()" style="background:var(--emerald-glow); border:1.5px solid var(--emerald); color:var(--emerald); border-radius:12px; font-size:0.74rem; font-weight:900; padding:8px 10px; width:100%; text-align:left; cursor:pointer; line-height:1.4;">
+          ⚡ Available Setting Window...
+        </button>
+      </div>
+
       <div class="form-row">
         <div>
           <label>Tray Designation</label>
@@ -2216,7 +2328,7 @@
   </div>
 </div>
 
-<!-- AUDIT REPORT VIEWPORT (RELIABLE EXCEL WORKFLOW) -->
+<!-- AUDIT REPORT VIEWPORT (DUAL EXCEL + PDF ACTIONS) -->
 <div class="container" id="dataDisplayView">
   <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid var(--border-strong); padding-bottom:11px; margin-bottom:15px;">
     <div style="display:flex; align-items:center; gap:12px;">
@@ -2224,8 +2336,12 @@
       <div style="font-size:1.02rem; font-weight:900; color:var(--brand); letter-spacing:-0.02em;">AD FARMS TELEMETRY REPORT</div>
     </div>
     <div class="report-actions-bar" style="display:flex; gap:6px;">
-      <!-- RELIABLE, STANDARDIZED EXCEL BUTTON -->
-      <button class="report-action-pill" onclick="exportActiveReportToCSV()" title="Export Structured Excel Spreadsheet">
+      <!-- WEB PDF BUTTON -->
+      <button class="report-action-pill" onclick="printReportToPdf()" style="background:#dc2626; color:#ffffff;" title="Print or Save as PDF (Web/Desktop)">
+        <span>📕</span> PDF
+      </button>
+      <!-- APK/BROWSER EXCEL BUTTON -->
+      <button class="report-action-pill" onclick="exportActiveReportToCSV()" style="background:#059669; color:#ffffff;" title="Export Structured Excel Spreadsheet (.xls)">
         <span>📗</span> Excel
       </button>
     </div>
@@ -2344,6 +2460,16 @@
     const d = new Date(p[0], p[1] - 1, p[2]);
     d.setDate(d.getDate() + days);
     return dateToISO(d);
+  }
+
+  function escapeXml(str) {
+    if (!str) return "";
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;');
   }
 
   function getBoundOperatorName() {
@@ -2701,32 +2827,55 @@
     return { physics: phys, hasHatched: hasHatched, elapsedHours: Math.max(0, (now - phys.startMs) / 3600000), inActiveLockdown: inLockdown, isOverduePull: isOverdue };
   }
 
+  /* SAFE CRATE INVENTORY (ONLY PAST/PRESENT BATCHES DEDUCT) */
   function calculateCurrentInventoryStock() {
-    const sorted = [...batches].filter(b => toNormalizedISO(b.startDate || b.rawDate))
+    const todayISO = getTodayISO();
+    const settledBatches = [...batches]
+      .filter(b => {
+        const bD = toNormalizedISO(b.startDate || b.rawDate);
+        return bD && bD <= todayISO;
+      })
       .sort((a, b) => toNormalizedISO(a.startDate || a.rawDate).localeCompare(toNormalizedISO(b.startDate || b.rawDate)));
-    if (!sorted.length) {
+
+    if (!settledBatches.length) {
       let sum = INITIAL_ANCHOR_LEFTOVER;
-      collections.forEach(c => { if (toNormalizedISO(c.date) > INITIAL_ANCHOR_DATE) sum += (parseInt(c.total, 10) || 0); });
+      collections.forEach(c => {
+        const cd = toNormalizedISO(c.date);
+        if (cd > INITIAL_ANCHOR_DATE && cd <= todayISO) {
+          sum += (parseInt(c.total, 10) || 0);
+        }
+      });
       return Math.max(0, sum);
     }
-    const latest = sorted[sorted.length - 1];
+
+    const latest = settledBatches[settledBatches.length - 1];
     let base = 0;
     if (latest.leftoverAfterBatch !== undefined && latest.leftoverAfterBatch !== null && latest.leftoverAfterBatch !== "") {
       base = parseInt(latest.leftoverAfterBatch, 10) || 0;
     } else {
       let run = INITIAL_ANCHOR_LEFTOVER, winStart = addDaysToISO(INITIAL_ANCHOR_DATE, 1);
-      sorted.forEach(b => {
+      settledBatches.forEach(b => {
         const bD = toNormalizedISO(b.startDate || b.rawDate);
         if (bD > INITIAL_ANCHOR_DATE) {
-          collections.forEach(c => { const cd = toNormalizedISO(c.date); if (cd >= winStart && cd <= bD) run += (parseInt(c.total, 10) || 0); });
+          collections.forEach(c => {
+            const cd = toNormalizedISO(c.date);
+            if (cd >= winStart && cd <= bD) run += (parseInt(c.total, 10) || 0);
+          });
           run = Math.max(0, run - (parseInt(b.eggs, 10) || 0));
           winStart = addDaysToISO(bD, 1);
         }
       });
       base = run;
     }
+
     let post = 0;
-    collections.forEach(c => { if (toNormalizedISO(c.date) > toNormalizedISO(latest.startDate || latest.rawDate)) post += (parseInt(c.total, 10) || 0); });
+    collections.forEach(c => {
+      const cd = toNormalizedISO(c.date);
+      if (cd > toNormalizedISO(latest.startDate || latest.rawDate) && cd <= todayISO) {
+        post += (parseInt(c.total, 10) || 0);
+      }
+    });
+
     return Math.max(0, base + post);
   }
 
@@ -2744,14 +2893,13 @@
     const isWindow = (curD >= lastDayOfMonth - 2) || (curD === 1);
     if (!isWindow) return false;
 
-    let targetYear = now.getFullYear();
-    let targetMonth = now.getMonth();
+    let targetEndISO = "";
     if (curD === 1) {
-      targetMonth -= 1;
-      if (targetMonth < 0) { targetMonth = 11; targetYear -= 1; }
+      targetEndISO = dateToISO(new Date(now.getFullYear(), now.getMonth(), 0));
+    } else {
+      targetEndISO = dateToISO(new Date(now.getFullYear(), now.getMonth() + 1, 0));
     }
     
-    const targetEndISO = dateToISO(new Date(targetYear, targetMonth + 1, 0));
     const targetWindowStartISO = addDaysToISO(targetEndISO, -2);
 
     const audited = ledger.some(l => {
@@ -2762,7 +2910,54 @@
     return !audited;
   }
 
-  /* HARDWARE TELEMETRY & TRAY ALLOCATION ENGINE */
+  /* HARDWARE TRAY STATUS MATRIX (T1-T5 BUSY VS FREE) */
+  function getHardwareTrayStatus() {
+    const allTrays = ["T1", "T2", "T3", "T4", "T5"];
+    const trayMap = {
+      T1: { status: "Empty", batchName: null },
+      T2: { status: "Empty", batchName: null },
+      T3: { status: "Empty", batchName: null },
+      T4: { status: "Empty", batchName: null },
+      T5: { status: "Empty", batchName: null }
+    };
+    let hatcherBatch = null;
+
+    batches.forEach(b => {
+      if (!isBatchActiveDirect(b)) return;
+      const stage = getBatchStageInfo(b);
+      const nameUpper = (b.name || "").toUpperCase();
+
+      if (b.inHatcher || stage.inActiveLockdown || stage.isOverduePull) {
+        hatcherBatch = {
+          name: b.name,
+          elapsedHours: Math.round(stage.elapsedHours)
+        };
+      } else {
+        let matched = false;
+        allTrays.forEach(t => {
+          if (nameUpper.includes(t)) {
+            trayMap[t] = { status: "Busy", batchName: b.name };
+            matched = true;
+          }
+        });
+        if (!matched) {
+          for (let t of allTrays) {
+            if (trayMap[t].status === "Empty") {
+              trayMap[t] = { status: "Busy", batchName: b.name };
+              break;
+            }
+          }
+        }
+      }
+    });
+
+    const busyTrays = allTrays.filter(t => trayMap[t].status === "Busy");
+    const emptyTrays = allTrays.filter(t => trayMap[t].status === "Empty");
+
+    return { trayMap, busyTrays, emptyTrays, hatcherBatch };
+  }
+
+  /* RESTORED CLEAN TELEMETRY COMMAND CENTER & MULTI-BATCH QUEUE */
   function renderCommandCenter() {
     const todayISO = getTodayISO();
     const parts = todayISO.split('-').map(Number);
@@ -2775,66 +2970,29 @@
       heroDateEl.innerText = `${dayNames[dObj.getDay()]}, ${dObj.getDate()} ${monthNames[dObj.getMonth()]}`;
     }
 
-    let pullToday = null;
-    let shiftToday = null;
-    let candlingToday = [];
+    const pullBatchesToday = [];
+    const shiftBatchesToday = [];
+    const candlingBatchesToday = [];
 
-    const allTrays = ["T1", "T2", "T3", "T4", "T5"];
-    const occupiedSetters = new Set();
-    let hatcherBatch = null;
-
-    // 1. SCAN BATCH MACHINE DEADLINES & TRAY ALLOCATIONS
     batches.forEach(b => {
       if (!isBatchActiveDirect(b)) return;
       const stage = getBatchStageInfo(b);
-      const nameUpper = (b.name || "").toUpperCase();
-
-      // Physical status: Is it in H1 or in Setters T1-T5?
-      if (b.inHatcher || stage.inActiveLockdown || stage.isOverduePull) {
-        // In Hatcher: does NOT occupy any T1-T5 setter tray!
-        hatcherBatch = {
-          name: b.name,
-          isOverdue: stage.isOverduePull,
-          inLockdown: stage.inActiveLockdown,
-          elapsedHours: Math.round(stage.elapsedHours)
-        };
-      } else {
-        // In Setters: map exact T1-T5 tray tag
-        let matched = false;
-        allTrays.forEach(t => {
-          if (nameUpper.includes(t)) {
-            occupiedSetters.add(t);
-            matched = true;
-          }
-        });
-        if (!matched) {
-          for (let t of allTrays) {
-            if (!occupiedSetters.has(t)) {
-              occupiedSetters.add(t);
-              break;
-            }
-          }
-        }
-      }
 
       if (todayISO === stage.physics.pullD21ISO && !stage.hasHatched) {
-        pullToday = { batch: b, stage: stage };
+        pullBatchesToday.push({ batch: b, stage: stage });
       }
       if (todayISO === stage.physics.shiftD18ISO && !b.inHatcher && !stage.hasHatched) {
-        shiftToday = { batch: b, stage: stage };
+        shiftBatchesToday.push({ batch: b, stage: stage });
       }
       if (todayISO === stage.physics.d14ISO && !b.candlingD14Cleared) {
-        candlingToday.push(b);
+        candlingBatchesToday.push(b);
       }
     });
 
-    // 2. SCAN TODAY'S NOTES, TASKS & TREATMENTS FROM THE LEDGER
     const todayLedgerItems = ledger.filter(l => toNormalizedISO(l.date) === todayISO);
 
-    // 3. COMPILE ALL TELEMETRY NOTIFICATIONS
     let pointsHtml = "";
 
-    // A. Month-End Feed Audit Alert
     if (isMonthEndFeedAuditDue()) {
       pointsHtml += `
         <div class="action-point-item point-audit-alert" onclick="openQuickLogModal('quickLedger')" style="cursor:pointer;">
@@ -2847,108 +3005,97 @@
       `;
     }
 
-    // B. Machine Priority Events (Pull, Shift, Candling)
-    if (shiftToday) {
-      const shiftTimeStr = shiftToday.batch.setTime ? ` (at ${formatToAmPm(shiftToday.batch.setTime)})` : " (at 7:00 PM)";
+    shiftBatchesToday.forEach(item => {
+      const shiftTimeStr = item.batch.setTime ? ` (at ${formatToAmPm(item.batch.setTime)})` : " (at 7:00 PM)";
       pointsHtml += `
         <div class="action-point-item point-hatch">
           <span class="point-icon">🐣</span>
           <div class="point-content">
             <span class="point-tag tag-shift">PRIORITY: SHIFT</span>
-            <div style="font-weight:900; color:var(--amber);">Batch: ${shiftToday.batch.name} -&gt; Transfer to H1${shiftTimeStr}</div>
+            <div style="font-weight:900; color:var(--amber);">Batch: ${item.batch.name} ➔ Transfer to H1${shiftTimeStr}</div>
           </div>
         </div>
       `;
-    }
+    });
 
-    if (candlingToday.length > 0) {
-      candlingToday.forEach(b => {
-        pointsHtml += `
-          <div class="action-point-item point-candling">
-            <span class="point-icon">🔍</span>
-            <div class="point-content">
-              <span class="point-tag tag-candle">14TH DAY CANDLING</span>
-              <div style="font-weight:900; color:var(--brand);">Batch: ${b.name}</div>
-            </div>
+    candlingBatchesToday.forEach(b => {
+      pointsHtml += `
+        <div class="action-point-item point-candling">
+          <span class="point-icon">🔍</span>
+          <div class="point-content">
+            <span class="point-tag tag-candle">14TH DAY CANDLING</span>
+            <div style="font-weight:900; color:var(--brand);">Batch: ${b.name}</div>
           </div>
-        `;
-      });
-    }
+        </div>
+      `;
+    });
 
-    if (pullToday) {
+    // PULL DAY: 12-HOUR CLOCK SYSTEM (E.G. 6:00 PM), HOURS CALCULATED IN BACKGROUND
+    pullBatchesToday.forEach(item => {
       pointsHtml += `
         <div class="action-point-item point-pull">
           <span class="point-icon">🐥</span>
           <div class="point-content">
             <span class="point-tag tag-pull">HARVEST: PULL DAY</span>
-            <div style="font-weight:900; color:var(--emerald);">Batch: ${pullToday.batch.name} Live Chicks Harvest (504h Completed)</div>
+            <div style="font-weight:900; color:var(--emerald);">Batch: ${item.batch.name} Live Chicks Harvest at 6:00 PM</div>
           </div>
         </div>
       `;
-    }
+    });
 
-    // C. TODAY'S NOTES & ACTIVITY NOTIFICATIONS
-    if (todayLedgerItems.length > 0) {
-      todayLedgerItems.forEach(item => {
-        let icon = "📌";
-        let label = "NOTE / TASK";
-        let borderStyle = "border-left: 4px solid var(--violet); background: rgba(124, 58, 237, 0.06);";
+    todayLedgerItems.forEach(item => {
+      let icon = "📌", label = "NOTE / TASK", borderStyle = "border-left: 4px solid var(--violet); background: rgba(124, 58, 237, 0.06);";
+      if (item.category === "Treatment") {
+        icon = "💉"; label = `DOSING: ${item.targetFlock || 'FLOCK'}`;
+        borderStyle = "border-left: 4px solid var(--crimson); background: rgba(220, 38, 38, 0.06);";
+      } else if (item.category === "Maint") {
+        icon = "🔧"; label = "MAINTENANCE";
+        borderStyle = "border-left: 4px solid var(--amber); background: rgba(217, 119, 6, 0.06);";
+      } else if (item.category === "Feed") {
+        icon = "🌽"; label = "FEED ACTIVITY";
+        borderStyle = "border-left: 4px solid var(--amber); background: rgba(217, 119, 6, 0.06);";
+      } else if (item.category === "Sales") {
+        icon = "💰"; label = "SALES RECORDED";
+        borderStyle = "border-left: 4px solid var(--emerald); background: rgba(5, 150, 105, 0.06);";
+      }
 
-        if (item.category === "Treatment") {
-          icon = "💉";
-          label = `DOSING: ${item.targetFlock || 'FLOCK'}`;
-          borderStyle = "border-left: 4px solid var(--crimson); background: rgba(220, 38, 38, 0.06);";
-        } else if (item.category === "Maint") {
-          icon = "🔧";
-          label = "MAINTENANCE";
-          borderStyle = "border-left: 4px solid var(--amber); background: rgba(217, 119, 6, 0.06);";
-        } else if (item.category === "Feed") {
-          icon = "🌽";
-          label = "FEED ACTIVITY";
-          borderStyle = "border-left: 4px solid var(--amber); background: rgba(217, 119, 6, 0.06);";
-        } else if (item.category === "Sales") {
-          icon = "💰";
-          label = "SALES RECORDED";
-          borderStyle = "border-left: 4px solid var(--emerald); background: rgba(5, 150, 105, 0.06);";
-        }
-
-        pointsHtml += `
-          <div class="action-point-item" style="${borderStyle} cursor:pointer;" onclick="showDateDetailsStrict('${todayISO}')">
-            <span class="point-icon">${icon}</span>
-            <div class="point-content">
-              <span class="point-tag" style="background:var(--card-surface); color:var(--text-primary); border:1px solid var(--border-hairline);">${label}</span>
-              <div style="font-weight:800; color:var(--text-primary); margin-top:2px;">${item.notes || '-'}</div>
-              <div style="font-size:0.68rem; color:var(--text-tertiary); margin-top:1px;">Logged by: <b>${item.createdBy || 'Dinesh'}</b></div>
-            </div>
+      pointsHtml += `
+        <div class="action-point-item" style="${borderStyle} cursor:pointer;" onclick="showDateDetailsStrict('${todayISO}')">
+          <span class="point-icon">${icon}</span>
+          <div class="point-content">
+            <span class="point-tag" style="background:var(--card-surface); color:var(--text-primary); border:1px solid var(--border-hairline);">${label}</span>
+            <div style="font-weight:800; color:var(--text-primary); margin-top:2px;">${item.notes || '-'}</div>
+            <div style="font-size:0.68rem; color:var(--text-tertiary); margin-top:1px;">Logged by: <b>${item.createdBy || 'Dinesh'}</b></div>
           </div>
-        `;
-      });
-    }
+        </div>
+      `;
+    });
 
     const triggersEl = document.getElementById('heroTriggersFeed');
     if (triggersEl) {
       triggersEl.innerHTML = pointsHtml || `<div style="text-align:center; padding:7px 0; font-weight:700; font-size:0.78rem;">All operational parameters nominal.</div>`;
     }
 
-    // Hardware Setters & Hatcher Labels
-    const freeTrays = allTrays.filter(t => !occupiedSetters.has(t));
+    // RESTORED CLEAN HARDWARE STATUS (T1-T5 & H1)
+    const hw = getHardwareTrayStatus();
     const setterLabel = document.getElementById('heroSetterMap');
     const hatcherLabel = document.getElementById('heroHatcherMap');
 
     if (setterLabel) {
-      if (freeTrays.length === 0) {
-        setterLabel.style.color = "var(--amber)";
-        setterLabel.innerText = "All Occupied (T1–T5)";
+      if (hw.emptyTrays.length === 0) {
+        setterLabel.style.color = "var(--crimson)";
+        setterLabel.innerText = "🔴 All Occupied (5/5)";
       } else {
+        const freeStr = hw.emptyTrays.join(', ');
         setterLabel.style.color = "var(--emerald)";
-        setterLabel.innerText = `${occupiedSetters.size}/5 Occupied (🟢 Free: ${freeTrays.join(', ')})`;
+        setterLabel.innerText = `🟢 Free: ${freeStr} (${hw.busyTrays.length}/5 Occupied)`;
       }
     }
 
     if (hatcherLabel) {
-      if (hatcherBatch) {
+      if (hw.hatcherBatch) {
         hatcherLabel.style.color = "var(--crimson)";
-        hatcherLabel.innerText = `🔴 Active: ${hatcherBatch.name} (${hatcherBatch.elapsedHours}h)`;
+        hatcherLabel.innerText = `🔴 Active: ${hw.hatcherBatch.name} (Lockdown)`;
       } else {
         hatcherLabel.style.color = "var(--emerald)";
         hatcherLabel.innerText = "🟢 Free / Vacant";
@@ -2956,26 +3103,189 @@
     }
   }
 
+  /* BIDIRECTIONAL SIMULATION WITH 6 PM PULL / 7 PM SHIFT TURNAROUND */
   function runSettingSimulation() {
     const sDate = document.getElementById('sdate').value || getTodayISO();
     const sTime = document.getElementById('stime').value || "19:00";
     const eggCount = parseInt(document.getElementById('eggsSet').value, 10) || 0;
     const outputEl = document.getElementById('settingSimulationOutput');
-    const phys = computeBatchTimePhysics(sDate, sTime);
-    let conflicts = [];
+    if (!outputEl) return;
 
+    const prop = computeBatchTimePhysics(sDate, sTime);
+    let blockers = [];
+    let turnarounds = [];
+    let warnings = [];
+
+    // 1. TRAY SPATIAL CAPACITY CHECK ON PROPOSED SET DATE
+    let activeOnProposedDate = 0;
+    batches.forEach(b => {
+      if (!isBatchActiveDirect(b)) return;
+      const bPhys = computeBatchTimePhysics(b.startDate || b.rawDate, b.setTime);
+      if (prop.startMs >= bPhys.startMs && prop.startMs < bPhys.pullD21CompletedMs) {
+        if (!b.inHatcher) activeOnProposedDate++;
+      }
+    });
+    if (activeOnProposedDate >= 5) {
+      warnings.push(`⚠️ Rack Full: All 5 Setter Trays (T1–T5) projected occupied on ${formatDisplayDate(prop.d1ISO)}.`);
+    }
+
+    // 2. CHECK ALL ACTIVE BATCHES FOR BIDIRECTIONAL CONFLICTS
     batches.forEach(b => {
       if (!isBatchActiveDirect(b)) return;
       const bStage = getBatchStageInfo(b);
-      const isPullDay = (phys.d1ISO === bStage.physics.pullD21ISO);
-      if (!isPullDay && phys.startMs >= bStage.physics.shiftD18CompletedMs && phys.startMs < bStage.physics.pullD21CompletedMs) {
-        conflicts.push(`Cabinet sealed for "${b.name}" until ${formatDisplayDate(bStage.physics.pullD21ISO)}.`);
+      const bPhys = bStage.physics;
+
+      // RULE A: Setting Day Door Open vs Active Lockdown
+      if (prop.d1ISO > bPhys.shiftD18ISO && prop.d1ISO < bPhys.pullD21ISO) {
+        blockers.push(`Cabinet sealed on Set Day: Batch "${b.name}" in lockdown until ${formatDisplayDate(bPhys.pullD21ISO)}.`);
+      }
+
+      // Check if candidate date is on existing batch's pull day
+      if (prop.d1ISO === bPhys.pullD21ISO) {
+        const timeParts = sTime.split(':').map(Number);
+        const setMinutes = (timeParts[0] || 0) * 60 + (timeParts[1] || 0);
+        if (setMinutes < 18 * 60) {
+          blockers.push(`Tray/H1 occupied until 6:00 PM by "${b.name}". Setting available from 7:00 PM onward.`);
+        }
+      }
+
+      // RULE B: HATCHER H1 SAME-DAY HANDOFF (PULL 6 PM -> SHIFT 7 PM)
+      const isSameDayShiftAfterPull = (prop.shiftD18ISO === bPhys.pullD21ISO);
+      const isSameDayPullBeforeShift = (prop.pullD21ISO === bPhys.shiftD18ISO);
+
+      if (isSameDayShiftAfterPull) {
+        turnarounds.push(`🔄 H1 Turnaround on ${formatDisplayDate(prop.shiftD18ISO)}: Pull "${b.name}" at 6:00 PM ➔ Shift proposed batch into H1 at 7:00 PM.`);
+      } else if (isSameDayPullBeforeShift) {
+        turnarounds.push(`🔄 H1 Turnaround on ${formatDisplayDate(prop.pullD21ISO)}: Pull proposed batch at 6:00 PM ➔ Shift "${b.name}" into H1 at 7:00 PM.`);
+      } else {
+        const hasTrueLockdownOverlap = (prop.shiftD18ISO < bPhys.pullD21ISO) && (prop.pullD21ISO > bPhys.shiftD18ISO);
+        if (hasTrueLockdownOverlap) {
+          blockers.push(`Hatcher H1 Collision: Proposed lockdown (${formatDisplayDate(prop.shiftD18ISO)}–${formatDisplayDate(prop.pullD21ISO)}) overlaps with "${b.name}" (${formatDisplayDate(bPhys.shiftD18ISO)}–${formatDisplayDate(bPhys.pullD21ISO)}).`);
+        }
+      }
+
+      // RULE C: Same-Day Harvest Pulls
+      if (prop.pullD21ISO === bPhys.pullD21ISO && !isSameDayShiftAfterPull) {
+        warnings.push(`Notice: Same-day chick harvest alongside "${b.name}" on ${formatDisplayDate(prop.pullD21ISO)}.`);
       }
     });
 
     outputEl.style.display = 'block';
-    outputEl.className = 'sim-box ' + (conflicts.length === 0 ? 'sim-ok' : 'sim-danger');
-    outputEl.innerHTML = `<b>Set Verification:</b> ${eggCount} eggs.<br>&bull; Day 18 Shift: <b>${formatDisplayDateTime(phys.shiftD18CompletedMs)}</b>.<br>&bull; Day 21 Pull: <b>${formatDisplayDateTime(phys.pullD21CompletedMs)}</b>.<br><b>${conflicts.length === 0 ? '✅ Clear to Set' : '❌ Conflict: ' + conflicts.join(' ')}</b>`;
+
+    if (blockers.length > 0) {
+      outputEl.className = 'sim-box sim-danger';
+      outputEl.innerHTML = `
+        <div style="font-weight:900; color:var(--crimson); font-size:0.86rem; margin-bottom:4px;">❌ DATE CONFLICT DETECTED</div>
+        <div style="font-size:0.76rem; line-height:1.4; color:var(--text-primary);">
+          ${blockers.map(err => `&bull; ${err}`).join('<br>')}
+        </div>
+        ${turnarounds.length > 0 ? `<div style="font-size:0.72rem; color:var(--emerald); margin-top:5px; font-weight:800;">${turnarounds.join('<br>')}</div>` : ''}
+        ${warnings.length > 0 ? `<div style="font-size:0.72rem; color:var(--amber); margin-top:4px;">${warnings.join('<br>')}</div>` : ''}
+        <div style="font-size:0.72rem; font-weight:800; color:var(--text-secondary); margin-top:6px;">
+          Milestones: Shift D18: <b>${formatDisplayDateTime(prop.shiftD18CompletedMs)}</b> &bull; Pull D21: <b>${formatDisplayDateTime(prop.pullD21CompletedMs)}</b>
+        </div>
+      `;
+    } else {
+      outputEl.className = 'sim-box sim-ok';
+      outputEl.innerHTML = `
+        <div style="font-weight:900; color:var(--emerald); font-size:0.86rem; margin-bottom:4px;">✅ SCHEDULE CLEAR — SAFE TO SET</div>
+        <div style="font-size:0.76rem; line-height:1.45; color:var(--text-primary);">
+          &bull; Setting: <b>${formatDisplayDate(prop.d1ISO)}</b> (${eggCount} eggs)<br>
+          &bull; 14D Candling: <b>${formatDisplayDate(prop.d14ISO)}</b><br>
+          &bull; H1 Shift (Lockdown): <b>${formatDisplayDateTime(prop.shiftD18CompletedMs)}</b><br>
+          &bull; Harvest Pull: <b>${formatDisplayDateTime(prop.pullD21CompletedMs)}</b>
+        </div>
+        ${turnarounds.length > 0 ? `<div style="font-size:0.75rem; color:var(--brand); margin-top:6px; font-weight:800; border-top:1px dashed var(--border-hairline); padding-top:4px;">${turnarounds.join('<br>')}</div>` : ''}
+        ${warnings.length > 0 ? `<div style="font-size:0.72rem; color:var(--amber); margin-top:5px; font-weight:800;">${warnings.join('<br>')}</div>` : ''}
+      `;
+    }
+  }
+
+  /* SETTING PREDICTION: PULL-DAY EVENING AVAILABILITY IN QUICK LOG */
+  function predictNextSafeSettingDate() {
+    const todayISO = getTodayISO();
+    const candidateDaysAhead = 30;
+    const recommendations = [];
+
+    for (let offset = 0; offset <= candidateDaysAhead; offset++) {
+      const candidateDateISO = addDaysToISO(todayISO, offset);
+      const propPhys = computeBatchTimePhysics(candidateDateISO, "19:00");
+
+      let isBlocked = false;
+      let activeSettersOnDate = 0;
+      let assignedTrays = new Set();
+      let hasTurnaround = false;
+      let turnaroundDetail = "";
+      let pullBatchNameOnSetDate = null;
+
+      for (let b of batches) {
+        if (!isBatchActiveDirect(b)) continue;
+        const bStage = getBatchStageInfo(b);
+        const bPhys = bStage.physics;
+
+        // Check if an existing batch pulls on this candidate set date
+        if (candidateDateISO === bPhys.pullD21ISO) {
+          pullBatchNameOnSetDate = b.name;
+        }
+
+        if (candidateDateISO > bPhys.shiftD18ISO && candidateDateISO < bPhys.pullD21ISO) {
+          isBlocked = true;
+          break;
+        }
+
+        if (propPhys.startMs >= bPhys.startMs && propPhys.startMs < bPhys.pullD21CompletedMs) {
+          if (!b.inHatcher) {
+            activeSettersOnDate++;
+            const nameUpper = (b.name || "").toUpperCase();
+            ["T1", "T2", "T3", "T4", "T5"].forEach(t => {
+              if (nameUpper.includes(t)) assignedTrays.add(t);
+            });
+          }
+        }
+
+        const isSameDayShiftAfterPull = (propPhys.shiftD18ISO === bPhys.pullD21ISO);
+        if (isSameDayShiftAfterPull) {
+          hasTurnaround = true;
+          turnaroundDetail = `Turnaround with ${b.name}`;
+        } else {
+          const hasTrueOverlap = (propPhys.shiftD18ISO < bPhys.pullD21ISO) && (propPhys.pullD21ISO > bPhys.shiftD18ISO);
+          if (hasTrueOverlap) {
+            isBlocked = true;
+            break;
+          }
+        }
+      }
+
+      if (!isBlocked && activeSettersOnDate < 5) {
+        const freeTrays = ["T1", "T2", "T3", "T4", "T5"].filter(t => !assignedTrays.has(t));
+        const suggestedTray = freeTrays.length > 0 ? freeTrays[0] : "T1";
+
+        recommendations.push({
+          dateISO: candidateDateISO,
+          displayDate: formatDisplayDate(candidateDateISO),
+          freeTray: suggestedTray,
+          isToday: (candidateDateISO === todayISO),
+          pullBatchOnSetDate: pullBatchNameOnSetDate,
+          hasTurnaround: hasTurnaround,
+          turnaroundDetail: turnaroundDetail
+        });
+
+        if (recommendations.length >= 2) break;
+      }
+    }
+
+    return recommendations;
+  }
+
+  let cachedPredictedDateISO = "";
+  let cachedPredictedTime = "19:00";
+  function applySuggestedSettingDate() {
+    if (cachedPredictedDateISO) {
+      document.getElementById('sdate').value = cachedPredictedDateISO;
+      document.getElementById('stime').value = cachedPredictedTime;
+      runSettingSimulation();
+      updateDefaultLeftoverPreview();
+    }
   }
 
   function calculate30DayRollingEggAverage() {
@@ -2993,64 +3303,115 @@
     return { avg: (sum / 30).toFixed(1), activeDays: daysWithEggs };
   }
 
+  /* RECONCILED FLOCK HEADCOUNT (ZERO-LEAK COHORT GRADUATION) */
   function calculateReconciledFlock() {
-    let chicksHatchedTotal = 0, poolChicks = 0, poolGrowers = 0;
+    const nowMs = Date.now();
+    const MS_45D = 45 * 86400000;
+    const boundary45DMs = nowMs - MS_45D;
+
+    let lifetimeChicksHatched = 0;
+    let poolChicksActiveRaw = 0;
+    let poolGrowersGraduatedRaw = 0;
+
     batches.forEach(b => {
       const rawC = b.chicksHatched ?? b.chicks ?? b.hatched;
       if (rawC !== null && rawC !== undefined && rawC !== "" && rawC !== "Running") {
         const cnt = parseInt(rawC, 10) || 0;
-        chicksHatchedTotal += cnt;
+        lifetimeChicksHatched += cnt;
+
         let pullMs = getSafeMs(b.pullD21Date) || getSafeMs(b.pullDate) || getSafeMs(b.d21Date);
         if (!pullMs) {
           const sMs = getSafeMs(b.startDate || b.rawDate);
           if (sMs) pullMs = sMs + (21 * 86400000);
         }
-        if (pullMs && Date.now() >= (pullMs + (45 * 86400000))) poolGrowers += cnt; else poolChicks += cnt;
+
+        if (pullMs) {
+          if (nowMs >= (pullMs + MS_45D)) {
+            poolGrowersGraduatedRaw += cnt;
+          } else {
+            poolChicksActiveRaw += cnt;
+          }
+        }
       }
     });
 
-    let cDead = 0, gDead = 0, bDead = 0;
+    let cDeadActive = 0, cDeadGraduated = 0;
+    let gDeadTotal = 0, bDeadTotal = 0;
+
     mortality.forEach(m => {
       const d = parseInt(m.dead, 10) || 0;
-      if (m.category === "Growers") gDead += d;
-      else if (m.category === "Breeders") bDead += d;
-      else cDead += d;
-    });
+      const mMs = getSafeMs(m.date) || 0;
 
-    let cSold = 0, gSold = 0, bSold = 0, bAddedGrower = 0, bAddedOther = 0;
-    ledger.forEach(l => {
-      if (l.category === "Sales") {
-        const q = parseInt(l.qty, 10) || 0;
-        if (l.target === "Chicks") cSold += q;
-        else if (l.target === "Breeders") bSold += q;
-        else gSold += q;
-      } else if (l.category === "Breeders") {
-        const q = parseInt(l.qty, 10) || 0;
-        if ((l.source || "GrowerStock") === "GrowerStock") bAddedGrower += q; else bAddedOther += q;
+      if (m.category === "Growers") {
+        gDeadTotal += d;
+      } else if (m.category === "Breeders") {
+        bDeadTotal += d;
+      } else {
+        if (mMs >= boundary45DMs) cDeadActive += d;
+        else cDeadGraduated += d;
       }
     });
 
+    let cSoldActive = 0, cSoldGraduated = 0;
+    let gSoldTotal = 0, bSoldTotal = 0;
+    let bAddedFromGrower = 0, bAddedFromOther = 0;
+
+    ledger.forEach(l => {
+      const lMs = getSafeMs(l.date) || 0;
+      if (l.category === "Sales") {
+        const q = parseInt(l.qty, 10) || 0;
+        if (l.target === "Chicks") {
+          if (lMs >= boundary45DMs) cSoldActive += q;
+          else cSoldGraduated += q;
+        } else if (l.target === "Breeders") {
+          bSoldTotal += q;
+        } else {
+          gSoldTotal += q;
+        }
+      } else if (l.category === "Breeders") {
+        const q = parseInt(l.qty, 10) || 0;
+        if ((l.source || "GrowerStock") === "GrowerStock") {
+          bAddedFromGrower += q;
+        } else {
+          bAddedFromOther += q;
+        }
+      }
+    });
+
+    const liveChicks = Math.max(0, poolChicksActiveRaw - cDeadActive - cSoldActive);
+    const netGraduatedGrowers = Math.max(0, poolGrowersGraduatedRaw - cDeadGraduated - cSoldGraduated);
+    const liveGrowers = Math.max(0, FLOCK_BASELINE_GROWERS + netGraduatedGrowers - gDeadTotal - gSoldTotal - bAddedFromGrower);
+    const liveBreeders = Math.max(0, FLOCK_BASELINE_BREEDERS + bAddedFromGrower + bAddedFromOther - bDeadTotal - bSoldTotal);
+
     return {
-      lifetimeChicks: chicksHatchedTotal,
-      liveChicks: Math.max(0, poolChicks - cDead - cSold),
-      liveGrowers: Math.max(0, FLOCK_BASELINE_GROWERS + poolGrowers - gDead - gSold - bAddedGrower),
-      liveBreeders: Math.max(0, FLOCK_BASELINE_BREEDERS + bAddedGrower + bAddedOther - bDead - bSold),
-      cDead, gDead, bDead
+      lifetimeChicks: lifetimeChicksHatched,
+      liveChicks: liveChicks,
+      liveGrowers: liveGrowers,
+      liveBreeders: liveBreeders,
+      cDeadActive: cDeadActive,
+      cDeadAllTime: cDeadActive + cDeadGraduated,
+      gDead: gDeadTotal,
+      bDead: bDeadTotal
     };
   }
 
-  /* BIOLOGICAL SPAN MORTALITY CALCULATION */
-  function calculateSpanMortalityMetrics() {
+  /* 4-BLOCK DEDICATED MORTALITY CALCULATION (LOSSES ONLY) */
+  function calculateDedicatedMortalityMetrics() {
     const nowMs = Date.now();
     const MS_DAY = 86400000;
 
-    const chickSpanMs = nowMs - (45 * MS_DAY);     // 45 Days Brooder
-    const growerSpanMs = nowMs - (180 * MS_DAY);   // 6 Months (180 Days)
-    const breederSpanMs = nowMs - (548 * MS_DAY);  // 1.5 Years (548 Days)
+    const chickSpanMs = nowMs - (45 * MS_DAY);
+    const growerSpanMs = nowMs - (180 * MS_DAY);
+    const breederSpanMs = nowMs - (548 * MS_DAY);
 
     const flock = calculateReconciledFlock();
 
-    // 1. CHICKS (45D)
+    // 1. ALL-TIME CHICKS: Birth vs died within brooder
+    const allTimeDead = flock.cDeadAllTime;
+    const allTimeHatched = flock.lifetimeChicks;
+    const allTimePct = allTimeHatched > 0 ? ((allTimeDead / allTimeHatched) * 100).toFixed(1) : "0.0";
+
+    // 2. CURRENT CHICKS (45D Active Cohort)
     let chicksDeadInSpan = 0, chicksSoldInSpan = 0;
     mortality.forEach(m => {
       const mMs = getSafeMs(m.date);
@@ -3064,10 +3425,10 @@
         chicksSoldInSpan += (parseInt(l.qty, 10) || 0);
       }
     });
-    const chicksDenom = flock.liveChicks + chicksDeadInSpan + chicksSoldInSpan;
-    const chickPct = chicksDenom > 0 ? ((chicksDeadInSpan / chicksDenom) * 100).toFixed(1) : "0.0";
+    const currentChicksDenom = flock.liveChicks + chicksDeadInSpan + chicksSoldInSpan;
+    const currentChicksPct = currentChicksDenom > 0 ? ((chicksDeadInSpan / currentChicksDenom) * 100).toFixed(1) : "0.0";
 
-    // 2. GROWERS (180D)
+    // 3. GROWERS (180D Biological Span)
     let growersDeadInSpan = 0, growersSoldInSpan = 0;
     mortality.forEach(m => {
       const mMs = getSafeMs(m.date);
@@ -3084,7 +3445,7 @@
     const growersDenom = flock.liveGrowers + growersDeadInSpan + growersSoldInSpan;
     const growerPct = growersDenom > 0 ? ((growersDeadInSpan / growersDenom) * 100).toFixed(1) : "0.0";
 
-    // 3. BREEDERS (548D)
+    // 4. BREEDERS (548D Biological Span)
     let breedersDeadInSpan = 0, breedersSoldInSpan = 0;
     mortality.forEach(m => {
       const mMs = getSafeMs(m.date);
@@ -3101,7 +3462,12 @@
     const breedersDenom = flock.liveBreeders + breedersDeadInSpan + breedersSoldInSpan;
     const breederPct = breedersDenom > 0 ? ((breedersDeadInSpan / breedersDenom) * 100).toFixed(1) : "0.0";
 
-    return { chickPct, growerPct, breederPct };
+    return {
+      allTimeDead, allTimePct,
+      currentChicksDead: chicksDeadInSpan, currentChicksPct,
+      growersDead: growersDeadInSpan, growerPct,
+      breedersDead: breedersDeadInSpan, breederPct
+    };
   }
 
   function renderLiveMetrics() {
@@ -3115,15 +3481,20 @@
     document.getElementById('liveChicksTopDisplay').innerText = r.liveChicks;
     document.getElementById('liveGrowersTopDisplay').innerText = r.liveGrowers;
     document.getElementById('liveBreedersTopDisplay').innerText = r.liveBreeders;
-    document.getElementById('liveChicksBalance').innerText = r.liveChicks;
-    document.getElementById('liveGrowersBalance').innerText = r.liveGrowers;
-    document.getElementById('liveBreedersBalance').innerText = r.liveBreeders;
-    
-    // Normalized biological span percentages
-    const span = calculateSpanMortalityMetrics();
-    document.getElementById('totalChicksDeadSub').innerText = `${r.cDead} dead (45D: ${span.chickPct}%)`;
-    document.getElementById('totalGrowersDeadSub').innerText = `${r.gDead} dead (6M: ${span.growerPct}%)`;
-    document.getElementById('totalBreedersDeadSub').innerText = `${r.bDead} dead (1.5Y: ${span.breederPct}%)`;
+
+    // RENDER TAB 2 DEDICATED 4-BLOCK MORTALITY STRIP
+    const mortStats = calculateDedicatedMortalityMetrics();
+    document.getElementById('allTimeChicksDeadVal').innerText = mortStats.allTimeDead;
+    document.getElementById('allTimeChicksPctSub').innerText = `All-Time: ${mortStats.allTimePct}%`;
+
+    document.getElementById('currentChicksDeadVal').innerText = mortStats.currentChicksDead;
+    document.getElementById('currentChicksPctSub').innerText = `45D: ${mortStats.currentChicksPct}%`;
+
+    document.getElementById('growersDeadVal').innerText = mortStats.growersDead;
+    document.getElementById('growersPctSub').innerText = `6M: ${mortStats.growerPct}%`;
+
+    document.getElementById('breedersDeadVal').innerText = mortStats.breedersDead;
+    document.getElementById('breedersPctSub').innerText = `1.5Y: ${mortStats.breederPct}%`;
 
     document.getElementById('lifetimeChicksDisplay').innerText = r.lifetimeChicks.toLocaleString();
     let eggsTot = 0;
@@ -3134,11 +3505,32 @@
     document.getElementById('rollingAvgEggDisplay').innerText = roll.avg;
     document.getElementById('rollingAvgSub').innerText = "Rolling Standard";
 
+    // RESTORE CLEAN, UNCLUTTERED SETTER PROGRESS CARD
     const inv = calculateCurrentInventoryStock();
     document.getElementById('inventoryEggsDisplay').innerText = inv;
     document.getElementById('setterCard').style.setProperty('--progress-pct', Math.min(100, Math.round((inv / 102) * 100)) + '%');
     const needed = Math.max(0, 102 - inv);
     document.getElementById('trayProgressSub').innerText = `${inv} / 102 Tray Filled (${needed} needed)`;
+
+    // PULL-DAY EVENING AVAILABILITY IN QUICK LOG CHIP
+    const predictions = predictNextSafeSettingDate();
+    const chipBtn = document.getElementById('quickPredictionChipBtn');
+    const chipBox = document.getElementById('quickPredictionChipBox');
+
+    if (predictions.length > 0 && chipBtn && chipBox) {
+      cachedPredictedDateISO = predictions[0].dateISO;
+      cachedPredictedTime = "19:00";
+
+      if (predictions[0].isToday && predictions[0].pullBatchOnSetDate) {
+        // Today is Pull Day: Explicitly state evening availability after pull
+        chipBtn.innerHTML = `⚡ <b>Setting Window Today:</b> Available in evening after <b>6:00 PM</b> pull of <b>${predictions[0].pullBatchOnSetDate}</b> &bull; Tap to set at <b>7:00 PM</b>`;
+      } else {
+        chipBtn.innerHTML = `⚡ <b>Earliest Clear Window:</b> ${predictions[0].displayDate} (${predictions[0].freeTray}) ${predictions[0].hasTurnaround ? '&bull; 🔄 Turnaround' : ''} &bull; Tap to Apply`;
+      }
+      chipBox.style.display = "block";
+    } else if (chipBox) {
+      chipBox.style.display = "none";
+    }
   }
 
   function openQuickLogModal(tab) {
@@ -3194,7 +3586,17 @@
     if (cat === "Feed") toggleFeedActionLayout();
   }
 
+  /* SAVE BATCH WITH SAFETY GATEKEEPER & DOUBLE-TAP GUARD */
   function saveBatch() {
+    const btn = document.getElementById('submitBtn');
+    if (btn.disabled) return;
+
+    const simBox = document.getElementById('settingSimulationOutput');
+    if (simBox && simBox.classList.contains('sim-danger')) {
+      const proceed = confirm("⚠️ Hard Date Conflict Detected!\n\nThis proposed batch collides with an active Hatcher lockdown or sealed cabinet.\n\nAre you absolutely sure you want to force this schedule?");
+      if (!proceed) return;
+    }
+
     const name = document.getElementById('bname').value.trim() || "Tray";
     const eggs = Math.min(102, parseInt(document.getElementById('eggsSet').value, 10) || 0);
     const dateInput = document.getElementById('sdate').value || getTodayISO();
@@ -3202,6 +3604,8 @@
     const leftoverVal = document.getElementById('batchLeftoverOverride').value;
     const editDocId = document.getElementById('editDocId').value;
     if (eggs <= 0) return alert("Enter valid egg count.");
+
+    btn.disabled = true;
 
     const phys = computeBatchTimePhysics(dateInput, timeInput);
     const id = editDocId || ("batch_" + Date.now());
@@ -3230,6 +3634,7 @@
 
     syncToLocalStorage(); renderBatches(); renderLiveMetrics(); renderCalendar(); renderCommandCenter();
     closeQuickLogModal();
+    btn.disabled = false;
     if (db) db.collection("batches").doc(id).set(data).catch(() => {});
   }
 
@@ -3318,10 +3723,14 @@
     document.getElementById('batchLeftoverOverride').value = ""; document.getElementById('sdate').value = getTodayISO();
     document.getElementById('editDocId').value = ""; document.getElementById('submitBtn').innerText = "Set Batch";
     document.getElementById('cancelBtn').style.display = "none"; document.getElementById('settingSimulationOutput').style.display = "none";
+    document.getElementById('submitBtn').disabled = false;
   }
 
   let editingColId = null;
   function saveCollection() {
+    const btn = document.getElementById('colSubmitBtn');
+    if (btn.disabled) return;
+
     const dVal = toNormalizedISO(document.getElementById('colDate').value || getTodayISO());
     const slot = document.getElementById('colSlot').value;
     const cnt = parseInt(document.getElementById('colCount').value, 10) || 0;
@@ -3342,9 +3751,12 @@
       createdBy: ex ? (ex.createdBy || author) : author, createdAt: ex ? ex.createdAt : Date.now(),
       lastModifiedBy: ex ? author : null, lastModifiedAt: ex ? Date.now() : null
     };
+
+    btn.disabled = true;
     if (ex) Object.assign(ex, entry); else collections.push(entry);
     syncToLocalStorage(); renderCollections(); renderLiveMetrics(); renderCalendar(); renderCommandCenter();
     closeQuickLogModal();
+    btn.disabled = false;
     if (db) db.collection("collections").doc(entry.id).set(entry).catch(() => {});
   }
 
@@ -3366,15 +3778,21 @@
     document.getElementById('colCount').value = ""; document.getElementById('colBroken').value = "0";
     document.getElementById('colDate').value = getTodayISO(); editingColId = null;
     document.getElementById('colSubmitBtn').innerText = "Log Pickings"; document.getElementById('colCancelBtn').style.display = "none";
+    document.getElementById('colSubmitBtn').disabled = false;
   }
 
   let editingMortId = null;
   function saveMortality() {
+    const btn = document.getElementById('mortSubmitBtn');
+    if (btn.disabled) return;
+
     const dVal = toNormalizedISO(document.getElementById('mortDate').value || getTodayISO());
     const cat = document.getElementById('mortCategory').value;
     const cnt = parseInt(document.getElementById('mortCount').value, 10);
     const reas = document.getElementById('mortReason').value.trim() || "-";
     if (isNaN(cnt) || cnt <= 0) return alert("Enter valid loss count.");
+
+    btn.disabled = true;
     const author = getBoundOperatorName();
     let entry = null;
     if (editingMortId) {
@@ -3388,6 +3806,7 @@
       mortality.unshift(entry);
     }
     syncToLocalStorage(); renderMortality(); renderLiveMetrics(); closeQuickLogModal();
+    btn.disabled = false;
     if (db && entry) db.collection("mortality").doc(entry.id).set(entry).catch(() => {});
   }
 
@@ -3395,6 +3814,7 @@
     document.getElementById('mortCount').value = ""; document.getElementById('mortReason').value = "";
     document.getElementById('mortDate').value = getTodayISO(); editingMortId = null;
     document.getElementById('mortSubmitBtn').innerText = "Log Loss"; document.getElementById('mortCancelBtn').style.display = "none";
+    document.getElementById('mortSubmitBtn').disabled = false;
   }
 
   function switchMortalityView(sec, btn) {
@@ -3426,12 +3846,17 @@
 
   let editingLedgerId = null;
   function saveLedgerEntry() {
+    const btn = document.getElementById('ledgerSubmitBtn');
+    if (btn.disabled) return;
+
     const dVal = toNormalizedISO(document.getElementById('ledgerDate').value || getTodayISO());
     const cat = document.getElementById('ledgerCatSelect').value;
     let notes = document.getElementById('ledgerNotes').value.trim();
     const id = editingLedgerId || ("ledg_" + Date.now());
     const author = getBoundOperatorName();
     const entry = { id: id, date: dVal, category: cat, notes: notes, createdBy: author, createdAt: Date.now() };
+
+    btn.disabled = true;
 
     if (cat === "Sales") {
       entry.target = document.getElementById('salesTargetSelect').value;
@@ -3479,6 +3904,7 @@
 
     syncToLocalStorage(); renderLedger(); renderLiveMetrics(); renderCalendar(); renderCommandCenter();
     closeQuickLogModal();
+    btn.disabled = false;
     if (db) db.collection("ledger").doc(id).set(entry).catch(() => {});
   }
 
@@ -3507,6 +3933,7 @@
     document.getElementById('editLedgerDocId').value = ""; editingLedgerId = null;
     document.getElementById('ledgerSubmitBtn').innerText = "Save to Activity Ledger";
     document.getElementById('ledgerCancelBtn').style.display = "none";
+    document.getElementById('ledgerSubmitBtn').disabled = false;
     toggleLedgerDynamicFields();
   }
 
@@ -3543,7 +3970,7 @@
 
   function toggleFullLedgerView() { showAllLedger = !showAllLedger; renderLedger(); }
 
-  /* TIMELINE CALENDAR WITH STRICT OVERFLOW CONSTRAINT */
+  /* TIMELINE CALENDAR */
   function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     document.getElementById('calMonthYear').innerText = `${monthNames[curMonth]} ${curYear}`;
@@ -3841,7 +4268,6 @@
   function openDataModal() { populateReportDropdowns(); document.getElementById('dataModal').style.display = "flex"; }
   function closeDataModal(e) { if (!e || e.target.id === "dataModal" || e.target.classList.contains("modal-close")) { document.getElementById('dataModal').style.display = "none"; openSettingsModal(); } }
   
-  /* REPORT VIEW CONTROLS: AUTO-HIDE FLOATING FAB & RESTORE */
   function openReportView() {
     document.getElementById('dataModal').style.display = "none";
     document.getElementById('mainDashboard').style.display = "none";
@@ -3861,6 +4287,11 @@
     if (fab) fab.style.display = "flex";
 
     document.getElementById('dataModal').style.display = "flex";
+  }
+
+  /* DUAL EXPORT: WEB PDF ACTION */
+  function printReportToPdf() {
+    window.print();
   }
 
   function formatReportSignature(author, modifier) {
@@ -3894,7 +4325,6 @@
       return "Maize";
     }
 
-    // Opening inventory
     Object.keys(feeds).forEach(key => {
       let priorBoughtKg = 0, priorSpent = 0, priorCloseKg = 0;
       ledger.forEach(l => {
@@ -3914,7 +4344,6 @@
       feeds[key].openVal = Math.round(priorCloseKg * priorRate);
     });
 
-    // Transactions in period
     ledger.forEach(l => {
       const ld = toNormalizedISO(l.date);
       if (ld >= fromISO && ld <= toISO) {
@@ -3970,7 +4399,6 @@
 
     const netFeedCost = Math.max(0, (totalOpeningVal + totalPurchasesRupees) - totalClosingVal);
 
-    // Dynamic Labor Rule: Year-safe month calculation
     let laborCost = 0;
     if (manualLaborLogged) {
       laborCost = loggedLaborCost;
@@ -4591,7 +5019,7 @@
     openReportView();
   }
 
-  /* WIDE-COLUMN EXCEL EXPORTER (.XLS) */
+  /* WIDE-COLUMN XML EXCEL EXPORTER (.XLS) WITH SAFE ESCAPING */
   function exportActiveReportToCSV() {
     const reportContainer = document.getElementById('dataReportContent');
     if (!reportContainer || !reportContainer.innerText.trim()) {
@@ -4631,7 +5059,7 @@
             const val = (isExp && !subVal.startsWith('-') ? '-' : '') + subVal;
             tableHtml += `
               <tr style="background-color:#f1f5f9; font-weight:bold; height:28px;">
-                <td colspan="3" style="text-align:right; padding:6px 10px;">SUBTOTAL ${curHead}:</td>
+                <td colspan="3" style="text-align:right; padding:6px 10px;">SUBTOTAL ${escapeXml(curHead)}:</td>
                 <td style="text-align:right; padding:6px 10px; mso-number-format:'\\#\\,\\#\\#0';">${val}</td>
               </tr>
             `;
@@ -4645,7 +5073,7 @@
             tableHtml += `
               <tr style="background-color:#e2e8f0; font-weight:bold; height:30px;">
                 <td colspan="3" style="text-align:right; padding:6px 10px;">GROSS OPERATING MARGIN:</td>
-                <td style="text-align:right; padding:6px 10px; color:${rawNum.startsWith('-') ? '#dc2626' : '#059669'}; mso-number-format:'\\#\\,\\#\\#0';">-${rawNum}</td>
+                <td style="text-align:right; padding:6px 10px; color:${rawNum.startsWith('-') ? '#dc2626' : '#059669'}; mso-number-format:'\\#\\,\\#\\#0';">${rawNum}</td>
               </tr>
             `;
             curHead = "";
@@ -4670,9 +5098,9 @@
 
           tableHtml += `
             <tr style="height:26px;">
-              <td style="font-weight:bold; padding:6px 10px; white-space:nowrap;">${curHead}</td>
-              <td style="padding:6px 10px; white-space:nowrap;">${title}</td>
-              <td style="color:#475569; padding:6px 10px;">${details}</td>
+              <td style="font-weight:bold; padding:6px 10px; white-space:nowrap;">${escapeXml(curHead)}</td>
+              <td style="padding:6px 10px; white-space:nowrap;">${escapeXml(title)}</td>
+              <td style="color:#475569; padding:6px 10px;">${escapeXml(details)}</td>
               <td style="text-align:right; padding:6px 10px; mso-number-format:'\\#\\,\\#\\#0';">${amt}</td>
             </tr>
           `;
@@ -4680,8 +5108,8 @@
           if (curHead && subVal !== "") {
             tableHtml += `
               <tr style="background-color:#f1f5f9; font-weight:bold; height:28px;">
-                <td colspan="3" style="text-align:right; padding:6px 10px;">SUBTOTAL ${curHead}:</td>
-                <td style="text-align:right; padding:6px 10px; mso-number-format:'\\#\\,\\#\\#0';">-${subVal}</td>
+                <td colspan="3" style="text-align:right; padding:6px 10px;">SUBTOTAL ${escapeXml(curHead)}:</td>
+                <td style="text-align:right; padding:6px 10px; mso-number-format:'\\#\\,\\#\\#0';">${subVal}</td>
               </tr>
             `;
           }
@@ -4689,7 +5117,7 @@
           tableHtml += `
             <tr style="background-color:#fee2e2; color:#dc2626; font-weight:bold; font-size:11pt; height:34px;">
               <td colspan="3" style="text-align:right; padding:6px 10px;">NET OPERATING PROFIT / (LOSS):</td>
-              <td style="text-align:right; padding:6px 10px; mso-number-format:'\\#\\,\\#\\#0';">-${netAmt}</td>
+              <td style="text-align:right; padding:6px 10px; mso-number-format:'\\#\\,\\#\\#0';">${netAmt}</td>
             </tr>
           `;
         }
@@ -4715,7 +5143,6 @@
               const isDate = text.match(/^\d{2,4}[-\/]\d{1,2}[-\/]\d{1,4}$/);
               const isNumeric = text.match(/^[₹0-9\s.,-]+$/);
 
-              // Force text format on dates so Excel never shows ####
               let formatStyle = "";
               if (isDate) {
                 formatStyle = "mso-number-format:'\\@'; min-width:130px; width:130px; text-align:center;";
@@ -4727,7 +5154,7 @@
                 formatStyle = "text-align:left; min-width:140px;";
               }
 
-              tableHtml += `<td style="padding:6px 10px; border:1px solid #cbd5e1; white-space:nowrap; ${formatStyle}">${text}</td>`;
+              tableHtml += `<td style="padding:6px 10px; border:1px solid #cbd5e1; white-space:nowrap; ${formatStyle}">${escapeXml(text)}</td>`;
             });
             tableHtml += `</tr>`;
           });
@@ -4755,7 +5182,7 @@
       </head>
       <body style="font-family:Calibri,Arial,sans-serif;">
         <h2 style="color:#0284c7; margin:0 0 4px 0;">AD FARMS ; HERD &amp; HARVEST</h2>
-        <div style="font-size:11pt; font-weight:bold; color:#334155; margin-bottom:2px;">${rawTitle}</div>
+        <div style="font-size:11pt; font-weight:bold; color:#334155; margin-bottom:2px;">${escapeXml(rawTitle)}</div>
         <div style="font-size:9.5pt; color:#64748b; margin-bottom:12px;">Exported on: ${getTodayISO()}</div>
         ${tableHtml}
       </body>
