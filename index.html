@@ -2818,6 +2818,41 @@
     };
   }
 
+  /* DYNAMIC CANDLING RESOLVER (DAYS 13-15 BIOLOGICAL BAND vs ACTIVE LOCKDOWN) */
+  function resolveBatchCandlingDate(b) {
+    const phys = computeBatchTimePhysics(b.startDate || b.rawDate, b.setTime);
+    const idealD14ISO = phys.d14ISO;
+    const earlyD13ISO = addDaysToISO(idealD14ISO, -1);
+    const lateD15ISO = addDaysToISO(idealD14ISO, 1);
+
+    let isIdealBlocked = false;
+    let blockingBatchName = "";
+
+    batches.forEach(other => {
+      if (other.id === b.id || !isBatchActiveDirect(other)) return;
+      const oPhys = computeBatchTimePhysics(other.startDate || other.rawDate, other.setTime);
+      if (idealD14ISO >= oPhys.shiftD18ISO && idealD14ISO < oPhys.pullD21ISO) {
+        isIdealBlocked = true;
+        blockingBatchName = other.name;
+      }
+    });
+
+    if (!isIdealBlocked) {
+      return {
+        scheduledISO: idealD14ISO,
+        label: `D14: ${b.name}`,
+        note: null
+      };
+    }
+
+    // Retain official milestone title as D14 while shifting date forward into the biological window
+    return {
+      scheduledISO: earlyD13ISO,
+      label: `D14: ${b.name}`,
+      note: `14th Day Candling performed within the Day 13–15 band (before ${blockingBatchName} lockdown seal).`
+    };
+  }
+
   function getBatchStageInfo(b) {
     const phys = computeBatchTimePhysics(b.startDate || b.rawDate, b.setTime);
     const now = Date.now();
@@ -2977,6 +3012,7 @@
     batches.forEach(b => {
       if (!isBatchActiveDirect(b)) return;
       const stage = getBatchStageInfo(b);
+      const candlingInfo = resolveBatchCandlingDate(b);
 
       if (todayISO === stage.physics.pullD21ISO && !stage.hasHatched) {
         pullBatchesToday.push({ batch: b, stage: stage });
@@ -2984,13 +3020,12 @@
       if (todayISO === stage.physics.shiftD18ISO && !b.inHatcher && !stage.hasHatched) {
         shiftBatchesToday.push({ batch: b, stage: stage });
       }
-      if (todayISO === stage.physics.d14ISO && !b.candlingD14Cleared) {
-        candlingBatchesToday.push(b);
+      if (todayISO === candlingInfo.scheduledISO && !b.candlingD14Cleared) {
+        candlingBatchesToday.push({ batch: b, info: candlingInfo });
       }
     });
 
     const todayLedgerItems = ledger.filter(l => toNormalizedISO(l.date) === todayISO);
-
     let pointsHtml = "";
 
     if (isMonthEndFeedAuditDue()) {
@@ -3018,13 +3053,13 @@
       `;
     });
 
-    candlingBatchesToday.forEach(b => {
+    candlingBatchesToday.forEach(item => {
       pointsHtml += `
         <div class="action-point-item point-candling">
           <span class="point-icon">🔍</span>
           <div class="point-content">
-            <span class="point-tag tag-candle">14TH DAY CANDLING</span>
-            <div style="font-weight:900; color:var(--brand);">Batch: ${b.name}</div>
+            <span class="point-tag tag-candle">CANDLING WINDOW (D13–D15)</span>
+            <div style="font-weight:900; color:var(--brand);">${item.info.label} ${item.info.note ? `&bull; ${item.info.note}` : ''}</div>
           </div>
         </div>
       `;
@@ -3183,7 +3218,7 @@
         <div style="font-weight:900; color:var(--emerald); font-size:0.86rem; margin-bottom:4px;">✅ SCHEDULE CLEAR — SAFE TO SET</div>
         <div style="font-size:0.76rem; line-height:1.45; color:var(--text-primary);">
           &bull; Setting: <b>${formatDisplayDate(prop.d1ISO)}</b> (${eggCount} eggs)<br>
-          &bull; 14D Candling: <b>${formatDisplayDate(prop.d14ISO)}</b><br>
+          &bull; Candling Window: <b>Day 14 (D13–D15 Band)</b> (${formatDisplayDate(addDaysToISO(prop.d14ISO, -1))} to ${formatDisplayDate(addDaysToISO(prop.d14ISO, 1))})<br>
           &bull; H1 Shift (Lockdown): <b>${formatDisplayDateTime(prop.shiftD18CompletedMs)}</b><br>
           &bull; Harvest Pull: <b>${formatDisplayDateTime(prop.pullD21CompletedMs)}</b>
         </div>
@@ -3498,9 +3533,7 @@
     document.getElementById('trayProgressSub').innerText = `${inv} / 102 Tray Filled (${needed} needed)`;
   }
 
-  /* ==========================================================================
-     OPEN QUICK LOG MODAL (AUTO-TRIGGERS PREDICTION CHIP & VERIFICATION SIM)
-     ========================================================================== */
+  /* OPEN QUICK LOG MODAL (AUTO-TRIGGERS PREDICTION CHIP & VERIFICATION SIM) */
   function openQuickLogModal(tab) {
     initTodayInputs();
     document.getElementById('quickLogModal').style.display = "flex";
@@ -3521,7 +3554,6 @@
       cachedPredictedTime = "19:00";
 
       if (predictions[0].isToday && predictions[0].pullBatchOnSetDate) {
-        // Pull Day Intimation: Available in evening after 6:00 PM pull
         chipBtn.innerHTML = `⚡ <b>Setting Window Today:</b> Available in evening after <b>6:00 PM</b> pull of <b>${predictions[0].pullBatchOnSetDate}</b> &bull; Tap to set at <b>7:00 PM</b>`;
       } else {
         chipBtn.innerHTML = `⚡ <b>Earliest Clear Window:</b> ${predictions[0].displayDate} (${predictions[0].freeTray}) ${predictions[0].hasTurnaround ? '&bull; 🔄 Turnaround' : ''} &bull; Tap to Apply`;
@@ -3670,6 +3702,7 @@
 
   function buildBatchCardHtml(b, isArchived) {
     const stage = getBatchStageInfo(b);
+    const candlingInfo = resolveBatchCandlingDate(b);
     const initial = parseInt(b.eggs, 10) || 0;
     const c14 = parseInt(b.candlingD14Cleared, 10) || 0;
     const fertile = Math.max(0, initial - c14);
@@ -3684,7 +3717,7 @@
         </div>
         <div class="batch-dates-grid">
           <div class="date-pill d1"><span class="pill-lbl">Set</span><span class="pill-val">${formatDisplayDate(stage.physics.d1ISO)}</span></div>
-          <div class="date-pill d14"><span class="pill-lbl">14D Candle</span><span class="pill-val">${formatDisplayDate(stage.physics.d14ISO)}</span></div>
+          <div class="date-pill d14"><span class="pill-lbl">14D Candle</span><span class="pill-val">${formatDisplayDate(candlingInfo.scheduledISO)}</span></div>
           <div class="date-pill d18"><span class="pill-lbl">Shift</span><span class="pill-val">${formatDisplayDate(stage.physics.shiftD18ISO)}</span></div>
         </div>
         <div class="batch-results-bar"><div>D14 Rejected: <b>-${c14}</b></div><div>Harvest: ${chickCount} (${rateText})</div></div>
@@ -3994,8 +4027,10 @@
       let evs = [];
       batches.forEach(b => {
         const p = computeBatchTimePhysics(b.startDate || b.rawDate, b.setTime);
+        const candlingInfo = resolveBatchCandlingDate(b);
+
         if (cellISO === p.d1ISO) evs.push({ type: 'set', label: `SET: ${b.name}` });
-        if (cellISO === p.d14ISO) evs.push({ type: 'd14', label: `D14: ${b.name}` });
+        if (cellISO === candlingInfo.scheduledISO) evs.push({ type: 'd14', label: candlingInfo.label });
         if (cellISO === p.shiftD18ISO) evs.push({ type: 'shift', label: `H1: ${b.name}` });
         if (cellISO === p.pullD21ISO) evs.push({ type: 'pull', label: `PULL: ${b.name}` });
       });
@@ -4058,8 +4093,10 @@
     let html = "";
     batches.forEach(b => {
       const p = computeBatchTimePhysics(b.startDate || b.rawDate, b.setTime);
+      const candlingInfo = resolveBatchCandlingDate(b);
+
       if (dateISO === p.d1ISO) html += `<div class="event-item" style="border-left:4px solid var(--brand);"><b>SETTING:</b> ${b.name} (${b.eggs} eggs)</div>`;
-      if (dateISO === p.d14ISO) html += `<div class="event-item" style="border-left:4px solid var(--violet);"><b>14D CANDLING:</b> ${b.name}</div>`;
+      if (dateISO === candlingInfo.scheduledISO) html += `<div class="event-item" style="border-left:4px solid var(--violet);"><b>CANDLING INSPECTION:</b> ${candlingInfo.label} ${candlingInfo.note ? `<br><small style="color:var(--amber); font-weight:800;">${candlingInfo.note}</small>` : ''}</div>`;
       if (dateISO === p.shiftD18ISO) html += `<div class="event-item" style="border-left:4px solid var(--amber);"><b>SHIFT H1:</b> ${b.name}</div>`;
       if (dateISO === p.pullD21ISO) html += `<div class="event-item" style="border-left:4px solid var(--emerald);"><b>PULL DAY:</b> ${b.name} (${b.chicksHatched || 0} chicks)</div>`;
     });
