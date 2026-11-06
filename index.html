@@ -2723,7 +2723,7 @@
     const unread = editAlerts.filter(a => !a.dismissed);
     if (unread.length > 0) {
       activeNoticeDocId = unread[0].id;
-      content.innerHTML = `<b>${unread[0].editedBy}</b> modified your <b>${unread[0].module}</b> record:<br>${unread[0].detailChange}`;
+      content.innerHTML = `<b>${unread[0].editedBy}</b>: ${unread[0].detailChange}`;
       timePill.innerText = formatDisplayDateTime(unread[0].timestamp);
       banner.style.display = "block";
     } else {
@@ -2741,6 +2741,30 @@
     displayNextNotice();
   }
 
+  /* HIGH-PRIORITY REUSABLE PARTNER DISPATCH FOR NEW LOGS OR EDITS */
+  function broadcastPartnerAlert(moduleName, detailChange) {
+    const editor = getBoundOperatorName();
+    const targetUser = (editor === operators.user1.name) ? operators.user2.name : operators.user1.name;
+
+    const alertData = {
+      id: "alert_" + Date.now(),
+      targetUser: targetUser,
+      editedBy: editor,
+      module: moduleName,
+      detailChange: detailChange,
+      timestamp: Date.now(),
+      dismissed: false
+    };
+
+    editAlerts.unshift(alertData);
+    syncToLocalStorage();
+    displayNextNotice();
+
+    if (db) {
+      db.collection("edit_alerts").doc(alertData.id).set(alertData).catch(() => {});
+    }
+  }
+
   function recordModificationAudit(originalAuthor, moduleName, detailChange) {
     const editor = getBoundOperatorName();
     const auditEntry = { id: "audit_" + Date.now(), timestamp: Date.now(), module: moduleName, editedBy: editor, originalAuthor: originalAuthor || "Legacy", detailChange: detailChange };
@@ -2748,8 +2772,7 @@
     syncToLocalStorage();
     if (db) db.collection("audit_history").doc(auditEntry.id).set(auditEntry).catch(() => {});
     if (originalAuthor && originalAuthor !== editor) {
-      const alertData = { id: "alert_" + Date.now(), targetUser: originalAuthor, editedBy: editor, module: moduleName, detailChange: detailChange, timestamp: Date.now(), dismissed: false };
-      if (db) db.collection("edit_alerts").doc(alertData.id).set(alertData).catch(() => {});
+      broadcastPartnerAlert(moduleName, detailChange);
     }
   }
 
@@ -2823,7 +2846,6 @@
     const phys = computeBatchTimePhysics(b.startDate || b.rawDate, b.setTime);
     const idealD14ISO = phys.d14ISO;
     const earlyD13ISO = addDaysToISO(idealD14ISO, -1);
-    const lateD15ISO = addDaysToISO(idealD14ISO, 1);
 
     let isIdealBlocked = false;
     let blockingBatchName = "";
@@ -2845,7 +2867,7 @@
       };
     }
 
-    // Retain official milestone title as D14 while shifting date forward into the biological window
+    // Retain official milestone title as D14 while adjusting inspection date to Day 13 before lockdown
     return {
       scheduledISO: earlyD13ISO,
       label: `D14: ${b.name}`,
@@ -2862,7 +2884,7 @@
     return { physics: phys, hasHatched: hasHatched, elapsedHours: Math.max(0, (now - phys.startMs) / 3600000), inActiveLockdown: inLockdown, isOverduePull: isOverdue };
   }
 
-  /* SAFE CRATE INVENTORY (ONLY PAST/PRESENT BATCHES DEDUCT) */
+  /* SAFE CRATE INVENTORY (COLLECTIONS MINUS TRAY SETS MINUS EGG SALES) */
   function calculateCurrentInventoryStock() {
     const todayISO = getTodayISO();
     const settledBatches = [...batches]
@@ -2880,11 +2902,20 @@
           sum += (parseInt(c.total, 10) || 0);
         }
       });
+      // Deduct egg sales since anchor date
+      ledger.forEach(l => {
+        const ld = toNormalizedISO(l.date);
+        if (ld > INITIAL_ANCHOR_DATE && ld <= todayISO && l.category === "Sales" && l.target === "Eggs") {
+          sum -= (parseInt(l.qty, 10) || 0);
+        }
+      });
       return Math.max(0, sum);
     }
 
     const latest = settledBatches[settledBatches.length - 1];
+    const latestDate = toNormalizedISO(latest.startDate || latest.rawDate);
     let base = 0;
+
     if (latest.leftoverAfterBatch !== undefined && latest.leftoverAfterBatch !== null && latest.leftoverAfterBatch !== "") {
       base = parseInt(latest.leftoverAfterBatch, 10) || 0;
     } else {
@@ -2896,6 +2927,12 @@
             const cd = toNormalizedISO(c.date);
             if (cd >= winStart && cd <= bD) run += (parseInt(c.total, 10) || 0);
           });
+          ledger.forEach(l => {
+            const ld = toNormalizedISO(l.date);
+            if (ld >= winStart && ld <= bD && l.category === "Sales" && l.target === "Eggs") {
+              run -= (parseInt(l.qty, 10) || 0);
+            }
+          });
           run = Math.max(0, run - (parseInt(b.eggs, 10) || 0));
           winStart = addDaysToISO(bD, 1);
         }
@@ -2906,12 +2943,21 @@
     let post = 0;
     collections.forEach(c => {
       const cd = toNormalizedISO(c.date);
-      if (cd > toNormalizedISO(latest.startDate || latest.rawDate) && cd <= todayISO) {
+      if (cd > latestDate && cd <= todayISO) {
         post += (parseInt(c.total, 10) || 0);
       }
     });
 
-    return Math.max(0, base + post);
+    // Deduct egg sales that occurred after the latest batch set
+    let postSales = 0;
+    ledger.forEach(l => {
+      const ld = toNormalizedISO(l.date);
+      if (ld > latestDate && ld <= todayISO && l.category === "Sales" && l.target === "Eggs") {
+        postSales += (parseInt(l.qty, 10) || 0);
+      }
+    });
+
+    return Math.max(0, base + post - postSales);
   }
 
   function updateDefaultLeftoverPreview() {
@@ -3604,15 +3650,34 @@
 
   function toggleLedgerDynamicFields() {
     const cat = document.getElementById('ledgerCatSelect').value;
-    document.getElementById('salesFieldsRow').style.display = (cat === "Sales") ? "block" : "none";
+    const isSales = (cat === "Sales");
+    document.getElementById('salesFieldsRow').style.display = isSales ? "block" : "none";
     document.getElementById('feedFieldsRow').style.display = (cat === "Feed") ? "block" : "none";
     document.getElementById('medStockFieldsRow').style.display = (cat === "MedStock") ? "block" : "none";
     document.getElementById('treatmentFieldsRow').style.display = (cat === "Treatment") ? "block" : "none";
     document.getElementById('electricityFieldsRow').style.display = (cat === "Electricity") ? "block" : "none";
     document.getElementById('laborFieldsRow').style.display = (cat === "Labor") ? "block" : "none";
     document.getElementById('breederFieldsRow').style.display = (cat === "Breeders") ? "grid" : "none";
+    
+    // Automatically hide Weight input when selling eggs
+    if (isSales) {
+      const isEgg = document.getElementById('salesTargetSelect').value === "Eggs";
+      const wtInput = document.getElementById('salesWeightInput');
+      if (wtInput && wtInput.parentElement) {
+        wtInput.parentElement.style.display = isEgg ? "none" : "block";
+      }
+    }
+    
     if (cat === "Feed") toggleFeedActionLayout();
   }
+
+  /* ATTACH DYNAMIC SALES TARGET EVENT TO AUTO-HIDE EGG WEIGHT */
+  document.addEventListener('DOMContentLoaded', () => {
+    const sTarget = document.getElementById('salesTargetSelect');
+    if (sTarget) {
+      sTarget.addEventListener('change', toggleLedgerDynamicFields);
+    }
+  });
 
   /* SAVE BATCH WITH SAFETY GATEKEEPER & DOUBLE-TAP GUARD */
   function saveBatch() {
@@ -3658,7 +3723,10 @@
       const idx = batches.findIndex(b => b.id === editDocId);
       batches[idx] = data;
       recordModificationAudit(old.createdBy, "Batch Tray", `Updated batch "${old.name}" -> "${name}" (${eggs} eggs)`);
-    } else batches.unshift(data);
+    } else {
+      batches.unshift(data);
+      broadcastPartnerAlert("Batch Tray", `📥 Set new batch <b>${name}</b> with <b>${eggs} eggs</b>.`);
+    }
 
     syncToLocalStorage(); renderBatches(); renderLiveMetrics(); renderCalendar(); renderCommandCenter();
     closeQuickLogModal();
@@ -3818,23 +3886,52 @@
     const dVal = toNormalizedISO(document.getElementById('mortDate').value || getTodayISO());
     const cat = document.getElementById('mortCategory').value;
     const cnt = parseInt(document.getElementById('mortCount').value, 10);
-    const reas = document.getElementById('mortReason').value.trim() || "-";
+    const reas = document.getElementById('mortReason').value.trim() || "Unspecified";
     if (isNaN(cnt) || cnt <= 0) return alert("Enter valid loss count.");
 
     btn.disabled = true;
     const author = getBoundOperatorName();
     let entry = null;
+
     if (editingMortId) {
       const idx = mortality.findIndex(m => m.id === editingMortId);
       if (idx !== -1) {
-        mortality[idx] = { ...mortality[idx], date: dVal, category: cat, dead: cnt, reason: reas, lastModifiedBy: author, lastModifiedAt: Date.now() };
+        const old = mortality[idx];
+        mortality[idx] = { 
+          ...old, 
+          date: dVal, 
+          category: cat, 
+          dead: cnt, 
+          reason: reas, 
+          lastModifiedBy: author, 
+          lastModifiedAt: Date.now() 
+        };
         entry = mortality[idx];
+        recordModificationAudit(old.createdBy, "Mortality", `Updated loss: ${old.dead} ➔ ${cnt} ${cat} (Reason: ${reas})`);
       }
     } else {
-      entry = { id: "mort_" + Date.now(), date: dVal, category: cat, dead: cnt, reason: reas, createdBy: author, createdAt: Date.now() };
+      entry = { 
+        id: "mort_" + Date.now(), 
+        date: dVal, 
+        category: cat, 
+        dead: cnt, 
+        reason: reas, 
+        createdBy: author, 
+        createdAt: Date.now() 
+      };
       mortality.unshift(entry);
+
+      // PARTNER BROADCAST FOR FRESH LOSS
+      broadcastPartnerAlert(
+        "Mortality", 
+        `🚨 Loss logged: <b>${cnt} ${cat}</b> on ${formatDisplayDate(dVal)} (Reason: ${reas})`
+      );
     }
-    syncToLocalStorage(); renderMortality(); renderLiveMetrics(); closeQuickLogModal();
+
+    syncToLocalStorage(); 
+    renderMortality(); 
+    renderLiveMetrics(); 
+    closeQuickLogModal();
     btn.disabled = false;
     if (db && entry) db.collection("mortality").doc(entry.id).set(entry).catch(() => {});
   }
@@ -3873,6 +3970,9 @@
 
   function toggleFullMortView() { showAllMort = !showAllMort; renderMortality(); }
 
+  /* ==========================================================================
+     SAVE LEDGER ENTRY (HANDLES ZERO REVENUE / COURTESY EGG OUTFLOW CLEANLY)
+     ========================================================================== */
   let editingLedgerId = null;
   function saveLedgerEntry() {
     const btn = document.getElementById('ledgerSubmitBtn');
@@ -3890,9 +3990,19 @@
     if (cat === "Sales") {
       entry.target = document.getElementById('salesTargetSelect').value;
       entry.qty = parseInt(document.getElementById('salesQtyInput').value, 10) || 0;
-      entry.weightKg = parseFloat(document.getElementById('salesWeightInput').value) || 0;
+      // Eggs are sold/dispatched strictly by count, not by weight
+      entry.weightKg = (entry.target === "Eggs") ? 0 : (parseFloat(document.getElementById('salesWeightInput').value) || 0);
       entry.priceRupees = parseInt(document.getElementById('salesPriceInput').value, 10) || 0;
-      if (!notes) entry.notes = `Sold ${entry.qty} ${entry.target} ${entry.weightKg > 0 ? '(' + entry.weightKg + 'kg)' : ''} @ ₹${entry.priceRupees}`;
+      
+      const extraDetails = notes ? ` — ${notes}` : '';
+      const priceText = entry.priceRupees > 0 ? ` @ ₹${entry.priceRupees}` : ` (Complimentary / Courtesy)`;
+
+      if (entry.target === "Eggs") {
+        entry.notes = `Dispatched ${entry.qty} Eggs${priceText}${extraDetails}`;
+      } else {
+        const wtStr = entry.weightKg > 0 ? ` (${entry.weightKg}kg)` : '';
+        entry.notes = `Dispatched ${entry.qty} ${entry.target}${wtStr}${priceText}${extraDetails}`;
+      }
     } else if (cat === "Feed") {
       entry.feedAction = document.getElementById('feedActionSelect').value;
       entry.feedType = document.getElementById('feedTypeSelect').value;
@@ -3928,8 +4038,17 @@
         entry.createdAt = ledger[idx].createdAt || Date.now();
         entry.lastModifiedBy = author; entry.lastModifiedAt = Date.now();
         ledger[idx] = entry;
+        recordModificationAudit(entry.createdBy, "Ledger Entry", `Updated ${cat}: ${entry.notes}`);
       }
-    } else ledger.unshift(entry);
+    } else {
+      ledger.unshift(entry);
+      if (cat === "Sales" && entry.target === "Eggs") {
+        const costTag = entry.priceRupees > 0 ? `@ ₹${entry.priceRupees}` : `(Complimentary)`;
+        broadcastPartnerAlert("Egg Dispatch", `🍳 <b>Dispatched ${entry.qty} Eggs</b> ${costTag}${notes ? ' — ' + notes : ''} &bull; Deducted from Ready for Setter.`);
+      } else if (cat === "Sales") {
+        broadcastPartnerAlert("Live Sales", `💰 Sold <b>${entry.qty} ${entry.target}</b> @ ₹${entry.priceRupees}.`);
+      }
+    }
 
     syncToLocalStorage(); renderLedger(); renderLiveMetrics(); renderCalendar(); renderCommandCenter();
     closeQuickLogModal();
@@ -3988,7 +4107,13 @@
     if (btn) { btn.style.display = flt.length > 20 ? "block" : "none"; btn.innerText = showAllLedger ? "⬆ Show Recent 20 Only" : `⬇ Show All (${flt.length})`; }
     list.forEach(l => {
       let badge = "";
-      if (l.category === "Sales" && l.priceRupees) badge = `<div style="font-size:0.78rem; font-weight:900; color:var(--emerald);">Sold: ${l.qty || ''} ${l.target || ''} | +₹${l.priceRupees.toLocaleString()}</div>`;
+      if (l.category === "Sales") {
+        if (l.priceRupees > 0) {
+          badge = `<div style="font-size:0.78rem; font-weight:900; color:var(--emerald);">${l.qty || ''} ${l.target || ''} | +₹${l.priceRupees.toLocaleString()}</div>`;
+        } else {
+          badge = `<div style="font-size:0.78rem; font-weight:900; color:var(--brand);">${l.qty || ''} ${l.target || ''} | Complimentary Outflow</div>`;
+        }
+      }
       else if (l.category === "Feed" && (l.feedAction === "Purchase" || !l.feedAction)) badge = `<div style="font-size:0.78rem; font-weight:900; color:var(--amber);">Feed Purchase: ${l.weightKg}kg | -₹${(l.priceRupees||0).toLocaleString()}</div>`;
       else if (l.category === "Feed" && l.feedAction === "Balance") badge = `<div style="font-size:0.78rem; font-weight:900; color:var(--brand);">Stock Audit: ${l.weightKg}kg balance remaining in shed</div>`;
       else if (l.category === "Electricity") badge = `<div style="font-size:0.78rem; font-weight:900; color:var(--crimson);">Power Bill: -₹${(l.priceRupees||0).toLocaleString()}</div>`;
@@ -5020,8 +5145,12 @@
       const p = parseInt(l.priceRupees, 10) || 0;
       let fin = "-";
       if (l.category === "Sales") { 
-        inFlow += p; 
-        fin = `<span style="color:var(--emerald); font-weight:900;">+₹${p.toLocaleString()}</span>`; 
+        if (p > 0) {
+          inFlow += p; 
+          fin = `<span style="color:var(--emerald); font-weight:900;">+₹${p.toLocaleString()}</span>`; 
+        } else {
+          fin = `<span style="color:var(--brand); font-weight:800;">₹0 (Courtesy)</span>`;
+        }
       }
       else if (["Feed", "MedStock", "Electricity", "Labor", "Maint"].includes(l.category) && p > 0) {
         outFlow += p; 
