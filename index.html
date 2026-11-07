@@ -2652,6 +2652,28 @@
     localStorage.setItem("ad_farms_local_audit_history", JSON.stringify(auditHistory));
   }
 
+  /* AUTOMATIC DATA HEALING (FIXES PAST AMIT SAVE RECORD SO CHICKS RESTORE & EGGS DEDUCT) */
+  function autoHealLedgerRecords() {
+    let touched = false;
+    ledger.forEach(l => {
+      const noteLower = (l.notes || "").toLowerCase();
+      if (l.category === "Sales" && noteLower.includes("amit save")) {
+        if (l.target !== "Eggs" || (parseInt(l.qty, 10) || 0) !== 6) {
+          l.target = "Eggs";
+          l.qty = 6;
+          l.weightKg = 0;
+          l.priceRupees = l.priceRupees || 0;
+          l.notes = "Dispatched 6 Eggs (Complimentary / Courtesy) — Amit Save veterinary";
+          touched = true;
+          if (db) db.collection("ledger").doc(l.id).set(l).catch(() => {});
+        }
+      }
+    });
+    if (touched) {
+      syncToLocalStorage();
+    }
+  }
+
   /* FIRESTORE REALTIME SYNC */
   const firebaseConfig = {
     apiKey: "AIzaSyC0fvccTExFtjDF5jijNVExvdXvyAq54DY",
@@ -2694,7 +2716,15 @@
     }, () => updateNetworkBadge(false));
     db.collection("ledger").onSnapshot(s => {
       let c = []; s.forEach(d => c.push({ id: d.id, ...d.data() }));
-      if (c.length) { ledger = c; syncToLocalStorage(); renderLedger(); renderLiveMetrics(); renderCalendar(); renderCommandCenter(); }
+      if (c.length) { 
+        ledger = c; 
+        autoHealLedgerRecords(); 
+        syncToLocalStorage(); 
+        renderLedger(); 
+        renderLiveMetrics(); 
+        renderCalendar(); 
+        renderCommandCenter(); 
+      }
       updateNetworkBadge(true);
     }, () => updateNetworkBadge(false));
     db.collection("audit_history").onSnapshot(s => {
@@ -2741,7 +2771,6 @@
     displayNextNotice();
   }
 
-  /* HIGH-PRIORITY REUSABLE PARTNER DISPATCH FOR NEW LOGS OR EDITS */
   function broadcastPartnerAlert(moduleName, detailChange) {
     const editor = getBoundOperatorName();
     const targetUser = (editor === operators.user1.name) ? operators.user2.name : operators.user1.name;
@@ -2867,7 +2896,6 @@
       };
     }
 
-    // Retain official milestone title as D14 while adjusting inspection date to Day 13 before lockdown
     return {
       scheduledISO: earlyD13ISO,
       label: `D14: ${b.name}`,
@@ -2884,7 +2912,7 @@
     return { physics: phys, hasHatched: hasHatched, elapsedHours: Math.max(0, (now - phys.startMs) / 3600000), inActiveLockdown: inLockdown, isOverduePull: isOverdue };
   }
 
-  /* SAFE CRATE INVENTORY (COLLECTIONS MINUS TRAY SETS MINUS EGG SALES) */
+  /* RECONCILED SAFE CRATE INVENTORY (COLLECTIONS - TRAY SETS - EGG SALES) */
   function calculateCurrentInventoryStock() {
     const todayISO = getTodayISO();
     const settledBatches = [...batches]
@@ -2902,10 +2930,9 @@
           sum += (parseInt(c.total, 10) || 0);
         }
       });
-      // Deduct egg sales since anchor date
       ledger.forEach(l => {
         const ld = toNormalizedISO(l.date);
-        if (ld > INITIAL_ANCHOR_DATE && ld <= todayISO && l.category === "Sales" && l.target === "Eggs") {
+        if (ld > INITIAL_ANCHOR_DATE && ld <= todayISO && l.category === "Sales" && (l.target === "Eggs" || (l.notes && l.notes.toLowerCase().includes("egg")))) {
           sum -= (parseInt(l.qty, 10) || 0);
         }
       });
@@ -2929,7 +2956,7 @@
           });
           ledger.forEach(l => {
             const ld = toNormalizedISO(l.date);
-            if (ld >= winStart && ld <= bD && l.category === "Sales" && l.target === "Eggs") {
+            if (ld >= winStart && ld <= bD && l.category === "Sales" && (l.target === "Eggs" || (l.notes && l.notes.toLowerCase().includes("egg")))) {
               run -= (parseInt(l.qty, 10) || 0);
             }
           });
@@ -2948,11 +2975,10 @@
       }
     });
 
-    // Deduct egg sales that occurred after the latest batch set
     let postSales = 0;
     ledger.forEach(l => {
       const ld = toNormalizedISO(l.date);
-      if (ld > latestDate && ld <= todayISO && l.category === "Sales" && l.target === "Eggs") {
+      if (ld > latestDate && ld <= todayISO && l.category === "Sales" && (l.target === "Eggs" || (l.notes && l.notes.toLowerCase().includes("egg")))) {
         postSales += (parseInt(l.qty, 10) || 0);
       }
     });
@@ -3432,12 +3458,13 @@
       const lMs = getSafeMs(l.date) || 0;
       if (l.category === "Sales") {
         const q = parseInt(l.qty, 10) || 0;
-        if (l.target === "Chicks") {
+        // Strictly live birds, never count eggs as birds
+        if (l.target === "Chicks" && (!l.notes || !l.notes.toLowerCase().includes("egg"))) {
           if (lMs >= boundary45DMs) cSoldActive += q;
           else cSoldGraduated += q;
         } else if (l.target === "Breeders") {
           bSoldTotal += q;
-        } else {
+        } else if (l.target === "Growers") {
           gSoldTotal += q;
         }
       } else if (l.category === "Breeders") {
@@ -3491,7 +3518,7 @@
     });
     ledger.forEach(l => {
       const lMs = getSafeMs(l.date);
-      if (lMs && lMs >= chickSpanMs && l.category === "Sales" && l.target === "Chicks") {
+      if (lMs && lMs >= chickSpanMs && l.category === "Sales" && l.target === "Chicks" && (!l.notes || !l.notes.toLowerCase().includes("egg"))) {
         chicksSoldInSpan += (parseInt(l.qty, 10) || 0);
       }
     });
@@ -3579,18 +3606,16 @@
     document.getElementById('trayProgressSub').innerText = `${inv} / 102 Tray Filled (${needed} needed)`;
   }
 
-  /* OPEN QUICK LOG MODAL (AUTO-TRIGGERS PREDICTION CHIP & VERIFICATION SIM) */
+  /* OPEN QUICK LOG MODAL */
   function openQuickLogModal(tab) {
     initTodayInputs();
     document.getElementById('quickLogModal').style.display = "flex";
     const btns = document.querySelectorAll('#quickLogModal .sub-tab-btn');
     
-    // 1. Auto-fill eggs and calculate leftovers
     const curStock = calculateCurrentInventoryStock();
     document.getElementById('eggsSet').value = Math.min(102, curStock);
     updateDefaultLeftoverPreview();
     
-    // 2. Immediately calculate and display the Setting Prediction Window Chip
     const predictions = predictNextSafeSettingDate();
     const chipBtn = document.getElementById('quickPredictionChipBtn');
     const chipBox = document.getElementById('quickPredictionChipBox');
@@ -3609,10 +3634,8 @@
       chipBox.style.display = "none";
     }
 
-    // 3. Immediately run date & cabinet collision simulation for default values
     runSettingSimulation();
 
-    // 4. Tab switching logic
     if (tab === 'quickEgg') switchQuickLogTab('quickEgg', btns[1]);
     else if (tab === 'quickMort') switchQuickLogTab('quickMort', btns[2]);
     else if (tab === 'quickLedger') switchQuickLogTab('quickLedger', btns[3]);
@@ -3659,7 +3682,6 @@
     document.getElementById('laborFieldsRow').style.display = (cat === "Labor") ? "block" : "none";
     document.getElementById('breederFieldsRow').style.display = (cat === "Breeders") ? "grid" : "none";
     
-    // Automatically hide Weight input when selling eggs
     if (isSales) {
       const isEgg = document.getElementById('salesTargetSelect').value === "Eggs";
       const wtInput = document.getElementById('salesWeightInput');
@@ -3671,7 +3693,6 @@
     if (cat === "Feed") toggleFeedActionLayout();
   }
 
-  /* ATTACH DYNAMIC SALES TARGET EVENT TO AUTO-HIDE EGG WEIGHT */
   document.addEventListener('DOMContentLoaded', () => {
     const sTarget = document.getElementById('salesTargetSelect');
     if (sTarget) {
@@ -3921,7 +3942,6 @@
       };
       mortality.unshift(entry);
 
-      // PARTNER BROADCAST FOR FRESH LOSS
       broadcastPartnerAlert(
         "Mortality", 
         `🚨 Loss logged: <b>${cnt} ${cat}</b> on ${formatDisplayDate(dVal)} (Reason: ${reas})`
@@ -3970,9 +3990,7 @@
 
   function toggleFullMortView() { showAllMort = !showAllMort; renderMortality(); }
 
-  /* ==========================================================================
-     SAVE LEDGER ENTRY (HANDLES ZERO REVENUE / COURTESY EGG OUTFLOW CLEANLY)
-     ========================================================================== */
+  /* SAVE LEDGER ENTRY (STRICT PRODUCT + QUANTITY PRESERVATION) */
   let editingLedgerId = null;
   function saveLedgerEntry() {
     const btn = document.getElementById('ledgerSubmitBtn');
@@ -3990,18 +4008,24 @@
     if (cat === "Sales") {
       entry.target = document.getElementById('salesTargetSelect').value;
       entry.qty = parseInt(document.getElementById('salesQtyInput').value, 10) || 0;
-      // Eggs are sold/dispatched strictly by count, not by weight
       entry.weightKg = (entry.target === "Eggs") ? 0 : (parseFloat(document.getElementById('salesWeightInput').value) || 0);
       entry.priceRupees = parseInt(document.getElementById('salesPriceInput').value, 10) || 0;
       
-      const extraDetails = notes ? ` — ${notes}` : '';
+      let cleanUserNote = notes;
+      if (cleanUserNote.includes(" — ")) {
+        cleanUserNote = cleanUserNote.split(" — ").slice(1).join(" — ");
+      } else if (cleanUserNote.startsWith("Sold ") || cleanUserNote.startsWith("Dispatched ")) {
+        cleanUserNote = "";
+      }
+
+      const extraDetails = cleanUserNote ? ` — ${cleanUserNote}` : '';
       const priceText = entry.priceRupees > 0 ? ` @ ₹${entry.priceRupees}` : ` (Complimentary / Courtesy)`;
 
       if (entry.target === "Eggs") {
         entry.notes = `Dispatched ${entry.qty} Eggs${priceText}${extraDetails}`;
       } else {
         const wtStr = entry.weightKg > 0 ? ` (${entry.weightKg}kg)` : '';
-        entry.notes = `Dispatched ${entry.qty} ${entry.target}${wtStr}${priceText}${extraDetails}`;
+        entry.notes = `Sold ${entry.qty} ${entry.target}${wtStr}${priceText}${extraDetails}`;
       }
     } else if (cat === "Feed") {
       entry.feedAction = document.getElementById('feedActionSelect').value;
@@ -4044,7 +4068,7 @@
       ledger.unshift(entry);
       if (cat === "Sales" && entry.target === "Eggs") {
         const costTag = entry.priceRupees > 0 ? `@ ₹${entry.priceRupees}` : `(Complimentary)`;
-        broadcastPartnerAlert("Egg Dispatch", `🍳 <b>Dispatched ${entry.qty} Eggs</b> ${costTag}${notes ? ' — ' + notes : ''} &bull; Deducted from Ready for Setter.`);
+        broadcastPartnerAlert("Egg Dispatch", `🍳 <b>Dispatched ${entry.qty} Eggs</b> ${costTag} &bull; Deducted from Ready for Setter.`);
       } else if (cat === "Sales") {
         broadcastPartnerAlert("Live Sales", `💰 Sold <b>${entry.qty} ${entry.target}</b> @ ₹${entry.priceRupees}.`);
       }
@@ -4073,6 +4097,7 @@
 
   function resetLedgerForm() {
     document.getElementById('ledgerNotes').value = ""; document.getElementById('ledgerDate').value = getTodayISO();
+    document.getElementById('salesTargetSelect').value = "Growers";
     document.getElementById('salesQtyInput').value = ""; document.getElementById('salesWeightInput').value = "";
     document.getElementById('salesPriceInput').value = ""; document.getElementById('feedWeightKgInput').value = "";
     document.getElementById('feedCostInput').value = ""; document.getElementById('medItemNameInput').value = "";
@@ -4096,6 +4121,33 @@
     centerActiveTabButton(activeBtn, document.getElementById('ledgerSubBar'));
   }
 
+  /* FORMAT REPORT AND LEDGER ITEM DESCRIPTION GUARANTEED NOT TO DROP COUNT */
+  function getSafeLedgerDescription(l) {
+    if (l.category === "Sales") {
+      const target = l.target || (l.notes && l.notes.toLowerCase().includes("egg") ? "Eggs" : "Growers");
+      const qty = parseInt(l.qty, 10) || 0;
+      const price = parseInt(l.priceRupees, 10) || 0;
+      const wt = parseFloat(l.weightKg) || 0;
+      
+      let note = l.notes || "";
+      let userDetails = note;
+      if (userDetails.includes(" — ")) {
+        userDetails = userDetails.split(" — ").slice(1).join(" — ");
+      } else if (userDetails.startsWith("Sold ") || userDetails.startsWith("Dispatched ")) {
+        userDetails = "";
+      }
+      
+      const extra = userDetails ? ` — ${userDetails}` : '';
+      const priceStr = price > 0 ? ` @ ₹${price.toLocaleString()}` : ` (Complimentary / Courtesy)`;
+      const wtStr = (target !== "Eggs" && wt > 0) ? ` (${wt}kg)` : '';
+      
+      if (qty > 0) {
+        return `${target === "Eggs" ? "Dispatched" : "Sold"} ${qty} ${target}${wtStr}${priceStr}${extra}`;
+      }
+    }
+    return l.notes || "-";
+  }
+
   function renderLedger() {
     const c = document.getElementById('ledgerCardList');
     c.innerHTML = "";
@@ -4105,8 +4157,10 @@
     const list = showAllLedger ? flt : flt.slice(0, 20);
     const btn = document.getElementById('loadMoreLedgerBtn');
     if (btn) { btn.style.display = flt.length > 20 ? "block" : "none"; btn.innerText = showAllLedger ? "⬆ Show Recent 20 Only" : `⬇ Show All (${flt.length})`; }
+    
     list.forEach(l => {
       let badge = "";
+      const desc = getSafeLedgerDescription(l);
       if (l.category === "Sales") {
         if (l.priceRupees > 0) {
           badge = `<div style="font-size:0.78rem; font-weight:900; color:var(--emerald);">${l.qty || ''} ${l.target || ''} | +₹${l.priceRupees.toLocaleString()}</div>`;
@@ -4118,7 +4172,7 @@
       else if (l.category === "Feed" && l.feedAction === "Balance") badge = `<div style="font-size:0.78rem; font-weight:900; color:var(--brand);">Stock Audit: ${l.weightKg}kg balance remaining in shed</div>`;
       else if (l.category === "Electricity") badge = `<div style="font-size:0.78rem; font-weight:900; color:var(--crimson);">Power Bill: -₹${(l.priceRupees||0).toLocaleString()}</div>`;
       else if (l.category === "Labor") badge = `<div style="font-size:0.78rem; font-weight:900; color:var(--violet);">Wages: -₹${(l.priceRupees||10000).toLocaleString()}</div>`;
-      c.innerHTML += `<div class="ledger-item-card"><div class="ledger-item-date">${formatDisplayDate(l.date)}</div><div class="ledger-item-type">${l.category}</div><div class="ledger-item-notes">${l.notes}</div>${badge}</div>`;
+      c.innerHTML += `<div class="ledger-item-card"><div class="ledger-item-date">${formatDisplayDate(l.date)}</div><div class="ledger-item-type">${l.category}</div><div class="ledger-item-notes">${desc}</div>${badge}</div>`;
     });
   }
 
@@ -4228,7 +4282,7 @@
     const col = collections.find(c => toNormalizedISO(c.date) === dateISO);
     if (col) html += `<div class="event-item" style="border-left:4px solid var(--text-secondary);"><b>Pickings:</b> Intact: ${col.total} | Broken: ${col.broken || 0}</div>`;
     ledger.filter(l => toNormalizedISO(l.date) === dateISO).forEach(l => {
-      html += `<div class="event-item" style="border-left:4px solid var(--violet);"><b>${l.category}:</b> ${l.notes}</div>`;
+      html += `<div class="event-item" style="border-left:4px solid var(--violet);"><b>${l.category}:</b> ${getSafeLedgerDescription(l)}</div>`;
     });
     body.innerHTML = html || `<div style="text-align:center; padding:16px;">No records on this date.</div>`;
     document.getElementById('dateModal').style.display = "flex";
@@ -4246,11 +4300,12 @@
     const mSel = document.getElementById('editMortSelect'); mSel.innerHTML = "";
     [...mortality].sort((a,b)=>toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date))).forEach(m => mSel.add(new Option(`${formatDisplayDate(m.date)} — ${m.category}: ${m.dead} dead`, m.id)));
     const lSel = document.getElementById('editLedgerSelect'); lSel.innerHTML = "";
-    [...ledger].sort((a,b)=>toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date))).forEach(l => lSel.add(new Option(`${formatDisplayDate(l.date)} — ${l.category}: ${l.notes}`, l.id)));
+    [...ledger].sort((a,b)=>toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date))).forEach(l => lSel.add(new Option(`${formatDisplayDate(l.date)} — ${l.category}: ${getSafeLedgerDescription(l)}`, l.id)));
     document.getElementById('editCenterModal').style.display = "flex";
   }
 
   function closeEditCenterModal(e) { if (!e || e.target.id === "editCenterModal" || e.target.classList.contains("modal-close")) { document.getElementById('editCenterModal').style.display = "none"; openSettingsModal(); } }
+  
   function proceedEditCollection() {
     const id = document.getElementById('editColSelect').value; const c = collections.find(x => x.id === id); if (!c) return;
     document.getElementById('editCenterModal').style.display = "none";
@@ -4291,19 +4346,33 @@
   }
 
   function proceedEditLedger() {
-    const id = document.getElementById('editLedgerSelect').value; const l = ledger.find(x => x.id === id); if (!l) return;
+    const id = document.getElementById('editLedgerSelect').value; 
+    const l = ledger.find(x => x.id === id); 
+    if (!l) return;
+
     document.getElementById('editCenterModal').style.display = "none";
     document.getElementById('ledgerDate').value = toNormalizedISO(l.date);
     document.getElementById('ledgerCatSelect').value = l.category;
-    document.getElementById('ledgerNotes').value = l.notes || "";
+    
+    let cleanNotes = l.notes || "";
+    if (cleanNotes.includes(" — ")) {
+      cleanNotes = cleanNotes.split(" — ").slice(1).join(" — ");
+    } else if (cleanNotes.startsWith("Sold ") || cleanNotes.startsWith("Dispatched ")) {
+      cleanNotes = "";
+    }
+    document.getElementById('ledgerNotes').value = cleanNotes;
+    
     document.getElementById('editLedgerDocId').value = l.id;
     editingLedgerId = l.id;
     toggleLedgerDynamicFields();
+
     if (l.category === "Sales") {
-      document.getElementById('salesTargetSelect').value = l.target || "Growers";
+      const isEgg = l.target === "Eggs" || (l.notes && l.notes.toLowerCase().includes("egg"));
+      document.getElementById('salesTargetSelect').value = isEgg ? "Eggs" : (l.target || "Growers");
       document.getElementById('salesQtyInput').value = l.qty || "";
       document.getElementById('salesWeightInput').value = l.weightKg || "";
       document.getElementById('salesPriceInput').value = l.priceRupees || "";
+      toggleLedgerDynamicFields();
     } else if (l.category === "Feed") {
       document.getElementById('feedActionSelect').value = l.feedAction || "Purchase";
       document.getElementById('feedTypeSelect').value = l.feedType || "Grower";
@@ -4330,7 +4399,7 @@
     const mSel = document.getElementById('delMortSelect'); mSel.innerHTML = "";
     [...mortality].sort((a,b)=>toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date))).forEach(m => mSel.add(new Option(`${formatDisplayDate(m.date)} — ${m.category}: ${m.dead} dead`, m.id)));
     const lSel = document.getElementById('delLedgerSelect'); lSel.innerHTML = "";
-    [...ledger].sort((a,b)=>toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date))).forEach(l => lSel.add(new Option(`${formatDisplayDate(l.date)} — ${l.category}: ${l.notes}`, l.id)));
+    [...ledger].sort((a,b)=>toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date))).forEach(l => lSel.add(new Option(`${formatDisplayDate(l.date)} — ${l.category}: ${getSafeLedgerDescription(l)}`, l.id)));
     document.getElementById('deleteCenterModal').style.display = "flex";
   }
 
@@ -4447,7 +4516,6 @@
     document.getElementById('dataModal').style.display = "flex";
   }
 
-  /* DUAL EXPORT: WEB PDF ACTION */
   function printReportToPdf() {
     window.print();
   }
@@ -4509,8 +4577,9 @@
         const wt = parseFloat(l.weightKg) || 0;
 
         if (l.category === "Sales") {
-          if (l.target === "Eggs") eggRev += p;
-          else { 
+          if (l.target === "Eggs" || (l.notes && l.notes.toLowerCase().includes("egg"))) {
+            eggRev += p;
+          } else { 
             birdRev += p; 
             birdCnt += (parseInt(l.qty, 10) || 0); 
             birdWt += (parseFloat(l.weightKg) || 0); 
@@ -4744,7 +4813,9 @@
         if (toNormalizedISO(m.date) <= dayISO && (m.category === "Chicks" || !m.category)) cLoss += (parseInt(m.dead, 10) || 0);
       });
       ledger.forEach(l => {
-        if (toNormalizedISO(l.date) <= dayISO && l.category === "Sales" && l.target === "Chicks") cLoss += (parseInt(l.qty, 10) || 0);
+        if (toNormalizedISO(l.date) <= dayISO && l.category === "Sales" && l.target === "Chicks" && (!l.notes || !l.notes.toLowerCase().includes("egg"))) {
+          cLoss += (parseInt(l.qty, 10) || 0);
+        }
       });
       dayChicks = Math.max(0, dayChicks - cLoss);
       sumChicks += dayChicks;
@@ -5156,7 +5227,7 @@
         outFlow += p; 
         fin = `<span style="color:var(--crimson); font-weight:800;">-₹${p.toLocaleString()}</span>`; 
       }
-      rows += `<tr><td><b>${formatDisplayDate(l.date)}</b></td><td style="font-weight:900;">${l.category}</td><td style="text-align:left;">${l.notes}</td><td style="text-align:right; min-width:110px;">${fin}</td><td>${formatReportSignature(l.createdBy, l.lastModifiedBy)}</td></tr>`;
+      rows += `<tr><td><b>${formatDisplayDate(l.date)}</b></td><td style="font-weight:900;">${l.category}</td><td style="text-align:left;">${getSafeLedgerDescription(l)}</td><td style="text-align:right; min-width:110px;">${fin}</td><td>${formatReportSignature(l.createdBy, l.lastModifiedBy)}</td></tr>`;
     });
     const net = inFlow - outFlow;
     const reportHtml = `
@@ -5194,7 +5265,6 @@
 
     let tableHtml = "";
 
-    // 1. COMMERCIAL P&L (WIDE 4-COLUMN FORMAT)
     if (reportContainer.querySelector('.pnl-report-container')) {
       tableHtml += `
         <table border="1" style="border-collapse:collapse; font-family:Calibri,sans-serif; font-size:11pt;">
@@ -5285,9 +5355,7 @@
         }
       });
       tableHtml += `</tbody></table>`;
-    } 
-    // 2. TABULAR STATEMENTS (FEED AUDIT, DAILY EGGS, BATCHES, JOURNAL)
-    else {
+    } else {
       const tables = reportContainer.querySelectorAll('table');
       if (tables.length > 0) {
         tables.forEach((tbl, idx) => {
@@ -5452,9 +5520,10 @@
     }
   }, { passive: true });
 
-  /* INITIALIZATION */
+  /* INITIALIZATION WITH AUTO-HEALING */
   checkAndLockLogo();
   initTodayInputs();
+  autoHealLedgerRecords();
   renderCollections();
   renderBatches();
   renderMortality();
