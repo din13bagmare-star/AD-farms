@@ -105,7 +105,7 @@
     box-shadow: var(--shadow-plate);
   }
 
-  .brand-group { display: flex; align-items: center; gap: 12px; }
+  .brand-group { display: flex; align-items: center; gap: 12px; cursor: pointer; }
 
   .logo-box {
     width: 44px;
@@ -118,10 +118,9 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    cursor: pointer;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
   }
-  .logo-box img { width: 100%; height: 100%; object-fit: contain; }
+  .logo-box img { width: 100%; height: 100%; object-fit: contain; display: none; }
 
   .brand-text h1 {
     margin: 0;
@@ -215,6 +214,7 @@
     font-weight: 800;
     padding: 5px 12px;
     cursor: pointer;
+    width: 100%;
   }
 
   /* COMMAND HERO & OPERATIONAL TELEMETRY */
@@ -304,7 +304,7 @@
   .tag-candle { background: var(--brand-glow); color: var(--brand); }
   .tag-audit { background: var(--amber-glow); color: var(--amber); }
 
-  /* RESTORED CLEAN HARDWARE GRID */
+  /* HARDWARE GRID */
   .hardware-grid-hero {
     display: grid;
     grid-template-columns: 1fr;
@@ -339,7 +339,7 @@
     text-overflow: ellipsis;
   }
 
-  /* TOP 4-METRIC BALANCES STRIP WITH RIGID SYMMETRY */
+  /* TOP 4-METRIC BALANCES STRIP */
   .metrics-strip {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -434,7 +434,7 @@
     color: var(--text-tertiary);
   }
 
-  /* CLEAN SETTER PROGRESS CARD (UNCLUTTERED) */
+  /* SETTER PROGRESS CARD */
   .setter-progress-card {
     background: var(--card-surface);
     border: 1.5px solid var(--emerald);
@@ -484,7 +484,7 @@
     padding-left: 10px;
   }
 
-  /* 4-BLOCK DEDICATED MORTALITY STRIP (TAB 2) */
+  /* 4-BLOCK DEDICATED MORTALITY STRIP */
   .mortality-four-strip {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -1386,192 +1386,180 @@
 </head>
 <body>
 
-<!-- ONE-TIME DEVICE BINDING MODAL -->
-<div class="modal-overlay" id="bindingModal" style="display:none;">
-  <div class="modal-box" onclick="event.stopPropagation()" style="max-width:340px; text-align:center;">
-    <h3 style="justify-content:center; margin-bottom:4px;">
-      <span>📱 Device Setup</span>
-    </h3>
-    <div style="font-size:0.76rem; color:var(--text-secondary); margin-bottom:12px; font-weight:700;">Who owns this phone? Select once to permanently bind your identity:</div>
-
-    <div class="binding-grid">
-      <div class="binding-card" id="bindCardDinesh" onclick="selectBindingProfile('user1')">
-        <div class="binding-avatar-circle" id="bindAvatarDinesh">D</div>
-        <div class="binding-name-label" id="bindNameDinesh">Dinesh</div>
+  <!-- 1. HARDWARE DEVICE BINDING MODAL -->
+  <div id="bindingModal" class="modal-overlay" style="z-index: 9999;">
+    <div class="modal-box" style="text-align: center; max-width: 390px;">
+      <div style="font-size: 0.72rem; font-weight: 900; color: var(--brand); letter-spacing: 0.08em; text-transform: uppercase;">AD Farms Security</div>
+      <h3 style="margin: 4px 0 6px 0; justify-content: center;">Identify This Device</h3>
+      <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 14px;">Select your operator profile and enter your 4-digit PIN (Default: 0000).</p>
+      
+      <div class="binding-grid">
+        <div id="bindCardDinesh" class="binding-card active" onclick="selectBindingProfile('user1')">
+          <div id="bindAvatarDinesh" class="binding-avatar-circle">D</div>
+          <div id="bindNameDinesh" class="binding-name-label">Dinesh</div>
+        </div>
+        <div id="bindCardAkshay" class="binding-card" onclick="selectBindingProfile('user2')">
+          <div id="bindAvatarAkshay" class="binding-avatar-circle">A</div>
+          <div id="bindNameAkshay" class="binding-name-label">Akshay</div>
+        </div>
       </div>
-      <div class="binding-card" id="bindCardAkshay" onclick="selectBindingProfile('user2')">
-        <div class="binding-avatar-circle" id="bindAvatarAkshay">A</div>
-        <div class="binding-name-label" id="bindNameAkshay">Akshay</div>
+
+      <div class="pin-dots-row">
+        <div id="dot0" class="pin-dot"></div>
+        <div id="dot1" class="pin-dot"></div>
+        <div id="dot2" class="pin-dot"></div>
+        <div id="dot3" class="pin-dot"></div>
       </div>
-    </div>
+      <div id="bindErrMsg" style="color: var(--crimson); font-size: 0.76rem; font-weight: 800; min-height: 18px; margin-bottom: 8px;"></div>
 
-    <div style="font-size:0.72rem; color:var(--text-tertiary); font-weight:700;">Enter 4-digit PIN (Default: 0000):</div>
-
-    <div class="pin-dots-row">
-      <div class="pin-dot" id="dot0"></div>
-      <div class="pin-dot" id="dot1"></div>
-      <div class="pin-dot" id="dot2"></div>
-      <div class="pin-dot" id="dot3"></div>
-    </div>
-
-    <div class="keypad-grid">
-      <div class="keypad-key" onclick="pressPinKey('1')">1</div>
-      <div class="keypad-key" onclick="pressPinKey('2')">2</div>
-      <div class="keypad-key" onclick="pressPinKey('3')">3</div>
-      <div class="keypad-key" onclick="pressPinKey('4')">4</div>
-      <div class="keypad-key" onclick="pressPinKey('5')">5</div>
-      <div class="keypad-key" onclick="pressPinKey('6')">6</div>
-      <div class="keypad-key" onclick="pressPinKey('7')">7</div>
-      <div class="keypad-key" onclick="pressPinKey('8')">8</div>
-      <div class="keypad-key" onclick="pressPinKey('9')">9</div>
-      <div class="keypad-key" onclick="pressPinKey('CLR')" style="font-size:0.85rem; color:var(--crimson);">CLR</div>
-      <div class="keypad-key" onclick="pressPinKey('0')">0</div>
-      <div class="keypad-key" onclick="pressPinKey('DEL')" style="font-size:0.85rem;">⌫</div>
-    </div>
-
-    <div id="bindErrMsg" style="font-size:0.75rem; color:var(--crimson); font-weight:800; min-height:18px;"></div>
-  </div>
-</div>
-
-<div class="container" id="mainDashboard">
-
-  <!-- TOP BAR -->
-  <div class="top-bar">
-    <div class="brand-group">
-      <div class="logo-box" id="logoContainer" onclick="triggerUploadOnce()">
-        <img id="logoDisplay" alt="AD Farms" style="display:none;">
-        <span id="placeholderText" style="font-size:0.64rem; font-weight:900; line-height:1.1; text-align:center;">AD<br>FARMS</span>
-      </div>
-      <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="handleLogoUpload(this)">
-      <div class="brand-text">
-        <h1>AD Farms</h1>
-        <div class="sub-title">Herd &amp; Harvest</div>
-      </div>
-    </div>
-    <div class="header-actions">
-      <div class="network-status-badge" id="netStatusBadge">🟢 Synced</div>
-      <button class="btn-settings" onclick="openSettingsModal()" title="Settings">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0-.33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- INTIMATION NOTICE BANNER -->
-  <div class="notice-banner" id="intimationNoticeBanner">
-    <div class="notice-header">
-      <span>⚠️ Activity Notice</span>
-      <span id="noticeTimePill" style="font-size:0.65rem; color:var(--text-tertiary);">--</span>
-    </div>
-    <div class="notice-content" id="noticeContentText">Partner modified a record.</div>
-    <div class="notice-actions">
-      <button class="notice-btn-dismiss" onclick="dismissActiveNotice()">Dismiss</button>
-    </div>
-  </div>
-
-  <!-- OPERATIONAL TELEMETRY BANNER -->
-  <div class="command-hero-banner" id="commandHeroBanner">
-    <div class="hero-top-row">
-      <div class="hero-title-group">
-        <h2>⚡ OPERATIONAL TELEMETRY</h2>
-      </div>
-      <div id="heroDateText" class="hero-date-pill">--</div>
-    </div>
-    
-    <div id="heroTriggersFeed" class="pointwise-stack">
-      <div style="font-size:0.78rem; color:var(--text-secondary); text-align:center; padding:7px 0; font-weight:700;">Scanning telemetry matrix...</div>
-    </div>
-
-    <!-- RESTORED CLEAN HARDWARE STATUS (T1-T5 & H1) -->
-    <div class="hardware-grid-hero">
-      <div class="hw-row">
-        <span class="hw-label">SETTERS (T1–T5)</span>
-        <span id="heroSetterMap" class="hw-value" style="color:var(--emerald);">Scanning Setters...</span>
-      </div>
-      <div class="hw-row">
-        <span class="hw-label">HATCHER (H1)</span>
-        <span id="heroHatcherMap" class="hw-value" style="color:var(--emerald);">🟢 Free / Vacant</span>
+      <div class="keypad-grid">
+        <div class="keypad-key" onclick="pressPinKey('1')">1</div>
+        <div class="keypad-key" onclick="pressPinKey('2')">2</div>
+        <div class="keypad-key" onclick="pressPinKey('3')">3</div>
+        <div class="keypad-key" onclick="pressPinKey('4')">4</div>
+        <div class="keypad-key" onclick="pressPinKey('5')">5</div>
+        <div class="keypad-key" onclick="pressPinKey('6')">6</div>
+        <div class="keypad-key" onclick="pressPinKey('7')">7</div>
+        <div class="keypad-key" onclick="pressPinKey('8')">8</div>
+        <div class="keypad-key" onclick="pressPinKey('9')">9</div>
+        <div class="keypad-key" style="font-size: 0.85rem; color: var(--crimson);" onclick="pressPinKey('CLR')">CLR</div>
+        <div class="keypad-key" onclick="pressPinKey('0')">0</div>
+        <div class="keypad-key" style="font-size: 0.85rem;" onclick="pressPinKey('DEL')">⌫</div>
       </div>
     </div>
   </div>
 
-  <!-- TOP 4 METRICS STRIP: STRICT SYMMETRY ACROSS ALL NUMBERS -->
-  <div class="metrics-strip">
-    <div class="metric-card" style="color:var(--emerald);">
-      <div class="metric-lbl">CHICKS (&lt;45D)</div>
-      <div class="metric-val" id="liveChicksTopDisplay">0</div>
-    </div>
-    <div class="metric-card" style="color:var(--brand);">
-      <div class="metric-lbl">GROWERS (≥45D)</div>
-      <div class="metric-val" id="liveGrowersTopDisplay">125</div>
-    </div>
-    <div class="metric-card" style="color:var(--violet);">
-      <div class="metric-lbl">BREEDERS</div>
-      <div class="metric-val" id="liveBreedersTopDisplay">150</div>
-    </div>
-    <div class="metric-card" style="color:var(--amber);">
-      <div class="metric-lbl">INCUBATING</div>
-      <div class="metric-val" id="inIncubatorDisplay">0</div>
-    </div>
-  </div>
+  <!-- 2. MAIN DASHBOARD -->
+  <div id="mainDashboard" class="container">
 
-  <!-- 3-CARD PRODUCTION SUMMARY STRIP -->
-  <div class="production-summary-strip">
-    <div class="production-card">
-      <span class="prod-lbl">LIFETIME EGGS</span>
-      <span class="prod-val" id="lifetimeEggsDisplay" style="color:var(--brand);">0</span>
-      <span class="prod-sub">Total Produced</span>
-    </div>
-    <div class="production-card">
-      <span class="prod-lbl">30D DAILY AVG</span>
-      <span class="prod-val" id="rollingAvgEggDisplay" style="color:var(--amber);">0.0</span>
-      <span class="prod-sub" id="rollingAvgSub">Rolling Standard</span>
-    </div>
-    <div class="production-card">
-      <span class="prod-lbl">LIFETIME CHICKS</span>
-      <span class="prod-val" id="lifetimeChicksDisplay" style="color:var(--emerald);">0</span>
-      <span class="prod-sub">Total Pulled</span>
-    </div>
-  </div>
-
-  <!-- CLEAN SETTER PROGRESS CARD (UNCLUTTERED) -->
-  <div class="setter-progress-card" id="setterCard">
-    <div class="setter-left">
-      <span class="setter-tag">🥚 READY FOR SETTER</span>
-      <span class="setter-sub" id="trayProgressSub">0 / 102 Tray Filled (102 needed)</span>
-    </div>
-    <div class="setter-val" id="inventoryEggsDisplay">0</div>
-  </div>
-
-  <!-- MAIN TAB NAVIGATION BAR -->
-  <div class="tab-bar" id="mainTabBar">
-    <button class="tab-btn active" onclick="switchMainTab(0)">🗄 Rack View</button>
-    <button class="tab-btn" onclick="switchMainTab(1)">🥚 Daily Eggs</button>
-    <button class="tab-btn" onclick="switchMainTab(2)">☠ Mortality</button>
-    <button class="tab-btn" onclick="switchMainTab(3)">📝 Farm Ledger</button>
-    <button class="tab-btn" onclick="switchMainTab(4)">📅 Timeline</button>
-  </div>
-
-  <!-- VIEWPORT TABS -->
-  <div id="tabContainer">
-
-    <!-- TAB 0: RACK VIEW -->
-    <div class="tab-panel active" id="tabPanel0">
-      <div style="font-size:0.74rem; font-weight:900; color:var(--text-tertiary); text-transform:uppercase; margin:4px 3px 9px 3px; letter-spacing:0.05em;">Incubator Tray Matrix (5 Setters T1–T5 + Hatcher H1)</div>
-      <div id="batchContainer"></div>
-      <div id="noBatches" style="text-align:center; color:var(--text-secondary); padding:35px 20px; font-size:0.88rem; font-weight:700;">No active batches inside incubator.<br><br>Tap <b>+ Quick Log</b> below to set a new batch.</div>
-      <div class="archive-toggle-bar" style="text-align:center; margin:10px 0;">
-        <button class="btn-neutral" style="border-radius:20px; padding:7px 16px;" onclick="toggleArchivedBatches()" id="toggleArchiveBtn">👁️ Show Archived Batches</button>
+    <!-- PARTNER INTIMATION BANNER -->
+    <div id="intimationNoticeBanner" class="notice-banner">
+      <div class="notice-header">
+        <span>🔔 Partner Activity Notice</span>
+        <span id="noticeTimePill" style="color: var(--text-tertiary);"></span>
       </div>
-      <div id="archivedContainer" style="display:none;"></div>
+      <div id="noticeContentText" class="notice-content"></div>
+      <div class="notice-actions">
+        <button class="notice-btn-dismiss" onclick="dismissActiveNotice()">✓ Acknowledge &amp; Dismiss</button>
+      </div>
+    </div>
+
+    <!-- TOP BRAND HEADER -->
+    <div class="top-bar">
+      <div class="brand-group" onclick="triggerUploadOnce()">
+        <div class="logo-box">
+          <img id="logoDisplay" alt="AD Farms">
+          <span id="placeholderText" style="font-weight:900; font-size:0.95rem; color:var(--brand);">AD</span>
+          <input type="file" id="logoInput" accept="image/*" style="display:none;" onchange="handleLogoUpload(this)">
+        </div>
+        <div class="brand-text">
+          <h1>AD Farms</h1>
+          <div class="sub-title">HERD &amp; HARVEST</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span id="netStatusBadge" class="network-status-badge">🟢 Synced</span>
+        <button class="btn-settings" onclick="openSettingsModal()" title="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- OPERATIONAL TELEMETRY HERO -->
+    <div class="command-hero-banner">
+      <div class="hero-top-row">
+        <div class="hero-title-group">
+          <h2>⚡ Operational Telemetry</h2>
+        </div>
+        <span id="heroDateText" class="hero-date-pill">Today</span>
+      </div>
+      <div id="heroTriggersFeed" class="pointwise-stack"></div>
+      <div class="hardware-grid-hero">
+        <div class="hw-row">
+          <span class="hw-label">SETTERS (T1–T5)</span>
+          <span id="heroSetterMap" class="hw-value">Checking...</span>
+        </div>
+        <div class="hw-row">
+          <span class="hw-label">HATCHER (H1)</span>
+          <span id="heroHatcherMap" class="hw-value">Checking...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP 4-METRIC BALANCES STRIP -->
+    <div class="metrics-strip">
+      <div class="metric-card" style="color: var(--emerald);">
+        <div class="metric-lbl">CHICKS (&lt;45D)</div>
+        <div id="liveChicksTopDisplay" class="metric-val">0</div>
+      </div>
+      <div class="metric-card" style="color: var(--brand);">
+        <div class="metric-lbl">GROWERS (≥45D)</div>
+        <div id="liveGrowersTopDisplay" class="metric-val">0</div>
+      </div>
+      <div class="metric-card" style="color: var(--violet);">
+        <div class="metric-lbl">BREEDERS</div>
+        <div id="liveBreedersTopDisplay" class="metric-val">0</div>
+      </div>
+      <div class="metric-card" style="color: var(--amber);">
+        <div class="metric-lbl">INCUBATING</div>
+        <div id="inIncubatorDisplay" class="metric-val">0</div>
+      </div>
+    </div>
+
+    <!-- 3-CARD PRODUCTION SUMMARY STRIP -->
+    <div class="production-summary-strip">
+      <div class="production-card">
+        <div class="prod-lbl">LIFETIME EGGS</div>
+        <div id="lifetimeEggsDisplay" class="prod-val" style="color: var(--text-primary);">0</div>
+        <div class="prod-sub">Total Produced</div>
+      </div>
+      <div class="production-card">
+        <div class="prod-lbl">30D DAILY AVG</div>
+        <div id="rollingAvgEggDisplay" class="prod-val" style="color: var(--amber);">0.0</div>
+        <div id="rollingAvgSub" class="prod-sub">Rolling Standard</div>
+      </div>
+      <div class="production-card">
+        <div class="prod-lbl">LIFETIME CHICKS</div>
+        <div id="lifetimeChicksDisplay" class="prod-val" style="color: var(--brand);">0</div>
+        <div class="prod-sub">Total Pulled</div>
+      </div>
+    </div>
+
+    <!-- READY FOR SETTER PROGRESS CARD -->
+    <div id="setterCard" class="setter-progress-card">
+      <div class="setter-left">
+        <div class="setter-tag">🥚 READY FOR SETTER</div>
+        <div id="trayProgressSub" class="setter-sub">0 / 102 Tray Filled (102 needed)</div>
+      </div>
+      <div id="inventoryEggsDisplay" class="setter-val">0</div>
+    </div>
+
+    <!-- MAIN NAVIGATION TAB BAR -->
+    <div id="mainTabBar" class="tab-bar">
+      <button class="tab-btn active" onclick="switchMainTab(0)">🗄️ Rack View</button>
+      <button class="tab-btn" onclick="switchMainTab(1)">🥚 Daily Eggs</button>
+      <button class="tab-btn" onclick="switchMainTab(2)">☠️ Mortality</button>
+      <button class="tab-btn" onclick="switchMainTab(3)">📝 Farm Ledger</button>
+      <button class="tab-btn" onclick="switchMainTab(4)">📅 Timeline</button>
+    </div>
+
+    <!-- TAB 0: RACK VIEW (INCUBATOR BATCHES) -->
+    <div id="tabPanel0" class="tab-panel active">
+      <div class="card" style="padding: 14px;">
+        <h2 style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.04em;">Incubator Tray Matrix (5 Setters T1–T5 + Hatcher H1)</h2>
+        <div id="noBatches" style="text-align:center; color:var(--text-tertiary); font-weight:700; padding:12px; display:none;">No active batches in incubator.</div>
+        <div id="batchContainer"></div>
+        
+        <button id="toggleArchiveBtn" class="load-more-btn" style="display:none;" onclick="toggleArchivedBatches()">👁️ Show Archived Batches</button>
+        <div id="archivedContainer" style="display:none; margin-top:12px;"></div>
+      </div>
     </div>
 
     <!-- TAB 1: DAILY EGGS -->
-    <div class="tab-panel" id="tabPanel1">
+    <div id="tabPanel1" class="tab-panel">
       <div class="card">
-        <h2>📅 Daily Pickings Log</h2>
+        <h2>Daily Egg Collection Register</h2>
+        <div id="noCollections" style="text-align:center; color:var(--text-tertiary); font-weight:700; padding:12px; display:none;">No egg pickings logged yet.</div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -1581,773 +1569,729 @@
                 <th>Aftn</th>
                 <th>Eve</th>
                 <th>Broken</th>
-                <th>Total</th>
+                <th>Intact</th>
               </tr>
             </thead>
             <tbody id="collectionBody"></tbody>
           </table>
-          <div id="noCollections" style="text-align:center; color:var(--text-secondary); padding:18px; font-size:0.84rem; font-weight:700;">No collections entered yet.</div>
         </div>
-        <button id="loadMoreEggsBtn" class="load-more-btn" onclick="toggleFullEggView()" style="display:none;">⬇ Show All Historical Logs</button>
+        <button id="loadMoreEggsBtn" class="load-more-btn" style="display:none;" onclick="toggleFullEggView()">⬇ Show All</button>
       </div>
     </div>
 
-    <!-- TAB 2: 4-BLOCK DEDICATED MORTALITY STRIP (LOSSES ONLY) -->
-    <div class="tab-panel" id="tabPanel2">
-      <div class="card" style="padding:10px 8px;">
-        <div class="mortality-four-strip">
-          <!-- BLOCK 1: ALL-TIME CHICKS -->
-          <div class="mort-metric-card">
-            <span class="mort-metric-title">ALL-TIME CHICKS</span>
-            <span class="mort-metric-val" id="allTimeChicksDeadVal">0</span>
-            <span class="mort-metric-pct" id="allTimeChicksPctSub">All-Time: 0.0%</span>
-          </div>
-          <!-- BLOCK 2: CURRENT CHICKS (45D) -->
-          <div class="mort-metric-card">
-            <span class="mort-metric-title">CURRENT CHICKS</span>
-            <span class="mort-metric-val" id="currentChicksDeadVal">0</span>
-            <span class="mort-metric-pct" id="currentChicksPctSub">45D: 0.0%</span>
-          </div>
-          <!-- BLOCK 3: GROWERS (180D) -->
-          <div class="mort-metric-card">
-            <span class="mort-metric-title">GROWERS (180D)</span>
-            <span class="mort-metric-val" id="growersDeadVal">0</span>
-            <span class="mort-metric-pct" id="growersPctSub">6M: 0.0%</span>
-          </div>
-          <!-- BLOCK 4: BREEDERS (548D) -->
-          <div class="mort-metric-card">
-            <span class="mort-metric-title">BREEDERS (548D)</span>
-            <span class="mort-metric-val" id="breedersDeadVal">0</span>
-            <span class="mort-metric-pct" id="breedersPctSub">1.5Y: 0.0%</span>
-          </div>
-        </div>
-      </div>
-
+    <!-- TAB 2: MORTALITY -->
+    <div id="tabPanel2" class="tab-panel">
       <div class="card">
-        <div class="sub-tab-bar" id="mortalitySubBar">
-          <button class="sub-tab-btn active" data-cat="All" onclick="switchMortalityView('All', this)">All Sections</button>
-          <button class="sub-tab-btn" data-cat="Chicks" onclick="switchMortalityView('Chicks', this)">🐥 Chicks</button>
-          <button class="sub-tab-btn" data-cat="Growers" onclick="switchMortalityView('Growers', this)">🐓 Growers</button>
-          <button class="sub-tab-btn" data-cat="Breeders" onclick="switchMortalityView('Breeders', this)">🥚 Breeders</button>
+        <h2>Flock Loss &amp; Mortality Analytics</h2>
+        
+        <div class="mortality-four-strip" style="margin-bottom: 12px;">
+          <div class="mort-metric-card">
+            <div class="mort-metric-title">ALL-TIME CHICK LOSS</div>
+            <div id="allTimeChicksDeadVal" class="mort-metric-val">0</div>
+            <div id="allTimeChicksPctSub" class="mort-metric-pct">All-Time: 0.0%</div>
+          </div>
+          <div class="mort-metric-card">
+            <div class="mort-metric-title">CURRENT CHICKS (&lt;45D)</div>
+            <div id="currentChicksDeadVal" class="mort-metric-val" style="color: var(--amber);">0</div>
+            <div id="currentChicksPctSub" class="mort-metric-pct">45D: 0.0%</div>
+          </div>
+          <div class="mort-metric-card">
+            <div class="mort-metric-title">GROWERS LOSS</div>
+            <div id="growersDeadVal" class="mort-metric-val" style="color: var(--brand);">0</div>
+            <div id="growersPctSub" class="mort-metric-pct">6M: 0.0%</div>
+          </div>
+          <div class="mort-metric-card">
+            <div class="mort-metric-title">BREEDERS LOSS</div>
+            <div id="breedersDeadVal" class="mort-metric-val" style="color: var(--violet);">0</div>
+            <div id="breedersPctSub" class="mort-metric-pct">1.5Y: 0.0%</div>
+          </div>
         </div>
+
+        <div id="mortalitySubBar" class="sub-tab-bar">
+          <button class="sub-tab-btn active" data-cat="All" onclick="switchMortalityView('All', this)">All</button>
+          <button class="sub-tab-btn" data-cat="Chicks" onclick="switchMortalityView('Chicks', this)">Chicks</button>
+          <button class="sub-tab-btn" data-cat="Growers" onclick="switchMortalityView('Growers', this)">Growers</button>
+          <button class="sub-tab-btn" data-cat="Breeders" onclick="switchMortalityView('Breeders', this)">Breeders</button>
+        </div>
+
+        <div id="noMortality" style="text-align:center; color:var(--text-tertiary); font-weight:700; padding:12px; display:none;">No mortality entries in this category.</div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>Date</th>
-                <th>Section</th>
+                <th>Flock</th>
                 <th>Dead</th>
-                <th style="text-align:left;">Reason / Symptoms</th>
+                <th style="text-align:left;">Observed Cause / Notes</th>
               </tr>
             </thead>
             <tbody id="mortalityBody"></tbody>
           </table>
-          <div id="noMortality" style="text-align:center; color:var(--text-secondary); padding:18px; font-size:0.84rem; font-weight:700;">No mortality recorded.</div>
         </div>
-        <button id="loadMoreMortBtn" class="load-more-btn" onclick="toggleFullMortView()" style="display:none;">⬇ Show All Historical Losses</button>
+        <button id="loadMoreMortBtn" class="load-more-btn" style="display:none;" onclick="toggleFullMortView()">⬇ Show All</button>
       </div>
     </div>
 
-    <!-- TAB 3: ACTIVITY & TASK LEDGER -->
-    <div class="tab-panel" id="tabPanel3">
+    <!-- TAB 3: FARM LEDGER -->
+    <div id="tabPanel3" class="tab-panel">
       <div class="ledger-main-card">
         <div class="ledger-header">
-          <div class="ledger-title-text">
-            <span>📝</span> Activity &amp; Task Ledger
-          </div>
-          <button class="btn-new-log" onclick="openQuickLogModal('quickLedger')">+ New Log</button>
+          <div class="ledger-title-text">📝 Commercial &amp; Activity Ledger</div>
+          <button class="btn-new-log" onclick="openQuickLogModal('quickLedger')">+ New Entry</button>
         </div>
 
-        <div class="sub-tab-bar" id="ledgerSubBar">
+        <div id="ledgerSubBar" class="sub-tab-bar">
           <button class="sub-tab-btn active" data-cat="All" onclick="filterLedgerView('All', this)">All</button>
-          <button class="sub-tab-btn" data-cat="Sales" onclick="filterLedgerView('Sales', this)">💰 Sales</button>
-          <button class="sub-tab-btn" data-cat="Feed" onclick="filterLedgerView('Feed', this)">🌽 Feed</button>
-          <button class="sub-tab-btn" data-cat="MedStock" onclick="filterLedgerView('MedStock', this)">📦 Med Stock</button>
-          <button class="sub-tab-btn" data-cat="Treatment" onclick="filterLedgerView('Treatment', this)">💉 Dosing</button>
-          <button class="sub-tab-btn" data-cat="Electricity" onclick="filterLedgerView('Electricity', this)">⚡ Power</button>
-          <button class="sub-tab-btn" data-cat="Labor" onclick="filterLedgerView('Labor', this)">👷 Labor</button>
-          <button class="sub-tab-btn" data-cat="Breeders" onclick="filterLedgerView('Breeders', this)">🥚 Breeders</button>
-          <button class="sub-tab-btn" data-cat="Maint" onclick="filterLedgerView('Maint', this)">🔧 Maint</button>
-          <button class="sub-tab-btn" data-cat="Note" onclick="filterLedgerView('Note', this)">📌 Note</button>
+          <button class="sub-tab-btn" data-cat="Sales" onclick="filterLedgerView('Sales', this)">Sales</button>
+          <button class="sub-tab-btn" data-cat="Feed" onclick="filterLedgerView('Feed', this)">Feed</button>
+          <button class="sub-tab-btn" data-cat="MedStock" onclick="filterLedgerView('MedStock', this)">MedStock</button>
+          <button class="sub-tab-btn" data-cat="Treatment" onclick="filterLedgerView('Treatment', this)">Treatment</button>
+          <button class="sub-tab-btn" data-cat="Electricity" onclick="filterLedgerView('Electricity', this)">Electricity</button>
+          <button class="sub-tab-btn" data-cat="Labor" onclick="filterLedgerView('Labor', this)">Labor</button>
+          <button class="sub-tab-btn" data-cat="Breeders" onclick="filterLedgerView('Breeders', this)">Breeders</button>
+          <button class="sub-tab-btn" data-cat="Maint" onclick="filterLedgerView('Maint', this)">Maint</button>
+          <button class="sub-tab-btn" data-cat="Note" onclick="filterLedgerView('Note', this)">Note</button>
         </div>
 
+        <div id="noLedgerCards" style="text-align:center; color:var(--text-tertiary); font-weight:700; padding:12px; display:none;">No ledger entries found.</div>
         <div id="ledgerCardList"></div>
-        <div id="noLedgerCards" style="text-align:center; color:var(--text-secondary); padding:35px 10px; font-size:0.88rem; font-weight:700;">No activity logged yet.<br><br>Tap <b>+ New Log</b> to record tasks, medicines, sales, power bills, or feed purchases.</div>
-        <button id="loadMoreLedgerBtn" class="load-more-btn" onclick="toggleFullLedgerView()" style="display:none;">⬇ Show All Historical Entries</button>
+        <button id="loadMoreLedgerBtn" class="load-more-btn" style="display:none;" onclick="toggleFullLedgerView()">⬇ Show All</button>
       </div>
     </div>
 
-    <!-- TAB 4: TIMELINE -->
-    <div class="tab-panel" id="tabPanel4">
-      <div class="card" style="padding:13px 10px;">
+    <!-- TAB 4: TIMELINE CALENDAR -->
+    <div id="tabPanel4" class="tab-panel">
+      <div class="card">
         <div class="cal-header">
           <button onclick="changeMonth(-1)">◀</button>
-          <h3 id="calMonthYear" style="margin:0; font-size:1.02rem; font-weight:900; color:var(--text-primary);">Month</h3>
+          <span id="calMonthYear" style="font-weight: 900; font-size: 1.05rem;">Month Year</span>
           <button onclick="changeMonth(1)">▶</button>
         </div>
-
         <div class="cal-grid-header">
-          <div class="cal-day-name">Sun</div>
-          <div class="cal-day-name">Mon</div>
-          <div class="cal-day-name">Tue</div>
-          <div class="cal-day-name">Wed</div>
-          <div class="cal-day-name">Thu</div>
-          <div class="cal-day-name">Fri</div>
-          <div class="cal-day-name">Sat</div>
+          <div class="cal-day-name">SUN</div>
+          <div class="cal-day-name">MON</div>
+          <div class="cal-day-name">TUE</div>
+          <div class="cal-day-name">WED</div>
+          <div class="cal-day-name">THU</div>
+          <div class="cal-day-name">FRI</div>
+          <div class="cal-day-name">SAT</div>
         </div>
-
-        <div class="cal-grid-body" id="calGridBody"></div>
-
-        <div style="font-size:0.74rem; font-weight:700; text-align:center; color:var(--text-tertiary); margin-top:11px;">💡 Tap any date to add notes or review events.</div>
+        <div id="calGridBody" class="cal-grid-body"></div>
+        <div style="text-align:center; font-size:0.75rem; color:var(--text-tertiary); font-weight:700; margin-top:12px;">
+          💡 Tap any date to add notes or review events.
+        </div>
       </div>
     </div>
 
   </div>
 
-</div>
+  <!-- FLOATING + QUICK LOG BUTTON -->
+  <button class="fab-quick-log" onclick="openQuickLogModal('quickBatch')">+ Quick Log</button>
 
-<!-- FLOATING QUICK LOG BUTTON -->
-<button class="fab-quick-log" onclick="openQuickLogModal()">
-  <span>+ Quick Log</span>
-</button>
+  <!-- 3. QUICK LOG DRAWER MODAL -->
+  <div id="quickLogModal" class="modal-overlay" onclick="closeQuickLogModal(event)">
+    <div class="modal-box">
+      <h3>
+        <span>⚡ Quick Farm Log</span>
+        <button class="modal-close" onclick="closeQuickLogModal()">✕</button>
+      </h3>
 
-<!-- SETTINGS MODAL -->
-<div class="modal-overlay" id="settingsModal" onclick="closeSettingsModal(event)">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <h3>
-      <span>⚙️ Control Matrix</span>
-      <button class="modal-close" onclick="closeSettingsModal()">✕</button>
-    </h3>
-
-    <div class="settings-option" onclick="openProfileSettingsModal()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); padding:13px 15px; border-radius:16px; margin-bottom:11px; cursor:pointer;">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <div class="binding-avatar-circle" id="settingsActiveAvatar" style="width:40px; height:40px; font-size:1rem; margin:0;">-</div>
-        <div>
-          <div style="font-weight:900; font-size:0.90rem;">Phone Identity</div>
-          <div id="operatorStatusSetting" style="font-size:0.75rem; color:var(--brand); font-weight:800;">Bound to Dinesh</div>
-        </div>
+      <div class="sub-tab-bar" style="margin-bottom:14px;">
+        <button class="sub-tab-btn active" onclick="switchQuickLogTab('quickBatch', this)">📥 Set Tray</button>
+        <button class="sub-tab-btn" onclick="switchQuickLogTab('quickEgg', this)">🥚 Eggs</button>
+        <button class="sub-tab-btn" onclick="switchQuickLogTab('quickMort', this)">☠️ Loss</button>
+        <button class="sub-tab-btn" onclick="switchQuickLogTab('quickLedger', this)">📝 Ledger</button>
       </div>
-      <span style="color:var(--brand); font-size:0.80rem; font-weight:900;">Edit Profile</span>
-    </div>
 
-    <div class="settings-option" onclick="toggleThemeMode()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); padding:13px 15px; border-radius:16px; margin-bottom:11px; cursor:pointer;">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <span id="themeMenuIcon" style="font-size:1.30rem;">☀</span>
-        <div>
-          <div style="font-weight:900; font-size:0.90rem;">Appearance Theme</div>
-          <div id="themeMenuStatus" style="font-size:0.75rem; color:var(--text-tertiary); font-weight:600;">Light Theme</div>
+      <!-- PANEL A: SET TRAY -->
+      <div id="quickBatchForm" class="quick-form-panel">
+        <div id="quickPredictionChipBox" style="display:none; margin-bottom:12px;">
+          <button id="quickPredictionChipBtn" type="button" onclick="applySuggestedSettingDate()" style="width:100%; text-align:left; background:var(--brand-glow); border:1.5px solid var(--brand); color:var(--brand); padding:10px 12px; border-radius:12px; font-size:0.78rem; cursor:pointer; line-height:1.4;"></button>
         </div>
-      </div>
-      <span style="color:var(--brand); font-size:0.82rem; font-weight:900;">Switch</span>
-    </div>
 
-    <div class="settings-option" onclick="openReportFromSettings()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); padding:13px 15px; border-radius:16px; margin-bottom:11px; cursor:pointer;">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <span style="font-size:1.30rem;">📊</span>
-        <div>
-          <div style="font-weight:900; font-size:0.90rem;">Export Farm Reports</div>
-          <div style="font-size:0.75rem; color:var(--text-tertiary); font-weight:600;">Audits (P&amp;L Business, Reconciled Feed Table, Trays, Activity)</div>
+        <input type="hidden" id="editDocId">
+        <div class="form-row">
+          <div>
+            <label>Batch / Tray ID</label>
+            <input type="text" id="bname" placeholder="e.g. B18T1">
+          </div>
+          <div>
+            <label>Eggs Set (Max 102)</label>
+            <input type="number" id="eggsSet" max="102" min="1" oninput="updateDefaultLeftoverPreview(); runSettingSimulation();">
+          </div>
         </div>
-      </div>
-      <span style="color:var(--brand); font-size:1.05rem; font-weight:900;">▶</span>
-    </div>
 
-    <div class="settings-option" onclick="openEditCenterModal()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); padding:13px 15px; border-radius:16px; margin-bottom:11px; cursor:pointer;">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <span style="font-size:1.30rem;">✏️</span>
-        <div>
-          <div style="color:var(--brand); font-weight:900; font-size:0.90rem;">Edit Center Hub</div>
-          <div style="font-size:0.75rem; color:var(--text-tertiary); font-weight:600;">Chronologically sorted record modification</div>
+        <div class="form-row">
+          <div>
+            <label>Setting Date</label>
+            <input type="date" id="sdate" onchange="runSettingSimulation()">
+          </div>
+          <div>
+            <label>Setting Time</label>
+            <input type="time" id="stime" value="19:00" onchange="runSettingSimulation()">
+          </div>
         </div>
-      </div>
-      <span style="color:var(--brand); font-size:1.05rem; font-weight:900;">▶</span>
-    </div>
 
-    <div class="settings-option" onclick="openDeleteFromSettings()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); padding:13px 15px; border-radius:16px; margin-bottom:11px; cursor:pointer;">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <span style="font-size:1.30rem;">🗑️</span>
-        <div>
-          <div style="color:var(--crimson); font-weight:900; font-size:0.90rem;">Delete Center</div>
-          <div style="font-size:0.75rem; color:var(--text-tertiary); font-weight:600;">Purge erroneous entries chronologically</div>
+        <div style="margin-bottom: 11px;">
+          <label>Crate Leftover Override (Auto-calculated)</label>
+          <input type="number" id="batchLeftoverOverride" placeholder="Auto">
         </div>
-      </div>
-      <span style="color:var(--crimson); font-size:1.05rem; font-weight:900;">▶</span>
-    </div>
 
-    <div class="settings-option" onclick="openAuditHistoryModal()" style="display:flex; align-items:center; justify-content:space-between; background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); padding:13px 15px; border-radius:16px; margin-bottom:11px; cursor:pointer;">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <span style="font-size:1.30rem;">📜</span>
-        <div>
-          <div style="font-weight:900; font-size:0.90rem;">Recent Modification History</div>
-          <div style="font-size:0.75rem; color:var(--text-tertiary); font-weight:600;">Audit log of all partner changes</div>
+        <div id="settingSimulationOutput" class="sim-box" style="display:none;"></div>
+
+        <button id="submitBtn" class="btn-submit" onclick="saveBatch()">Set Batch</button>
+        <button id="cancelBtn" class="btn-cancel" onclick="closeQuickLogModal()">Cancel Edit</button>
+      </div>
+
+      <!-- PANEL B: LOG EGGS -->
+      <div id="quickEggForm" class="quick-form-panel" style="display:none;">
+        <div class="form-row">
+          <div>
+            <label>Collection Date</label>
+            <input type="date" id="colDate">
+          </div>
+          <div>
+            <label>Shift Slot</label>
+            <select id="colSlot">
+              <option value="Morning">Morning</option>
+              <option value="Afternoon">Afternoon</option>
+              <option value="Evening">Evening</option>
+            </select>
+          </div>
         </div>
+        <div class="form-row">
+          <div>
+            <label>Intact Eggs Collected</label>
+            <input type="number" id="colCount" min="0" placeholder="0">
+          </div>
+          <div>
+            <label>Broken / Cracked</label>
+            <input type="number" id="colBroken" min="0" value="0">
+          </div>
+        </div>
+        <button id="colSubmitBtn" class="btn-submit" style="background:var(--emerald);" onclick="saveCollection()">Log Pickings</button>
+        <button id="colCancelBtn" class="btn-cancel" onclick="closeQuickLogModal()">Cancel Edit</button>
       </div>
-      <span style="color:var(--brand); font-size:1.05rem; font-weight:900;">▶</span>
-    </div>
 
-    <div style="text-align:center; margin-top:14px;">
-      <button style="background:none; border:none; color:var(--text-tertiary); font-size:0.70rem; font-weight:800; text-decoration:underline; cursor:pointer;" onclick="rebindDeviceIdentity()">⚠️ Reset &amp; Rebind This Device Identity</button>
+      <!-- PANEL C: LOG MORTALITY -->
+      <div id="quickMortForm" class="quick-form-panel" style="display:none;">
+        <div class="form-row">
+          <div>
+            <label>Date</label>
+            <input type="date" id="mortDate">
+          </div>
+          <div>
+            <label>Flock Category</label>
+            <select id="mortCategory">
+              <option value="Chicks">Chicks (&lt;45D)</option>
+              <option value="Growers">Growers (≥45D)</option>
+              <option value="Breeders">Breeders</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom: 11px;">
+          <label>Birds Lost (Count)</label>
+          <input type="number" id="mortCount" min="1" placeholder="1">
+        </div>
+        <div style="margin-bottom: 11px;">
+          <label>Observed Symptoms / Cause</label>
+          <input type="text" id="mortReason" placeholder="e.g. Smothering, heat stress, weak chick">
+        </div>
+        <button id="mortSubmitBtn" class="btn-submit" style="background:var(--crimson);" onclick="saveMortality()">Log Loss</button>
+        <button id="mortCancelBtn" class="btn-cancel" onclick="closeQuickLogModal()">Cancel Edit</button>
+      </div>
+
+      <!-- PANEL D: ACTIVITY LEDGER -->
+      <div id="quickLedgerForm" class="quick-form-panel" style="display:none;">
+        <input type="hidden" id="editLedgerDocId">
+        <div class="form-row">
+          <div>
+            <label>Date</label>
+            <input type="date" id="ledgerDate">
+          </div>
+          <div>
+            <label>Ledger Category</label>
+            <select id="ledgerCatSelect" onchange="toggleLedgerDynamicFields()">
+              <option value="Sales">💰 Sales / Dispatch</option>
+              <option value="Feed">🌽 Feed (Purchase / Balance)</option>
+              <option value="MedStock">📦 Medicine Purchase</option>
+              <option value="Treatment">💉 Flock Dosing / Vaccine</option>
+              <option value="Electricity">⚡ Electricity Bill</option>
+              <option value="Labor">👷 Labor Wages</option>
+              <option value="Breeders">🐓 Breeder Addition</option>
+              <option value="Maint">🔧 Maintenance</option>
+              <option value="Note">📌 General Note</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- SALES SUB-FIELDS -->
+        <div id="salesFieldsRow">
+          <div class="form-row">
+            <div>
+              <label>Product / Stock</label>
+              <select id="salesTargetSelect" onchange="toggleLedgerDynamicFields()">
+                <option value="Growers">Growers (Live Birds)</option>
+                <option value="Eggs">Eggs (Table / Hatching)</option>
+                <option value="Chicks">Chicks</option>
+                <option value="Breeders">Breeders</option>
+              </select>
+            </div>
+            <div>
+              <label>Quantity (Count)</label>
+              <input type="number" id="salesQtyInput" min="1" placeholder="e.g. 6">
+            </div>
+          </div>
+          <div class="form-row">
+            <div>
+              <label>Total Weight (Kg)</label>
+              <input type="number" step="0.01" id="salesWeightInput" placeholder="0.0">
+            </div>
+            <div>
+              <label>Amount Received (₹)</label>
+              <input type="number" id="salesPriceInput" min="0" placeholder="0 for Complimentary">
+            </div>
+          </div>
+        </div>
+
+        <!-- FEED SUB-FIELDS -->
+        <div id="feedFieldsRow" style="display:none;">
+          <div class="form-row">
+            <div>
+              <label>Feed Action</label>
+              <select id="feedActionSelect" onchange="toggleFeedActionLayout()">
+                <option value="Purchase">Bag Purchase (+In)</option>
+                <option value="Balance">Month-End Shed Balance</option>
+              </select>
+            </div>
+            <div>
+              <label>Feed Variety</label>
+              <select id="feedTypeSelect">
+                <option value="Starter">Chick Starter</option>
+                <option value="Grower">Grower Mash</option>
+                <option value="Layer">Layer Mash</option>
+                <option value="Maize">Whole Maize</option>
+                <option value="Wheat">Wheat</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div>
+              <label id="feedQtyLabel">Weight Bought (Kg)</label>
+              <input type="number" step="0.1" id="feedWeightKgInput" placeholder="50">
+            </div>
+            <div id="feedCostContainer">
+              <label>Total Bill Cost (₹)</label>
+              <input type="number" id="feedCostInput" placeholder="2000">
+            </div>
+          </div>
+        </div>
+
+        <!-- MEDSTOCK SUB-FIELDS -->
+        <div id="medStockFieldsRow" style="display:none;">
+          <div class="form-row">
+            <div>
+              <label>Medicine / Vaccine Name</label>
+              <input type="text" id="medItemNameInput" placeholder="e.g. Lasota, Gumboro">
+            </div>
+            <div>
+              <label>Type</label>
+              <select id="medTypeSelect">
+                <option value="Vaccine">Vaccine</option>
+                <option value="Antibiotic">Antibiotic / Tonic</option>
+                <option value="Disinfectant">Disinfectant</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div>
+              <label>Pack Size</label>
+              <input type="text" id="medPackSizeInput" placeholder="e.g. 1000 Doses / 1L">
+            </div>
+            <div>
+              <label>Bill Amount (₹)</label>
+              <input type="number" id="medPriceInput" placeholder="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- TREATMENT SUB-FIELDS -->
+        <div id="treatmentFieldsRow" style="display:none;">
+          <div class="form-row">
+            <div>
+              <label>Target Flock</label>
+              <select id="treatFlockSelect">
+                <option value="Chicks">Chicks</option>
+                <option value="Growers">Growers</option>
+                <option value="Breeders">Breeders</option>
+                <option value="All">All Sheds</option>
+              </select>
+            </div>
+            <div>
+              <label>Vial / Bottle Status</label>
+              <select id="treatBottleStatusSelect">
+                <option value="Opened">Opened / In-Use</option>
+                <option value="Finished">Finished / Empty</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- ELECTRICITY SUB-FIELDS -->
+        <div id="electricityFieldsRow" style="display:none;">
+          <div class="form-row">
+            <div>
+              <label>Billing Month / Period</label>
+              <input type="text" id="powerBillPeriodInput" placeholder="e.g. Oct 2026">
+            </div>
+            <div>
+              <label>Bill Amount (₹)</label>
+              <input type="number" id="powerBillAmountInput" placeholder="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- LABOR SUB-FIELDS -->
+        <div id="laborFieldsRow" style="display:none;">
+          <div class="form-row">
+            <div>
+              <label>Staff / Worker Name</label>
+              <input type="text" id="laborWorkerInput" value="Farm Attendant">
+            </div>
+            <div>
+              <label>Wages Paid (₹)</label>
+              <input type="number" id="laborWageInput" value="10000">
+            </div>
+          </div>
+        </div>
+
+        <!-- BREEDERS SUB-FIELDS -->
+        <div id="breederFieldsRow" class="form-row" style="display:none;">
+          <div>
+            <label>Source</label>
+            <select id="breederSourceSelect">
+              <option value="GrowerStock">Promoted from Growers</option>
+              <option value="ExternalPurchase">External Purchase</option>
+            </select>
+          </div>
+          <div>
+            <label>Birds Added (Qty)</label>
+            <input type="number" id="breederQtyInput" value="0">
+          </div>
+        </div>
+
+        <div style="margin-bottom: 11px;">
+          <label>Buyer Name / Particulars / Notes</label>
+          <input type="text" id="ledgerNotes" placeholder="e.g. Mr. Amit Save veterinary">
+        </div>
+
+        <button id="ledgerSubmitBtn" class="btn-submit" style="background:var(--violet);" onclick="saveLedgerEntry()">Save to Activity Ledger</button>
+        <button id="ledgerCancelBtn" class="btn-cancel" onclick="closeQuickLogModal()">Cancel Edit</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- PROFILE SETTINGS MODAL -->
-<div class="modal-overlay" id="profileModal" onclick="closeProfileModal(event)">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <h3>
-      <span>👤 My Identity Profile</span>
-      <button class="modal-close" onclick="closeProfileModal()">✕</button>
-    </h3>
-
-    <div style="text-align:center; margin-bottom:14px;">
-      <div class="binding-avatar-circle" id="profileAvatarPreview" style="width:72px; height:72px; font-size:1.75rem; margin-bottom:8px; cursor:pointer;" onclick="document.getElementById('profilePicInput').click()">-</div>
-      <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="handleProfilePicUpload(this)">
-      <button class="btn-neutral" style="padding:4px 12px; font-size:0.75rem; font-weight:800;" onclick="document.getElementById('profilePicInput').click()">📷 Update Photo</button>
-    </div>
-
-    <div style="margin-bottom:11px;">
-      <label>Display Name (Used for Signatures)</label>
-      <input type="text" id="profileNameInput" placeholder="Enter name">
-    </div>
-
-    <div class="form-row">
-      <div>
-        <label>Current PIN</label>
-        <input type="password" id="profileCurPinInput" maxlength="4" placeholder="4 digits">
-      </div>
-      <div>
-        <label>New 4-Digit PIN</label>
-        <input type="password" id="profileNewPinInput" maxlength="4" placeholder="New PIN">
-      </div>
-    </div>
-
-    <div id="profileEditMsg" style="font-size:0.76rem; font-weight:800; min-height:18px; text-align:center; margin-bottom:8px;"></div>
-    <button class="btn-submit" onclick="saveProfileChanges()">Save Profile</button>
-  </div>
-</div>
-
-<!-- AUDIT HISTORY MODAL -->
-<div class="modal-overlay" id="auditHistoryModal" onclick="closeAuditHistoryModal(event)">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <h3>
-      <span>📜 Modification Audit Log</span>
-      <button class="modal-close" onclick="closeAuditHistoryModal()">✕</button>
-    </h3>
-    <div id="auditLogContainer" style="max-height:60vh; overflow-y:auto;"></div>
-  </div>
-</div>
-
-<!-- CENTRALIZED EDIT CENTER MODAL -->
-<div class="modal-overlay" id="editCenterModal" onclick="closeEditCenterModal(event)">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <h3>
-      <span style="color:var(--brand);">✏️ Edit Center Hub</span>
-      <button class="modal-close" onclick="closeEditCenterModal()">✕</button>
-    </h3>
-
-    <div style="background:var(--brand-glow); border:1.5px solid var(--brand); border-radius:15px; padding:13px; margin-bottom:11px;">
-      <h4 style="margin:0 0 5px 0; font-size:0.86rem; color:var(--brand); font-weight:900;">🥚 Edit Egg Collection Log</h4>
-      <select id="editColSelect" style="margin-bottom:7px;"></select>
-      <button class="btn-submit" style="background:var(--brand); padding:8px; font-size:0.80rem; min-height:38px;" onclick="proceedEditCollection()">Load &amp; Edit Egg Log</button>
-    </div>
-
-    <div style="background:var(--brand-glow); border:1.5px solid var(--brand); border-radius:15px; padding:13px; margin-bottom:11px;">
-      <h4 style="margin:0 0 5px 0; font-size:0.86rem; color:var(--brand); font-weight:900;">🐥 Edit Incubation Batch Details</h4>
-      <select id="editBatchSelect" style="margin-bottom:7px;"></select>
-      <button class="btn-submit" style="background:var(--brand); padding:8px; font-size:0.80rem; min-height:38px;" onclick="proceedEditBatch()">Load &amp; Edit Tray Batch</button>
-    </div>
-
-    <div style="background:var(--brand-glow); border:1.5px solid var(--brand); border-radius:15px; padding:13px; margin-bottom:11px;">
-      <h4 style="margin:0 0 5px 0; font-size:0.86rem; color:var(--brand); font-weight:900;">☠ Edit Mortality Log</h4>
-      <select id="editMortSelect" style="margin-bottom:7px;"></select>
-      <button class="btn-submit" style="background:var(--brand); padding:8px; font-size:0.80rem; min-height:38px;" onclick="proceedEditMortality()">Load &amp; Edit Mortality</button>
-    </div>
-
-    <div style="background:var(--brand-glow); border:1.5px solid var(--brand); border-radius:15px; padding:13px;">
-      <h4 style="margin:0 0 5px 0; font-size:0.86rem; color:var(--brand); font-weight:900;">📝 Edit Farm Ledger Entry</h4>
-      <select id="editLedgerSelect" style="margin-bottom:7px;"></select>
-      <button class="btn-submit" style="background:var(--brand); padding:8px; font-size:0.80rem; min-height:38px;" onclick="proceedEditLedger()">Load &amp; Edit Ledger Entry</button>
-    </div>
-  </div>
-</div>
-
-<!-- UNIVERSAL QUICK LOG DRAWER (WITH PULL-DAY EVENING AVAILABILITY CHIP) -->
-<div class="modal-overlay" id="quickLogModal" onclick="closeQuickLogModal(event)">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <h3>
-      <span id="quickLogTitleText">⚡ Quick Log Station</span>
-      <button class="modal-close" onclick="closeQuickLogModal()">✕</button>
-    </h3>
-
-    <div class="sub-tab-bar" id="quickLogSubTabs">
-      <button class="sub-tab-btn active" onclick="switchQuickLogTab('quickBatch', this)">🐥 Tray</button>
-      <button class="sub-tab-btn" onclick="switchQuickLogTab('quickEgg', this)">🥚 Eggs</button>
-      <button class="sub-tab-btn" onclick="switchQuickLogTab('quickMort', this)">☠ Loss</button>
-      <button class="sub-tab-btn" onclick="switchQuickLogTab('quickLedger', this)">📝 Ledger</button>
-    </div>
-
-    <!-- 1. BATCH FORM -->
-    <div id="quickBatchForm" class="quick-form-panel">
-      <input type="hidden" id="editDocId" value="">
-      
-      <!-- DYNAMIC PULL-DAY EVENING AVAILABILITY CHIP -->
-      <div id="quickPredictionChipBox" style="margin-bottom:10px; display:none;">
-        <button type="button" id="quickPredictionChipBtn" onclick="applySuggestedSettingDate()" style="background:var(--emerald-glow); border:1.5px solid var(--emerald); color:var(--emerald); border-radius:12px; font-size:0.74rem; font-weight:900; padding:8px 10px; width:100%; text-align:left; cursor:pointer; line-height:1.4;">
-          ⚡ Available Setting Window...
-        </button>
-      </div>
-
-      <div class="form-row">
-        <div>
-          <label>Tray Designation</label>
-          <input type="text" id="bname" placeholder="e.g. B1T3 or B2(T4T5)">
-        </div>
-        <div>
-          <label>Count (Max 102)</label>
-          <input type="number" id="eggsSet" min="1" max="102" oninput="runSettingSimulation()">
-        </div>
-      </div>
-      <div class="form-row">
-        <div>
-          <label>Setting Date</label>
-          <input type="date" id="sdate" onchange="runSettingSimulation(); updateDefaultLeftoverPreview();">
-        </div>
-        <div>
-          <label>Setting Time</label>
-          <input type="time" id="stime" value="19:00" onchange="runSettingSimulation()">
-        </div>
-      </div>
-
-      <div style="margin-bottom:11px; background:var(--card-surface-subtle); padding:9px 12px; border-radius:13px; border:1px solid var(--border-hairline);">
-        <label style="color:var(--brand);">Physical Leftover Eggs in Storage After This Batch</label>
-        <input type="number" id="batchLeftoverOverride" min="0" placeholder="e.g. 14">
-        <div style="font-size:0.68rem; color:var(--text-tertiary); margin-top:4px;">Locks your exact physical crate balance so future collections add up precisely.</div>
-      </div>
-
-      <div id="settingSimulationOutput" class="sim-box" style="display:none;"></div>
-
-      <button class="btn-submit" id="submitBtn" onclick="saveBatch()">Set Batch</button>
-      <button class="btn-cancel" id="cancelBtn" onclick="resetBatchForm()">Cancel</button>
-    </div>
-
-    <!-- 2. EGGS FORM -->
-    <div id="quickEggForm" class="quick-form-panel" style="display:none;">
-      <div class="form-row">
-        <div>
-          <label>Collection Date</label>
-          <input type="date" id="colDate">
-        </div>
-        <div>
-          <label>Slot</label>
-          <select id="colSlot">
-            <option value="Morning">Morning (1st)</option>
-            <option value="Afternoon">Afternoon (2nd)</option>
-            <option value="Evening">Evening (3rd)</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div>
-          <label>Good Intact</label>
-          <input type="number" id="colCount" placeholder="e.g. 35" min="0">
-        </div>
-        <div>
-          <label>Broken</label>
-          <input type="number" id="colBroken" placeholder="e.g. 2" min="0" value="0">
-        </div>
-      </div>
-      <button class="btn-submit" id="colSubmitBtn" onclick="saveCollection()">Log Pickings</button>
-      <button class="btn-cancel" id="colCancelBtn" onclick="resetEggForm()">Cancel</button>
-    </div>
-
-    <!-- 3. MORTALITY FORM -->
-    <div id="quickMortForm" class="quick-form-panel" style="display:none;">
-      <div class="form-row">
-        <div>
-          <label>Date</label>
-          <input type="date" id="mortDate">
-        </div>
-        <div>
-          <label>Section</label>
-          <select id="mortCategory">
-            <option value="Chicks">Chicks (Brooder &lt;45D)</option>
-            <option value="Growers">Grower Stock (≥45D)</option>
-            <option value="Breeders">Breeder / Layers</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div>
-          <label>Loss Count</label>
-          <input type="number" id="mortCount" placeholder="e.g. 2" min="1">
-        </div>
-        <div>
-          <label>Cause / Symptoms</label>
-          <input type="text" id="mortReason" placeholder="e.g. Cold stress">
-        </div>
-      </div>
-      <button class="btn-submit" id="mortSubmitBtn" style="background:var(--crimson);" onclick="saveMortality()">Log Loss</button>
-      <button class="btn-cancel" id="mortCancelBtn" onclick="resetMortForm()">Cancel</button>
-    </div>
-
-    <!-- 4. LEDGER FORM -->
-    <div id="quickLedgerForm" class="quick-form-panel" style="display:none;">
-      <input type="hidden" id="editLedgerDocId" value="">
-      
-      <div class="form-row">
-        <div>
-          <label>Date</label>
-          <input type="date" id="ledgerDate">
-        </div>
-        <div>
-          <label>Category</label>
-          <select id="ledgerCatSelect" onchange="toggleLedgerDynamicFields()">
-            <option value="Sales">💰 Sales (Birds / Eggs)</option>
-            <option value="Feed">🌽 Feed (Mash / Grain / Stock Audit)</option>
-            <option value="MedStock">📦 Med Stock (Inward Purchase)</option>
-            <option value="Treatment">💉 Flock Dosing / Treatment</option>
-            <option value="Electricity">⚡ Electricity Bill</option>
-            <option value="Labor">👷 Labor / Wages</option>
-            <option value="Breeders">🥚 Breeder Inflow / Transfer</option>
-            <option value="Maint">🔧 Maintenance / Task</option>
-            <option value="Note">📌 Note / Observation</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- SALES MATRIX -->
-      <div id="salesFieldsRow">
-        <div class="form-row">
-          <div>
-            <label>Product Sold</label>
-            <select id="salesTargetSelect">
-              <option value="Growers">🐓 Growers (Live Stock)</option>
-              <option value="Breeders">🥚 Breeders (Live Stock)</option>
-              <option value="Chicks">🐥 Chicks (Live Stock)</option>
-              <option value="Eggs">🍳 Table Eggs (Revenue)</option>
-            </select>
-          </div>
-          <div>
-            <label>Qty (Birds / Eggs)</label>
-            <input type="number" id="salesQtyInput" placeholder="0" min="0">
-          </div>
-        </div>
-        <div class="form-row">
-          <div>
-            <label>Total Weight (Kg)</label>
-            <input type="number" step="0.1" id="salesWeightInput" placeholder="e.g. 2.5">
-          </div>
-          <div>
-            <label>Total Revenue (₹)</label>
-            <input type="number" id="salesPriceInput" placeholder="e.g. 2000">
-          </div>
-        </div>
-      </div>
-
-      <!-- FEED MATRIX -->
-      <div id="feedFieldsRow" style="display:none;">
-        <div class="form-row">
-          <div>
-            <label>Feed Action</label>
-            <select id="feedActionSelect" onchange="toggleFeedActionLayout()">
-              <option value="Purchase">📦 Purchase / Inflow</option>
-              <option value="Balance">⚖ Month-End Stock Balance (Leftover)</option>
-            </select>
-          </div>
-          <div>
-            <label>Feed Specification</label>
-            <select id="feedTypeSelect">
-              <option value="Grower">🐓 Grower Mash</option>
-              <option value="Layer">🥚 Layer Mash</option>
-              <option value="Starter">🐣 Chick Starter</option>
-              <option value="Maize">🌽 Whole / Cracked Maize</option>
-              <option value="Wheat">🌾 Wheat Grain</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div>
-            <label id="feedQtyLabel">Weight Bought (Kg)</label>
-            <input type="number" step="0.5" id="feedWeightKgInput" placeholder="e.g. 50">
-          </div>
-          <div id="feedCostContainer">
-            <label>Total Cost (₹)</label>
-            <input type="number" id="feedCostInput" placeholder="e.g. 1950">
-          </div>
-        </div>
-      </div>
-
-      <!-- MEDS PURCHASE MATRIX -->
-      <div id="medStockFieldsRow" style="display:none;">
-        <div class="form-row">
-          <div>
-            <label>Product Name</label>
-            <input type="text" id="medItemNameInput" placeholder="e.g. Vimeral, Dewormer">
-          </div>
-          <div>
-            <label>Type / Classification</label>
-            <select id="medTypeSelect">
-              <option value="Vitamin">Vitamins / Tonics</option>
-              <option value="Dewormer">Dewormer</option>
-              <option value="Vaccine">Vaccine</option>
-              <option value="Antibiotic">Antibiotic / Med</option>
-              <option value="Electrolyte">Electrolytes</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div>
-            <label>Package Size</label>
-            <input type="text" id="medPackSizeInput" placeholder="e.g. 500ml or 100g">
-          </div>
-          <div>
-            <label>Purchase Price (₹)</label>
-            <input type="number" id="medPriceInput" placeholder="e.g. 650">
-          </div>
-        </div>
-      </div>
-
-      <!-- DOSING / TREATMENT EVENT -->
-      <div id="treatmentFieldsRow" style="display:none;">
-        <div class="form-row">
-          <div>
-            <label>Administered Flock</label>
-            <select id="treatFlockSelect">
-              <option value="Chicks">🐥 Chicks</option>
-              <option value="Growers">🐓 Growers</option>
-              <option value="Breeders">🥚 Breeders</option>
-              <option value="Entire Herd">🌐 Entire Herd</option>
-            </select>
-          </div>
-          <div>
-            <label>Stock Status</label>
-            <select id="treatBottleStatusSelect">
-              <option value="In Use">Bottle Still In Use</option>
-              <option value="Finished">Bottle Finished / Empty</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- ELECTRICITY BILL -->
-      <div id="electricityFieldsRow" style="display:none;">
-        <div class="form-row">
-          <div>
-            <label>Billing Month / Period</label>
-            <input type="text" id="powerBillPeriodInput" placeholder="e.g. Oct 2026">
-          </div>
-          <div>
-            <label>Bill Amount (₹)</label>
-            <input type="number" id="powerBillAmountInput" placeholder="e.g. 3450">
-          </div>
-        </div>
-      </div>
-
-      <!-- LABOR WAGES (PERMANENT ₹10,000 DEFAULT UNTIL REVISED) -->
-      <div id="laborFieldsRow" style="display:none;">
-        <div class="form-row">
-          <div>
-            <label>Worker / Role</label>
-            <input type="text" id="laborWorkerInput" value="Farm Attendant" placeholder="Worker Name">
-          </div>
-          <div>
-            <label>Wage Paid (₹) [Permanent 10k Default]</label>
-            <input type="number" id="laborWageInput" value="10000" placeholder="10000">
-          </div>
-        </div>
-      </div>
-
-      <!-- BREEDER INFLOW -->
-      <div id="breederFieldsRow" class="form-row" style="display:none;">
-        <div>
-          <label>Breeder Source</label>
-          <select id="breederSourceSelect">
-            <option value="GrowerStock">From Grower Stock (Moves)</option>
-            <option value="OtherStock">External Purchase (Adds)</option>
-          </select>
-        </div>
-        <div>
-          <label>Bird Qty</label>
-          <input type="number" id="breederQtyInput" placeholder="Qty" min="0" value="0">
-        </div>
-      </div>
-
-      <div style="margin-bottom:8px;">
-        <label id="ledgerNotesLabel">Particulars &amp; Details</label>
-        <input type="text" id="ledgerNotes" placeholder="e.g. Sold prime growers to hotel">
-      </div>
-
-      <button class="btn-submit" id="ledgerSubmitBtn" style="background:var(--violet);" onclick="saveLedgerEntry()">Save to Activity Ledger</button>
-      <button class="btn-cancel" id="ledgerCancelBtn" onclick="resetLedgerForm()">Cancel</button>
-    </div>
-
-  </div>
-</div>
-
-<!-- DATE DETAILS MODAL -->
-<div class="modal-overlay" id="dateModal" onclick="closeDateDetails(event)">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <h3>
-      <span id="modalDateTitle">Date Details</span>
-      <button class="modal-close" onclick="closeDateDetails()">✕</button>
-    </h3>
-    <div id="modalDetailsBody"></div>
-    <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:16px; padding:13px; margin-top:13px;">
-      <div style="font-size:0.84rem; font-weight:900; color:var(--violet); margin-bottom:7px;">📝 Append Entry on this Date</div>
-      <div class="form-row">
-        <div>
-          <label>Category</label>
-          <select id="calTaskCatSelect">
-            <option value="Sales">💰 Sales</option>
-            <option value="Feed">🌽 Feed</option>
-            <option value="Treatment">💉 Treatment</option>
-            <option value="Electricity">⚡ Power</option>
-            <option value="Labor">👷 Labor</option>
-            <option value="Maint">🔧 Maint</option>
+  <!-- 4. DATE DETAILS MODAL -->
+  <div id="dateModal" class="modal-overlay" onclick="closeDateDetails(event)">
+    <div class="modal-box">
+      <h3>
+        <span id="modalDateTitle">Date Details</span>
+        <button class="modal-close" onclick="closeDateDetails()">✕</button>
+      </h3>
+      <div id="modalDetailsBody"></div>
+      <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border-hairline);">
+        <label>Add Quick Note / Reminder to This Date</label>
+        <div style="display:flex; gap:6px; margin-bottom:8px;">
+          <select id="calTaskCatSelect" style="width:36%;">
             <option value="Note">📌 Note</option>
+            <option value="Treatment">💉 Dosing</option>
+            <option value="Maint">🔧 Maint</option>
           </select>
+          <input type="text" id="calTaskDescInput" placeholder="Enter details...">
+        </div>
+        <button class="btn-submit" style="padding:10px; font-size:0.84rem;" onclick="saveDateTaskToLedger()">+ Add Note</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. SETTINGS MODAL -->
+  <div id="settingsModal" class="modal-overlay" onclick="closeSettingsModal(event)">
+    <div class="modal-box">
+      <h3>
+        <span>⚙️ Farm Settings &amp; Controls</span>
+        <button class="modal-close" onclick="closeSettingsModal()">✕</button>
+      </h3>
+
+      <div class="event-item" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="openProfileSettingsModal()">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div id="settingsActiveAvatar" class="binding-avatar-circle" style="width:38px; height:38px; font-size:0.95rem; margin:0;">D</div>
+          <div>
+            <div style="font-weight:900; font-size:0.88rem;">Operator Profile &amp; PIN</div>
+            <div id="operatorStatusSetting" style="font-size:0.72rem; color:var(--text-tertiary);">Bound to Dinesh</div>
+          </div>
+        </div>
+        <span>▶</span>
+      </div>
+
+      <div class="event-item" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="toggleThemeMode()">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span id="themeMenuIcon" style="font-size:1.2rem;">🌙</span>
+          <div>
+            <div style="font-weight:900; font-size:0.88rem;">Display Appearance</div>
+            <div id="themeMenuStatus" style="font-size:0.72rem; color:var(--text-tertiary);">Light Theme</div>
+          </div>
+        </div>
+        <span>Switch</span>
+      </div>
+
+      <div class="event-item" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="openReportFromSettings()">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:1.2rem;">📊</span>
+          <div>
+            <div style="font-weight:900; font-size:0.88rem;">Audit Reports &amp; P&amp;L Statements</div>
+            <div style="font-size:0.72rem; color:var(--text-tertiary);">Generate PDF &amp; Excel reports</div>
+          </div>
+        </div>
+        <span>▶</span>
+      </div>
+
+      <div class="event-item" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="openEditCenterModal()">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:1.2rem;">✏️</span>
+          <div>
+            <div style="font-weight:900; font-size:0.88rem;">Edit Center &amp; Batch Restore</div>
+            <div style="font-size:0.72rem; color:var(--text-tertiary);">Modify logs or retrieve archived batches</div>
+          </div>
+        </div>
+        <span>▶</span>
+      </div>
+
+      <div class="event-item" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="openAuditHistoryModal()">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:1.2rem;">🛡️</span>
+          <div>
+            <div style="font-weight:900; font-size:0.88rem;">Partner Modification Log</div>
+            <div style="font-size:0.72rem; color:var(--text-tertiary);">View edit history between partners</div>
+          </div>
+        </div>
+        <span>▶</span>
+      </div>
+
+      <div class="event-item" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="openDeleteFromSettings()">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:1.2rem;">🗑️</span>
+          <div>
+            <div style="font-weight:900; font-size:0.88rem; color:var(--crimson);">Delete Center</div>
+            <div style="font-size:0.72rem; color:var(--text-tertiary);">Remove erroneous entries permanently</div>
+          </div>
+        </div>
+        <span>▶</span>
+      </div>
+
+      <div style="text-align:center; margin-top:12px;">
+        <button class="btn-neutral" style="width:100%; font-size:0.76rem;" onclick="rebindDeviceIdentity()">🔄 Switch / Re-bind Phone Identity</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. PROFILE SETTINGS MODAL -->
+  <div id="profileModal" class="modal-overlay" onclick="closeProfileModal(event)">
+    <div class="modal-box">
+      <h3>
+        <span>👤 Edit Operator Profile</span>
+        <button class="modal-close" onclick="closeProfileModal()">✕</button>
+      </h3>
+      <div style="text-align:center; margin-bottom:14px;">
+        <div id="profileAvatarPreview" class="binding-avatar-circle" style="width:64px; height:64px; font-size:1.5rem; cursor:pointer;" onclick="document.getElementById('profilePicInput').click()">D</div>
+        <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="handleProfilePicUpload(this)">
+        <div style="font-size:0.7rem; color:var(--brand); font-weight:800;">Tap circle to upload photo</div>
+      </div>
+      <div style="margin-bottom: 11px;">
+        <label>Display Name</label>
+        <input type="text" id="profileNameInput">
+      </div>
+      <div class="form-row">
+        <div>
+          <label>Current PIN</label>
+          <input type="password" id="profileCurPinInput" maxlength="4" placeholder="••••">
+        </div>
+        <div>
+          <label>New 4-Digit PIN</label>
+          <input type="password" id="profileNewPinInput" maxlength="4" placeholder="Optional">
         </div>
       </div>
-      <div style="margin-bottom:7px;">
-        <label>Details</label>
-        <input type="text" id="calTaskDescInput" placeholder="e.g. Deworming, fixed rack, or observation note">
-      </div>
-      <button class="btn-submit" style="background:var(--violet); padding:10px; font-size:0.86rem;" onclick="saveDateTaskToLedger()">Save to Ledger</button>
+      <div id="profileEditMsg" style="font-size:0.78rem; font-weight:800; text-align:center; min-height:18px; margin-bottom:8px;"></div>
+      <button class="btn-submit" onclick="saveProfileChanges()">Save Profile Changes</button>
     </div>
   </div>
-</div>
 
-<!-- RECORD PURGE / DELETE CENTER MODAL -->
-<div class="modal-overlay" id="deleteCenterModal" onclick="closeDeleteCenterModal(event)">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <h3>
-      <span style="color:var(--crimson);">🗑️ Record Purge Center</span>
-      <button class="modal-close" onclick="closeDeleteCenterModal()">✕</button>
-    </h3>
-    <div style="background:var(--crimson-glow); border:1.5px solid var(--crimson); border-radius:15px; padding:13px; margin-bottom:11px;">
-      <h4 style="margin:0 0 5px 0; font-size:0.86rem; color:var(--crimson); font-weight:900;">Delete Accidental Batch</h4>
-      <select id="delBatchSelect" style="margin-bottom:7px;"></select>
-      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.80rem; min-height:38px;" onclick="confirmDeleteBatch()">Delete Batch</button>
-    </div>
-    <div style="background:var(--crimson-glow); border:1.5px solid var(--crimson); border-radius:15px; padding:13px; margin-bottom:11px;">
-      <h4 style="margin:0 0 5px 0; font-size:0.86rem; color:var(--crimson); font-weight:900;">Delete Egg Collection Log</h4>
-      <select id="delColSelect" style="margin-bottom:7px;"></select>
-      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.80rem; min-height:38px;" onclick="confirmDeleteCollection()">Delete Egg Log</button>
-    </div>
-    <div style="background:var(--crimson-glow); border:1.5px solid var(--crimson); border-radius:15px; padding:13px; margin-bottom:11px;">
-      <h4 style="margin:0 0 5px 0; font-size:0.86rem; color:var(--crimson); font-weight:900;">Delete Mortality Log</h4>
-      <select id="delMortSelect" style="margin-bottom:7px;"></select>
-      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.80rem; min-height:38px;" onclick="confirmDeleteMortality()">Delete Mortality</button>
-    </div>
-    <div style="background:var(--crimson-glow); border:1.5px solid var(--crimson); border-radius:15px; padding:13px;">
-      <h4 style="margin:0 0 5px 0; font-size:0.86rem; color:var(--crimson); font-weight:900;">Delete Sales / Feed / Overheads Log</h4>
-      <select id="delLedgerSelect" style="margin-bottom:7px;"></select>
-      <button class="btn-submit" style="background:var(--crimson); padding:8px; font-size:0.80rem; min-height:38px;" onclick="confirmDeleteLedger()">Delete Entry</button>
+  <!-- 7. EDIT CENTER MODAL (WITH ARCHIVED BATCH RESTORE) -->
+  <div id="editCenterModal" class="modal-overlay" onclick="closeEditCenterModal(event)">
+    <div class="modal-box">
+      <h3>
+        <span>✏️ Edit Center &amp; Batch Recovery</span>
+        <button class="modal-close" onclick="closeEditCenterModal()">✕</button>
+      </h3>
+
+      <div class="card" style="padding:12px; margin-bottom:10px;">
+        <label>Edit or Restore Batch Tray</label>
+        <select id="editBatchSelect"></select>
+        <button class="btn-submit" onclick="proceedEditBatch()" style="margin-top:8px; padding:10px; font-size:0.84rem;">Proceed to Edit Details</button>
+        <button class="btn-neutral" onclick="restoreSelectedBatchFromEditCenter()" style="margin-top:6px; width:100%; color:var(--emerald); border-color:var(--emerald); font-weight:800;">↩ Retrieve Archived Batch to Ongoing</button>
+      </div>
+
+      <div class="card" style="padding:12px; margin-bottom:10px;">
+        <label>Edit Daily Egg Record</label>
+        <select id="editColSelect"></select>
+        <button class="btn-neutral" onclick="proceedEditCollection()" style="margin-top:8px; width:100%;">Edit Selected Egg Log</button>
+      </div>
+
+      <div class="card" style="padding:12px; margin-bottom:10px;">
+        <label>Edit Mortality Record</label>
+        <select id="editMortSelect"></select>
+        <button class="btn-neutral" onclick="proceedEditMortality()" style="margin-top:8px; width:100%;">Edit Selected Loss Log</button>
+      </div>
+
+      <div class="card" style="padding:12px; margin-bottom:0;">
+        <label>Edit Ledger Entry</label>
+        <select id="editLedgerSelect"></select>
+        <button class="btn-neutral" onclick="proceedEditLedger()" style="margin-top:8px; width:100%;">Edit Selected Ledger Entry</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- EXPORT FARM AUDITS MODAL -->
-<div class="modal-overlay" id="dataModal" onclick="closeDataModal(event)">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <h3>
-      <span style="color:var(--text-primary); font-weight:900;">📊 Export Farm Audits</span>
-      <button class="modal-close" onclick="closeDataModal()">✕</button>
-    </h3>
-
-    <!-- 1. COMMERCIAL P&L (DEFAULTS TO FULL PREVIOUS CALENDAR MONTH) -->
-    <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:17px; padding:15px; margin-bottom:11px;">
-      <div style="font-size:0.88rem; font-weight:900; color:var(--brand); margin-bottom:7px;">💼 1. Commercial P&amp;L &amp; Cash Flow Statement</div>
-      <div class="form-row">
-        <div><label>From Month Start</label><select id="reportBusFrom"></select></div>
-        <div><label>To Month End</label><select id="reportBusTo"></select></div>
+  <!-- 8. DELETE CENTER MODAL -->
+  <div id="deleteCenterModal" class="modal-overlay" onclick="closeDeleteCenterModal(event)">
+    <div class="modal-box">
+      <h3>
+        <span style="color:var(--crimson);">🗑️ Delete Center</span>
+        <button class="modal-close" onclick="closeDeleteCenterModal()">✕</button>
+      </h3>
+      <div class="card" style="padding:12px; margin-bottom:10px;">
+        <label>Delete Batch Tray</label>
+        <select id="delBatchSelect"></select>
+        <button class="btn-submit" style="background:var(--crimson); margin-top:8px; padding:9px; font-size:0.82rem;" onclick="confirmDeleteBatch()">Delete Batch Permanently</button>
       </div>
-      <button class="btn-submit" style="background:var(--brand); padding:10px; font-size:0.86rem;" onclick="displayBusinessPnLReport()">Generate P&amp;L Statement</button>
-    </div>
-
-    <!-- 2. RECONCILED FEED AUDIT (DEFAULTS TO FULL PREVIOUS CALENDAR MONTH) -->
-    <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:17px; padding:15px; margin-bottom:11px;">
-      <div style="font-size:0.88rem; font-weight:900; color:var(--amber); margin-bottom:7px;">🐓 2. Reconciled Feed Audit (Monthly Inventory &amp; Flocks)</div>
-      <div class="form-row">
-        <div><label>From Month Start</label><select id="reportFeedFrom"></select></div>
-        <div><label>To Month End</label><select id="reportFeedTo"></select></div>
+      <div class="card" style="padding:12px; margin-bottom:10px;">
+        <label>Delete Egg Record</label>
+        <select id="delColSelect"></select>
+        <button class="btn-submit" style="background:var(--crimson); margin-top:8px; padding:9px; font-size:0.82rem;" onclick="confirmDeleteCollection()">Delete Egg Record</button>
       </div>
-      <button class="btn-submit" style="background:var(--amber); padding:10px; font-size:0.86rem;" onclick="displayFlockFeedSpanReport()">Generate Feed Audit Statement</button>
-    </div>
-
-    <!-- 3. EGG AUDIT -->
-    <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:17px; padding:15px; margin-bottom:11px;">
-      <div style="font-size:0.88rem; font-weight:900; color:var(--emerald); margin-bottom:7px;">🥚 3. Egg Production Audit (With Daily Average)</div>
-      <div class="form-row">
-        <div><label>From Date</label><select id="reportColFrom"></select></div>
-        <div><label>To Date</label><select id="reportColTo"></select></div>
+      <div class="card" style="padding:12px; margin-bottom:10px;">
+        <label>Delete Mortality Record</label>
+        <select id="delMortSelect"></select>
+        <button class="btn-submit" style="background:var(--crimson); margin-top:8px; padding:9px; font-size:0.82rem;" onclick="confirmDeleteMortality()">Delete Mortality Record</button>
       </div>
-      <button class="btn-submit" style="background:var(--emerald); padding:10px; font-size:0.86rem;" onclick="displayEggDataReport()">Generate Egg Audit</button>
-    </div>
-
-    <!-- 4. TRAY INCUBATION AUDIT -->
-    <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:17px; padding:15px; margin-bottom:11px;">
-      <div style="font-size:0.88rem; font-weight:900; color:var(--violet); margin-bottom:7px;">🐥 4. Incubation Batches Audit (Concluded Rates)</div>
-      <div class="form-row">
-        <div><label>From Tray</label><select id="reportBatchFrom"></select></div>
-        <div><label>To Tray</label><select id="reportBatchTo"></select></div>
+      <div class="card" style="padding:12px; margin-bottom:0;">
+        <label>Delete Ledger Entry</label>
+        <select id="delLedgerSelect"></select>
+        <button class="btn-submit" style="background:var(--crimson); margin-top:8px; padding:9px; font-size:0.82rem;" onclick="confirmDeleteLedger()">Delete Ledger Entry</button>
       </div>
-      <button class="btn-submit" style="background:var(--violet); padding:10px; font-size:0.86rem;" onclick="displayIncubationDataReport()">Generate Tray Audit</button>
     </div>
+  </div>
 
-    <!-- 5. MEDICINES & VACCINES INVENTORY -->
-    <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:17px; padding:15px; margin-bottom:11px;">
-      <div style="font-size:0.88rem; font-weight:900; color:var(--text-primary); margin-bottom:7px;">💊 5. Medicine Stock &amp; Dosing Audit</div>
-      <button class="btn-submit" style="background:var(--charcoal-pill); padding:10px; font-size:0.86rem;" onclick="displayMedicationAuditReport()">Generate Medication Ledger</button>
+  <!-- 9. AUDIT LOG MODAL -->
+  <div id="auditHistoryModal" class="modal-overlay" onclick="closeAuditHistoryModal(event)">
+    <div class="modal-box">
+      <h3>
+        <span>🛡️ Partner Audit History</span>
+        <button class="modal-close" onclick="closeAuditHistoryModal()">✕</button>
+      </h3>
+      <div id="auditLogContainer"></div>
     </div>
+  </div>
 
-    <!-- 6. COMPREHENSIVE FARM ACTIVITY & JOURNAL AUDIT -->
-    <div style="background:var(--card-surface-subtle); border:1.5px solid var(--border-hairline); border-radius:17px; padding:15px;">
-      <div style="font-size:0.88rem; font-weight:900; color:var(--violet); margin-bottom:7px;">📝 6. Comprehensive Farm Journal &amp; Ledger Audit</div>
-      <div class="form-row">
-        <div><label>From Date</label><select id="reportActivityFrom"></select></div>
-        <div><label>To Date</label><select id="reportActivityTo"></select></div>
+  <!-- 10. REPORTS SELECTOR MODAL -->
+  <div id="dataModal" class="modal-overlay" onclick="closeDataModal(event)">
+    <div class="modal-box">
+      <h3>
+        <span>📊 Telemetry &amp; Financial Reports</span>
+        <button class="modal-close" onclick="closeDataModal()">✕</button>
+      </h3>
+
+      <!-- 1. COMMERCIAL P&L -->
+      <div class="card" style="padding:12px; margin-bottom:10px;">
+        <div style="font-weight:900; font-size:0.86rem; color:var(--brand); margin-bottom:6px;">1. Commercial P&amp;L Statement</div>
+        <div class="form-row" style="margin-bottom: 6px;">
+          <select id="reportBusFrom"></select>
+          <select id="reportBusTo"></select>
+        </div>
+        <button class="btn-submit" style="margin-top:4px; padding:9px; font-size:0.82rem;" onclick="displayBusinessPnLReport()">Generate Commercial P&amp;L</button>
       </div>
-      <div style="margin-bottom:9px;">
-        <label>Filter Category</label>
-        <select id="reportActivityCategory">
-          <option value="All">All Categories (Complete Journal)</option>
-          <option value="Sales">💰 Sales Only (Birds &amp; Eggs)</option>
-          <option value="Feed">🌽 Feed Purchases &amp; Stock Audits</option>
-          <option value="MedStock">📦 Meds &amp; Vaccines Stock</option>
-          <option value="Treatment">💉 Flock Dosing Only</option>
-          <option value="Electricity">⚡ Electricity Bills Only</option>
-          <option value="Labor">👷 Labor &amp; Wages Only</option>
-          <option value="Breeders">🥚 Breeder Transfers Only</option>
-          <option value="Maint">🔧 Maintenance Only</option>
-          <option value="Note">📌 Observation Notes Only</option>
+
+      <!-- 2. FEED INVENTORY AUDIT -->
+      <div class="card" style="padding:12px; margin-bottom:10px;">
+        <div style="font-weight:900; font-size:0.86rem; color:var(--amber); margin-bottom:6px;">2. Feed Inventory Audit &amp; Allocation</div>
+        <div class="form-row" style="margin-bottom: 6px;">
+          <select id="reportFeedFrom"></select>
+          <select id="reportFeedTo"></select>
+        </div>
+        <button class="btn-submit" style="background:var(--amber); margin-top:4px; padding:9px; font-size:0.82rem;" onclick="displayFlockFeedSpanReport()">Generate Feed Audit</button>
+      </div>
+
+      <!-- 3. EGG PRODUCTION AUDIT -->
+      <div class="card" style="padding:12px; margin-bottom:10px;">
+        <div style="font-weight:900; font-size:0.86rem; color:var(--emerald); margin-bottom:6px;">3. Daily Egg Production Audit</div>
+        <div class="form-row" style="margin-bottom: 6px;">
+          <select id="reportColFrom"></select>
+          <select id="reportColTo"></select>
+        </div>
+        <button class="btn-submit" style="background:var(--emerald); margin-top:4px; padding:9px; font-size:0.82rem;" onclick="displayEggDataReport()">Generate Egg Report</button>
+      </div>
+
+      <!-- 4. INCUBATION BATCHES AUDIT -->
+      <div class="card" style="padding:12px; margin-bottom:10px;">
+        <div style="font-weight:900; font-size:0.86rem; color:var(--brand); margin-bottom:6px;">4. Incubation Batches Audit (HOF%)</div>
+        <div class="form-row" style="margin-bottom: 6px;">
+          <select id="reportBatchFrom"></select>
+          <select id="reportBatchTo"></select>
+        </div>
+        <button class="btn-submit" style="margin-top:4px; padding:9px; font-size:0.82rem;" onclick="displayIncubationDataReport()">Generate Incubation Report</button>
+      </div>
+
+      <!-- 5. FARM LEDGER JOURNAL AUDIT -->
+      <div class="card" style="padding:12px; margin-bottom:10px;">
+        <div style="font-weight:900; font-size:0.86rem; color:var(--violet); margin-bottom:6px;">5. Activity Ledger &amp; Sales Audit</div>
+        <div class="form-row" style="margin-bottom: 6px;">
+          <select id="reportActivityFrom"></select>
+          <select id="reportActivityTo"></select>
+        </div>
+        <select id="reportActivityCategory" style="margin-bottom: 6px;">
+          <option value="All">All Categories</option>
+          <option value="Sales">Sales</option>
+          <option value="Feed">Feed</option>
+          <option value="MedStock">MedStock</option>
+          <option value="Treatment">Treatment</option>
+          <option value="Electricity">Electricity</option>
+          <option value="Labor">Labor</option>
+          <option value="Maint">Maint</option>
+          <option value="Note">Note</option>
         </select>
+        <button class="btn-submit" style="background:var(--violet); margin-top:4px; padding:9px; font-size:0.82rem;" onclick="displayFarmLedgerReport()">Generate Ledger Report</button>
       </div>
-      <button class="btn-submit" style="background:var(--violet); padding:10px; font-size:0.86rem;" onclick="displayFarmLedgerReport()">Generate Farm Ledger Statement</button>
-    </div>
-  </div>
-</div>
 
-<!-- AUDIT REPORT VIEWPORT (DUAL EXCEL + PDF ACTIONS) -->
-<div class="container" id="dataDisplayView">
-  <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid var(--border-strong); padding-bottom:11px; margin-bottom:15px;">
-    <div style="display:flex; align-items:center; gap:12px;">
-      <button class="btn-report-back" onclick="closeDataDisplay()" title="Return to Farm Dashboard">◀</button>
-      <div style="font-size:1.02rem; font-weight:900; color:var(--brand); letter-spacing:-0.02em;">AD FARMS TELEMETRY REPORT</div>
-    </div>
-    <div class="report-actions-bar" style="display:flex; gap:6px;">
-      <!-- WEB PDF BUTTON -->
-      <button class="report-action-pill" onclick="printReportToPdf()" style="background:#dc2626; color:#ffffff;" title="Print or Save as PDF (Web/Desktop)">
-        <span>📕</span> PDF
-      </button>
-      <!-- APK/BROWSER EXCEL BUTTON -->
-      <button class="report-action-pill" onclick="exportActiveReportToCSV()" style="background:#059669; color:#ffffff;" title="Export Structured Excel Spreadsheet (.xls)">
-        <span>📗</span> Excel
-      </button>
+      <!-- 6. MEDICATIONS & VACCINES AUDIT -->
+      <div class="card" style="padding:12px; margin-bottom:0;">
+        <div style="font-weight:900; font-size:0.86rem; color:var(--crimson); margin-bottom:6px;">6. Medications &amp; Vaccines Audit</div>
+        <button class="btn-neutral" style="width:100%;" onclick="displayMedicationAuditReport()">Generate Medication Ledger</button>
+      </div>
     </div>
   </div>
-  <div id="dataReportContent"></div>
-</div>
+
+  <!-- 11. FULLSCREEN REPORT VIEW (PDF / EXCEL EXPORT) -->
+  <div id="dataDisplayView">
+    <div class="report-actions-bar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:10px; border-bottom:1.5px solid var(--border-hairline);">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button class="btn-report-back" onclick="closeDataDisplay()">◀</button>
+        <div style="font-weight:900; font-size:0.82rem; color:var(--brand); line-height:1.2;">AD FARMS<br>TELEMETRY<br>REPORT</div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="report-action-pill" style="background:var(--crimson); color:#fff;" onclick="printReportToPdf()">📕 PDF</button>
+        <button class="report-action-pill" style="background:var(--emerald); color:#fff;" onclick="exportActiveReportToCSV()">📗 Excel</button>
+      </div>
+    </div>
+    <div id="dataReportContent"></div>
+  </div>
 <script>
   /* CONSTANTS & BASELINES */
   const INITIAL_ANCHOR_DATE = "2026-09-12";
@@ -2845,7 +2789,10 @@
   }
 
   function isBatchActiveDirect(b) {
-    if (!b || (b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "" && b.chicksHatched !== "Running")) return false;
+    if (!b) return false;
+    const hasHatched = (b.chicksHatched !== null && b.chicksHatched !== undefined && b.chicksHatched !== "" && b.chicksHatched !== "Running");
+    if (hasHatched) return false;
+    if (b.forceActive) return true;
     const sMs = parseBatchStartTimestamp(b.startDate || b.rawDate, b.setTime);
     return Date.now() <= (sMs + (22 * 86400000));
   }
@@ -2875,20 +2822,24 @@
     const phys = computeBatchTimePhysics(b.startDate || b.rawDate, b.setTime);
     const idealD14ISO = phys.d14ISO;
     const earlyD13ISO = addDaysToISO(idealD14ISO, -1);
+    const lateD15ISO = addDaysToISO(idealD14ISO, 1);
 
-    let isIdealBlocked = false;
-    let blockingBatchName = "";
+    function findBlockingBatch(checkISO) {
+      for (let other of batches) {
+        if (other.id === b.id) continue;
+        const hasRealHarvest = (other.chicksHatched !== null && other.chicksHatched !== undefined && other.chicksHatched !== "" && other.chicksHatched !== "Running" && parseInt(other.chicksHatched, 10) > 0);
+        if (hasRealHarvest) continue;
 
-    batches.forEach(other => {
-      if (other.id === b.id || !isBatchActiveDirect(other)) return;
-      const oPhys = computeBatchTimePhysics(other.startDate || other.rawDate, other.setTime);
-      if (idealD14ISO >= oPhys.shiftD18ISO && idealD14ISO < oPhys.pullD21ISO) {
-        isIdealBlocked = true;
-        blockingBatchName = other.name;
+        const oPhys = computeBatchTimePhysics(other.startDate || other.rawDate, other.setTime);
+        if (checkISO >= oPhys.shiftD18ISO && checkISO < oPhys.pullD21ISO) {
+          return { batch: other, oPhys: oPhys };
+        }
       }
-    });
+      return null;
+    }
 
-    if (!isIdealBlocked) {
+    const idealBlock = findBlockingBatch(idealD14ISO);
+    if (!idealBlock) {
       return {
         scheduledISO: idealD14ISO,
         label: `D14: ${b.name}`,
@@ -2896,10 +2847,37 @@
       };
     }
 
+    const d13Block = findBlockingBatch(earlyD13ISO);
+    if (!d13Block) {
+      return {
+        scheduledISO: earlyD13ISO,
+        label: `D14: ${b.name}`,
+        note: `14th Day Candling moved to Day 13 (${formatDisplayDate(earlyD13ISO)}) before ${idealBlock.batch.name} lockdown.`
+      };
+    }
+
+    if (earlyD13ISO === d13Block.oPhys.shiftD18ISO) {
+      return {
+        scheduledISO: earlyD13ISO,
+        label: `D14: ${b.name}`,
+        note: `14th Day Candling on Day 13 (${formatDisplayDate(earlyD13ISO)}) — complete BEFORE 7:00 PM ${d13Block.batch.name} lockdown seal.`
+      };
+    }
+
+    const d15Block = findBlockingBatch(lateD15ISO);
+    if (!d15Block) {
+      return {
+        scheduledISO: lateD15ISO,
+        label: `D14: ${b.name}`,
+        note: `14th Day Candling moved to Day 15 (${formatDisplayDate(lateD15ISO)}) after ${idealBlock.batch.name} harvest pull.`
+      };
+    }
+
+    const postPullISO = idealBlock.oPhys.pullD21ISO;
     return {
-      scheduledISO: earlyD13ISO,
+      scheduledISO: postPullISO,
       label: `D14: ${b.name}`,
-      note: `14th Day Candling performed within the Day 13–15 band (before ${blockingBatchName} lockdown seal).`
+      note: `14th Day Candling scheduled on ${formatDisplayDate(postPullISO)} after 6:00 PM ${idealBlock.batch.name} harvest pull.`
     };
   }
 
@@ -3064,7 +3042,7 @@
     return { trayMap, busyTrays, emptyTrays, hatcherBatch };
   }
 
-  /* RESTORED CLEAN TELEMETRY COMMAND CENTER & MULTI-BATCH QUEUE */
+  /* TELEMETRY COMMAND CENTER & MULTI-BATCH QUEUE */
   function renderCommandCenter() {
     const todayISO = getTodayISO();
     const parts = todayISO.split('-').map(Number);
@@ -3170,7 +3148,7 @@
           <span class="point-icon">${icon}</span>
           <div class="point-content">
             <span class="point-tag" style="background:var(--card-surface); color:var(--text-primary); border:1px solid var(--border-hairline);">${label}</span>
-            <div style="font-weight:800; color:var(--text-primary); margin-top:2px;">${item.notes || '-'}</div>
+            <div style="font-weight:800; color:var(--text-primary); margin-top:2px;">${getSafeLedgerDescription(item)}</div>
             <div style="font-size:0.68rem; color:var(--text-tertiary); margin-top:1px;">Logged by: <b>${item.createdBy || 'Dinesh'}</b></div>
           </div>
         </div>
@@ -3458,7 +3436,6 @@
       const lMs = getSafeMs(l.date) || 0;
       if (l.category === "Sales") {
         const q = parseInt(l.qty, 10) || 0;
-        // Strictly live birds, never count eggs as birds
         if (l.target === "Chicks" && (!l.notes || !l.notes.toLowerCase().includes("egg"))) {
           if (lMs >= boundary45DMs) cSoldActive += q;
           else cSoldGraduated += q;
@@ -3733,6 +3710,7 @@
       pullD21Date: phys.pullD21ISO, pullDate: phys.pullD21ISO, d21Date: phys.pullD21ISO,
       pullD21TimestampMs: phys.pullD21CompletedMs, growerPromotionDate: phys.promotion45DISO,
       rawDate: toNormalizedISO(dateInput), inHatcher: old ? old.inHatcher : false,
+      forceActive: old ? (old.forceActive || false) : false,
       leftoverAfterBatch: leftoverVal !== "" ? parseInt(leftoverVal, 10) : null,
       candlingD14Cleared: old ? (old.candlingD14Cleared || 0) : 0,
       chicksHatched: old ? old.chicksHatched : null, hatchRate: old ? old.hatchRate : null,
@@ -3783,10 +3761,11 @@
     b.chicksHatched = parseInt(val, 10) || 0;
     b.hatchRate = calculateHatchOfFertile(b.chicksHatched, b.eggs, b.candlingD14Cleared || 0);
     b.inHatcher = false;
+    b.forceActive = false;
     b.lastModifiedBy = getBoundOperatorName(); b.lastModifiedAt = Date.now();
     recordModificationAudit(b.createdBy, "Hatch Harvest", `Chicks pulled: ${b.chicksHatched} for ${b.name}`);
     syncToLocalStorage(); renderBatches(); renderMortality(); renderLiveMetrics(); renderCommandCenter();
-    if (db) db.collection("batches").doc(id).update({ chicksHatched: b.chicksHatched, hatchRate: b.hatchRate, inHatcher: false, lastModifiedBy: b.lastModifiedBy, lastModifiedAt: b.lastModifiedAt }).catch(() => {});
+    if (db) db.collection("batches").doc(id).update({ chicksHatched: b.chicksHatched, hatchRate: b.hatchRate, inHatcher: false, forceActive: false, lastModifiedBy: b.lastModifiedBy, lastModifiedAt: b.lastModifiedAt }).catch(() => {});
   }
 
   function buildBatchCardHtml(b, isArchived) {
@@ -4121,7 +4100,6 @@
     centerActiveTabButton(activeBtn, document.getElementById('ledgerSubBar'));
   }
 
-  /* FORMAT REPORT AND LEDGER ITEM DESCRIPTION GUARANTEED NOT TO DROP COUNT */
   function getSafeLedgerDescription(l) {
     if (l.category === "Sales") {
       const target = l.target || (l.notes && l.notes.toLowerCase().includes("egg") ? "Eggs" : "Growers");
@@ -4290,18 +4268,58 @@
 
   function closeDateDetails(e) { if (!e || e.target.id === "dateModal" || e.target.classList.contains("modal-close")) document.getElementById('dateModal').style.display = "none"; }
 
-  /* EDIT & DELETE CENTERS */
+  /* EDIT, BATCH RESTORE & DELETE CENTERS */
   function openEditCenterModal() {
     closeSettingsModal();
     const cSel = document.getElementById('editColSelect'); cSel.innerHTML = "";
     [...collections].sort((a,b)=>toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date))).forEach(c => cSel.add(new Option(`${formatDisplayDate(c.date)} — ${c.total} eggs`, c.id)));
+    
     const bSel = document.getElementById('editBatchSelect'); bSel.innerHTML = "";
-    [...batches].sort((a,b)=>toNormalizedISO(b.startDate||b.rawDate).localeCompare(toNormalizedISO(a.startDate||a.rawDate))).forEach(b => bSel.add(new Option(`${formatDisplayDate(b.startDate||b.rawDate)} — ${b.name}`, b.id)));
+    [...batches].sort((a,b)=>toNormalizedISO(b.startDate||b.rawDate).localeCompare(toNormalizedISO(a.startDate||a.rawDate))).forEach(b => {
+      const statusTag = isBatchActiveDirect(b) ? "ONGOING" : "ARCHIVED";
+      bSel.add(new Option(`[${statusTag}] ${formatDisplayDate(b.startDate||b.rawDate)} — ${b.name}`, b.id));
+    });
+
     const mSel = document.getElementById('editMortSelect'); mSel.innerHTML = "";
     [...mortality].sort((a,b)=>toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date))).forEach(m => mSel.add(new Option(`${formatDisplayDate(m.date)} — ${m.category}: ${m.dead} dead`, m.id)));
+    
     const lSel = document.getElementById('editLedgerSelect'); lSel.innerHTML = "";
     [...ledger].sort((a,b)=>toNormalizedISO(b.date).localeCompare(toNormalizedISO(a.date))).forEach(l => lSel.add(new Option(`${formatDisplayDate(l.date)} — ${l.category}: ${getSafeLedgerDescription(l)}`, l.id)));
+    
     document.getElementById('editCenterModal').style.display = "flex";
+  }
+
+  function restoreSelectedBatchFromEditCenter() {
+    const id = document.getElementById('editBatchSelect').value;
+    const b = batches.find(x => x.id === id);
+    if (!b) return alert("Select a batch first.");
+    if (isBatchActiveDirect(b)) return alert(`"${b.name}" is already in Ongoing Batches.`);
+    if (!confirm(`Retrieve "${b.name}" from Archive back to Ongoing Batches?`)) return;
+
+    b.chicksHatched = null;
+    b.hatchRate = null;
+    b.forceActive = true;
+    b.lastModifiedBy = getBoundOperatorName();
+    b.lastModifiedAt = Date.now();
+
+    recordModificationAudit(b.createdBy, "Batch Restore", `Retrieved "${b.name}" from Archive back to Ongoing`);
+    syncToLocalStorage();
+    renderBatches();
+    renderLiveMetrics();
+    renderCalendar();
+    renderCommandCenter();
+
+    document.getElementById('editCenterModal').style.display = "none";
+
+    if (db) {
+      db.collection("batches").doc(id).update({
+        chicksHatched: null,
+        hatchRate: null,
+        forceActive: true,
+        lastModifiedBy: b.lastModifiedBy,
+        lastModifiedAt: b.lastModifiedAt
+      }).catch(() => {});
+    }
   }
 
   function closeEditCenterModal(e) { if (!e || e.target.id === "editCenterModal" || e.target.classList.contains("modal-close")) { document.getElementById('editCenterModal').style.display = "none"; openSettingsModal(); } }
@@ -4525,7 +4543,7 @@
     return (modifier && modifier !== a) ? `<small><b>By:</b> ${a}<br><span style="color:var(--amber);"><b>Edit:</b> ${modifier}</span></small>` : `<small><b>By:</b> ${a}</small>`;
   }
 
-  /* 1. COMMERCIAL P&L (PERMANENT ₹10,000 LABOR DEFAULT + AUTO-REVISED OVERRIDE) */
+  /* 1. COMMERCIAL P&L */
   function displayBusinessPnLReport() {
     const fromISO = toNormalizedISO(document.getElementById('reportBusFrom').value);
     const toISO = toNormalizedISO(document.getElementById('reportBusTo').value);
