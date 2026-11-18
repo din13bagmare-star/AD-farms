@@ -3075,7 +3075,11 @@
       }
     });
 
-    const todayLedgerItems = ledger.filter(l => toNormalizedISO(l.date) === todayISO);
+    // Only show actionable tasks/reminders due today (Sales & Dispatches are handled by Partner Notification Banner)
+    const todayLedgerItems = ledger.filter(l => 
+      toNormalizedISO(l.date) === todayISO && 
+      ["Treatment", "Maint", "Note"].includes(l.category)
+    );
     let pointsHtml = "";
 
     if (isMonthEndFeedAuditDue()) {
@@ -3135,12 +3139,6 @@
       } else if (item.category === "Maint") {
         icon = "🔧"; label = "MAINTENANCE";
         borderStyle = "border-left: 4px solid var(--amber); background: rgba(217, 119, 6, 0.06);";
-      } else if (item.category === "Feed") {
-        icon = "🌽"; label = "FEED ACTIVITY";
-        borderStyle = "border-left: 4px solid var(--amber); background: rgba(217, 119, 6, 0.06);";
-      } else if (item.category === "Sales") {
-        icon = "💰"; label = "SALES RECORDED";
-        borderStyle = "border-left: 4px solid var(--emerald); background: rgba(5, 150, 105, 0.06);";
       }
 
       pointsHtml += `
